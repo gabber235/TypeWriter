@@ -349,6 +349,7 @@ void main() {
           "overlapping_keyframe",
         );
         final preOverlapFarKeyframe = preOverlapLayout.element("far_keyframe");
+
         final overlapActiveChild = overlapLayout.element("active_child");
         final overlapOverlappingKeyframe = overlapLayout.element(
           "overlapping_keyframe",
@@ -432,6 +433,7 @@ void main() {
         final baseRootBChild = baseLayout.element("root_b_child");
         final previewRootA = previewLayout.element("root_a");
         final previewRootAChild = previewLayout.element("root_a_child");
+
         final previewRootB = previewLayout.element("root_b");
         final previewRootBChild = previewLayout.element("root_b_child");
 

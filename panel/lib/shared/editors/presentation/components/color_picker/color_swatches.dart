@@ -74,6 +74,7 @@ class _ColorSwatchGridState extends State<ColorSwatchGrid> {
     } else {
       return KeyEventResult.ignored;
     }
+
     target = target.clamp(0, widget.colors.length - 1);
     if (primary && widget.onReordered != null && widget.enabled) {
       final reordered = [...widget.colors];
@@ -81,6 +82,7 @@ class _ColorSwatchGridState extends State<ColorSwatchGrid> {
       reordered.insert(target, value);
       widget.onReordered!(reordered);
     }
+
     _moveFocus(target);
     return KeyEventResult.handled;
   }

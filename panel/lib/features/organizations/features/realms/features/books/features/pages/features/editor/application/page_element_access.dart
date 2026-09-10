@@ -48,6 +48,7 @@ Future<T> _withReadyPageElements<T>(
   final lease = session.acquirePage(recordId("page:$pageId"));
   final provider = pageElementsProvider(organizationId, realmId, pageId);
   final pageSubscription = container.listen(provider, (_, _) {});
+
   final elements = container.read(provider.notifier);
   final ready = container.read(provider.future);
   try {

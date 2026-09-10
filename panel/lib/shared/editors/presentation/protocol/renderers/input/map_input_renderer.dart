@@ -43,7 +43,9 @@ class _MapInputState extends State<_MapInput> {
     final map = binding.value as MapValue;
     final previous = _slots;
     final next = _entryTracker.reconcile(previous, map.entries);
+
     final nextIdentities = {for (final slot in next) slot.identity};
+
     final previousStore = oldWidget.scope.expansionStore;
     for (final slot in previous) {
       if (!identical(previousStore, scope.expansionStore) ||
@@ -98,6 +100,7 @@ class _MapInputState extends State<_MapInput> {
     final valueChain = valueScope == null
         ? null
         : element.valuePresentation!.resolveHeaderChain(valueScope);
+
     final valueHeader = valueChain?.header;
     final valueHeaderBinding = valueHeader?.binding == null
         ? null
@@ -132,6 +135,7 @@ class _MapInputState extends State<_MapInput> {
     );
     final hasDeclaredHeader =
         element.keyPresentation?.header != null || valueHeader != null;
+
     if (!element.allowRemove && !hasDeclaredHeader) return content;
     final standardHeader = PresentationHeader(
       binding: reference,

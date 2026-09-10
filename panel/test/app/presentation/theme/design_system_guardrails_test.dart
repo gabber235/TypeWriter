@@ -327,6 +327,7 @@ void main() {
             r"(?:Radius|BorderRadius)\.(?:circular|all)\s*\(\s*(?:const\s+)?(?:Radius\.circular\s*\(\s*)?(?:4|8|12|16)(?:\.0)?\s*\)?\s*\)",
           ),
         ];
+
         for (final pattern in checks) {
           for (final match in pattern.allMatches(source)) {
             final allowed = exemptions.any(

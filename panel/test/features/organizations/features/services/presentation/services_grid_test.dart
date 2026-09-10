@@ -57,6 +57,7 @@ void main() {
       expect(find.text("ENGINE"), findsOneWidget);
       expect(find.text("Discord Bridge"), findsOneWidget);
       expect(find.text("Paper Eu"), findsNWidgets(2));
+
       expect(find.byType(Graph), findsOneWidget);
       final graph = tester.widget<Graph>(find.byType(Graph));
       expect(graph.data.elements, hasLength(4));
@@ -116,18 +117,21 @@ void main() {
     expect(find.text("Host"), findsOneWidget);
     expect(find.text("Capabilities and runtime health"), findsNothing);
     expect(find.text("CAPABILITIES"), findsOneWidget);
+
     expect(find.text("RUNTIME HEALTH"), findsOneWidget);
     expect(find.text("Configuration"), findsOneWidget);
     expect(find.text("REALM HOSTING"), findsOneWidget);
     expect(find.text("EXECUTION ENGINE"), findsOneWidget);
     expect(find.text("Host a Realm"), findsOneWidget);
     expect(find.text("Run an execution engine"), findsOneWidget);
+
     expect(find.text("Assigned Realm"), findsNothing);
     expect(find.text("Hosted Realm"), findsNothing);
     expect(find.text("Message"), findsNothing);
     expect(find.byType(ComposedEditor), findsOneWidget);
     expect(find.text("Unbind"), findsOneWidget);
     expect(find.byIcon(Icons.cloud_done_outlined), findsOneWidget);
+
     expect(find.byIcon(Icons.play_circle_outline), findsWidgets);
 
     await tester.ensureVisible(find.text("Host a Realm"));
@@ -194,6 +198,7 @@ void main() {
     expect(find.text("Placement"), findsOneWidget);
     expect(find.text("Where this runtime executes"), findsNothing);
     expect(find.text("ASSIGNMENT"), findsOneWidget);
+
     expect(find.text("Assigned Realm"), findsOneWidget);
     expect(find.text("Message"), findsOneWidget);
     expect(find.text("Deployment needs attention"), findsOneWidget);

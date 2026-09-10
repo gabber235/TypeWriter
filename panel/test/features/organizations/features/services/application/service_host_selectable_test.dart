@@ -40,6 +40,7 @@ void main() {
       model.inputs.values.whereType<PresentationValueInput>(),
       hasLength(1),
     );
+
     final edits = model.inputs.values
         .whereType<PresentationEditInput>()
         .map((input) => input.owner as EditorSource)
@@ -65,6 +66,7 @@ void main() {
     });
     final owners = EditorOwnerRegistry();
     addTearDown(owners.dispose);
+
     final model = harness.selectable.buildPresentation(owners);
     final owner =
         ((model.inputs[const BindingId(2)]! as PresentationEditInput).owner
@@ -74,6 +76,7 @@ void main() {
     expect(request!.name, "renamed");
     expect(result.revision, 2);
     expect((result.value as RecordValue).fields.keys, ["name"]);
+
     expect(harness.nats.requests.map((entry) => entry.subject), [
       "cloud.to.user.user1.organization.org1.services.watch",
       _updateSubject,
@@ -97,6 +100,7 @@ void main() {
     });
     final owners = EditorOwnerRegistry();
     addTearDown(owners.dispose);
+
     final model = harness.selectable.buildPresentation(owners);
     final owner =
         ((model.inputs[const BindingId(1)]! as PresentationEditInput).owner

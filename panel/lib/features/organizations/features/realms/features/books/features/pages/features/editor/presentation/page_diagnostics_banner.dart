@@ -28,6 +28,7 @@ class PageDiagnosticsBanner extends ConsumerWidget {
     final message = health.diagnostics.isEmpty
         ? "Compilation is blocked. The engine keeps the last valid version."
         : health.diagnostics.join("\n");
+
     final theme = Theme.of(context);
     return SafeArea(
       minimum: EdgeInsets.all(context.spacing.space3),

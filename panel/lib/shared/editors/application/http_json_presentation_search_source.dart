@@ -73,9 +73,13 @@ final class HttpJsonPresentationSearchSource implements SearchSource {
           "Search request returned status ${response.statusCode}",
         );
       }
+
       final document = jsonDecode(response.body);
+
       final withBindings = _contextBindings(document, context);
+
       final snapshot = _snapshot(document, withBindings);
+
       if (_disposed || revision != _revision) return;
       _snapshots.add(snapshot);
     } on TimeoutException {
@@ -99,6 +103,7 @@ final class HttpJsonPresentationSearchSource implements SearchSource {
     if (uri.scheme != "https" || uri.host.isEmpty) {
       throw const FormatException("Search URI must use HTTPS");
     }
+
     final parameters = Map<String, String>.of(uri.queryParameters);
     for (final parameter in provider.parameters) {
       final result = parameter.value.evaluate(

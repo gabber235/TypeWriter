@@ -159,6 +159,7 @@ class OrganizationServices extends _$OrganizationServices {
         (_) async => throw StateError("Service replay is unsupported"),
       );
     }
+
     switch (response) {
       case skir.UpdateOrganizationServiceResponse_invalidOperationIdErrorWrapper():
         throw ApiException.badRequest("Operation identity is required");
@@ -232,6 +233,7 @@ class OrganizationServices extends _$OrganizationServices {
         _ => MutationResponseDisposition.rejected,
       },
     );
+
     switch (response) {
       case skir.UnbindServiceResponse_invalidOperationIdErrorWrapper():
         throw ApiException.badRequest("Operation identity is required");

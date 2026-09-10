@@ -123,7 +123,9 @@ final class TransactionalEditorSource extends ChangeNotifier
     if (replaced case TypeFailure(:final diagnostics)) {
       return EditorMutationResult.invalid(diagnostics);
     }
+
     _draft = replaced.valueOrNull!;
+
     _localRevision++;
     _pendingMutations.add(
       _PendingStructuralMutation(
@@ -131,8 +133,11 @@ final class TransactionalEditorSource extends ChangeNotifier
         structuralMutation ?? EditorSetValue(path, validation.value),
       ),
     );
+
     _states.markEdited(path);
+
     _notify();
+
     _scheduleAutoFlush();
     return validation;
   }
@@ -255,6 +260,7 @@ final class TransactionalEditorSource extends ChangeNotifier
     _pendingMutations.removeWhere(
       (pending) => _pathsOverlap(path, pending.mutation.path),
     );
+
     _states.adoptRemote(path, EditorSavePhase.saved);
     _notify();
   }
@@ -279,9 +285,13 @@ final class TransactionalEditorSource extends ChangeNotifier
     _deleted = true;
     _pendingMutations.clear();
     _unresolved = null;
+
     _generation++;
+
     _cancelScheduledTasks();
+
     _closeGates();
+
     _notify();
     onDeleted?.call();
   }
@@ -299,6 +309,7 @@ final class TransactionalEditorSource extends ChangeNotifier
     _disposed = true;
     _generation++;
     _cancelScheduledTasks();
+
     _closeGates();
     super.dispose();
   }

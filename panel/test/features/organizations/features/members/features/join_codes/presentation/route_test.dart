@@ -25,6 +25,7 @@ void main() {
     expect(find.text("Join Code"), findsOneWidget);
     expect(find.text("Active Join Codes"), findsOneWidget);
     expect(find.textContaining("Active Links"), findsNothing);
+
     expect(find.textContaining("Invite Link"), findsNothing);
     expect(find.byType(TabBar), findsNothing);
   });

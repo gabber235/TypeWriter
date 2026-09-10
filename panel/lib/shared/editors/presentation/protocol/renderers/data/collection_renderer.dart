@@ -12,6 +12,7 @@ extension CollectionLookupRendering on CollectionLookupElement {
     if (resolved case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
     }
+
     final selectedKey = resolved.valueOrNull!.value;
     return StreamBuilder<PresentationCollectionSnapshot>(
       stream: source.watch(PresentationCollectionQuery.keys([selectedKey])),
@@ -56,6 +57,7 @@ extension CollectionGraphRendering on CollectionGraphElement {
         _collectionDiagnostic("Collection graph bindings must be distinct"),
       ]);
     }
+
     final rootSlots = rootSequence.item.presentationSlotIds;
     if (rootSlots.length != 1) {
       return presentationDiagnostic(context, [
@@ -64,7 +66,9 @@ extension CollectionGraphRendering on CollectionGraphElement {
         ),
       ]);
     }
+
     final nodeSlots = node.presentationSlotIds;
+
     final childSlots = children.item.presentationSlotIds;
     if (nodeSlots.length != 1 || childSlots.length != 1) {
       return presentationDiagnostic(context, [
@@ -78,12 +82,16 @@ extension CollectionGraphRendering on CollectionGraphElement {
         _collectionDiagnostic("Collection graph child slots do not match"),
       ]);
     }
+
     final rootSlotId = rootSlots.single;
+
     final slotId = nodeSlots.single;
+
     final resolved = scope.resolve(roots);
     if (resolved case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
     }
+
     final value = resolved.valueOrNull!.value;
     final rootKeys = switch (value) {
       ListValue(:final values) => values,
@@ -133,6 +141,7 @@ extension CollectionGraphRendering on CollectionGraphElement {
           scope: scope,
           itemScopes: rootItemScopes,
         );
+
         if (data.diagnostics.isEmpty) return roots;
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -212,6 +221,7 @@ extension CollectionGraphRendering on CollectionGraphElement {
           },
         ),
     ];
+
     return Builder(
       builder: (context) {
         final childContent = renderSequence(

@@ -50,6 +50,7 @@ List<PageElement> _decodePageElements(
             path: reference.slot,
           ),
     ];
+
     final placement = element.placement;
     if (placement case wire.ElementPlacement_timelineSegmentWrapper(
       value: final timing,

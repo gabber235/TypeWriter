@@ -169,6 +169,7 @@ void main() {
         value.copyWith(possibleValues: ["open"]),
         const QuerySelectorValue.enumValue(["open"]),
       );
+
       expect(_selectorValueLabel(value), "enum");
       expect(
         _selectorValueLabel(const QuerySelectorValue.freeText()),

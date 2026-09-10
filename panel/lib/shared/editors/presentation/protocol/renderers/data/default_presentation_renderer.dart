@@ -27,6 +27,7 @@ extension DefaultPresentationElementRendering on DefaultPresentationElement {
       );
       return PresentationNodeRenderer(node: generated, scope: scope);
     }
+
     if (scope.activePresentations.contains(selected.id)) {
       return presentationDiagnostic(context, [
         const TypeDiagnostic(
@@ -35,6 +36,7 @@ extension DefaultPresentationElementRendering on DefaultPresentationElement {
         ),
       ]);
     }
+
     final input = selected.primaryInput;
     if (input == null) {
       return presentationDiagnostic(context, [
@@ -44,6 +46,7 @@ extension DefaultPresentationElementRendering on DefaultPresentationElement {
         ),
       ]);
     }
+
     final bound = scope.bindPresentation(selected, {input: binding});
     if (bound case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);

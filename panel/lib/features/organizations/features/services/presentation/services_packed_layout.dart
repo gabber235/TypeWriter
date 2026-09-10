@@ -29,6 +29,7 @@ class ServicesPackedLayout {
     final placements = packer.pack(
       packer.components(orderedNodes, validConnections),
     );
+
     final elements = [
       for (final node in orderedNodes)
         GraphElement(

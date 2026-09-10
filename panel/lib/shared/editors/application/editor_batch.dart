@@ -42,7 +42,9 @@ final class EditorBatch {
     if (!resourceBatch && send == null) {
       throw StateError("A local editor batch requires a sender");
     }
+
     final invalid = <TypeDiagnostic>[];
+
     final accepted = <TransactionalEditorSource, Map<DataPath, DataValue>>{};
     for (final entry in changes.entries) {
       if (entry.value.isEmpty ||
@@ -89,6 +91,7 @@ final class EditorBatch {
       source._activeCommit = completions[source]!.future;
       source._cancelScheduledTasks();
     }
+
     final commits = <TransactionalEditorSource, EditorCommit>{};
     for (final entry in changes.entries) {
       final source = entry.key;
@@ -144,9 +147,11 @@ final class EditorBatch {
       final paths = source._states.flushCandidates(entry.value.keys.toSet());
       if (paths.isEmpty) continue;
       commits[source] = source.captureCommit(paths);
+
       source._states.markSaving(paths);
       source._notify();
     }
+
     final batch = EditorBatch._(Map.unmodifiable(commits), send);
     try {
       batch._results = commits.isEmpty ? {} : await send!(batch._commits);
@@ -160,6 +165,7 @@ final class EditorBatch {
           ),
       };
     }
+
     batch._settle();
     for (final source in changes.keys) {
       source._activeCommit = null;
@@ -182,6 +188,7 @@ final class EditorBatch {
       if (source._disposed || source._deleted) continue;
       final commit = entry.value;
       final result = _results[source] ?? _unavailable("Missing batch result");
+
       source._states.clearSaving();
       source
         .._unresolved = null

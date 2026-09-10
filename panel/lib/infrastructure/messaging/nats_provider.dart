@@ -79,6 +79,7 @@ class Nats extends _$Nats {
       ),
       requestInboxPrefix: "_INBOX.${user.sub}",
     );
+
     debugPrint("nats: connecting to ${configuration.url}");
     final client = ref.watch(natsClientFactoryProvider)(configuration);
     ref.onDispose(() => unawaited(client.close()));

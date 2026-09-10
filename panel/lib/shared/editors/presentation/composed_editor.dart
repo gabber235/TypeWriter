@@ -95,6 +95,7 @@ class _ComposedEditorState extends State<ComposedEditor> {
           (owner) => owner.commitPolicy == EditorCommitPolicy.applyResource,
         )
         .toList();
+
     final candidate = applyOwners.length == 1 ? applyOwners.single : null;
     final primaryOwner =
         !widget.readOnly &&
@@ -194,6 +195,7 @@ class _ComposedEditorState extends State<ComposedEditor> {
         .where((value) => value.id == selected)
         .firstOrNull;
     if (definition == null) return null;
+
     if (type != null && definition.inputs.length != 1) return null;
     return ResolvedPresentationDefinition(
       id: definition.id,
@@ -230,6 +232,7 @@ class _ComposedEditorState extends State<ComposedEditor> {
       (action as RealmEditorAction).action,
       context,
     );
+
     if (!mounted) return;
     switch (result) {
       case RealmCommandSuccess(:final instructions):

@@ -32,6 +32,7 @@ void main() {
       source.update(_title, const StringValue("Submitted"));
       expect(await source.flush(), isA<MutationUncertain>());
       source.update(_title, const StringValue("New draft"));
+
       expect(await source.flush(), isA<MutationUncertain>());
       source.discardDraft();
       expect(source.value(_title).valueOrNull, const StringValue("New draft"));
@@ -65,12 +66,14 @@ void main() {
       addTearDown(source.dispose);
       source.update(_title, const StringValue("A"));
       await source.flush();
+
       source.update(_title, const StringValue("B"));
       await source.flush();
       expect(sends, 2);
       expect(captured, hasLength(1));
       expect(source.document.confirmedValue, _value("A"));
       expect(source.value(_title).valueOrNull, const StringValue("B"));
+
       expect(source.hasWork, isTrue);
     },
   );
@@ -99,6 +102,7 @@ void main() {
       final interaction = source.beginInteraction(_title);
       source.update(_title, const StringValue(""));
       await interaction.commit();
+
       expect(sends, 0);
       expect(await source.flush(), isA<MutationInvalid>());
       expect(sends, 0);
@@ -126,6 +130,7 @@ void main() {
       final source = (first.editor(target("org1")))
         ..update(_title, const StringValue("Retained"));
       first.dispose();
+
       final other = EditorOwnerRegistry(workspace: workspace);
       final returned = EditorOwnerRegistry(workspace: workspace);
       addTearDown(other.dispose);
@@ -135,6 +140,7 @@ void main() {
         const StringValue("Original"),
       );
       expect(identical(returned.editor(target("org1")), source), isTrue);
+
       expect(source.value(_title).valueOrNull, const StringValue("Retained"));
       await source.flush();
       expect(source.hasWork, isFalse);

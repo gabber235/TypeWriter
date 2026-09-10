@@ -46,6 +46,7 @@ void main() {
       );
       final provider = authoringSessionProvider(_organization, _realm);
       final subscription = container.listen(provider, (_, _) {});
+
       final session = container.read(provider.notifier);
       final nameResult = await session.patchPage(
         id: _page,
@@ -66,6 +67,7 @@ void main() {
       final rename =
           submitted.first.operations.single
               as wire.AuthoringOperation_patchPageWrapper;
+
       final priority =
           submitted.last.operations.single
               as wire.AuthoringOperation_patchPageWrapper;
@@ -74,6 +76,7 @@ void main() {
       expect(priority.value.priority?.expected, 2);
       expect(priority.value.priority?.value, 5);
       expect(priority.value.name, isNull);
+
       expect(
         nats.requests.map((request) => request.subject),
         everyElement(_batchSubject),
@@ -132,6 +135,7 @@ void main() {
         ).edit({
           _page: {DataPath.root.field("name"): const StringValue("Retained")},
         });
+
     expect(result, isA<MutationInvalid>());
     final owner = workspace.resources.values.single.source;
     expect(
@@ -146,6 +150,7 @@ void main() {
     );
     workspace.dispose();
     subscription.close();
+
     container.dispose();
     await nats.dispose();
   });

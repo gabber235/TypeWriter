@@ -14,7 +14,9 @@ extension _EditorReconciliation on TransactionalEditorSource {
       diagnostics: document.diagnostics,
       readOnly: document.readOnly,
     );
+
     if (_document.hasSameContent(refreshed)) return;
+
     _document = refreshed;
     _notify();
   }
@@ -45,6 +47,7 @@ extension _EditorReconciliation on TransactionalEditorSource {
       revision: result.revision,
       diagnostics: [..._document.diagnostics, ...result.diagnostics],
     );
+
     _draft = result.draft;
     _states.applyReconciliation(
       dirtyPaths: result.dirtyPaths,
@@ -82,7 +85,9 @@ extension _EditorReconciliation on TransactionalEditorSource {
       }
     }
     _states.confirm(confirmed, EditorSavePhase.saved);
+
     _document = _document.copyWith(confirmedValue: value, revision: revision);
+
     _draft = nextDraft;
     _notify();
   }

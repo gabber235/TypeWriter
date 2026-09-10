@@ -20,6 +20,7 @@ final class PresentationSession extends ChangeNotifier {
     _owners.clear();
     _model = model;
     _generation++;
+
     _attach();
     notifyListeners();
   }
@@ -138,6 +139,7 @@ final class PresentationSession extends ChangeNotifier {
           final value = member
               .value(input.path.followedBy(address.path))
               .valueOrNull;
+
           if (value == null) return const EditorMutationResult.conflict();
           snapshots[entry.key] = entry.value.copyWith(
             value: value,
@@ -148,19 +150,24 @@ final class PresentationSession extends ChangeNotifier {
           bindings: BindingEnvironment(snapshots),
         );
         final registry = TypeRegistry(member.typeCatalog);
+
         final result = action.execute(memberContext, registry: registry);
         if (result case LocalMutationInvalid(:final diagnostics)) {
           return EditorMutationResult.invalid(diagnostics);
         }
+
         final local = action.action.mutationReference;
         final value = local.path
             .read((result as LocalMutationApplied).value)
             .valueOrNull;
+
         if (value == null) return const EditorMutationResult.conflict();
         final prefix = BindingReference(
           bindingId: local.bindingId,
         ).canonicalizedWith(aliases).path;
+
         final validation = member.validate(destinationPath, value);
+
         if (validation is! AppliedEditorMutation) return validation;
         prepared.add((
           member,
@@ -184,13 +191,18 @@ final class PresentationSession extends ChangeNotifier {
       return EditorMutationResult.applied(prepared.first.$2);
     }
     final registry = TypeRegistry(model.catalog);
+
     final result = action.execute(context, registry: registry);
     if (result case LocalMutationInvalid(:final diagnostics)) {
       return EditorMutationResult.invalid(diagnostics);
     }
+
     final applied = result as LocalMutationApplied;
+
     final local = action.action.mutationReference;
+
     final canonical = local.canonicalizedWith(aliases);
+
     final value = local.path.read(applied.value);
     if (value case TypeFailure(:final diagnostics)) {
       return EditorMutationResult.invalid(diagnostics);

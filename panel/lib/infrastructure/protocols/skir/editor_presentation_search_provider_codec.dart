@@ -114,6 +114,7 @@ extension SkirPresentationSearchProviderDecoder on SkirPresentationDecoder {
       _httpContextBinding,
     );
     final selectors = _decodeSearchList(value.selectors, _searchSelector);
+
     final diagnostics = [
       ...uri.diagnostics,
       ...parameters.diagnostics,

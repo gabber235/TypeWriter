@@ -143,6 +143,7 @@ class RenderTimelinePlane extends RenderBox
     _paintTracks(canvas, offset);
     _paintElementBackgrounds(canvas, offset);
     _paintGrid(canvas, offset);
+
     defaultPaint(context, offset);
   }
 
@@ -158,6 +159,7 @@ class RenderTimelinePlane extends RenderBox
         track.height,
       );
       final screenRect = offset & size;
+
       if (!rect.overlaps(screenRect)) continue;
       final visibleRect = rect.intersect(screenRect);
       canvas
@@ -180,6 +182,7 @@ class RenderTimelinePlane extends RenderBox
         childRect.height,
       );
       final screenRect = offset & size;
+
       if (!rect.overlaps(screenRect)) continue;
       final color = Color.alphaBlend(
         parentData.color.withValues(alpha: 0.25),

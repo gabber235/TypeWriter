@@ -38,6 +38,7 @@ void main() {
     expect(issue.code, QueryIssueCode.invalidSelectorValue);
     expect(issue.severity, QuerySeverity.warning);
     expect(issue.message, contains("role"));
+
     expect(issue.range, isNotNull);
   });
 
@@ -125,6 +126,7 @@ void main() {
     expect(issue.code, QueryIssueCode.multiplicityViolation);
     expect(issue.severity, QuerySeverity.error);
     expect(issue.message, contains("id"));
+
     expect(issue.range, isNotNull);
   });
 }

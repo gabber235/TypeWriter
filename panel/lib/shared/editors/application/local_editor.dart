@@ -38,7 +38,9 @@ final class LocalEditor extends ChangeNotifier implements EditOwner {
     if (replaced case TypeFailure(:final diagnostics)) {
       return EditorMutationResult.invalid(diagnostics);
     }
+
     _value = replaced.valueOrNull!;
+
     notifyListeners();
     return result;
   }

@@ -93,6 +93,7 @@ _SearchStoryConfig _configFromKnobs(BuildContext context) {
     label: "Debounce duration",
     initialValue: 250.ms,
   );
+
   final searchDelay = context.knobs.duration(
     label: "Search delay",
     initialValue: 750.ms,

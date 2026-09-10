@@ -148,6 +148,7 @@ void main() {
     expect(source.value(title).valueOrNull, const StringValue("Yours"));
     expect(source.saveState(title).phase, EditorSavePhase.conflict);
     expect(source.saveState(color).phase, EditorSavePhase.saved);
+
     expect(
       source.document.confirmedValue,
       _value(title: "Theirs", color: "Blue"),
@@ -473,6 +474,7 @@ void main() {
     expect(interaction.active, isFalse);
     await interaction.commit();
     expect(interaction.active, isFalse);
+
     source.dispose();
   });
 
@@ -493,6 +495,7 @@ void main() {
       source.update(title, const StringValue("Cancelled"));
       cancelled.cancel();
       expect(source.value(title).valueOrNull, const StringValue("Old"));
+
       expect(calls, 0);
 
       final committed = source.beginInteraction(title);
@@ -542,6 +545,7 @@ void main() {
     source.update(title, const StringValue("New"));
     final flush = source.flush();
     source.acceptRemoteDeletion();
+
     pending.complete(
       TypedMutationResult.success(
         revision: 2,
@@ -567,6 +571,7 @@ void main() {
     )..addListener(() => notifications++);
     source.update(title, const StringValue("New"));
     final flush = source.flush();
+
     final notificationsAtDispose = notifications;
 
     source.dispose();

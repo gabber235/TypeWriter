@@ -24,6 +24,7 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
     try {
       _lifecycle = _client.connectionStateChanges.listen(_onLifecycle);
       _onLifecycle(_client.connectionState);
+
       _subscription = await _client.subscribe(
         _address.event("library.authoring.changed"),
       );
@@ -35,6 +36,7 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
         await _compiledSubscription?.unsubscribe();
         return;
       }
+
       _messages = _subscription?.messages.listen(
         _onMessage,
         onError: (Object _, StackTrace _) => _scheduleRefresh(),
@@ -131,9 +133,11 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
 
   void _drainBuffer() {
     if (state.sequence == null) return;
+
     _buffer.sort((left, right) => left.sequence.compareTo(right.sequence));
     final buffered = List<wire.AuthoringChanged>.of(_buffer);
     _buffer.clear();
+
     for (var index = 0; index < buffered.length; index++) {
       final change = buffered[index];
       if (change.sequence <= state.sequence!) continue;
@@ -153,6 +157,7 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
         .map((resource) => resource.value)
         .where((pageId) => _scopeCounts.containsKey(_PageScope(pageId)))
         .toSet();
+
     if (pages.isNotEmpty) _scheduleRefresh();
   }
 
@@ -164,6 +169,7 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
     final tags = Map<skir.RecordId, wire.Tag>.of(state.tags);
     final pages = Map<skir.RecordId, wire.Page>.of(state.pages);
     final documents = Map<skir.RecordId, wire.PageDocument>.of(state.documents);
+
     for (final change in changes) {
       switch (change) {
         case wire.AuthoringResourceChange_upsertBookWrapper(:final value):
@@ -198,6 +204,7 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
           throw ApiException.unknownResponseMessage();
       }
     }
+
     state = AuthoringSessionState(
       sequence: sequence ?? state.sequence,
       books: Map.unmodifiable(books),

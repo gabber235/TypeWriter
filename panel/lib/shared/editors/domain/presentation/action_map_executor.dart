@@ -20,6 +20,7 @@ extension PutMapEntryActionExecution on PutMapEntryAction {
     if (resolved.type is! MapType || resolved.value is! MapValue) {
       return invalidLocalMutation("Put target must be a map");
     }
+
     final mapType = resolved.type as MapType;
     final evaluatedKey = key.evaluate(
       context,
@@ -47,7 +48,9 @@ extension PutMapEntryActionExecution on PutMapEntryAction {
         registry: registry,
       ),
     ];
+
     if (diagnostics.isNotEmpty) return LocalMutationInvalid(diagnostics);
+
     final entries = List<DataMapEntry>.of((resolved.value as MapValue).entries);
     final entryIndex = entries.indexWhere(
       (entry) => entry.key == evaluatedKey.valueOrNull!,
@@ -85,19 +88,24 @@ extension RemoveMapEntryActionExecution on RemoveMapEntryAction {
     if (resolved.type is! MapType || resolved.value is! MapValue) {
       return invalidLocalMutation("Remove target must be a map");
     }
+
     final evaluatedKey = key.evaluate(
       context,
       registry: registry,
       budget: budget,
     );
+
     if (evaluatedKey case TypeFailure(:final diagnostics)) {
       return LocalMutationInvalid(diagnostics);
     }
+
     final entries = List<DataMapEntry>.of((resolved.value as MapValue).entries);
     final index = entries.indexWhere(
       (entry) => entry.key == evaluatedKey.valueOrNull!,
     );
+
     if (index < 0) return invalidLocalMutation("Map key is absent");
+
     entries.removeAt(index);
     return target.replaceValue(
       resolved.type,
@@ -127,6 +135,7 @@ extension ReplaceConcreteTypeActionExecution on ReplaceConcreteTypeAction {
     if (!resolved.writable) {
       return invalidLocalMutation("Binding is read only");
     }
+
     final concrete = registry.resolve(NamedType(concreteType));
     if (concrete case TypeFailure(:final diagnostics)) {
       return LocalMutationInvalid(diagnostics);
@@ -143,6 +152,7 @@ extension ReplaceConcreteTypeActionExecution on ReplaceConcreteTypeAction {
       concrete.valueOrNull!.representation,
       registry: registry,
     );
+
     if (diagnostics.isNotEmpty) return LocalMutationInvalid(diagnostics);
     return target.replaceValue(
       resolved.type,

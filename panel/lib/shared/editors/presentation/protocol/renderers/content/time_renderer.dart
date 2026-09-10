@@ -8,6 +8,7 @@ extension DateTimeElementRendering on DateTimeElement {
     if (diagnostics.isNotEmpty) {
       return presentationDiagnostic(context, diagnostics);
     }
+
     final sourceValue = source.valueOrNull;
     if (sourceValue is! TimestampValue) {
       return presentationDiagnostic(context, [
@@ -17,6 +18,7 @@ extension DateTimeElementRendering on DateTimeElement {
         ),
       ]);
     }
+
     final formatValue = resolvedFormat.valueOrNull;
     if (formatValue is! StringValue) {
       return presentationDiagnostic(context, [
@@ -26,7 +28,9 @@ extension DateTimeElementRendering on DateTimeElement {
         ),
       ]);
     }
+
     final timestamp = sourceValue.value;
+
     final pattern = formatValue.value;
     if (dateTimePatternError(pattern) case final error?) {
       return presentationDiagnostic(context, [
@@ -84,7 +88,9 @@ class _RelativeTimeContent extends HookWidget {
         ),
       ]);
     }
+
     final value = sourceValue.value;
+
     final now = _now();
     final displayValue = element.timeZone == DateTimeZone.utc
         ? value.toUtc()
@@ -96,6 +102,7 @@ class _RelativeTimeContent extends HookWidget {
       value: displayValue,
       now: displayNow,
     );
+
     useRefreshAt(description.nextRefreshAt, now: _now);
     final label = element.style == RelativeTimeStyle.compact
         ? description.compact

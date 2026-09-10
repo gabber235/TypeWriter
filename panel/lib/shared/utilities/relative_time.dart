@@ -35,6 +35,7 @@ RelativeTimeDescription describeRelativeTime({
   final boundary = future
       ? value.subtract(unit.duration * amount)
       : value.add(unit.duration * (amount + 1));
+
   final nextThreshold = unit.nextThreshold;
   final threshold = future || nextThreshold == null
       ? null
@@ -57,6 +58,7 @@ _RelativeUnit _relativeUnit(Duration value) {
   if (value.inHours < 24) return _RelativeUnit.hour;
   if (value.inDays < 7) return _RelativeUnit.day;
   if (value.inDays < 30) return _RelativeUnit.week;
+
   if (value.inDays < 365) return _RelativeUnit.month;
   return _RelativeUnit.year;
 }

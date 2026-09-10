@@ -79,6 +79,7 @@ final class TestEditorSource extends ChangeNotifier implements EditorSource {
       return EditorMutationResult.invalid(diagnostics);
     }
     _value = replaced.valueOrNull!;
+
     notifyListeners();
     return validation;
   }

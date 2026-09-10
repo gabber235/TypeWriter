@@ -50,6 +50,7 @@ void main() {
         first: newResourceId(AuthoringResource.element),
         second: newResourceId(AuthoringResource.element),
       };
+
       await harness.container
           .read(authoringSessionProvider(_organization, _realm).notifier)
           .duplicateElements(copies);
@@ -149,6 +150,7 @@ void main() {
     final entryOwner = harness.container.listen(entry, (_, _) {});
     await harness.container.read(entry.future);
     harness.closePageElements();
+
     await pumpEventQueue();
     harness.pageExists = false;
 
@@ -199,6 +201,7 @@ void main() {
       );
       harness.closePageElements();
       await pumpEventQueue();
+
       final requestsBeforeInvalidation = source.requests.length;
 
       source.invalidate();
@@ -259,6 +262,7 @@ void main() {
     final entryOwner = harness.container.listen(entry, (_, _) {});
     await harness.container.read(entry.future);
     harness.closePageElements();
+
     await pumpEventQueue();
     final snapshot = Completer<Uint8List>();
     harness.nats.registerHandler(_snapshotSubject, (_) => snapshot.future);
@@ -314,6 +318,7 @@ void main() {
     final entryOwner = harness.container.listen(entry, (_, _) {});
     await harness.container.read(entry.future);
     harness.closePageElements();
+
     await pumpEventQueue();
     final snapshot = Completer<Uint8List>();
     harness.nats.registerHandler(_snapshotSubject, (_) => snapshot.future);
@@ -346,6 +351,7 @@ void main() {
     harness.catalogStates.add(const RealmEditorCatalogState.loading());
     await Future<void>.delayed(const Duration(milliseconds: 10));
     snapshot.complete(harness._snapshot());
+
     await Future<void>.delayed(const Duration(milliseconds: 10));
     expect(
       harness.nats.requests.where(
@@ -378,6 +384,7 @@ void main() {
     final entryOwner = harness.container.listen(entry, (_, _) {});
     await harness.container.read(entry.future);
     harness.closePageElements();
+
     await pumpEventQueue();
     harness.title = "Fresh";
     wire.ApplyAuthoringBatchRequest? submitted;

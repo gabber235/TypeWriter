@@ -37,6 +37,7 @@ final class _HierarchySequenceRendererState
       final pending = _pendingDiagnostics;
       _pendingDiagnostics = null;
       if (!mounted || pending == null) return;
+
       if (listEquals(_geometryDiagnostics, pending)) return;
       setState(() => _geometryDiagnostics = pending);
     });
@@ -94,6 +95,7 @@ _ResolvedHierarchyLayout _resolveHierarchyLayout(
     scope,
     "hierarchy leading spacing",
   );
+
   final flatten = _evaluateBoolean(layout.flattenSingleItem, scope, true);
   diagnostics.addAll([
     ...itemSpacing.diagnostics,
@@ -101,6 +103,7 @@ _ResolvedHierarchyLayout _resolveHierarchyLayout(
     ...leadingSpacing.diagnostics,
     ...flatten.diagnostics,
   ]);
+
   final anchorOffsets = <double?>[];
   final anchorKind = switch (layout.itemAnchor) {
     StartConnectorAnchor() => _HierarchyAnchorKind.start,
@@ -121,6 +124,7 @@ _ResolvedHierarchyLayout _resolveHierarchyLayout(
   if (anchorKind != _HierarchyAnchorKind.offset) {
     anchorOffsets.addAll(List<double?>.filled(itemScopes.length, null));
   }
+
   final unaryScope = itemScopes.firstOrNull ?? scope;
   final unary = _resolveConnectorStyle(
     layout.unaryConnector,

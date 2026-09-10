@@ -18,6 +18,7 @@ Future<void> _changePagesChapter(
       .toList();
   if (changed.isEmpty || !ref.context.mounted) return;
   final result = await ref.editPagesChapter(changed, chapter, newChapter);
+
   result.requireApplied(
     conflictMessage: "A page changed while chapters were moving",
   );
@@ -199,6 +200,7 @@ Future<bool> showPageDeletionDialogue(
       final context = ref.context;
       if (!context.mounted) return;
       final organizationId = ref.read(organizationIdProvider);
+
       final bookId = ref.read(bookIdProvider);
       final realmId = ref.read(realmIdProvider);
       if (organizationId != null && bookId != null && realmId != null) {

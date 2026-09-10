@@ -32,17 +32,20 @@ void main() {
       final journal = workspace;
 
       addTearDown(workspace.dispose);
+
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(1280, 800);
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       await tester.binding.setSurfaceSize(const Size(1280, 800));
       addTearDown(() => tester.binding.setSurfaceSize(null));
+
       await tester.pumpTestApp(
         child: Scaffold(
           appBar: AppBar(actions: [MutationActivityView(workspace: workspace)]),
         ),
       );
+
       expect(find.text("Saved"), findsNothing);
       Future<void> save(int id) async {
         final submission = MutationSubmission<int>(
@@ -57,6 +60,7 @@ void main() {
       await save(1);
       await tester.pumpAndSettle();
       expect(find.text("Saved"), findsOneWidget);
+
       final button = tester.widget<TextButton>(
         find.widgetWithText(TextButton, "Saved"),
       );
@@ -65,21 +69,25 @@ void main() {
         button.style!.foregroundColor!.resolve({}),
         context.colors.success,
       );
+
       await tester.tap(find.text("Saved"));
       await tester.pumpAndSettle();
       expect(find.text("Save activity"), findsOneWidget);
       await tester.pump(const Duration(seconds: 5));
       expect(journal.submissions, hasLength(1));
       await tester.pump(const Duration(seconds: 5));
+
       await tester.pumpAndSettle();
       expect(journal.submissions, isEmpty);
       expect(find.text("Saved"), findsNothing);
       expect(find.text("All saved"), findsNothing);
       expect(find.text("No pending changes"), findsOneWidget);
+
       await tester.tap(find.byTooltip("Close"));
       await tester.pumpAndSettle();
       expect(find.text("Save activity"), findsNothing);
       expect(tester.takeException(), isNull);
+
       await save(2);
       await tester.pumpAndSettle();
       expect(find.text("Saved"), findsOneWidget);
@@ -98,6 +106,7 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         await tester.binding.setSurfaceSize(Size(mobile ? 390 : 1280, 800));
         addTearDown(() => tester.binding.setSurfaceSize(null));
+
         final workspace = LocalWork();
         final journal = workspace;
 
@@ -123,6 +132,7 @@ void main() {
         } else {
           await tester.tap(find.text("Needs attention"));
         }
+
         await tester.pumpAndSettle();
         expect(find.text("Save activity"), findsOneWidget);
         expect(
@@ -143,9 +153,11 @@ void main() {
           await tester.pump(const Duration(seconds: 1));
           await tester.pump();
           expect(tester.takeException(), isNull);
+
           await mouse.removePointer();
           await tester.pumpAndSettle();
         }
+
         if (screenshotDirectory.isNotEmpty) {
           await tester.captureScreenshot(
             mobile ? "save-activity-mobile" : "save-activity-desktop",
@@ -186,6 +198,7 @@ void main() {
       addTearDown(failed.dispose);
       addTearDown(saving.dispose);
       await failed.run();
+
       final operation = saving.run();
       expect(
         MutationActivityPhase.resolve([failed, saving], const []),
@@ -221,6 +234,7 @@ void main() {
       journal
         ..track(confirmed)
         ..track(uncertain);
+
       await tester.pump(savedFeedbackDuration);
       expect(journal.submissions, [uncertain]);
       journal.dismiss(uncertain.id);

@@ -38,6 +38,7 @@ void main() {
       addTearDown(second.dispose);
       first.update(_title, const StringValue("Draft"));
       final response = Completer<void>();
+
       final batch = EditorBatch.submit(
         changes: {
           first: {_position: IntegerValue(BigInt.one)},
@@ -61,6 +62,7 @@ void main() {
       await batch;
       expect(first.document.confirmedValue, _value("Original", 1));
       expect(first.value(DataPath.root).valueOrNull, _value("Draft", 3));
+
       expect(second.hasWork, isFalse);
     },
   );
@@ -102,6 +104,7 @@ void main() {
         };
       },
     );
+
     expect(first.saveState(DataPath.root).phase, EditorSavePhase.uncertain);
     expect(second.saveState(DataPath.root).phase, EditorSavePhase.uncertain);
     await first.flush();
@@ -132,6 +135,7 @@ void main() {
         };
       },
     );
+
     expect(first.hasWork, isTrue);
     expect(second.hasWork, isTrue);
     await first.flush();
@@ -147,6 +151,7 @@ void main() {
     source.update(_title, const StringValue("Earlier"));
     final later = source.beginInteraction(_title);
     source.update(_title, const StringValue("Later"));
+
     await later.commit();
     earlier.cancel();
     expect(source.value(_title).valueOrNull, const StringValue("Later"));

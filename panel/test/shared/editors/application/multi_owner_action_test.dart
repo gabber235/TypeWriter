@@ -36,6 +36,7 @@ void main() {
             TypedMutationResult.success(revision: 2, value: commit.rootValue),
       );
       final first = resource("Oak");
+
       final second = resource("Pine", guarded: true);
       final group = MultiEditOwner(
         owners: [first, second],
@@ -57,6 +58,7 @@ void main() {
       addTearDown(first.dispose);
       addTearDown(second.dispose);
       addTearDown(group.dispose);
+
       addTearDown(session.dispose);
       EditorMutationResult append() => session.executeLocal(
         LocalEditorAction(
@@ -78,6 +80,7 @@ void main() {
         const ListValue([StringValue("Pine")]),
       );
       reject = false;
+
       expect(append(), isA<AppliedEditorMutation>());
       expect(
         first.value(path).valueOrNull,

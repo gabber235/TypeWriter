@@ -47,6 +47,7 @@ void main() {
     expect(section.title, "Recent");
     expect(restored.result.id, "Beta");
     expect(restoredPayload.selectedValue, const StringValue("Beta"));
+
     expect(
       restoredPayload.expressions.bindings.bindings[_resultBindingId]?.value,
       const StringValue("Beta"),
@@ -60,6 +61,7 @@ void main() {
     first.source.initialize();
     first.source.search(_emptyQuery);
     await _settle();
+
     final selected = first.snapshots.last.nodes
         .walk()
         .whereType<SearchResultNode>()

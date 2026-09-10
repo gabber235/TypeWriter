@@ -53,6 +53,7 @@ void main() {
         });
     await _waitForState(states, RealmConnectionState.online);
     connected = false;
+
     container.invalidate(provider);
     await _waitForState(states, RealmConnectionState.offline);
     expect(container.read(realmInteractionProvider).suspended, isTrue);
@@ -184,6 +185,7 @@ void main() {
     ) {
       if (next.hasValue) states.add(next.requireValue);
     }, fireImmediately: true);
+
     addTearDown(subscription.close);
 
     await _waitForState(states, RealmConnectionState.offline);

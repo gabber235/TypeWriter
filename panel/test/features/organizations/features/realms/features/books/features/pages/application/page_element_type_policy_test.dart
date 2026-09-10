@@ -17,6 +17,7 @@ void main() {
       concreteRoots: {_type("SequenceEntry")},
     );
     final container = _container(source);
+
     addTearDown(container.dispose);
 
     final subscription = container.listen(
@@ -32,6 +33,7 @@ void main() {
     expect(types, containsAll([_type("SequenceEntry"), direct, indirect]));
     expect(types, isNot(contains(abstract)));
     expect(types, isNot(contains(unrelated)));
+
     expect(source.requestedTarget, _type("SequenceEntry"));
   });
 

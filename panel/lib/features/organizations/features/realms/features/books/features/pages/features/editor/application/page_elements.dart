@@ -153,6 +153,7 @@ class PageElements extends _$PageElements
       realmId,
     );
     var scopeReady = false;
+
     final initial = Completer<List<PageElement>>();
     void applyDocuments(AsyncValue<Map<String, List<PageElement>>> documents) {
       if (!scopeReady) return;
@@ -190,6 +191,7 @@ class PageElements extends _$PageElements
     workspace.addListener(refreshDrafts);
     ref.onDispose(() => workspace.removeListener(refreshDrafts));
     await lease.ready;
+
     if (!ref.mounted) return initial.future;
     scopeReady = true;
     applyDocuments(ref.read(documentsProvider));

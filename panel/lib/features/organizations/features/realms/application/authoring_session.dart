@@ -44,6 +44,7 @@ class AuthoringSession extends _$AuthoringSession
       organizationId: organizationId,
       realmId: realmId,
     );
+
     ref.onDispose(_dispose);
     _startOperation = _start();
     return const AuthoringSessionState();

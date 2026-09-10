@@ -13,6 +13,7 @@ extension ResolvedTypeRefInference on ResolvedTypeRef {
       return _failure("Generic inference requires an unapplied type reference");
     }
     final inferred = <String, TypeExpression>{};
+
     definition.representation._tryInfer(evidence, inferred, registry);
     for (final parent in definition.parents) {
       NamedType(parent)._tryInfer(evidence, inferred, registry);
@@ -50,6 +51,7 @@ extension on TypeDefinition {
         final before = inferred.length;
         final bound = parameter.bound.substitute(inferred);
         if (!bound._tryInfer(evidence, inferred, registry)) continue;
+
         inferred[parameter.name] = evidence;
         changed = changed || inferred.length > before;
       }
@@ -113,6 +115,7 @@ extension on TypeExpression {
       }
       return true;
     }
+
     if (pattern is NamedType && evidence is NamedType) {
       return pattern.reference._inferNamed(
         evidence.reference,
@@ -120,6 +123,7 @@ extension on TypeExpression {
         registry,
       );
     }
+
     return typeExpressionsEqual(pattern, evidence);
   }
 }
@@ -150,6 +154,7 @@ extension on ResolvedTypeRef {
           break;
         }
       }
+
       if (!matches) continue;
       inferred
         ..clear()

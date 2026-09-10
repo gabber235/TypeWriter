@@ -82,16 +82,20 @@ final class RealmPresentationSearchSource implements SearchSource {
       registry: registry,
       budget: budget,
     );
+
     final diagnostics = [
       ...payload.diagnostics,
       if (payload.valueOrNull case final value?)
         ...value.validateAgainst(payloadType, registry: registry),
     ];
+
     if (diagnostics.isNotEmpty) {
       _snapshots.add(_error(diagnostics));
       return;
     }
+
     final subscriptionId = "$providerKey:$_sourceId:$revision";
+
     _snapshots.add(SearchSourceSnapshot.loading());
     _subscription =
         transport(
@@ -174,6 +178,7 @@ final class RealmPresentationSearchSource implements SearchSource {
         nodes.add(SearchNode.result(result: mapped));
       }
     }
+
     final errors = _summaries(diagnostics);
     return SearchSourceSnapshot(
       status: update.status,
@@ -218,6 +223,7 @@ final class RealmPresentationSearchSource implements SearchSource {
     _disposed = true;
     _revision++;
     unawaited(_subscription?.cancel());
+
     _subscription = null;
     unawaited(_snapshots.close());
   }

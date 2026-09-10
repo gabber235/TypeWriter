@@ -49,6 +49,7 @@ TypeResult<_ResolvedTextPresentation> _resolveTextPresentation(
     scope,
     name: "Letter spacing",
   );
+
   final decoration = _resolveTextDecoration(element.decoration, scope);
   final semanticLabel = _resolveTextString(
     element.semanticLabel,
@@ -125,6 +126,7 @@ TypeResult<List<FontVariation>?> _resolveTextFontVariations(
     ...slant.diagnostics,
     ...width.diagnostics,
   ];
+
   if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
 
   final variations = <FontVariation>[
@@ -202,15 +204,19 @@ TypeResult<double?> _resolveTextNumber(
   if (minimum != null && value < minimum) {
     return _invalidTextStyle("$name must be at least $minimum");
   }
+
   if (maximum != null && value > maximum) {
     return _invalidTextStyle("$name must be at most $maximum");
   }
+
   if (minimumExclusive != null && value <= minimumExclusive) {
     return _invalidTextStyle("$name must be greater than $minimumExclusive");
   }
+
   if (maximumExclusive != null && value >= maximumExclusive) {
     return _invalidTextStyle("$name must be less than $maximumExclusive");
   }
+
   return TypeResult.success(value);
 }
 

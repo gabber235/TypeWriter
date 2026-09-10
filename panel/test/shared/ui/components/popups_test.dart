@@ -57,6 +57,7 @@ void main() {
       isTrue,
     );
     await _invokePrimaryAction(tester);
+
     await tester.pumpAndSettle();
 
     expect(confirmations, 1);

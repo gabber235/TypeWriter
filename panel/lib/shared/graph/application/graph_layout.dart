@@ -142,7 +142,9 @@ class GraphLayoutEngine {
       final resize = preview.resize?.id == element.id ? preview.resize : null;
       final x = element.x + (isMoving ? moveX : 0);
       final y = element.y + (isMoving ? moveY : 0);
+
       final width = resize?.width ?? element.width;
+
       final height = resize?.height ?? element.height;
       placements[element.id] = GraphPlacedElement(
         element: element,

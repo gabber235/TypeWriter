@@ -17,6 +17,7 @@ class _PreviewData extends StatelessWidget {
         description is String &&
         description.isNotEmpty &&
         (subtitle == null || subtitle!.isEmpty);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,

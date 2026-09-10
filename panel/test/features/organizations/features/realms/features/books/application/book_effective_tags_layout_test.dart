@@ -39,6 +39,7 @@ void main() {
       final inheritedContainer = tester.getSize(
         find.byKey(const ValueKey("book.effectiveTags.leaf.container")),
       );
+
       expect(directContainer.width, greaterThan(300));
       expect(inheritedContainer.width, directContainer.width);
       expect(directContainer.width, lessThanOrEqualTo(400));
@@ -92,6 +93,7 @@ void main() {
     final hierarchyLayouts = find.byWidgetPredicate(
       (widget) => widget.runtimeType.toString() == "_HierarchyRenderSurface",
     );
+
     final strokes = [
       for (final element in hierarchyLayouts.evaluate())
         (element.renderObject as dynamic).debugStrokes,
@@ -120,6 +122,7 @@ void main() {
     final firstLeaf = _tag("tag:firstLeaf", name: "First leaf");
     final secondLeaf = _tag("tag:secondLeaf", name: "Second leaf");
     late StateSetter rebuild;
+
     var revision = firstRoot.authoringSequence;
 
     await tester.pumpTestApp(

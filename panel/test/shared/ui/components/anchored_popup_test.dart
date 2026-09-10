@@ -44,12 +44,14 @@ void main() {
       trigger.requestFocus();
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+
       await tester.pumpAndSettle();
       expect(find.text("Close popup"), findsOneWidget);
       expect(trigger.hasFocus, isFalse);
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
       expect(trigger.hasFocus, isFalse);
+
       switch (dismissal) {
         case "button":
           await tester.tap(find.text("Close popup"));
@@ -90,6 +92,7 @@ void main() {
     await tester.tap(find.text("Open"));
     await tester.pumpAndSettle();
     visible.value = false;
+
     await tester.pumpAndSettle();
     expect(find.text("Popup"), findsNothing);
     expect(find.text("Removed"), findsOneWidget);
@@ -116,6 +119,7 @@ void main() {
     await tester.tap(find.text("Organization"));
     await tester.pumpAndSettle();
     expect(find.text("Organization"), findsNothing);
+
     expect(find.text("Choose organization"), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

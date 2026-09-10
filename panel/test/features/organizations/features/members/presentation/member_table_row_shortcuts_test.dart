@@ -14,6 +14,7 @@ void main() {
     var selectAll = 0;
     var clears = 0;
     var removedFromSelection = 0;
+
     var removedSelection = 0;
     final member = OrganizationMember(
       userId: recordId("user:member"),

@@ -54,10 +54,12 @@ final class TypeRegistry {
         declaration,
       );
     }
+
     final declarationDiagnostics = _declarationDiagnostics[declaration];
     if (declarationDiagnostics != null && declarationDiagnostics.isNotEmpty) {
       return TypeResult.failure(declarationDiagnostics);
     }
+
     final definition = _definitions[declaration];
     if (definition == null) {
       return _failure(
@@ -80,6 +82,7 @@ final class TypeRegistry {
         declaration,
       );
     }
+
     final varianceDiagnostics = definition.validateVarianceUse();
     if (varianceDiagnostics.isNotEmpty) {
       return TypeResult.failure(varianceDiagnostics);
@@ -103,6 +106,7 @@ final class TypeRegistry {
     var effective = declaredRepresentation;
     final ancestors = <ResolvedTypeRef>{};
     final directParents = <ResolvedTypeRef>{};
+
     final nextStack = [...inheritanceStack, declaration];
     for (final parent in definition.parents) {
       final appliedParent = parent.substitute(substitutions);
@@ -115,11 +119,13 @@ final class TypeRegistry {
         appliedParent,
         ...parentValue.ancestors,
       });
+
       if (ownership.isNotEmpty) return TypeResult.failure(ownership);
       final weakening = _findWeakening(
         parentValue.representation,
         declaredRepresentation,
       );
+
       if (weakening.isNotEmpty) return TypeResult.failure(weakening);
       final merged = parentValue.representation.safelyRefineWith(
         effective,
@@ -140,7 +146,9 @@ final class TypeRegistry {
               .toList(),
         );
       }
+
       effective = merged.valueOrNull!;
+
       directParents.add(appliedParent);
       ancestors
         ..add(appliedParent)
@@ -153,7 +161,9 @@ final class TypeRegistry {
       ancestors: ancestors,
       directParents: directParents,
     );
+
     _cache[reference] = result;
+
     final resolvedDiagnostics = effective.validateResolvedValues(this);
     if (resolvedDiagnostics.isNotEmpty) {
       _cache.remove(reference);

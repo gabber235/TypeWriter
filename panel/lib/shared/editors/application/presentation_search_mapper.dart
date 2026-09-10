@@ -43,14 +43,17 @@ final class PresentationSearchMapper {
       registry: registry,
       budget: budget,
     );
+
     if (label case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);
     }
+
     final title = switch (label?.valueOrNull) {
       StringValue(:final value) when value.trim().isNotEmpty => value,
       null => "Search result",
       _ => null,
     };
+
     if (title == null) {
       return TypeResult.failure([
         const TypeDiagnostic(
@@ -59,6 +62,7 @@ final class PresentationSearchMapper {
         ),
       ]);
     }
+
     final id = key.valueOrNull!.expressionDisplayText;
     if (id.isEmpty) {
       return TypeResult.failure([

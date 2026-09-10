@@ -56,6 +56,7 @@ TypewriterColors buildTypewriterColors(Brightness brightness) {
   final info = _family(_infoColor, brightness, neutral.surface);
   final success = _family(_successColor, brightness, neutral.surface);
   final warning = _family(_warningColor, brightness, neutral.surface);
+
   final danger = _family(_dangerColor, brightness, neutral.surface);
 
   return TypewriterColors(

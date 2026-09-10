@@ -49,6 +49,7 @@ extension SkirPresentationLayoutDecoder on SkirPresentationDecoder {
     final itemSpacing = expressions.decode(value.itemSpacing);
     final indentation = expressions.decode(value.indentation);
     final leadingSpacing = expressions.decode(value.leadingSpacing);
+
     final anchor = _connectorAnchor(value.itemAnchor);
     final flatten = expressions.decode(value.flattenSingleItem);
     final alignment = value.crossAxisAlignment._decodeCrossAxisAlignment;
@@ -248,6 +249,7 @@ extension SkirPresentationLayoutDecoder on SkirPresentationDecoder {
       ...end.diagnostics,
       ...bottom.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             PresentationBorder.sides(

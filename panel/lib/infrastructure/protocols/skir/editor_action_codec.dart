@@ -71,6 +71,7 @@ final class SkirActionDecoder {
       for (final value in values)
         value.decodeWire(SkirDataPathCodec(this.values)),
     ];
+
     return decoded.isEmpty
         ? invalidWire("Mutation diagnostics are empty")
         : TypeResult.success(decoded);

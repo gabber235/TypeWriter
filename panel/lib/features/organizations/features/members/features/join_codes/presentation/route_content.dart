@@ -18,6 +18,7 @@ class JoinCodesTab extends HookConsumerWidget {
     final selectedCodes = useState<Set<skir.RecordId>>({});
     final joinCodeOptions = useState(const JoinCodeOptions());
     final liveCodes = useRef<List<OrganizationJoinCode>>([]);
+
     final isRevokingSelection = useRef(false);
 
     useEffect(() {

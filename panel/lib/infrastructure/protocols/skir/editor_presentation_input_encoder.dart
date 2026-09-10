@@ -16,6 +16,7 @@ extension SkirPresentationInputEncoder on SkirPresentationEncoder {
       ...prefix.diagnostics,
       ...semanticLabel.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.BoundControl(

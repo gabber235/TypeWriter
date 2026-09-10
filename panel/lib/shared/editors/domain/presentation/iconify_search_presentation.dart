@@ -25,6 +25,7 @@ PresentationNode iconifySearchPresentation() {
       .regexCapture(r"^([^:]+):.+$", group: 1)
       .replaceLiteral("-", " ")
       .titleCase();
+
   final resultPresentation = _iconResult(icon, name, collection);
   final mapping = SearchResultMapping(
     bindingId: _resultBindingId,

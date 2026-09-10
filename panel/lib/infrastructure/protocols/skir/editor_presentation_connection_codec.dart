@@ -46,6 +46,7 @@ extension SkirPresentationConnectionDecoder on SkirPresentationDecoder {
     final style = _connectorStyle(value.style);
     final markers = _markers(value.markers);
     final visible = _optionalExpression(value.visibleIf);
+
     final diagnostics = [
       ...source.diagnostics,
       ...target.diagnostics,
@@ -77,6 +78,7 @@ extension SkirPresentationConnectionDecoder on SkirPresentationDecoder {
     final trunk = _connectorStyle(value.trunkStyle);
     final branch = _connectorStyle(value.branchStyle);
     final trunkMarkers = _markers(value.trunkMarkers);
+
     final branchMarkers = _markers(value.branchMarkers);
     final visible = _optionalExpression(value.visibleIf);
     final diagnostics = [

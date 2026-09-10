@@ -81,12 +81,14 @@ void main() {
       expect(find.text("Fallback configuration"), findsNothing);
       expect(find.byType(EditorCommitControls), findsOneWidget);
       owner.update(DataPath.root, const StringValue("changed"));
+
       await tester.pumpAndSettle();
       await tester.tap(find.text("Apply"));
       await tester.pumpAndSettle();
       expect(values, [const StringValue("changed")]);
       owner.update(DataPath.root, const StringValue("discard"));
       await tester.pumpAndSettle();
+
       await tester.tap(find.text("Cancel"));
       await tester.pumpAndSettle();
       expect(owner.hasWork, isFalse);
@@ -178,6 +180,7 @@ void main() {
       await tester.tap(find.text("Second"));
       await tester.pumpAndSettle();
       expect(find.text("Fallback configuration"), findsNothing);
+
       await tester.tap(find.text("First"));
       await tester.pumpAndSettle();
       expect(find.text("Fallback configuration"), findsOneWidget);
@@ -195,6 +198,7 @@ void main() {
       );
       expect(find.text("Fallback configuration"), findsOneWidget);
       await tester.tap(find.text("Configuration"));
+
       await tester.pumpAndSettle();
       expect(find.text("Fallback configuration"), findsNothing);
     },

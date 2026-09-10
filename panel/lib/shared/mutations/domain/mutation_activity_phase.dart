@@ -43,11 +43,14 @@ enum MutationActivityPhase {
           }.contains,
         );
     if (attention) return saving ? savingWithAttention : needsAttention;
+
     if (saving) return MutationActivityPhase.saving;
     if (drafts.any((entry) => entry.source.draftDiagnostics.isNotEmpty)) {
       return needsInput;
     }
+
     if (drafts.isNotEmpty) return MutationActivityPhase.drafts;
+
     if (submissions.any((entry) => entry.result == null)) return pending;
     return submissions.isEmpty ? idle : saved;
   }

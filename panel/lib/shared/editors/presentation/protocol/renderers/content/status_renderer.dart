@@ -42,6 +42,7 @@ extension StatusElementRendering on StatusElement {
         break;
       }
     }
+
     appearance ??= fallback ?? const StatusAppearance(tone: StatusTone.unknown);
     if (appearance.label == null) {
       return TypeResult.success(
@@ -51,6 +52,7 @@ extension StatusElementRendering on StatusElement {
         ),
       );
     }
+
     final label = scope.evaluate(appearance.label!);
     if (label case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);

@@ -41,6 +41,7 @@ CompleteTopologyScenario completeTopologyScenario() {
     entrypoint: "STANDALONE",
     status: TopologyHostStatus.active,
   );
+
   final paperRollback = _host(
     id: "paper-rollback",
     entrypoint: "PAPER",

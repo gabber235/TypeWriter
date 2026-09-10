@@ -123,6 +123,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final snapshot = readySnapshot(nodes: [resultNode("alpha")]);
 
       inner.emitSnapshot(snapshot);
@@ -137,6 +138,7 @@ void main() {
       final selectors = <List<QuerySelectorDefinition>>[];
       final subscription = source.selectors.listen(selectors.add);
       addTearDown(subscription.cancel);
+
       const emitted = [KeyValueSelectorDefinition(id: "tag", key: "#")];
 
       inner.emitSelectors(emitted);

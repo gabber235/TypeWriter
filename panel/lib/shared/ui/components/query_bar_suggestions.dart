@@ -19,6 +19,7 @@ Widget _buildSuggestionPanel({
         horizontal: context.spacing.space1,
         vertical: context.spacing.space1,
       );
+
   final elevation = menuStyle.elevation?.resolve(states) ?? 1;
   final backgroundColor =
       menuStyle.backgroundColor?.resolve(states) ?? theme.colorScheme.surface;

@@ -15,6 +15,7 @@ void main() {
       final workspace = LocalWork();
 
       addTearDown(workspace.dispose);
+
       final identity = ServiceIdentifier(
         skir.RecordId(
           table: "service",
@@ -40,6 +41,7 @@ void main() {
       );
       workspace.retain(key);
       owner.update(DataPath.root, const StringValue("draft"));
+
       final resource = workspace.resources[key]!
         ..destination = InspectorDestination(
           container: container,
@@ -48,18 +50,22 @@ void main() {
           identity: identity,
         );
       container.read(selectionProvider.notifier).selectAll([identity]);
+
       await tester.pumpTestApp(
         child: Scaffold(
           appBar: AppBar(actions: [MutationActivityView(workspace: workspace)]),
         ),
       );
+
       await tester.tap(find.text("1 draft"));
       await tester.pumpAndSettle();
       expect(find.text("Return to draft"), findsNothing);
       expect(find.text("Review draft"), findsNothing);
+
       container.read(selectionProvider.notifier).clear();
       await tester.pumpAndSettle();
       expect(find.text("Return to draft"), findsOneWidget);
+
       await tester.tap(find.text("Return to draft"));
       await tester.pumpAndSettle();
       expect(container.read(selectionProvider), [identity]);
@@ -68,18 +74,23 @@ void main() {
         owner.value(DataPath.root).valueOrNull,
         const StringValue("draft"),
       );
+
       await tester.tap(find.text("1 draft"));
       await tester.pumpAndSettle();
       expect(find.text("Return to draft"), findsNothing);
+
       await tester.tap(find.byTooltip("Close"));
       await tester.pumpAndSettle();
       resource.destination = null;
+
       await tester.tap(find.text("1 draft"));
       await tester.pumpAndSettle();
       expect(find.text("Review draft"), findsOneWidget);
+
       await tester.tap(find.text("Discard"));
       await tester.pumpAndSettle();
       expect(find.text("No pending changes"), findsOneWidget);
+
       await tester.tap(find.byTooltip("Close"));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);

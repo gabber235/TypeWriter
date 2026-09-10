@@ -35,6 +35,7 @@ void main() {
       expect(merged.headerPadding, const PresentationInsets.only(top: 3));
       expect(merged.contentPadding, const PresentationInsets.only(left: 6));
       final item = merged.items.single as HeaderButtonItem;
+
       expect(item.label, "outer".asStringLiteral);
       expect(item.placement, HeaderActionPlacement.afterTitle);
     });

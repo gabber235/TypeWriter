@@ -10,6 +10,7 @@ void _testResourceConnections() {
       final repositories = harness.container.read(resourceRepositoriesProvider);
       final owners = EditorOwnerRegistry(workspace: workspace);
       addTearDown(owners.dispose);
+
       final model = harness.selectable.buildPresentation(owners);
       final source =
           (model.inputs[const BindingId(2)]! as PresentationEditInput).owner

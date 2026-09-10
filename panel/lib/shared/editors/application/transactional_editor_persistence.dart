@@ -21,7 +21,9 @@ extension _EditorPersistence on TransactionalEditorSource {
     if (completion == EditorTaskCompletion.cancelled || _disposed || _deleted) {
       return;
     }
+
     final candidates = _states.autoFlushCandidates;
+
     if (candidates.isEmpty) return;
     await flush(paths: candidates);
   }
@@ -42,8 +44,10 @@ extension _EditorPersistence on TransactionalEditorSource {
 
   Future<TypedMutationResult> _persist(Set<DataPath> paths) async {
     if (resource != null) return _persistResource(paths);
+
     var attempt = 0;
     var activePaths = paths;
+
     try {
       while (true) {
         if (_disposed) return _unavailable("Editor is disposed");
@@ -54,6 +58,7 @@ extension _EditorPersistence on TransactionalEditorSource {
           final diagnostics = [
             _diagnostic("The resource is not ready to save"),
           ];
+
           _failPaths(activePaths, diagnostics);
           return TypedMutationResult.unavailable(diagnostics);
         }
@@ -61,19 +66,23 @@ extension _EditorPersistence on TransactionalEditorSource {
             _states.hasConflicts) {
           return _unavailable("Conflicting fields require a choice");
         }
+
         final diagnostics = _saveDiagnostics();
         if (diagnostics.isNotEmpty) {
           _failPaths(activePaths, diagnostics);
           return TypedMutationResult.invalid(diagnostics);
         }
+
         activePaths = _states.flushCandidates(
           commitPolicy == EditorCommitPolicy.applyResource ? null : activePaths,
         );
         if (activePaths.isEmpty) return _settledResult();
+
         final generation = _generation;
         final captured = captureCommit(activePaths);
         _states.markSaving(activePaths);
         _notify();
+
         final result = await _send(captured);
         if (_disposed || _deleted || generation != _generation) {
           return _unavailable("The commit result is stale");
@@ -83,6 +92,7 @@ extension _EditorPersistence on TransactionalEditorSource {
           return result;
         }
         acceptCommit(captured, result);
+
         if (result is! MutationConflict ||
             commitPolicy == EditorCommitPolicy.applyResource) {
           return result;
@@ -132,6 +142,7 @@ extension _EditorPersistence on TransactionalEditorSource {
     if (replay == null) return unresolved.result;
     final operation = Future<TypedMutationResult>.sync(replay);
     _activeCommit = operation;
+
     _notify();
     try {
       final result = await operation;
@@ -171,9 +182,13 @@ extension _EditorPersistence on TransactionalEditorSource {
       Duration(microseconds: base.inMicroseconds ~/ 2),
     );
     final task = _scheduler.schedule(base + jitter);
+
     _retryTask?.cancel();
+
     _retryTask = task;
+
     final completion = await task.completed;
+
     if (identical(_retryTask, task)) _retryTask = null;
     return completion == EditorTaskCompletion.executed &&
         !_disposed &&

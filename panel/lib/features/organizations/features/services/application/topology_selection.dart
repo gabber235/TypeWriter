@@ -23,6 +23,7 @@ class ServiceHostIdentifier extends SelectableIdentifier {
     final organization = ref.watch(organizationIdProvider);
     if (topologyState.mapUnready<Selectable>() case final state?) return state;
     if (servicesState.mapUnready<Selectable>() case final state?) return state;
+
     if (organization == null) {
       return AsyncError(ApiException.noOrganization(), StackTrace.current);
     }
@@ -108,6 +109,7 @@ class RealmInstanceIdentifier extends SelectableIdentifier {
         );
         final connected = connections[host?.serviceId] ?? false;
         final organization = service?.organization;
+
         final router = ref.watch(appRouterProvider);
         return _RealmInstanceSelectable(
           onOpen: host != null && connected && organization != null
@@ -191,6 +193,7 @@ AsyncValue<Selectable> _topologySelectable(
   if (!topology.hasValue || !services.hasValue) {
     return const AsyncLoading();
   }
+
   try {
     return AsyncData(
       create(topology.requireValue, services.requireValue, connections),

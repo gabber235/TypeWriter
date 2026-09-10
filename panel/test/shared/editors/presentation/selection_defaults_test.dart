@@ -167,6 +167,7 @@ void main() {
             ),
           ),
         );
+
         expect(
           owner.value(DataPath.root).valueOrNull,
           StringValue(readOnly ? "" : "two"),

@@ -39,6 +39,7 @@ void main() {
     final editable = tester.widget<EditableText>(
       find.descendant(of: textFieldFinder, matching: find.byType(EditableText)),
     );
+
     expect(editable.focusNode.hasPrimaryFocus, isTrue);
     expect(tester.testTextInput.isRegistered, isTrue);
     expect(textField.controller!.text, "Alpha");
@@ -112,6 +113,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pump();
+
     Actions.invoke(
       tester.element(find.byType(QueryBar)),
       const DismissIntent(),
@@ -137,6 +139,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+
     await tester.pump();
     await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
@@ -162,6 +165,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+
     await tester.pump();
 
     final selected = find.byWidgetPredicate(
@@ -197,6 +201,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.end);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+
     await tester.pumpAndSettle();
 
     expect(find.text("Theta"), findsOneWidget);
@@ -207,6 +212,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+
     await tester.pumpAndSettle();
 
     expect(find.text("Alpha"), findsOneWidget);

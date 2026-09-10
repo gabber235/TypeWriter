@@ -85,6 +85,7 @@ void main() {
     expect(FocusScope.of(tester.element(find.text("center"))).hasFocus, isTrue);
     await navigate(tester, context, AxisDirection.up);
     expect(FocusScope.of(tester.element(find.text("up"))).hasFocus, isTrue);
+
     await navigate(tester, context, AxisDirection.down);
     expect(FocusScope.of(tester.element(find.text("center"))).hasFocus, isTrue);
   });
@@ -256,6 +257,7 @@ void main() {
         ],
       ),
     );
+
     await tester.pump();
     final intent = const NavigatePaneIntent(AxisDirection.right);
     expect(
@@ -290,6 +292,7 @@ void main() {
     );
     showTarget.value = false;
     await tester.pump();
+
     await tester.pump();
     expect(
       Actions.find<NavigatePaneIntent>(
@@ -336,6 +339,7 @@ void main() {
       );
       await tester.pump();
       rememberedFocus.requestFocus();
+
       await tester.pump();
       Actions.invoke(
         context.currentContext!,
@@ -345,6 +349,7 @@ void main() {
       FocusScope.of(tester.element(find.text("target"))).requestFocus();
       await tester.pump();
       await navigate(tester, context, AxisDirection.left);
+
       expect(rememberedFocus.hasFocus, isTrue);
     },
   );
@@ -373,6 +378,7 @@ void main() {
     Focus.of(tester.element(find.text("middle"))).requestFocus();
     await tester.pump();
     FocusManager.instance.primaryFocus!.unfocus();
+
     await tester.pump();
     await navigate(tester, context, AxisDirection.right);
     expect(FocusScope.of(tester.element(find.text("right"))).hasFocus, isTrue);
@@ -565,6 +571,7 @@ void main() {
       context.currentContext!,
       const NavigatePaneIntent(AxisDirection.right),
     );
+
     show.value = false;
     await tester.pump();
     expect(tester.takeException(), isNull);
@@ -701,6 +708,7 @@ void main() {
       const NavigatePaneIntent(AxisDirection.right),
     );
     await tester.pump();
+
     expect(FocusScope.of(tester.element(find.text("three"))).hasFocus, isTrue);
     expect(tester.takeException(), isNull);
   });

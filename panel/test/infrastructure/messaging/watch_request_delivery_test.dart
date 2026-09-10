@@ -32,6 +32,7 @@ void main() {
       addTearDown(nats.dispose);
       addTearDown(container.dispose);
       var current = 0;
+
       final values = <int>[];
       final initial = Completer<void>();
       final completed = Completer<void>();
@@ -51,6 +52,7 @@ void main() {
         if (values.length == 3) completed.complete();
       });
       addTearDown(listener.cancel);
+
       await initial.future.timeout(const Duration(seconds: 2));
       listener.pause();
       nats
@@ -59,6 +61,7 @@ void main() {
       await pumpEventQueue();
       expect(values, [1]);
       listener.resume();
+
       await completed.future.timeout(const Duration(seconds: 2));
       expect(values, [1, 2, 3]);
       await listener.cancel();

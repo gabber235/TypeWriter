@@ -64,12 +64,14 @@ void main() {
         resource.reservations,
       );
       final source = _draft(workspace, resource);
+
       workspace.release(_key);
       final saving = source.flush();
       await pumpEventQueue();
       expect(reads, 0);
       expect(workspace.resources, contains(_key));
       predecessor.release();
+
       expect(await saving, isA<MutationSuccess>());
       expect(reads, 1);
     },
@@ -89,6 +91,7 @@ void main() {
     );
     final source = _draft(workspace, resource);
     expect(await source.flush(), isA<MutationUnavailable>());
+
     expect(sends, 0);
     expect(source.value(_title).valueOrNull, const StringValue("Draft"));
     expect(source.document.confirmedValue, _value("Remote"));
@@ -112,6 +115,7 @@ void main() {
       );
       final source = _draft(workspace, resource);
       expect(await source.flush(), isA<MutationUnavailable>());
+
       expect(source.hasWork, isTrue);
       expect(await source.flush(), isA<MutationSuccess>());
       expect(reads, 2);
@@ -149,6 +153,7 @@ void main() {
     );
     final source = _draft(workspace, resource);
     final saving = source.flush();
+
     await started.future;
     workspace.dispose();
     ready.complete(_snapshot());
@@ -164,6 +169,7 @@ void main() {
       final source = _draft(workspace, resource);
       expect(await source.flush(), isA<MutationUncertain>());
       var acquired = false;
+
       final next = workspace.coordinator.reserve(resource.reservations).then((
         lease,
       ) {
@@ -175,6 +181,7 @@ void main() {
       expect(await source.flush(), isA<MutationSuccess>());
       (await next).release();
       expect(resource.reads, 1);
+
       expect(resource.sends, 2);
       expect(resource.requests[0], same(resource.requests[1]));
     },
@@ -198,12 +205,14 @@ void main() {
         return MutationSuccess(revision: 2, value: commit.rootValue);
       },
     );
+
     final source = _draft(workspace, resource);
     final first = source.flush();
     final second = source.flush();
     ready.complete(_snapshot());
     expect(await first, isA<MutationSuccess>());
     expect(await second, isA<MutationSuccess>());
+
     expect(reads, 1);
     expect(sends, 1);
   });

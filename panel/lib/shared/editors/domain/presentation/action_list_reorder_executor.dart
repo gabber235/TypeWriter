@@ -15,14 +15,17 @@ extension on DuplicateListItemAction {
     if (parent case TypeFailure(:final diagnostics)) {
       return LocalMutationInvalid(diagnostics);
     }
+
     final resolved = parent.valueOrNull!;
     if (resolved.type is! ListType || resolved.value is! ListValue) {
       return invalidLocalMutation("Duplicate source parent must be a list");
     }
+
     final values = List<DataValue>.of((resolved.value as ListValue).values);
     if (location.$2 >= values.length) {
       return invalidLocalMutation("Duplicate source index is outside the list");
     }
+
     values.insert(location.$2 + 1, values[location.$2]);
     return location.$1.replaceValue(
       resolved.type,
@@ -47,15 +50,19 @@ extension on ReorderListItemAction {
     if (parent case TypeFailure(:final diagnostics)) {
       return LocalMutationInvalid(diagnostics);
     }
+
     final destination = newIndex._integer(context, registry, budget);
     if (destination case TypeFailure(:final diagnostics)) {
       return LocalMutationInvalid(diagnostics);
     }
+
     final resolved = parent.valueOrNull!;
     if (resolved.type is! ListType || resolved.value is! ListValue) {
       return invalidLocalMutation("Reorder source parent must be a list");
     }
+
     final values = List<DataValue>.of((resolved.value as ListValue).values);
+
     final nextIndex = destination.valueOrNull!;
     if (location.$2 >= values.length ||
         nextIndex < 0 ||
@@ -70,7 +77,9 @@ extension on ReorderListItemAction {
         value: root.value,
       );
     }
+
     final value = values.removeAt(location.$2);
+
     values.insert(nextIndex, value);
     return location.$1.replaceValue(
       resolved.type,

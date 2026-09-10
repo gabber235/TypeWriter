@@ -116,6 +116,7 @@ class _PaneCoordinator extends ChangeNotifier {
       if (source == null) continue;
       final target = _nearestCandidate(source, panes, direction);
       if (target == null) continue;
+
       _lastActive = target.registration;
       target.registration.scope.requestFocus();
     }

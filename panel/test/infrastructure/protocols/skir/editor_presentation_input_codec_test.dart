@@ -22,6 +22,7 @@ void main() {
     prefix: prefix,
     semanticLabel: text,
   );
+
   const leaf = PresentationNode(id: "leaf", element: DividerElement());
   final concreteType = ResolvedTypeRef(
     id: const QualifiedTypeId(namespace: "example", name: "entry"),

@@ -92,6 +92,7 @@ extension on Iterable<wire_element.ElementCatalogEntry> {
           ),
         ]);
       }
+
       final eligibility = entry.eligibility._decodeDomain();
       entries[id] = RealmElementCatalogEntry(
         originArtifactId: entry.originArtifactId,
@@ -260,6 +261,7 @@ extension on wire_catalog.CatalogFetchSuccess {
     }
     final decodedParts = value._decodeCatalogParts(catalog);
     final decodedElements = value.elementEntries._decodeDomain(catalog.catalog);
+
     final elements = decodedElements.valueOrNull;
     if (elements == null) {
       return RealmEditorCatalogFetchUnavailable(decodedElements.diagnostics);
@@ -373,6 +375,7 @@ extension on wire_catalog.CatalogFetchSuccess {
       editor.typeCodec,
       editor.valueCodec,
     );
+
     final actionEncoder = SkirActionEncoder(
       expressionEncoder,
       editor.valueCodec,
@@ -391,6 +394,7 @@ extension on wire_catalog.CatalogFetchSuccess {
       editor.typeCodec,
       editor.pathCodec,
     );
+
     final presentations = <PresentationId, PresentationDefinition>{};
     final conversions = <ConversionId, ConversionDefinition>{};
     final capabilities = <CapabilityId, CapabilityDefinition>{};
@@ -398,6 +402,7 @@ extension on wire_catalog.CatalogFetchSuccess {
     final diagnostics = value.diagnostics._decodeDiagnostics(
       registry: catalog.registry,
     );
+
     for (final item in value.presentationDefinitions) {
       final decoded = definitionCodec.decodePresentation(item);
       diagnostics.addAll(decoded.diagnostics);
@@ -405,6 +410,7 @@ extension on wire_catalog.CatalogFetchSuccess {
         presentations[definition.id] = definition;
       }
     }
+
     for (final item in value.conversions) {
       final decoded = conversionCodec.decode([item]);
       diagnostics.addAll(decoded.diagnostics);
@@ -412,6 +418,7 @@ extension on wire_catalog.CatalogFetchSuccess {
         conversions[definition.id] = definition;
       }
     }
+
     for (final item in value.capabilityDefinitions) {
       final decoded = definitionCodec.decodeCapability(item);
       diagnostics.addAll(decoded.diagnostics);
@@ -419,6 +426,7 @@ extension on wire_catalog.CatalogFetchSuccess {
         capabilities[definition.id] = definition;
       }
     }
+
     for (final item in value.subtypeResults) {
       final matches = item.matchingTypes.map(editor.decodeType).toList();
       diagnostics.addAll(matches.expand((result) => result.diagnostics));
@@ -431,6 +439,7 @@ extension on wire_catalog.CatalogFetchSuccess {
         matches: matches.map((result) => result.valueOrNull!).toList(),
       );
     }
+
     return _DecodedCatalogParts(
       presentations: presentations,
       conversions: conversions,

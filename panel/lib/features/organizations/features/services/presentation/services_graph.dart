@@ -91,6 +91,7 @@ class ServicesGraph extends ConsumerWidget {
           builder: (_) => _ServiceGraphNode(item: item),
         ),
     ];
+
     final nodeIds = nodes.map((node) => node.id).toSet();
     final connections = <ServicesPackedConnection?>[
       for (final realm in topology.realmInstances)

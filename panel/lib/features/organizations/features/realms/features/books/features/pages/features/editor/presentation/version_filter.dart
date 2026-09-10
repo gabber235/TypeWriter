@@ -89,6 +89,7 @@ class VersionFilter {
     if (!semanticMajor.matches(maj)) return false;
     if (!minor.matches(v.minor)) return false;
     if (!patch.matches(v.patch)) return false;
+
     return true;
   }
 

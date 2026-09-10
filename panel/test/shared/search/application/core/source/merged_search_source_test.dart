@@ -32,6 +32,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
+
       addTearDown(subscription.cancel);
       source.initialize();
 
@@ -49,6 +50,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
+
       addTearDown(subscription.cancel);
       source.initialize();
       source.search(queryContext("old"));
@@ -69,6 +71,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final selectors = <List<QuerySelectorDefinition>>[];
+
       final snapshotSubscription = source.snapshots.listen(snapshots.add);
       final selectorSubscription = source.selectors.listen(selectors.add);
       addTearDown(snapshotSubscription.cancel);
@@ -119,6 +122,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
+
       addTearDown(subscription.cancel);
       source.initialize();
 
@@ -137,6 +141,7 @@ void main() {
       addTearDown(source.dispose);
       source.initialize();
       first.emitSnapshot(readySnapshot(nodes: [resultNode("first")]));
+
       second.emitSnapshot(readySnapshot(nodes: [resultNode("second")]));
       const request = SearchPreviewRequest(resultId: "second");
 
@@ -157,6 +162,7 @@ void main() {
         localSecond.limited(1),
       ].merged();
       final globallyLimited = [globalFirst, globalSecond].merged().limited(1);
+
       addTearDown(locallyLimited.dispose);
       addTearDown(globallyLimited.dispose);
       final localSnapshots = <SearchSourceSnapshot>[];
@@ -167,6 +173,7 @@ void main() {
       final globalSubscription = globallyLimited.snapshots.listen(
         globalSnapshots.add,
       );
+
       addTearDown(localSubscription.cancel);
       addTearDown(globalSubscription.cancel);
       locallyLimited.initialize();
@@ -191,6 +198,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
+
       addTearDown(subscription.cancel);
       source.initialize();
 

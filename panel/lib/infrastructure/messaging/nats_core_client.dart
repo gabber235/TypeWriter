@@ -60,7 +60,9 @@ final class NatsCoreClient implements NatsClient {
         await connection.close();
         return;
       }
+
       _events = connection.events.listen(_onEvent);
+
       _setConnectionState(const NatsConnected());
     } on Object catch (error, stackTrace) {
       if (_closed) return;
@@ -202,7 +204,9 @@ final class NatsCoreClient implements NatsClient {
   Future<void> _close() async {
     if (_closed) return;
     _closed = true;
+
     _setConnectionState(const NatsClosed());
+
     try {
       final connection = await _connection;
       await connection.close();

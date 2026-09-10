@@ -63,6 +63,7 @@ final class MutationSubmission<T> extends ChangeNotifier {
                   stackTrace: stackTrace,
                 ),
           );
+
     _active = operation.then(_integrateResult).then((result) {
       if (!_disposed) {
         _result = result;
@@ -71,6 +72,7 @@ final class MutationSubmission<T> extends ChangeNotifier {
       }
       return result;
     });
+
     notifyListeners();
     return _active!;
   }

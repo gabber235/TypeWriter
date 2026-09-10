@@ -98,11 +98,14 @@ final class _RenderHierarchySurface extends RenderBox
             math.max(0, children.length - 1),
             _layout.itemSpacing,
           );
+
     final indentation = branching ? _layout.indentation : 0.0;
+
     final boundedWidth = constraints.hasBoundedWidth;
     final contentMaximum = boundedWidth
         ? math.max(0.0, constraints.maxWidth - indentation)
         : double.infinity;
+
     final looseConstraints = BoxConstraints(maxWidth: contentMaximum);
     for (final child in children) {
       child.layout(looseConstraints, parentUsesSize: true);
@@ -113,6 +116,7 @@ final class _RenderHierarchySurface extends RenderBox
     final width = constraints.constrainWidth(
       boundedWidth ? constraints.maxWidth : indentation + naturalContentWidth,
     );
+
     final contentWidth = math.max(0.0, width - indentation);
     if (_layout.crossAxisAlignment == PresentationCrossAxisAlignment.stretch) {
       final stretched = BoxConstraints.tightFor(width: contentWidth);
@@ -124,6 +128,7 @@ final class _RenderHierarchySurface extends RenderBox
         leadingSpacing +
         children.fold(0.0, (sum, child) => sum + child.size.height) +
         itemSpacings.fold(0.0, (sum, spacing) => sum + spacing);
+
     size = constraints.constrain(Size(width, height));
     final geometry = _resolveHierarchyGeometry(
       size: size,

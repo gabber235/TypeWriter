@@ -117,7 +117,9 @@ class RenderResizableElementSurface extends RenderBox
       context.paintChild(child, parentData.offset + offset);
     }
     if (gestureDetector == null) return;
+
     final parentData = gestureDetector.parentData! as BoxParentData;
+
     context.paintChild(gestureDetector, parentData.offset + offset);
     _paintOutline(context, offset, parentData.offset);
   }
@@ -128,16 +130,19 @@ class RenderResizableElementSurface extends RenderBox
     Offset handleOffset,
   ) {
     if (animationProgress <= 0) return;
+
     final paint = Paint()
       ..color = outlineColor
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
+
     final padding = 2 * animationProgress + 3;
     final handleCenter =
         offset +
         handleOffset +
         Offset(handleSize / 2 + padding, handleSize / 2 + padding);
+
     const cornerRadius = 10.0;
     final path = Path()
       ..moveTo(handleCenter.dx - cornerRadius, handleCenter.dy)
@@ -146,10 +151,13 @@ class RenderResizableElementSurface extends RenderBox
         clockwise: false,
         radius: const Radius.circular(cornerRadius),
       );
+
     final metric = path.computeMetrics().firstOrNull;
     if (metric == null) return;
+
     final half = metric.length / 2;
     final currentHalf = half * animationProgress;
+
     context.canvas.drawPath(
       metric.extractPath(half - currentHalf, half + currentHalf),
       paint,

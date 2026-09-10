@@ -47,9 +47,13 @@ extension PresentationInputScope on PresentationRenderScope {
       if (resolved case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
       }
+
       final value = resolved.valueOrNull!;
+
       final expected = input.type.substitute(substitutions);
+
       final actual = value.type;
+
       var inferred = expected.inferPresentationSubstitutions(actual);
       inferred ??= expected
           .bindingNominal(registry)
@@ -65,6 +69,7 @@ extension PresentationInputScope on PresentationRenderScope {
       if (inferred == null) {
         return _inputFailure("Incompatible presentation input: ${input.name}");
       }
+
       substitutions.addAll(inferred);
       if (input.access == PresentationInputAccess.edit &&
           accessOf(argument) != PresentationInputAccess.edit) {
@@ -78,9 +83,11 @@ extension PresentationInputScope on PresentationRenderScope {
         revision: value.revision,
         writable: value.writable,
       );
+
       destinations[input.id] = canonical(argument);
       owners[input.id] = ownerReference(argument);
     }
+
     return TypeResult.success((
       definition.root.substitute(substitutions),
       copyWith(

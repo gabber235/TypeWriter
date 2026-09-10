@@ -51,8 +51,10 @@ final class NatsRealmCapabilityTransport {
     if (encoded case TypeFailure(:final diagnostics)) {
       return RealmCommandResult.invalid(diagnostics);
     }
+
     final invocationId =
         "${DateTime.now().microsecondsSinceEpoch}:${_sequence++}";
+
     final response = await ref.requestSkir(
       _address.request("editor.capability.command.invoke"),
       wire.CapabilityInvocationRequest.serializer.toBytes(
@@ -88,6 +90,7 @@ final class NatsRealmCapabilityTransport {
     }
     final invocationId =
         "${DateTime.now().microsecondsSinceEpoch}:${_sequence++}";
+
     final response = await ref.requestSkir(
       _address.request("editor.capability.computation.invoke"),
       wire.CapabilityInvocationRequest.serializer.toBytes(

@@ -167,6 +167,7 @@ final class _RenderConnectionLayerSurface extends RenderProxyBox {
     );
     _lastResolution = resolution;
     _collectStrokeSurface()?.strokes = resolution.strokes;
+
     final markerSurfaces = _collectMarkerSurfaces();
     for (final surface in markerSurfaces.values) {
       surface.hide();

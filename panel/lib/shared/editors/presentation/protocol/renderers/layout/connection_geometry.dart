@@ -11,7 +11,9 @@ _ConnectionResolution _resolveConnections({
   final markers = <_ResolvedMarker>[];
   final diagnostics = <TypeDiagnostic>[];
   final local = [for (final anchor in localAnchors) _LayerAnchor(anchor)];
+
   final exported = [for (final anchor in exportedAnchors) _LayerAnchor(anchor)];
+
   final localIds = <String, int>{};
   for (final anchor in local) {
     localIds.update(
@@ -95,13 +97,16 @@ void _resolveSingle(
     );
     return;
   }
+
   final source = sources.single;
+
   final target = targets.single;
   final style = _resolveConnectorStyle(
     connection.style,
     target.snapshot.scope,
     diagnostics,
   );
+
   if (style == null) return;
   final path = _resolvePath(
     connection.path,
@@ -111,7 +116,9 @@ void _resolveSingle(
     style.cornerRadius,
     diagnostics,
   );
+
   if (path == null) return;
+
   strokes.add(_ResolvedStrokePath(path: path, style: style));
   _resolveMarkers(
     templates: connection.markers,
@@ -148,6 +155,7 @@ void _resolveBundle(
     return;
   }
   if (targets.isEmpty) return;
+
   final source = sources.single;
   final trunkStyle = _resolveConnectorStyle(
     connection.trunkStyle,
@@ -170,6 +178,7 @@ void _resolveBundle(
     [for (final style in branchStyles) style?.cornerRadius ?? 0],
     diagnostics,
   );
+
   if (paths == null) return;
   if (paths.trunk case final trunk? when trunkStyle != null) {
     strokes.add(_ResolvedStrokePath(path: trunk, style: trunkStyle));

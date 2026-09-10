@@ -16,6 +16,7 @@ void _testEditorAvailability() {
       );
       container.read(selectionProvider.notifier).select(identifier);
       final session = container.read(_sourceProvider);
+
       final source = (_resource(session))
         ..update(DataPath.root, const StringValue("Draft"));
 

@@ -149,6 +149,7 @@ void main() {
       expect(uncertain.replay, isNotNull);
       expect(uncertain.submissionId, isNotNull);
       expect(harness.container.read(servicesProvider).requireValue, [newest]);
+
       expect(reports, isEmpty);
       final submission = harness.container
           .read(localWorkProvider)

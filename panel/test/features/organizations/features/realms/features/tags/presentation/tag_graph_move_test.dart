@@ -70,6 +70,7 @@ void main() {
     await tester.pumpUntil(() {
       expect(notifier.updateCount, 2);
     });
+
     notifier.release();
     await tester.pumpAndSettle();
 

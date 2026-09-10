@@ -45,6 +45,7 @@ void main() {
       FontVariation.slant(-8),
       FontVariation.width(112.5),
     ]);
+
     expect(text.style?.height, 1.4);
     expect(text.style?.letterSpacing, 1.5);
     expect(text.style?.decoration, TextDecoration.underline);

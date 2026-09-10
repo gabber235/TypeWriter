@@ -20,6 +20,7 @@ Future<void> _pressKeys(
     await tester.sendKeyUpEvent(modifier);
   }
   await tester.pump();
+
   await tester.pump(const Duration(milliseconds: 400));
 }
 

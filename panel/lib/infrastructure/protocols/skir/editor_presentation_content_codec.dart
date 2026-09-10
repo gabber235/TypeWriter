@@ -8,13 +8,16 @@ extension SkirPresentationContentDecoder on SkirPresentationDecoder {
     final fontWeight = _optionalExpression(value.fontWeight);
     final fontItalic = _optionalExpression(value.fontItalic);
     final fontOpticalSize = _optionalExpression(value.fontOpticalSize);
+
     final fontSlant = _optionalExpression(value.fontSlant);
     final fontWidth = _optionalExpression(value.fontWidth);
     final textAlignment = _optionalExpression(value.textAlignment);
     final lineHeight = _optionalExpression(value.lineHeight);
     final letterSpacing = _optionalExpression(value.letterSpacing);
     final decoration = _optionalExpression(value.decoration);
+
     final semanticLabel = _optionalExpression(value.semanticLabel);
+
     final diagnostics = [
       ...text.diagnostics,
       ...color.diagnostics,

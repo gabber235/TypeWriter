@@ -168,9 +168,11 @@ class RenderGraphDragTargetSurface extends RenderBox
         .map((target) => target.metaData)
         .whereType<_GraphDragTargetRegionMarker>()
         .any((marker) => marker.targetId != activeDragId.value);
+
     if (enabled && dragTarget != null && !blocksGraphDrag) {
       anyHit = _hitChild(result, position, dragTarget) || anyHit;
     }
+
     return anyHit;
   }
 

@@ -19,10 +19,15 @@ _HierarchyGeometry _resolveHierarchyGeometry({
   final branching = childSizes.length > 1 || !layout.flattenSingleItem;
   final indentation = branching ? layout.indentation : 0.0;
   final contentLeft = textDirection == TextDirection.ltr ? indentation : 0.0;
+
   final contentWidth = math.max(0.0, size.width - indentation);
+
   final offsets = <Offset>[];
+
   final targets = <Offset?>[];
+
   final diagnostics = <TypeDiagnostic>[];
+
   var y = leadingSpacing;
   for (var index = 0; index < childSizes.length; index++) {
     final childSize = childSizes[index];
@@ -46,6 +51,7 @@ _HierarchyGeometry _resolveHierarchyGeometry({
         diagnostics,
       ),
     );
+
     y += childSize.height;
     if (index < itemSpacings.length) y += itemSpacings[index];
   }
@@ -81,9 +87,13 @@ double _effectiveHierarchyLeadingSpacing(
   final branchStyle = layout.branchStyles.firstOrNull;
   final trunkMarker = trunkStyle?.startMarker;
   final branchMarker = branchStyle?.startMarker;
+
   final trunkDepth = trunkMarker?.inwardExtent ?? 0;
+
   final branchRadius = branchMarker?.crossAxisExtent ?? 0;
+
   var spacing = math.max(layout.leadingSpacing, trunkDepth);
+
   spacing = math.max(spacing, branchRadius * 2);
   if (trunkMarker == null && branchMarker == null) return spacing;
 

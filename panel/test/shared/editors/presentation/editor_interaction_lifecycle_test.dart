@@ -52,6 +52,7 @@ void main() {
     await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+
     await tester.pumpAndSettle();
 
     expect(source.cancelCount, 1);
@@ -148,6 +149,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
@@ -172,6 +174,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+
     await tester.pump();
     await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
@@ -211,6 +214,7 @@ void main() {
     expect(source.beginCount, 1);
     expect(find.byType(ColorPickerSurface), findsOneWidget);
     await tester.tapAt(Offset.zero);
+
     await tester.pumpAndSettle();
     expect(source.commitCount, 1);
 

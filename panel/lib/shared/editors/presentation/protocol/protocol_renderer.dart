@@ -163,6 +163,7 @@ class _EditorProtocolRendererState extends State<EditorProtocolRenderer> {
       if (evaluated case TypeFailure(:final diagnostics)) {
         return RealmCommandResult.invalid(diagnostics);
       }
+
       evaluatedPayload = evaluated.valueOrNull;
       final diagnostics = evaluated.valueOrNull!.validateAgainst(
         NamedType(definition.requestType),

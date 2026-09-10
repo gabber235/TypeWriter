@@ -733,6 +733,7 @@ MockSearchIndex mockSearchIndex({
   ]) {
     definitionsById[elementDefinition.rootType] = elementDefinition;
   }
+
   return MockSearchIndex(
     tags: tags,
     books: books,
@@ -762,6 +763,7 @@ List<QuerySelectorDefinition> mockSearchQuerySelectors(MockSearchIndex index) {
       .map((elementDefinition) => elementDefinition.name)
       .toSet()
       .toList();
+
   final namespaces = index.elementDefinitions
       .map((elementDefinition) => elementDefinition.namespace)
       .toSet()

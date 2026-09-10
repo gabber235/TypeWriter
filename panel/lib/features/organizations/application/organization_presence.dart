@@ -46,6 +46,7 @@ class OrganizationPresence extends _$OrganizationPresence {
     final organizationId = ref.watch(organizationIdProvider);
     final userId = await ref.watch(userIdProvider.future);
     if (organizationId == null || userId == null) return const {};
+
     _userId = userId;
     _subject =
         "typewriter.presence.organization.${organizationId.id}.user.$userId";
@@ -54,6 +55,7 @@ class OrganizationPresence extends _$OrganizationPresence {
       "typewriter.presence.organization.${organizationId.id}.user.*",
     );
     _messages = _subscription!.messages.listen(_onMessage);
+
     ref.listen(currentRouteProvider, (_, _) {
       _activity = wire.PageActivity.overview;
       unawaited(_publishActive());
@@ -63,6 +65,7 @@ class OrganizationPresence extends _$OrganizationPresence {
       (_) => unawaited(_publishActive()),
     );
     _expiry = Timer.periodic(_heartbeatInterval, (_) => _expire());
+
     ref.onDispose(() {
       _heartbeat?.cancel();
       _expiry?.cancel();
@@ -70,6 +73,7 @@ class OrganizationPresence extends _$OrganizationPresence {
       unawaited(_messages?.cancel());
       unawaited(_subscription?.unsubscribe());
     });
+
     await _publishActive();
     return const {};
   }
@@ -187,6 +191,7 @@ class OrganizationPresence extends _$OrganizationPresence {
         realmId: recordId("service:$realm"),
       );
     }
+
     if (realm != null && segments.contains("library")) {
       return wire.PresenceLocation.createRealmLibrary(
         realmId: recordId("service:$realm"),

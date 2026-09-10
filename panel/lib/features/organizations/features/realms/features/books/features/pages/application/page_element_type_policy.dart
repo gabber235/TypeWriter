@@ -49,6 +49,7 @@ Stream<PageElementTypesState> pageElementTypes(Ref ref, PageKindRef pageKind) {
     ) =>
       [...trackTypes, ...segmentTypes, ...keyframeTypes],
   };
+
   final queries = [
     for (final root in roots.indexed)
       RealmEditorSubtypeQuery(

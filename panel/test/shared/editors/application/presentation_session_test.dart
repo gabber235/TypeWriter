@@ -55,6 +55,7 @@ void main() {
           ),
         },
       );
+
       final session = PresentationSession(model("Active"));
       addTearDown(session.dispose);
       session.update(
@@ -69,6 +70,7 @@ void main() {
           const StringValue("Fabric"),
         );
       await config.flush();
+
       expect(identity.value(_path).valueOrNull, const StringValue("Quest"));
       expect(identity.document.revision, 12);
       expect(config.document.revision, 8);
@@ -83,6 +85,7 @@ void main() {
             .value,
         const StringValue("Failed"),
       );
+
       expect(identity.document.confirmedValue, _name("Quest"));
     },
   );
@@ -115,6 +118,7 @@ void main() {
           );
         }),
       );
+
       final second = registry.editor(
         target("second", (commit) async {
           secondSaves++;
@@ -136,6 +140,7 @@ void main() {
       final outcomes = await registry.flush();
       expect(outcomes["first"], isA<MutationSuccess>());
       expect(outcomes["second"], isA<MutationUnavailable>());
+
       final retry = await registry.flush(failedOnly: true);
       expect(retry.keys, ["second"]);
       expect(retry["second"], isA<MutationSuccess>());
@@ -155,6 +160,7 @@ void main() {
     owner.update(_path, const StringValue("Quest"));
     interaction.cancel();
     expect(owner.value(_path).valueOrNull, const StringValue("Oak"));
+
     final accepted = owner.beginInteraction(_path);
     owner.update(_path, const StringValue("Quest"));
     await accepted.commit();
@@ -186,6 +192,7 @@ void main() {
       ),
     );
     addTearDown(first.dispose);
+
     addTearDown(second.dispose);
     addTearDown(group.dispose);
     addTearDown(session.dispose);
@@ -204,6 +211,7 @@ void main() {
       first.value(DataPath.root).valueOrNull,
       const ListValue([StringValue("Oak"), StringValue("New")]),
     );
+
     expect(
       second.value(DataPath.root).valueOrNull,
       const ListValue([StringValue("Pine"), StringValue("New")]),

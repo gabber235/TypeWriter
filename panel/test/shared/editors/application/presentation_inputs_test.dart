@@ -100,6 +100,7 @@ void main() {
           )
           .valueOrNull!
           .$2;
+
       expect(
         nested.canonical(const BindingReference(bindingId: BindingId(9))),
         const BindingReference(bindingId: BindingId(9)),
@@ -172,6 +173,7 @@ void main() {
           onChanged: (_) {},
         ),
       );
+
       expect(
         local.ownerReference(const BindingReference(bindingId: BindingId(50))),
         isNull,
@@ -213,6 +215,7 @@ void main() {
             const StringValue("changed"),
           );
     expect(changed, const StringValue("changed"));
+
     bound.invoke(
       LocalEditorAction(
         SetValueAction(

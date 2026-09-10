@@ -50,7 +50,9 @@ class ColorPickerSurface extends HookConsumerWidget {
         LogicalKeyboardKey.digit3 => ColorFieldFormat.hsl,
         _ => null,
       };
+
       if (format == null) return KeyEventResult.ignored;
+
       libraryController.setFormat(format);
       return KeyEventResult.handled;
     }

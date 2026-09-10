@@ -76,6 +76,7 @@ Future<void> showAddEntryDialog(
   if (snapshot == null || pageDefinition == null) {
     throw ApiException.badRequest("The page element catalog is unavailable");
   }
+
   final roots = switch ((pageDefinition.editor, placementKind)) {
     (RealmGraphPageEditor(:final nodeTypes), EntryPlacementKind.graph) =>
       nodeTypes,
@@ -121,6 +122,7 @@ Future<void> showAddEntryDialog(
     ),
   );
   if (selected == null) return;
+
   final ids = await ref.withReadyPageElements(
     pageId,
     (elements) => elements.createEntries([selected], placementKind),

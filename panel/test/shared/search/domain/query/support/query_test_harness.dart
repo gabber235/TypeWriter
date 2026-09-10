@@ -123,6 +123,7 @@ final class QueryCheck {
     final root = TokenCheck._(token!, "expression");
     visit(root);
     _root = root;
+
     _expressionAsserted = true;
     return this;
   }
@@ -202,6 +203,7 @@ final class QueryLexerCheck {
     final root = TokenCheck._(token!, "expression");
     visit(root);
     _root = root;
+
     _expressionAsserted = true;
     return this;
   }
@@ -256,6 +258,7 @@ final class TokenCheck {
     expect(selector.selectorId, id);
     expect(selector.value, value);
     _kindAsserted = true;
+
     return this;
   }
 
@@ -266,6 +269,7 @@ final class TokenCheck {
     expect(operator.type, QueryLexerOperatorType.and);
     _kindAsserted = true;
     final binary = BinaryTokenCheck._(operator, _path);
+
     _binary = binary;
     return binary;
   }
@@ -277,6 +281,7 @@ final class TokenCheck {
     expect(operator.type, QueryLexerOperatorType.or);
     _kindAsserted = true;
     final binary = BinaryTokenCheck._(operator, _path);
+
     _binary = binary;
     return binary;
   }
@@ -288,6 +293,7 @@ final class TokenCheck {
     _kindAsserted = true;
     final unary = UnaryTokenCheck._(negation, _path);
     _unary = unary;
+
     return unary;
   }
 

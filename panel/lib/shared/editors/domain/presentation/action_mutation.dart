@@ -13,6 +13,7 @@ extension BindingReferenceMutation on BindingReference {
     if (replaced case TypeFailure(:final diagnostics)) {
       return LocalMutationInvalid(diagnostics);
     }
+
     final snapshot = replaced.valueOrNull!.bindings[bindingId];
     if (snapshot == null) {
       return invalidLocalMutation("Updated binding is absent");

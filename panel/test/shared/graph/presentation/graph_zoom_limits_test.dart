@@ -80,6 +80,7 @@ void main() {
         center + const Offset(80, 0),
         pointer: 11,
       );
+
       await tester.pump();
       const step = 8.0;
       for (var i = 0; i < 80; i++) {
@@ -116,6 +117,7 @@ void main() {
         center + const Offset(220, 0),
         pointer: 21,
       );
+
       await tester.pump();
       const step = 8.0;
       for (var i = 0; i < 80; i++) {

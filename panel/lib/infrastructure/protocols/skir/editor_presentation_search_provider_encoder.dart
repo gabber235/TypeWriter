@@ -106,6 +106,7 @@ extension SkirPresentationSearchProviderEncoder on SkirPresentationEncoder {
       ...result.diagnostics,
       ...context.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.SearchProvider.createHttpJson(

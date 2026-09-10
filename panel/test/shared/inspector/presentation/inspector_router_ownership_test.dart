@@ -23,6 +23,7 @@ void main() {
     );
     expect(organization, contains("child: child,"));
     expect(bookShell, contains("InspectorScaffold("));
+
     expect("InspectorScaffold(".allMatches(bookShell), hasLength(1));
     expect(bookRoute, contains("child: AutoRouter("));
     expect(bookShell, contains("child: child,"));

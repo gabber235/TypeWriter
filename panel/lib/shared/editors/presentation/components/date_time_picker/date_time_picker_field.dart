@@ -34,7 +34,9 @@ class DateTimePickerField extends HookConsumerWidget {
       ),
     );
     useEffect(() => pickerScope.dispose, [pickerScope]);
+
     final tapGroup = useMemoized(Object.new);
+
     final editable = enabled && !readOnly;
     final format = dateTimeEditorFormat(
       includeDate: includeDate,

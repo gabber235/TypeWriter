@@ -195,6 +195,7 @@ final class TestSingleAction extends SingleSearchAction {
     if (immediate != null) {
       return immediate;
     }
+
     return completer.future;
   }
 }

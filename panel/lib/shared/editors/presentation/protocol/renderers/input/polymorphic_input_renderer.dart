@@ -74,6 +74,7 @@ extension on PolymorphicValue {
     }
     const payloadBindingId = BindingId(2147483647);
     const payloadReference = BindingReference(bindingId: payloadBindingId);
+
     final representation = concrete.valueOrNull!.representation;
     final childScope = scope.withVirtualBinding(
       VirtualBindingHost(
@@ -114,10 +115,12 @@ extension on ResolvedTypeRef? {
     final type = this!;
     final concrete = scope.registry.resolve(NamedType(type));
     final resolved = concrete.valueOrNull;
+
     if (resolved == null || !resolved.isConcrete) return;
     final initial = resolved.representation
         .createInitialValue(registry: scope.registry)
         .valueOrNull;
+
     if (initial == null) return;
     scope.update(
       element.control.binding,

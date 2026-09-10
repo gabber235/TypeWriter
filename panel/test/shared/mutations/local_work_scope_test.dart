@@ -95,6 +95,7 @@ void main() {
         ),
       );
       final result = submission.run();
+
       await sent.future;
 
       await switchOrganization();
@@ -103,6 +104,7 @@ void main() {
       response.complete(const SubmissionConfirmed("Applied remotely"));
       expect(await result, isA<SubmissionConfirmed<String>>());
       expect(integrations, 0);
+
       expect(submission.run, throwsStateError);
     },
   );

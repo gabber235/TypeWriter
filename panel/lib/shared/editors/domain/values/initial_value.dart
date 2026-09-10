@@ -32,6 +32,7 @@ extension on TypeExpression {
     if (type is BytesType) {
       return TypeResult.success(BytesValue(Uint8List(type.minimumLength ?? 0)));
     }
+
     if (type is IntegerType) {
       final minimum = type.minimum ?? type.width.minimum;
       final maximum = type.maximum ?? type.width.maximum;
@@ -42,12 +43,14 @@ extension on TypeExpression {
           : BigInt.zero;
       return TypeResult.success(IntegerValue(value));
     }
+
     if (type is FloatType) {
       final minimum = type.minimum ?? double.negativeInfinity;
       final maximum = type.maximum ?? double.infinity;
       final value = 0.0.clamp(minimum, maximum);
       return TypeResult.success(FloatValue(value));
     }
+
     if (type is DecimalType) return TypeResult.success(DecimalValue("0"));
     if (type is TimestampType) {
       return TypeResult.success(
@@ -61,8 +64,11 @@ extension on TypeExpression {
       if (type.values.isEmpty) return _failure("An enum requires a value");
       return TypeResult.success(type.values.first);
     }
+
     if (type is ListType) return type._createListValue(registry);
+
     if (type is MapType) return type._createMapValue();
+
     if (type is RecordType) return type._createRecordValue(registry);
     if (type is NamedType) {
       if (registry == null) {

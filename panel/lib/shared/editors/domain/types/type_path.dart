@@ -189,6 +189,7 @@ extension on DataValue {
       }
       return;
     }
+
     if (segment is TypeMapValueQuerySegment && value is MapValue) {
       for (final entry in value.entries) {
         yield* entry.value._expandTypeQuery(

@@ -61,6 +61,7 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
     if (canonical == null) {
       throw ApiException.badRequest("The element value cannot be decoded");
     }
+
     return authoringElementTarget(
       repository: ref
           .read(resourceRepositoriesProvider)

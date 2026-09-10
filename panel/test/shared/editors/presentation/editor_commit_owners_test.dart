@@ -35,6 +35,7 @@ void main() {
     expect(find.text("Apply"), findsNothing);
     owner.update(DataPath.root, const StringValue("draft"));
     await tester.pumpAndSettle();
+
     expect(find.text("Apply"), findsOneWidget);
     await tester.tap(find.text("Cancel"));
     await tester.pumpAndSettle();
@@ -124,6 +125,7 @@ void main() {
         ),
       );
       owner.update(DataPath.root.field("name"), const StringValue("renamed"));
+
       projected.update(DataPath.root, const StringValue("paper@1.23"));
       await tester.pumpAndSettle();
       expect(find.byType(EditorCommitControls), findsOneWidget);
@@ -193,18 +195,21 @@ void main() {
     first.update(DataPath.root, const StringValue("first draft"));
     second.update(DataPath.root, const StringValue("second draft"));
     await tester.pumpAndSettle();
+
     expect(find.byType(EditorCommitControls), findsNWidgets(2));
     expect(find.text("Second resource"), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await _invokePrimaryAction(tester);
     await tester.pumpAndSettle();
     expect(attempts, isEmpty);
+
     await tester.tap(find.text("Apply").first);
     await tester.pumpAndSettle();
     expect(attempts, ["saved"]);
     expect(first.hasWork, isFalse);
     expect(second.hasWork, isTrue);
     await tester.tap(find.text("Apply").last);
+
     await tester.pumpAndSettle();
     expect(attempts, ["saved", "failed"]);
     expect(second.hasWork, isTrue);

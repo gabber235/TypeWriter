@@ -163,8 +163,10 @@ class TypeExpressionJsonConverter
 
   RecordType _record(Map<String, Object?> json) {
     final fields = <String, TypeField>{};
+
     for (final entry in json["fields"].asObjectMap.entries) {
       final field = entry.value.asObjectMap;
+
       fields[entry.key] = TypeField(
         name: entry.key,
         type: fromJson(field["type"].asObjectMap),

@@ -13,6 +13,7 @@ void main() {
     id: const QualifiedTypeId(namespace: "example", name: "source"),
     revision: 1,
   );
+
   final target = ResolvedTypeRef(
     id: const QualifiedTypeId(namespace: "example", name: "target"),
     revision: 2,
@@ -65,12 +66,14 @@ void main() {
         cost: entry.$1,
       );
       final encoded = encoder.encode([definition]).valueOrNull!.single;
+
       expect(encoded.conversionId.namespace, "example");
       expect(encoded.conversionId.name, "conversion_${entry.$1}");
       expect(encoded.source, types.encodeReference(source).valueOrNull);
       expect(encoded.target, types.encodeReference(target).valueOrNull);
       expect(encoded.rule.kind, _wireKind(entry.$2));
       expect(encoded.cost, entry.$1);
+
       expect(
         encoded.safety.kind,
         entry.$1.isEven

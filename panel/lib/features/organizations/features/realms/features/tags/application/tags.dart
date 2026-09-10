@@ -31,6 +31,7 @@ class Tags extends _$Tags {
     final lease = ref.watch(
       authoringLibraryScopeProvider(organizationId, realmId),
     );
+
     await lease.ready;
     return _projectTags(ref.read(provider));
   }
@@ -114,6 +115,7 @@ class Tags extends _$Tags {
       TagParentDropAction.unlink =>
         child.parentIds.where((id) => id != parentId).toList(),
     };
+
     await updateTag(child.copyWith(parentIds: parents), expected: child);
   }
 

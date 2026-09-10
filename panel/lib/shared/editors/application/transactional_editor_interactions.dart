@@ -27,7 +27,9 @@ extension _EditorInteractions on TransactionalEditorSource {
     _cancelScheduledTasks();
     _closeGates();
     _draft = _document.confirmedValue;
+
     _rejectedBatch = null;
+
     _pendingMutations.clear();
     for (final path in _states.dirtyPaths) {
       _states.reset(path);
@@ -47,6 +49,7 @@ extension _EditorInteractions on TransactionalEditorSource {
           pending.revision > interaction.startingRevision &&
           _pathsOverlap(interaction.path, pending.mutation.path),
     );
+
     _states.reset(interaction.path);
     _notify();
   }

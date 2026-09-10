@@ -77,7 +77,9 @@ final class _ResourceSave {
         source._states.markSaving(selected);
         source._notify();
       }
+
       if (commits.isEmpty) return const _ResourceSave({}, {});
+
       final results = <TransactionalEditorSource, TypedMutationResult>{};
       final pending = MutationPreparation.collect([
         for (final entry in commits.entries)
@@ -93,7 +95,9 @@ final class _ResourceSave {
       if (!resources.containsAll(pending.single.resources)) {
         throw StateError("The request changed its reserved resources");
       }
+
       final submission = pending.single.start(workspace, reservation);
+
       reservation = null;
       Future<TypedMutationResult> outcome(
         TransactionalEditorSource source,
@@ -164,11 +168,13 @@ extension _ResourcePersistence on TransactionalEditorSource {
           _unresolved = _UnresolvedCommit(commit, result);
           return result;
         }
+
         acceptCommit(commit, result);
         if (result is! MutationConflict ||
             commitPolicy == EditorCommitPolicy.applyResource) {
           return result;
         }
+
         final next = _states.flushCandidates(activePaths);
         if (next.isEmpty || !await _waitForRetry(next, attempt++)) {
           return result;

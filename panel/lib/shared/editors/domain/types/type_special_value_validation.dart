@@ -58,9 +58,13 @@ extension on DataValue {
     if (this is! PolymorphicValue) {
       return [_invalid(path, "Abstract values require an exact concrete tag")];
     }
+
     final polymorphic = this as PolymorphicValue;
+
     final concrete = registry.resolveExact(polymorphic.concreteType);
+
     if (concrete case TypeFailure(:final diagnostics)) return diagnostics;
+
     final resolvedConcrete = concrete.valueOrNull!;
     if (!resolvedConcrete.isConcrete) {
       return [_invalid(path, "Polymorphic tag must identify a concrete type")];

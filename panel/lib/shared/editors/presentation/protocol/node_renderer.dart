@@ -25,10 +25,12 @@ class PresentationNodeRenderer extends StatelessWidget {
       enabled: nodeEnabled,
       readOnly: scope.readOnly || node.properties.readOnly,
     );
+
     final chain = node.resolveHeaderChain(childScope);
     final headerBinding = chain.header?.binding == null
         ? null
         : childScope.canonical(chain.header!.binding!);
+
     final headerKey = (node.id, headerBinding);
     final header = childScope.suppressedHeaders.contains(headerKey)
         ? null
@@ -36,6 +38,7 @@ class PresentationNodeRenderer extends StatelessWidget {
     final renderScope = childScope.copyWith(
       suppressedHeaders: {...childScope.suppressedHeaders, ...chain.suppressed},
     );
+
     final child = node.element._render(context, renderScope);
     final surface = header == null
         ? child
@@ -85,6 +88,7 @@ class PresentationNodeRenderer extends StatelessWidget {
       return TypeResult.failure(diagnostics);
     }
     final value = result.valueOrNull;
+
     if (value is BooleanValue) return TypeResult.success(value.value);
     return TypeResult.failure([
       const TypeDiagnostic(

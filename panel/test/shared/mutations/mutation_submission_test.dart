@@ -28,6 +28,7 @@ void main() {
       expect(await submission.run(), const SubmissionResult.confirmed("A"));
       expect(sent, ["A", "A"]);
       expect(draft, "B");
+
       expect(submission.canReplay, isFalse);
     },
   );
@@ -48,6 +49,7 @@ void main() {
       await submission.run();
       expect(submission.canReplay, isFalse);
       await submission.run();
+
       expect(calls, 1);
     },
   );
@@ -68,6 +70,7 @@ void main() {
     journal
       ..track(first)
       ..track(other);
+
     await first.run();
     await other.run();
     final replacement = attempt("replacement", "org1");
@@ -92,6 +95,7 @@ void main() {
     addTearDown(submission.dispose);
     final first = submission.run();
     final second = submission.run();
+
     expect(identical(first, second), isTrue);
     response.complete(const SubmissionResult.rejected(message: "Role denied"));
     expect(await first, isA<SubmissionRejected<int>>());

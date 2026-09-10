@@ -122,6 +122,7 @@ void main() {
       expect(canvas.lines[1].start, const Offset(192, 50));
       expect(canvas.lines[1].end, const Offset(180, 59));
       expect(canvas.lines[2].start, const Offset(192, 50));
+
       expect(canvas.lines[2].end, const Offset(180, 41));
       expect(
         canvas.lines.map((line) => line.paint.strokeCap),
@@ -196,6 +197,7 @@ void main() {
       expect(find.text("c:${cState.token}"), findsOneWidget);
       expect(tester.state<_IdentityProbeState>(probeFinder("a")), same(aState));
       expect(cState, isNot(same(aState)));
+
       expect(cState, isNot(same(bState)));
       expect(tester.takeException(), isNull);
     });

@@ -28,6 +28,7 @@ final class EditorOwnerRegistry {
     final first = _retained.add(key);
     final source = workspace.editor(target);
     if (first && !_previous.contains(key)) workspace.retain(key);
+
     final destination = destinationFor;
     if (destination != null) {
       workspace.resources[key]!.destination = destination(target.targetId);

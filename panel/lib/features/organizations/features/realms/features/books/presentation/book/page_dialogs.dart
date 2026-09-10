@@ -88,6 +88,7 @@ class AddPageDialogue extends HookConsumerWidget {
       );
     }
     final selectedKind = kind.value;
+
     if (selectedKind == null) return const SizedBox.shrink();
     final selectedDefinitions = definitions.where(
       (definition) => definition.kind == selectedKind,

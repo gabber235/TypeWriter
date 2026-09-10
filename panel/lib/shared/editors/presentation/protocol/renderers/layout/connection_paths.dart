@@ -80,7 +80,9 @@ Path? _curvedPath(
   if (sourceOffset.valueOrNull == null || targetOffset.valueOrNull == null) {
     return null;
   }
+
   final sourceControl = sourceOffset.valueOrNull!._logical(textDirection);
+
   final targetControl = targetOffset.valueOrNull!._logical(textDirection);
   return Path()
     ..moveTo(source.dx, source.dy)
@@ -119,12 +121,14 @@ _ResolvedBundlePaths? _resolveBundlePaths(
     "bundle bend position",
   );
   diagnostics.addAll(bend.diagnostics);
+
   if (bend.valueOrNull == null) return null;
   final average =
       targets
           .map((target) => target.position)
           .reduce((left, right) => left + right) /
       targets.length.toDouble();
+
   final vertical = path.axis == ConnectionAxis.vertical;
   final trunkCoordinate = vertical
       ? _lerp(source.position.dx, average.dx, bend.valueOrNull!)
@@ -132,15 +136,19 @@ _ResolvedBundlePaths? _resolveBundlePaths(
   final trunkCorner = vertical
       ? Offset(trunkCoordinate, source.position.dy)
       : Offset(source.position.dx, trunkCoordinate);
+
   final sourceAxis = _axisCoordinate(source.position, vertical);
   final targetAxes = [
     for (final target in targets) _axisCoordinate(target.position, vertical),
   ];
+
   final minimumAxis = targetAxes.reduce(math.min);
+
   final maximumAxis = targetAxes.reduce(math.max);
   final primaryAxis = sourceAxis - minimumAxis >= maximumAxis - sourceAxis
       ? minimumAxis
       : maximumAxis;
+
   final secondaryAxis = primaryAxis == minimumAxis ? maximumAxis : minimumAxis;
   final hasSecondaryExtent =
       minimumAxis < sourceAxis && maximumAxis > sourceAxis;
@@ -198,6 +206,7 @@ Path _orthogonalBranch(
   final corner = vertical
       ? Offset(trunkCoordinate, target.dy)
       : Offset(target.dx, trunkCoordinate);
+
   return _roundedPath([approach, corner, target], radius);
 }
 
@@ -222,6 +231,7 @@ Path _roundedPath(List<Offset> points, double radius) {
     final corner = points[index];
     final next = points[index + 1];
     final incoming = corner - previous;
+
     final outgoing = next - corner;
     final distance = math.min(
       radius,
@@ -231,7 +241,9 @@ Path _roundedPath(List<Offset> points, double radius) {
       path.lineTo(corner.dx, corner.dy);
       continue;
     }
+
     final entry = corner - Offset.fromDirection(incoming.direction, distance);
+
     final exit = corner + Offset.fromDirection(outgoing.direction, distance);
     path
       ..lineTo(entry.dx, entry.dy)

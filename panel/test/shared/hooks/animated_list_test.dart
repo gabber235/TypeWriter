@@ -106,6 +106,7 @@ void main() {
       expect(find.text("Epsilon"), findsOneWidget);
       expect(find.text("Alpha"), findsNothing);
       expect(find.text("Gamma"), findsNothing);
+
       expect(tester.takeException(), isNull);
     });
 
@@ -133,6 +134,7 @@ void main() {
         const _TestItem(id: "e", label: "Epsilon"),
       ]);
       await tester.pump();
+
       await tester.pump(const Duration(milliseconds: 600));
       await tester.pump();
 
@@ -268,6 +270,7 @@ void main() {
     expect(find.text("Beta"), findsOneWidget);
     expect(find.text("Gamma"), findsOneWidget);
     await tester.pump(const Duration(milliseconds: 301));
+
     await tester.pump();
     expect(source.renderedIds, ["c"]);
     expect(find.text("Alpha"), findsNothing);
@@ -305,6 +308,7 @@ void main() {
     expect(source.renderedIds, ["a", "c"]);
     expect(find.text("Alpha newest"), findsOneWidget);
     expect(find.text("Gamma"), findsOneWidget);
+
     expect(tester.takeException(), isNull);
   });
 

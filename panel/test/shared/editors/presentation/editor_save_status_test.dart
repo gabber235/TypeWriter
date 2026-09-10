@@ -39,6 +39,7 @@ void main() {
         state: EditorSaveState(phase: EditorSavePhase.uncertain),
       ),
     );
+
     await tester.pump(savedFeedbackDuration);
     expect(find.text("Outcome unknown"), findsOneWidget);
     await tester.pumpTestApp(

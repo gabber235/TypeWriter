@@ -61,6 +61,7 @@ class BookPages extends _$BookPages {
     ref.listen(provider, (_, value) {
       if (value.sequence != null) state = AsyncData(project(value));
     });
+
     final lease = ref.watch(
       authoringBookScopeProvider(organizationId, realmId, bookId),
     );
@@ -85,6 +86,7 @@ class Pages extends _$Pages {
           ? AsyncError(ApiException.notFound("Page"), StackTrace.current)
           : AsyncData(Page.fromWire(page, value.sequence!));
     });
+
     final lease = ref.watch(
       authoringPageScopeProvider(organizationId, realmId, pageId),
     );

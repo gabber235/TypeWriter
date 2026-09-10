@@ -23,6 +23,7 @@ void main() {
       ),
     );
     var prepared = false;
+
     final queued = work.enqueue(
       PendingCommit(
         resources: {"resource"},
@@ -43,6 +44,7 @@ void main() {
     integrated.complete();
     await first.run();
     final second = await queued;
+
     expect(await second.run(), const SubmissionResult<int>.confirmed(1));
   });
 
@@ -55,6 +57,7 @@ void main() {
       FlutterError.onError = (_) {};
       addTearDown(() => FlutterError.onError = previousHandler);
       var sends = 0;
+
       var integrations = 0;
       final integrated = Completer<void>();
       final submission = work.start(
@@ -76,12 +79,14 @@ void main() {
       expect(await submission.run(), const SubmissionResult<int>.confirmed(42));
       expect(submission.integrationError, isNotNull);
       expect(submission.canReplay, isFalse);
+
       final refresh = submission.run();
       expect(identical(refresh, submission.run()), isTrue);
       integrated.complete();
       expect(await refresh, const SubmissionResult<int>.confirmed(42));
       expect(submission.integrationError, isNull);
       expect(sends, 1);
+
       expect(integrations, 2);
     },
   );
@@ -113,6 +118,7 @@ void main() {
       );
       await uncertain.run();
       final started = Completer<void>();
+
       final next = work.start(
         PreparedCommit<int>(
           id: "second",
@@ -136,6 +142,7 @@ void main() {
       expect(started.isCompleted, isFalse);
       await uncertain.run();
       expect(await next.run(), const SubmissionResult<int>.confirmed(2));
+
       expect(started.isCompleted, isTrue);
       expect(attempts, 2);
     },

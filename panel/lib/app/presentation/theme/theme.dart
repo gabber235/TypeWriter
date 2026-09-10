@@ -22,6 +22,7 @@ ThemeData buildTheme(Brightness brightness) {
     bodyColor: colorScheme.onSurface,
     displayColor: colorScheme.onSurface,
   );
+
   final base = ThemeData(
     useMaterial3: true,
     brightness: brightness,

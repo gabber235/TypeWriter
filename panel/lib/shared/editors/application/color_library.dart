@@ -90,7 +90,9 @@ class ColorLibrary extends _$ColorLibrary {
     final target = newIndex.clamp(0, state.favorites.length - 1);
     if (target == oldIndex) return;
     final favorites = [...state.favorites];
+
     final value = favorites.removeAt(oldIndex);
+
     favorites.insert(target, value);
     _save(state.copyWith(favorites: favorites));
   }

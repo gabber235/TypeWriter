@@ -26,6 +26,7 @@ void main() {
     var pageName = "Initial";
     final snapshotScopes = <List<wire.AuthoringSnapshotScope_kind>>[];
     wire.PageCompileStatus compileStatus = wire.PageCompileStatus.notCompiled;
+
     nats.registerHandler(_snapshotSubject, (payload) {
       final request = wire.GetAuthoringSnapshotRequest.serializer.fromBytes(
         payload,
@@ -88,6 +89,7 @@ void main() {
         ),
       );
     });
+
     final container = ProviderContainer.test(
       overrides: [
         natsProvider.overrideWithValue(nats),
@@ -105,8 +107,10 @@ void main() {
     await libraryLease.ready;
     final bookLease = container.read(provider.notifier).acquireBook(_book);
     await bookLease.ready;
+
     final pageLease = container.read(provider.notifier).acquirePage(_page);
     await pageLease.ready;
+
     nats.emitMessageOnSubject(
       _eventSubject,
       wire.AuthoringChanged.serializer.toBytes(
@@ -141,6 +145,7 @@ void main() {
         compiled_wire.WatchCompiledContentResponse.createBlocked(),
       ),
     );
+
     await waitForProvider(
       container,
       provider,
@@ -149,12 +154,14 @@ void main() {
               is wire.PageCompileStatus_blockedWrapper,
       description: "blocked page compile status",
     );
+
     await waitForProvider(
       container,
       provider,
       (state) => state.sequence == 4,
       description: "full recovery sequence 4",
     );
+
     expect(container.read(provider).pages[_page]?.name, "During refresh");
     expect(snapshotRequests, 4);
     expect(snapshotScopes.last, [
@@ -162,6 +169,7 @@ void main() {
       wire.AuthoringSnapshotScope_kind.bookWrapper,
       wire.AuthoringSnapshotScope_kind.pageWrapper,
     ]);
+
     final pageOnlyRequestBytes = wire.GetAuthoringSnapshotRequest.serializer
         .toBytes(
           wire.GetAuthoringSnapshotRequest(

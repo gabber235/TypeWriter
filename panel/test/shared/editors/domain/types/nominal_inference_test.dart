@@ -9,6 +9,7 @@ void main() {
     final constantVariable = _ref("ConstVar");
     final backedVariable = _ref("BackedVar");
     const dataType = IntegerType(width: IntegerWidth.signed32);
+
     const valueType = StringType();
     final stringEntryType = NamedType(stringEntry);
     final registry = TypeRegistry(

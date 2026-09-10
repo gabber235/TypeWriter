@@ -21,7 +21,9 @@ extension NamedInputElementRendering on NamedInputElement {
             "Abstract values require a polymorphic control",
           );
         }
+
         const payloadId = BindingId(2147483646);
+
         const payloadReference = BindingReference(bindingId: payloadId);
         final childScope = scope.withVirtualBinding(
           VirtualBindingHost(

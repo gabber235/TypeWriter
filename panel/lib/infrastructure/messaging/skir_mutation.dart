@@ -104,6 +104,7 @@ final class SkirMutationClient {
     SubmissionReplay replay = SubmissionReplay.unsupported,
   }) {
     final bytes = Uint8List.fromList(requestBytes).asUnmodifiableView();
+
     return PreparedCommit<TResponse>(
       id: submissionId ?? uuid.v4(),
       label: label,
@@ -145,8 +146,10 @@ final class SkirMutationClient {
             timeout: const Duration(seconds: 10),
           ),
         );
+
         final value = serializer.fromBytes(response.payload);
         final disposition = classify(value);
+
         return switch (disposition) {
           MutationResponseDisposition.confirmed => SubmissionResult.confirmed(
             value,

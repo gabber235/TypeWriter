@@ -67,11 +67,13 @@ class BoundControlShell extends HookWidget {
         ),
       );
     }
+
     if (shapeMismatch?.call(binding) case final message?) {
       return presentationDiagnostic(context, [
         TypeDiagnostic(code: TypeDiagnosticCode.invalidValue, message: message),
       ]);
     }
+
     final field = BoundControlField._(
       scope: scope,
       binding: binding,
@@ -79,7 +81,9 @@ class BoundControlShell extends HookWidget {
       enabled: scope.enabled && binding.writable,
       readOnly: scope.readOnly,
     );
+
     final child = builder(context, field);
+
     if (!labeled) return child;
     return LabeledControl(control: control, scope: scope, child: child);
   }

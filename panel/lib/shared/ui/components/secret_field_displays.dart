@@ -86,7 +86,9 @@ class _TypewriterLoadingDisplay extends HookWidget {
     final targetText = useState(
       _generateRandomString(minLength + random.nextInt(maxExtra)),
     );
+
     final currentIndex = useState(1);
+
     final typingDelay = 50.ms;
     final waitTicks = (500 / typingDelay.inMilliseconds).floor();
 

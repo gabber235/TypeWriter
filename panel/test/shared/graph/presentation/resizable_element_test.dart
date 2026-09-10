@@ -241,6 +241,7 @@ void main() {
       );
       await tester.pump();
       tester.widget<GestureDetector>(handle).onPanCancel!();
+
       await tester.pumpAndSettle();
 
       expect(startCalls, 1);

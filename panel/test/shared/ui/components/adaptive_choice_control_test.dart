@@ -26,18 +26,21 @@ void main() {
       );
       rebuild(() => choices = {});
       await tester.pump();
+
       expect(tester.takeException(), isNull);
       expect(find.text("No options available"), findsOneWidget);
       expect(find.text("One"), findsNothing);
       await tester.tap(find.text("No options available"));
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pump();
+
       expect(changes, 0);
       rebuild(() => choices = {"one": "One", "two": "Two"});
       await tester.pump();
       expect(find.text("No options available"), findsNothing);
       await tester.tap(find.text("Two"));
       await tester.pump();
+
       expect(changes, 1);
     },
   );

@@ -59,6 +59,7 @@ void main() {
       (previous, next) {},
     );
     addTearDown(subscription.close);
+
     final definitionsSubscription = container.listen(
       availableElementDefinitionsProvider,
       (previous, next) {},
@@ -99,6 +100,7 @@ void main() {
       realmEditorCatalogProvider,
       (previous, next) {},
     );
+
     addTearDown(subscription.close);
 
     connection.add(RealmConnectionState.online);
@@ -151,6 +153,7 @@ void main() {
       (previous, next) {},
     );
     addTearDown(subscription.close);
+
     await _waitFor(() => source.watchCount == 1);
 
     realmId = recordId("service:second");

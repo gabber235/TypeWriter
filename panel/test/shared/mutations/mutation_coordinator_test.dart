@@ -14,12 +14,14 @@ void main() {
         return reservation;
       });
       final disjoint = await coordinator.reserve({"d"});
+
       expect(overlappingStarted, isFalse);
       disjoint.release();
       expect(overlappingStarted, isFalse);
       first.release();
       final second = await overlapping;
       expect(overlappingStarted, isTrue);
+
       second.release();
     },
   );
@@ -33,6 +35,7 @@ void main() {
       final failure = expectLater(blocked, throwsStateError);
       coordinator.dispose();
       await failure;
+
       active.release();
       await expectLater(coordinator.reserve({"b"}), throwsStateError);
     },

@@ -34,6 +34,7 @@ void main() {
       _ => throw StateError("Expected active presence"),
     };
     expect(active.sequence, 1);
+
     final page = switch (active.location) {
       wire.PresenceLocation_pageWrapper(:final value) => value,
       _ => throw StateError("Expected page presence"),

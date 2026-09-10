@@ -18,6 +18,7 @@ final class SkirTypeCodec {
       diagnostics.addAll(encoded.diagnostics);
       if (encoded.valueOrNull case final value?) arguments.add(value);
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     return TypeResult.success(
       wire.ResolvedTypeRef(
@@ -41,6 +42,7 @@ final class SkirTypeCodec {
       diagnostics.addAll(decoded.diagnostics);
       if (decoded.valueOrNull case final item?) arguments.add(item);
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     return TypeResult.success(
       ResolvedTypeRef(
@@ -150,6 +152,7 @@ final class SkirTypeCodec {
       if (encoded.valueOrNull case final result?) values.add(result);
     }
     final valueType = encodeExpression(value.valueType);
+
     diagnostics.addAll(valueType.diagnostics);
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     return TypeResult.success(
@@ -176,6 +179,7 @@ final class SkirTypeCodec {
         }
       }
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     return TypeResult.success(
       EnumType(valueType: valueType.valueOrNull!, values: values),

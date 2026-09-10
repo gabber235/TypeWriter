@@ -71,6 +71,7 @@ class ServicesPackedPacker {
       }
       components.add(component);
     }
+
     return components;
   }
 
@@ -90,6 +91,7 @@ class ServicesPackedPacker {
     final naturalRowWidths = {
       for (final rank in orderedRanks) rank: _rowWidth(rows[rank]!),
     };
+
     var componentWidth = naturalRowWidths.values.reduce(max);
     final singleRows = orderedRanks
         .where((rank) => rows[rank]!.length == 1)
@@ -110,6 +112,7 @@ class ServicesPackedPacker {
       final rowWidth = naturalWidth + extraSpacing;
       var x = (componentWidth - rowWidth) ~/ 2;
       final rowHeight = row.map((node) => node.height).reduce(max);
+
       for (var index = 0; index < row.length; index++) {
         final node = row[index];
         placements[node.id] = ServicesPackedGridPlacement(
@@ -123,6 +126,7 @@ class ServicesPackedPacker {
       }
       y += rowHeight + gap;
     }
+
     final id = component
         .map((node) => node.id.id)
         .reduce((left, right) => left.compareTo(right) <= 0 ? left : right);
@@ -160,6 +164,7 @@ class ServicesPackedPacker {
               .where((entry) => entry.value == 0)
               .map((entry) => entry.key),
         );
+
     final ranks = <GraphIdentifier, int>{for (final id in queue) id: 0};
     while (queue.isNotEmpty) {
       final current = queue.first;
@@ -195,6 +200,7 @@ class ServicesPackedPacker {
     }
     Point<int>? best;
     _PlacementScore? bestScore;
+
     for (final y in ys.toList()..sort()) {
       for (final x in xs.toList()..sort()) {
         final candidate = _PackedComponent(

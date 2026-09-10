@@ -134,6 +134,7 @@ List<TreeNode<T>> _createTreeNode<T>(
     path: currentPath.join(overlappingNode.name),
     children: overlappingNode.children,
   );
+
   final remainingPath = path.removePrefixPart(overlappingPath);
   final newNode = _createTreeNode(
     <TreeNode<T>>[],

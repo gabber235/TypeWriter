@@ -92,6 +92,7 @@ extension OrganizationTopologyConfiguration on OrganizationTopology {
                   item.engineId == change.engine?.engineId),
         )
         .toList();
+
     if (change.realm case final value?) {
       var realm = TopologyRealm.fromSkir(value);
       final previous = realms.firstWhereOrNull(

@@ -74,6 +74,7 @@ class OrganizationTopologyController extends _$OrganizationTopologyController {
           _ => MutationResponseDisposition.rejected,
         },
       );
+
       switch (response) {
         case skir.ConfigureServiceHostResponse_successWrapper(:final value):
           if (active) {

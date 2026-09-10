@@ -33,11 +33,13 @@ void topologyStateTests() {
           );
           addTearDown(nats.dispose);
           addTearDown(container.dispose);
+
           final provider = organizationTopologyControllerProvider(
             _organizationId,
           );
           container.listen(provider, (_, _) {});
           await container.read(provider.future);
+
           final change = skir.HostConfigurationChange(
             host: _host(revision: 2),
             realm: null,
@@ -66,6 +68,7 @@ void topologyStateTests() {
                   command,
                   completion(isA<TopologyConfigurationResult>()),
                 );
+
           await _waitFor(
             () => nats.requests.any(
               (request) => request.subject == _configureSubject,
@@ -91,6 +94,7 @@ void topologyStateTests() {
                 : skir.ConfigureServiceHostResponse.wrapSuccess(change),
           );
           await commandCompleted;
+
           expect(
             container.read(provider).requireValue.hosts.single.revision,
             2,
@@ -122,6 +126,7 @@ void topologyStateTests() {
             () => container.read(provider).requireValue.hosts.length == 3,
           );
           final observed = container.read(provider).requireValue;
+
           expect(observed.hosts.first.revision, 2);
           expect(observed.hosts.first.state.message, "fresh");
           expect(observed.realmInstances, isEmpty);
@@ -138,6 +143,7 @@ void topologyStateTests() {
           await _waitFor(
             () => container.read(provider).requireValue.hosts.length == 2,
           );
+
           expect(
             container.read(provider).requireValue.hosts.first.state.message,
             "fresh",
@@ -183,6 +189,7 @@ void topologyStateTests() {
         ],
       );
       addTearDown(nats.dispose);
+
       addTearDown(container.dispose);
       final first = organizationTopologyControllerProvider(_organizationId);
       final second = organizationTopologyControllerProvider(otherId);
@@ -192,6 +199,7 @@ void topologyStateTests() {
         container.read(first.future),
         container.read(second.future),
       ]);
+
       await container
           .read(first.notifier)
           .configureHost(
@@ -206,6 +214,7 @@ void topologyStateTests() {
       subscription.close();
       container.invalidate(first);
       await container.pump();
+
       expect(nats.subscriptionSubjects, [
         "cloud.from.organization.org2.topology.watch",
       ]);
@@ -246,6 +255,7 @@ void topologyStateTests() {
       );
       addTearDown(container.dispose);
       addTearDown(nats.dispose);
+
       container.listen(organizationTopologyStreamProvider, (_, _) {});
       await container.read(organizationTopologyStreamProvider.future);
       final execution = skir.HostExecutionConfiguration(

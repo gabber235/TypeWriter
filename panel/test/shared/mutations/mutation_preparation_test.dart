@@ -11,6 +11,7 @@ void main() {
       final drafts = {"A": "red", "B": "red"};
       final requests = <List<String>>[];
       var preparations = 0;
+
       final combiner = MutationCombiner<String, int>(
         prepare: (operations) {
           preparations++;
@@ -45,12 +46,14 @@ void main() {
       final queued = work.enqueue(pending.single);
       drafts["A"] = "blue";
       expect(preparations, 0);
+
       blocker.release();
       final submission = await queued;
       expect(await submission.run(), isA<SubmissionUncertain>());
       drafts["A"] = "green";
       await submission.run();
       expect(preparations, 1);
+
       expect(requests, [
         ["A:blue", "B:red"],
         ["A:blue", "B:red"],
@@ -120,6 +123,7 @@ void main() {
       );
       expect(disposed, isTrue);
       final reservation = await work.coordinator.reserve({"A"});
+
       reservation.release();
       expect(work.submissions, isEmpty);
     },

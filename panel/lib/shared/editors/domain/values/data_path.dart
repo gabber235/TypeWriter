@@ -64,6 +64,7 @@ abstract class DataPath with _$DataPath {
     if (offset == segments.length - 1) {
       return segment.replace(current, replacement);
     }
+
     final child = segment.read(current);
     if (child case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);

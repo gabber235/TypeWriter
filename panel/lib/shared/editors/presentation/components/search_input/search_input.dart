@@ -38,14 +38,18 @@ class PresentationSearchInput extends HookConsumerWidget {
     final editing = useState(false);
     final original = useRef(binding.value);
     final explicitExit = useRef(false);
+
     final interaction = useEditorFieldInteraction(scope, binding.reference);
+
     final selectingWithPointer = useRef(false);
+
     final validationMessage = useState<String?>(null);
     final selections = useMemoized(
       () => StreamController<PresentationSearchSelectionEvent>.broadcast(
         sync: true,
       ),
     );
+
     useEffect(() => selections.close, [selections]);
     final historyStorage = useMemoized(
       () => PresentationSearchHistoryStorage(
@@ -75,6 +79,7 @@ class PresentationSearchInput extends HookConsumerWidget {
       }
       inputController.endInteraction();
       inputController.inputFocusNode.unfocus();
+
       editing.value = false;
       if (restoreFocus) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -88,6 +93,7 @@ class PresentationSearchInput extends HookConsumerWidget {
       final current = binding.value;
       if (current is! ListValue) return null;
       final values = [...current.values];
+
       final index = values.indexOf(selected);
       if (toggle && index >= 0) {
         values.removeAt(index);
@@ -112,8 +118,11 @@ class PresentationSearchInput extends HookConsumerWidget {
         validationMessage.value = diagnostics.first.message;
         return false;
       }
+
       validationMessage.value = null;
+
       scope.update(binding.reference, next);
+
       if (finishAfterUpdate) finish();
       return true;
     }
@@ -131,6 +140,7 @@ class PresentationSearchInput extends HookConsumerWidget {
       )) {
         return;
       }
+
       if (!commit) return;
       selections.add(
         PresentationSearchSelectionEvent(
@@ -163,9 +173,11 @@ class PresentationSearchInput extends HookConsumerWidget {
         toggle: false,
         finishAfterUpdate: element.selectionMode == SearchSelectionMode.single,
       );
+
       if (accepted && element.selectionMode == SearchSelectionMode.multiple) {
         finish();
       }
+
       return accepted;
     }
 
@@ -215,11 +227,14 @@ class PresentationSearchInput extends HookConsumerWidget {
           original.value = binding.value;
           interaction.begin();
           explicitExit.value = false;
+
           validationMessage.value = null;
           if (element.selectionMode == SearchSelectionMode.single) {
             controller.updateQuery(initialQuery());
           }
+
           inputController.inputFocusNode.unfocus();
+
           editing.value = true;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!editing.value) return;

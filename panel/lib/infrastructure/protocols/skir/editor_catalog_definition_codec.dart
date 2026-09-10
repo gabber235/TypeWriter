@@ -66,6 +66,7 @@ final class SkirCatalogDefinitionCodec {
     }
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     final primary = value.primaryInput;
+
     if (primary != null &&
         !inputs.any((input) => input.id.value == primary.value)) {
       return invalidWire("Primary presentation input is not declared");

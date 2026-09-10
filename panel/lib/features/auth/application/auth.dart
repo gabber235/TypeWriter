@@ -190,6 +190,7 @@ Future<AccessToken?> accessToken(Ref ref) async {
   if (token == null) {
     return null;
   }
+
   final expiresAt = user.token.expiresIn != null
       ? user.token.creationTime.add(user.token.expiresIn!)
       : null;

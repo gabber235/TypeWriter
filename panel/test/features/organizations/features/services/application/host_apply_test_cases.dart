@@ -17,6 +17,7 @@ void _testHostApply() {
     () async {
       final harness = await _Harness.create();
       addTearDown(harness.dispose);
+
       final owners = EditorOwnerRegistry();
       addTearDown(owners.dispose);
       final model = harness.selectable.buildPresentation(owners);
@@ -25,8 +26,10 @@ void _testHostApply() {
               as EditorSource;
       final path = DataPath.root.field("realm");
       final interaction = owner.beginInteraction(path);
+
       owner.update(path, _mode("RealmHosted", {"target": StringValue("")}));
       await interaction.commit();
+
       expect(
         harness.nats.requests.where(
           (request) => request.subject == _configureSubject,
@@ -89,6 +92,7 @@ void _testHostApply() {
           ),
         );
       });
+
       expect(await owner.flush(), isA<MutationSuccess>());
       expect(
         harness.nats.requests.where(
@@ -112,6 +116,7 @@ void _testHostApply() {
     await harness.container.read(userIdProvider.future);
     final workspace = harness.container.read(localWorkProvider);
     final view = EditorOwnerRegistry(workspace: workspace);
+
     final owner =
         ((harness.selectable.buildPresentation(view).inputs[const BindingId(1)]!
                       as PresentationEditInput)
@@ -126,6 +131,7 @@ void _testHostApply() {
     harness.topologySubscription.close();
     organization = recordId("organization:org2");
     harness.container.invalidate(organizationIdProvider);
+
     await harness.container.pump();
     harness.respond(
       _configureSubject,
@@ -173,6 +179,7 @@ void _testHostApply() {
         ),
         isA<AppliedEditorMutation>(),
       );
+
       expect(
         owner.draftDiagnostics.map((issue) => issue.path),
         contains(DataPath.root.field("engine").field("realm")),
@@ -184,6 +191,7 @@ void _testHostApply() {
         ),
         isEmpty,
       );
+
       owner.update(
         DataPath.root.field("realm"),
         _mode("RealmHosted", {"target": StringValue("paper@*")}),
@@ -198,6 +206,7 @@ void _testHostApply() {
         isEmpty,
       );
       owner.discardDraft();
+
       expect(owner.hasWork, isFalse);
     },
   );

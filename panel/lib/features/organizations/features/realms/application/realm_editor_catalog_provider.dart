@@ -26,6 +26,7 @@ RealmEditorCatalogCache? realmEditorCatalogCache(Ref ref) {
     ),
   );
   ref.onDispose(cache.dispose);
+
   cache.start();
   return cache;
 }
@@ -105,6 +106,7 @@ final activeRealmEditorRuntimeProvider = Provider<EditorRealmRuntime?>((ref) {
   final registry = TypeRegistry(
     bootstrapTypeCatalog(snapshot.catalog.definitions),
   );
+
   final commandTransport = NatsRealmCapabilityTransport(
     ref: ref,
     organizationId: organizationId,
@@ -180,6 +182,7 @@ Future<RealmCommandResult> _executeRealmAction({
   if (payload case TypeFailure(:final diagnostics)) {
     return RealmCommandResult.invalid(diagnostics);
   }
+
   final diagnostics = payload.valueOrNull!.validateAgainst(
     NamedType(definition.requestType),
     registry: registry,
@@ -227,6 +230,7 @@ extension RealmEditorCatalogElementResolution
       ...builtinPresentationDefinitions().map((definition) => definition.id),
       ...snapshot.presentations.keys,
     };
+
     final missingPresentationIds = {
       for (final type in catalog.definitions)
         ...[

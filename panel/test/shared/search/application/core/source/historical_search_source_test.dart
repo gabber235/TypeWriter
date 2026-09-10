@@ -26,6 +26,7 @@ void main() {
       );
       addTearDown(source.dispose);
       addTearDown(selections.close);
+
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
@@ -50,6 +51,7 @@ void main() {
       await flushEvents();
       harness.source.search(queryContext("query"));
       final one = searchResult("one");
+
       final two = searchResult("two");
       final three = searchResult("three");
       harness.inner.emitSnapshot(
@@ -99,6 +101,7 @@ void main() {
         committedSelections: selections.stream,
       );
       addTearDown(source.dispose);
+
       addTearDown(selections.close);
       source.initialize();
       source.search(queryContext("query"));
@@ -127,6 +130,7 @@ void main() {
         committedSelections: selections.stream,
       );
       addTearDown(source.dispose);
+
       addTearDown(selections.close);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
@@ -154,6 +158,7 @@ void main() {
         committedSelections: selections.stream,
       );
       final snapshots = <SearchSourceSnapshot>[];
+
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
       addTearDown(selections.close);

@@ -80,6 +80,7 @@ final class ElementEditorResource extends AuthoringEditorResource {
       RealmEditorCatalogRequest(types: {root}),
     );
     repository.session.checkActive();
+
     final catalog = switch (fetched) {
       RealmEditorCatalogFetched(:final snapshot) => bootstrapTypeCatalog(
         snapshot.catalog.definitions,

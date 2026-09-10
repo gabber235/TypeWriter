@@ -77,6 +77,7 @@ void main() {
       );
       expect(changes, isEmpty);
       choices.value = {"one": "One"};
+
       await tester.pumpAndSettle();
       expect(changes, ["one"]);
       choices.value = {"two": "Two"};

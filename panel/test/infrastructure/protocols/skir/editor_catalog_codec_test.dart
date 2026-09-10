@@ -29,6 +29,7 @@ void main() {
   final values = SkirDataValueCodec(types);
   final expressionEncoder = SkirExpressionEncoder(types, values);
   final expressionDecoder = SkirExpressionDecoder(types, values);
+
   final presentationEncoder = SkirPresentationEncoder(
     expressionEncoder,
     SkirActionEncoder(expressionEncoder, values),
@@ -49,6 +50,7 @@ void main() {
   test("maps all direct catalogue definition shapes and fields", () {
     final encodedCatalog = catalog.encodeWire().valueOrNull!;
     final encodedType = encodedCatalog.definitions.single;
+
     expect(encodedType.typeId.kind, wire_type.TypeId_kind.qualifiedWrapper);
     expect(encodedType.revision, 1);
     expect(
@@ -61,6 +63,7 @@ void main() {
     );
     expect(encodedType.defaultPresentationId?.namespace, "example");
     expect(encodedType.defaultPresentationId?.name, "main");
+
     expect(encodedCatalog.decodeDomain().valueOrNull!.catalog, catalog);
 
     final presentation = PresentationDefinition.single(
@@ -68,6 +71,7 @@ void main() {
       target: NamedType(reference),
       root: const PresentationNode(id: "root", element: DividerElement()),
     );
+
     final encodedPresentation = definitions
         .encodePresentation(presentation)
         .valueOrNull!;
@@ -82,6 +86,7 @@ void main() {
       encodedPresentation.root.element?.kind,
       wire_presentation.PresentationElement_kind.dividerConst,
     );
+
     expect(
       definitions.decodePresentation(encodedPresentation).valueOrNull,
       presentation,
@@ -92,6 +97,7 @@ void main() {
       requestType: types.encodeReference(reference).valueOrNull!,
       resultType: types.encodeReference(reference).valueOrNull!,
     );
+
     expect(
       definitions.decodeCapability(capability).valueOrNull,
       CapabilityDefinition.computation(
@@ -105,6 +111,7 @@ void main() {
       rootType: reference,
       rootValue: RecordValue(const {"name": StringValue("Entry")}),
     );
+
     final encodedEnvelope = definitions.encodeEnvelope(envelope).valueOrNull!;
     expect(
       encodedEnvelope.rootType,

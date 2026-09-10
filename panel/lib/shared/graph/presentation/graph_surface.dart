@@ -162,6 +162,7 @@ class RenderGraphSurface extends RenderBox
           maxHeight: placed.bounds.height,
         ),
       );
+
       parentData.offset = placed.position;
       child = parentData.nextSibling;
     }
@@ -180,8 +181,11 @@ class RenderGraphSurface extends RenderBox
     final pattern = _dotPattern;
     final spacing = cellSize * pattern.stride;
     final nextStride = pattern.stride * 2;
+
     final startX = (viewport.left / spacing).ceil() * spacing;
+
     final startY = (viewport.top / spacing).ceil() * spacing;
+
     final opaquePaint = Paint()..color = dotColor;
     final fadingPaint = Paint()
       ..color = dotColor.withValues(alpha: dotColor.a * pattern.fadingOpacity);
@@ -247,7 +251,9 @@ class RenderGraphSurface extends RenderBox
       min(graphLayout.data.cellSize / 4, 12.0),
       availableLength / 2,
     );
+
     final arrowWidth = arrowLength * 0.75;
+
     final arrowBase = arrowTip - direction * arrowLength;
     final perpendicular = Offset(-direction.dy, direction.dx) * arrowWidth;
 

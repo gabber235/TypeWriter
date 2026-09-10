@@ -40,6 +40,7 @@ void _testTopologySelectionRemoval() {
                 ),
               );
         await container.pump();
+
         await container.read(organizationTopologyStreamProvider.future);
         final identifier = switch (kind) {
           "host" => ServiceHostIdentifier(harness.host.hostId),
@@ -71,6 +72,7 @@ void _testTopologySelectionRemoval() {
             identifier,
           ),
         );
+
         expect(
           removed.asError?.stackTrace.toString(),
           contains("topology_selection.dart"),
@@ -83,6 +85,7 @@ void _testTopologySelectionRemoval() {
         isEmpty,
       );
       await tester.pump(Duration.zero);
+
       expect(tester.takeException(), isNull);
     });
   }

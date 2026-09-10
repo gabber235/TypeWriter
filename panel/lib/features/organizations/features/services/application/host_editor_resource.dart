@@ -53,6 +53,7 @@ final class HostEditorSnapshot extends EditorSnapshot {
     final id = value.substring(0, separator);
     final constraint = value.substring(separator + 1);
     if (!(targets[id]?.contains(constraint) ?? false)) return null;
+
     return TopologyEngineTarget(engineId: id, versionConstraint: constraint);
   }
 }

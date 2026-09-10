@@ -54,6 +54,7 @@ void main() {
           },
         ),
       );
+
       workspace.retain(_key);
       source.update(_title, const StringValue("Draft"));
       final replacement = workspace.editor(
@@ -81,6 +82,7 @@ void main() {
         source.value(_description).valueOrNull,
         const StringValue("Remote description"),
       );
+
       expect(await source.flush(), isA<MutationInvalid>());
       expect(newSends, 0);
       reject = false;
@@ -104,6 +106,7 @@ void main() {
         },
       ),
     );
+
     workspace.retain(_key);
     source.update(_title, const StringValue("First"));
     final pending = source.flush();
@@ -117,6 +120,7 @@ void main() {
       ),
     );
     response.complete(MutationSuccess(revision: 2, value: captured.rootValue));
+
     expect(await pending, isA<MutationSuccess>());
     expect(newSends, 0);
     source.update(_title, const StringValue("Second"));
@@ -147,6 +151,7 @@ void main() {
         ),
       );
       workspace.retain(_key);
+
       source.update(_title, const StringValue("Submitted"));
       expect(await source.flush(), isA<MutationUncertain>());
       workspace.editor(

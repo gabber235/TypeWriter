@@ -44,6 +44,7 @@ void _testHostTargetSelection() {
             versionConstraint: "^2",
           ),
         );
+
         final harness = (await tester.runAsync(
           () => _Harness.create(
             supportedEngineIds: ["paper", "other"],
@@ -53,6 +54,7 @@ void _testHostTargetSelection() {
         addTearDown(harness.dispose);
         final owners = EditorOwnerRegistry();
         addTearDown(owners.dispose);
+
         final model = harness.selectable.buildPresentation(owners);
         final owner =
             ((model.inputs[const BindingId(1)]! as PresentationEditInput).owner
@@ -67,6 +69,7 @@ void _testHostTargetSelection() {
         await tester.pumpTestApp(
           child: SingleChildScrollView(child: ComposedEditor(model: model)),
         );
+
         expect(find.text("Assigned Realm"), findsOneWidget);
         expect(find.text("Compatible Realm"), findsWidgets);
         expect(find.text("Incompatible Realm"), findsNothing);
@@ -76,6 +79,7 @@ void _testHostTargetSelection() {
         );
         expect(owner.draftDiagnostics, isEmpty);
         skir.ConfigureServiceHostRequest? submitted;
+
         harness.respond(_configureSubject, (bytes) {
           submitted = skir.ConfigureServiceHostRequest.serializer.fromBytes(
             bytes,
@@ -118,6 +122,7 @@ void _testHostTargetSelection() {
           isA<AppliedEditorMutation>(),
         );
         expect(owner.draftDiagnostics, isNotEmpty);
+
         owner.update(
           DataPath.root.field("realm"),
           _mode("RealmHosted", {"target": const StringValue("paper@*")}),

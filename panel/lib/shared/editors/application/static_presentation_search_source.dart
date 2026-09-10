@@ -58,13 +58,17 @@ final class StaticPresentationSearchSource implements SearchSource {
       _snapshots.add(_error(diagnostics));
       return;
     }
+
     final values = evaluated.valueOrNull!;
     if (values is! ListValue) {
       _snapshots.add(_message("Static search values must evaluate to a list"));
       return;
     }
+
     final itemType = _itemType(provider.values.resultType);
+
     final nodes = <SearchNode>[];
+
     final errors = <SearchErrorSummary>[];
     for (final value in values.values) {
       final mapped = _map(value, itemType, context);

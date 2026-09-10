@@ -123,6 +123,7 @@ class EntryLinkWithDuplicateOperation extends ActivatorShortcutOperation {
     // 1) Pick target entry.
     // 2) Duplicate it.
     // 3) Link to the duplicate on the chosen path.
+
     // 4) Persist + refresh.
   }
 
@@ -201,6 +202,7 @@ class EntryDuplicateOperation extends ActivatorShortcutOperation {
         "Entries from different pages cannot be duplicated together",
       );
     }
+
     final duplicated = await ref.withReadyPageElements(pageIds.single, (
       elements,
     ) {
@@ -267,6 +269,7 @@ class EntryDeleteOperation extends IntentShortcutOperation {
         "Entries from different pages cannot be deleted together",
       );
     }
+
     await ref.withReadyPageElements(pageIds.single, (elements) {
       _requireEntriesOnPage(ref, entries, pageIds.single);
       return elements.deleteAll(entries.map((entry) => entry.id.id).toList());
@@ -343,13 +346,16 @@ class EntryMoveToPageOperation extends ActivatorShortcutOperation {
     final entries = selected.whereType<EntrySelection>().toList(
       growable: false,
     );
+
     final cached = _cachedEntries(ref, entries);
     final sourcePageIds = {for (final entry in cached) entry.pageId};
+
     if (sourcePageIds.length != 1) {
       throw ApiException.badRequest(
         "Entries from different pages cannot be moved together",
       );
     }
+
     final placementKinds = {
       for (final entry in cached) entry.definition.placement.kind,
     };
@@ -358,6 +364,7 @@ class EntryMoveToPageOperation extends ActivatorShortcutOperation {
         "Graph and timeline entries cannot be moved together",
       );
     }
+
     final books = await ref.read(booksProvider.future);
     final pages =
         (await Future.wait([
@@ -381,6 +388,7 @@ class EntryMoveToPageOperation extends ActivatorShortcutOperation {
               };
             })
             .toList(growable: false);
+
     if (!ref.context.mounted) return;
     final target = await _selectTargetPage(ref.context, pages);
     if (target == null) return;

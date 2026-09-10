@@ -60,6 +60,7 @@ class Graph extends HookConsumerWidget {
     final focusedBox = focusedContext.findRenderObject() as RenderBox?;
     final viewerBox =
         viewerKey.currentContext?.findRenderObject() as RenderBox?;
+
     if (focusedBox == null || viewerBox == null) return;
     if (!_isDescendant(focusedBox, viewerBox)) return;
 
@@ -101,7 +102,9 @@ class Graph extends HookConsumerWidget {
               initialTransform: Matrix4.identity()
                 ..translateByDouble(centerOffset.dx, centerOffset.dy, 0, 1),
             );
+
             final interactionController = useGraphInteractionController();
+
             final preview = interactionController.preview(data.cellSize);
             final layout = useMemoized(
               () =>
@@ -113,9 +116,13 @@ class Graph extends HookConsumerWidget {
                 interactionController.resize,
               ],
             );
+
             final graphKey = useGlobalKey();
+
             final viewerKey = useGlobalKey();
+
             final dragStart = useState<Offset?>(null);
+
             final ignoreCentering = useState<List<FocusNode>>([]);
             final currentMode = ref.watch(currentInteractionModeProvider);
 
@@ -237,7 +244,9 @@ class Graph extends HookConsumerWidget {
                                     dx: dx,
                                     dy: dy,
                                   );
+
                               if (changes.isEmpty) return null;
+
                               onElementsMoved!(changes);
                               _scheduleCenterFocused(
                                 controller: viewportController,
@@ -263,6 +272,7 @@ class Graph extends HookConsumerWidget {
                                     dh: dh,
                                   );
                               if (changes.isEmpty) return null;
+
                               onElementsResized!(changes);
                               _scheduleCenterFocused(
                                 controller: viewportController,
@@ -341,6 +351,7 @@ class Graph extends HookConsumerWidget {
                             graphKey.currentContext?.findRenderObject()
                                 as RenderBox?;
                         assert(renderBox != null, "Graph render box not found");
+
                         dragStart.value = placed.position;
                         interactionController
                           ..beginMove(

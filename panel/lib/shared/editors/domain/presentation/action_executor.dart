@@ -150,15 +150,19 @@ extension on RemoveListItemAction {
     if (position case TypeFailure(:final diagnostics)) {
       return LocalMutationInvalid(diagnostics);
     }
+
     final resolved = binding.valueOrNull!;
     if (resolved.type is! ListType || resolved.value is! ListValue) {
       return invalidLocalMutation("Remove target must be a list");
     }
+
     final values = List<DataValue>.of((resolved.value as ListValue).values);
+
     final offset = position.valueOrNull!;
     if (offset < 0 || offset >= values.length) {
       return invalidLocalMutation("Remove index is outside the list");
     }
+
     values.removeAt(offset);
     return target.replaceValue(
       resolved.type,
@@ -207,6 +211,7 @@ LocalMutationResult _insertValue(
   if (index < 0 || index > values.length) {
     return invalidLocalMutation("Insert index is outside the list");
   }
+
   final evaluated = value.evaluate(context, registry: registry, budget: budget);
   if (evaluated case TypeFailure(:final diagnostics)) {
     return LocalMutationInvalid(diagnostics);
@@ -215,7 +220,9 @@ LocalMutationResult _insertValue(
     type.element,
     registry: registry,
   );
+
   if (diagnostics.isNotEmpty) return LocalMutationInvalid(diagnostics);
+
   values.insert(index, evaluated.valueOrNull!);
   return binding.reference.replaceValue(
     type,

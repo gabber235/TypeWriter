@@ -104,6 +104,7 @@ void main() {
           ),
         );
         final firstResource = _BatchResource("first", combiner);
+
         final secondResource = _BatchResource("second", combiner)
           ..unavailable = failRefresh;
         final first = _source(workspace, firstResource);
@@ -116,6 +117,7 @@ void main() {
         );
         expect(result.values, everyElement(isA<MutationUnavailable>()));
         expect(requests, hasLength(failRefresh ? 0 : 1));
+
         expect(first.hasWork, isTrue);
         expect(second.hasWork, isTrue);
 
@@ -131,6 +133,7 @@ void main() {
           const StringValue("Second"),
         ]);
         expect(firstResource.reads, 2);
+
         expect(secondResource.reads, 2);
         expect(first.hasWork, isFalse);
         expect(second.hasWork, isFalse);
@@ -165,6 +168,7 @@ void main() {
       );
       final firstResource = _BatchResource("first", combiner);
       final secondResource = _BatchResource("second", combiner);
+
       final first = _source(workspace, firstResource);
       final second = _source(workspace, secondResource);
       final result = await EditorBatch.submit(
@@ -176,6 +180,7 @@ void main() {
       expect(result.values, everyElement(isA<MutationUncertain>()));
       expect(await second.flush(), isA<MutationSuccess>());
       expect(requests, hasLength(2));
+
       expect(requests.last, same(requests.first));
       expect(firstResource.reads, 1);
       expect(secondResource.reads, 1);

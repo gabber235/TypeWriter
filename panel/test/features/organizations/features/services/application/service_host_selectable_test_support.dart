@@ -29,6 +29,7 @@ class _Harness {
         lastSeen: DateTime.now(),
       ),
     );
+
     final host = skir.ServiceHost(
       hostId: recordId("service_host:paper"),
       serviceId: service.serviceId,
@@ -45,6 +46,7 @@ class _Harness {
         updatedAt: DateTime.utc(2026, 8, 21),
       ),
     );
+
     final realm = skir.RealmInstance(
       realmId: recordId("realm_instance:paper"),
       ownerHost: skir.OwnerHost(id: host.hostId, name: service.name),
@@ -55,11 +57,13 @@ class _Harness {
       ),
       state: skir.ChildRuntimeState.defaultInstance,
     );
+
     final topology = OrganizationTopology(
       hosts: [TopologyHost.fromSkir(host)],
       realmInstances: realms.map(TopologyRealm.fromSkir).toList(),
       engineInstances: [],
     );
+
     nats
       ..registerHandler(
         "cloud.to.user.user1.organization.${_organizationId.id}.topology.watch",
@@ -95,6 +99,7 @@ class _Harness {
         ).overrideWith(() => _SeededTopology(topology)),
       ],
     );
+
     await container.read(userIdProvider.future);
     final servicesSubscription = container.listen(
       servicesProvider,
@@ -106,12 +111,14 @@ class _Harness {
     );
     await container.read(servicesProvider.future);
     await container.read(organizationTopologyStreamProvider.future);
+
     container
         .read(selectionProvider.notifier)
         .select(ServiceHostIdentifier(host.hostId));
     final selectable =
         container.read(selectedProvider).requireValue.single
             as InspectableSelectable;
+
     return _Harness._(
       nats: nats,
       container: container,

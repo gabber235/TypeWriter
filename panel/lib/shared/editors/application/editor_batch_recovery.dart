@@ -16,6 +16,7 @@ extension _BatchRecovery on EditorBatch {
           ),
       });
     }
+
     final changes = {
       for (final entry in _paths.entries)
         if (!entry.key._disposed && entry.key._rejectedBatch == this)
@@ -26,6 +27,7 @@ extension _BatchRecovery on EditorBatch {
     };
     final operation = EditorBatch.submit(changes: changes, send: _send);
     _recovery = operation;
+
     return operation.whenComplete(() => _recovery = null);
   }
 
@@ -43,12 +45,14 @@ extension _BatchRecovery on EditorBatch {
     if (uncertain.isEmpty) return _results;
     final first = uncertain.first;
     final result = await (first.value as MutationUncertain).replay!();
+
     if (result is MutationUncertain) return _results;
     _results = {
       first.key: result,
       for (final entry in uncertain.skip(1))
         entry.key: await (entry.value as MutationUncertain).replay!(),
     };
+
     _settle();
     return _results;
   }

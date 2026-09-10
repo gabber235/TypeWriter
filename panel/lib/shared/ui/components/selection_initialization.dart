@@ -58,12 +58,14 @@ class _SelectionInitializationState<T extends Object>
     if (widget.selected != null) _initialized = true;
     if (_initialized || !widget.enabled || widget.onSelected == null) return;
     final choices = widget.choices.toSet();
+
     final preferred = widget.defaultValue;
     final candidate = choices.contains(preferred)
         ? preferred
         : choices.length == 1
         ? choices.single
         : null;
+
     if (candidate == null) return;
     scheduleMicrotask(() {
       if (generation != _generation) return;

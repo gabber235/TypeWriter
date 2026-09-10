@@ -23,6 +23,7 @@ void main() {
       addTearDown(cache.dispose);
       final states = <RealmEditorCatalogState>[];
       final subscription = cache.states.listen(states.add);
+
       addTearDown(subscription.cancel);
       cache.start();
       await _waitFor(
@@ -49,6 +50,7 @@ void main() {
         final cache = _cache(source);
         addTearDown(cache.dispose);
         cache.start();
+
         await _waitFor(() => source.requests.length == 1);
 
         await cache.refresh();
@@ -75,6 +77,7 @@ void main() {
         final cache = _cache(source);
         addTearDown(cache.dispose);
         cache.start();
+
         await _waitFor(() => source.requests.length == 1);
         final firstLease = cache.acquire(
           RealmEditorCatalogRequest(types: {firstType}),
@@ -85,6 +88,7 @@ void main() {
           RealmEditorCatalogRequest(types: {secondType}),
         );
         addTearDown(secondLease.close);
+
         await _waitFor(() => source.requests.length == 3);
         expect(source.requests[1].types, {firstType});
         expect(source.requests[2].types, {firstType, secondType});
@@ -105,6 +109,7 @@ void main() {
       final states = <RealmEditorCatalogState>[];
       final subscription = cache.states.listen(states.add);
       addTearDown(subscription.cancel);
+
       cache.start();
       await _waitFor(() => source.requestedGenerations.length == 1);
 
@@ -133,6 +138,7 @@ void main() {
       final states = <RealmEditorCatalogState>[];
       final subscription = cache.states.listen(states.add);
       addTearDown(subscription.cancel);
+
       cache.start();
       await _waitFor(
         () => states.whereType<RealmEditorCatalogReady>().isNotEmpty,
@@ -193,6 +199,7 @@ void main() {
       );
       cache.start();
       await ready;
+
       final unavailable = cache.states.firstWhere(
         (state) => state is RealmEditorCatalogUnavailable,
       );
@@ -215,6 +222,7 @@ void main() {
       final cache = _cache(source);
       addTearDown(cache.dispose);
       final states = <RealmEditorCatalogState>[];
+
       final subscription = cache.states.listen(states.add);
       addTearDown(subscription.cancel);
       cache.start();
@@ -251,6 +259,7 @@ void main() {
         final states = <RealmEditorCatalogState>[];
         final subscription = cache.states.listen(states.add);
         addTearDown(subscription.cancel);
+
         cache.start();
         await _waitFor(
           () => states.whereType<RealmEditorCatalogReady>().isNotEmpty,

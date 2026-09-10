@@ -65,6 +65,7 @@ Widget searchInputPlayground(BuildContext context) {
     max: 760,
   );
   final enabled = context.knobs.boolean(label: "Enabled", initialValue: true);
+
   final readOnly = context.knobs.boolean(label: "Read only");
   final configuration = _configuration(scenario);
   final multipleValues = <DataValue>{

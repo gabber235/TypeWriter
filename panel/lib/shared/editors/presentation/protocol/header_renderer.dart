@@ -111,6 +111,7 @@ class _PresentationHeaderChromeState extends State<PresentationHeaderChrome> {
       collapsible: widget.header.initiallyExpanded != null,
       expanded: _expansibleController.isExpanded,
     );
+
     final collapsible = widget.header.initiallyExpanded != null;
     final headerContent = ManagedActionSet(
       shortcuts: shortcuts,
@@ -250,6 +251,7 @@ class _HeaderRowState extends State<_HeaderRow> {
         item.inlineWidget(context, widget.scope),
       for (final item in beforeTitle) item.inlineWidget(context, widget.scope),
     ];
+
     final overflow = end.skip(_visibleEndCount.clamp(0, end.length)).toList();
     return _HeaderLayout(
       beforeTitleCount: beforeTitleWidgets.length,
@@ -404,8 +406,11 @@ class _RenderHeaderLayout extends RenderBox
     );
     final titleIndex = beforeTitleCount;
     final afterTitleStart = titleIndex + 1;
+
     final endStart = afterTitleStart + afterTitleCount;
+
     final overflowIndex = endStart + endCount;
+
     final childConstraints = constraints.loosen();
     final title = children[titleIndex];
 
@@ -432,12 +437,15 @@ class _RenderHeaderLayout extends RenderBox
         ? constraints.maxWidth
         : fixedWidth + endWidth + title.size.width;
     final overflowWidth = endCount > 0 ? children[overflowIndex].size.width : 0;
+
     final showOverflow = fixedWidth + endWidth > availableWidth;
     final inlineBudget = math.max(
       availableWidth - fixedWidth - (showOverflow ? overflowWidth : 0),
       0.0,
     );
+
     var visibleEndCount = 0;
+
     var visibleEndWidth = 0.0;
     for (final child in children.skip(endStart).take(endCount)) {
       if (visibleEndWidth + child.size.width > inlineBudget) break;

@@ -51,10 +51,12 @@ void main() {
     expect(decoded.query.normalizedQuery, "speed");
     expect(decoded.query.selectors, hasLength(2));
     expect(decoded.query.selectors.first.selectorId, "category");
+
     final expression = decoded.query.selectorExpression;
     expect(expression, isA<wire.RealmSearchSelectorExpression_binaryWrapper>());
     final binary =
         (expression! as wire.RealmSearchSelectorExpression_binaryWrapper).value;
+
     expect(binary.operator_, wire.RealmSearchSelectorOperator.and);
     expect(
       binary.left,

@@ -50,6 +50,7 @@ extension on _ExpressionEvaluator {
       }
       if ((result.valueOrNull! as BooleanValue).value) matched++;
     }
+
     final count = collection.valueOrNull!.items.length;
     return TypeResult.success(
       BooleanValue(switch (expression.quantifier) {
@@ -127,6 +128,7 @@ extension on _ExpressionEvaluator {
       );
     }
     final seen = <DataValue>{};
+
     final output = <DataValue>[];
     for (final item in collection.valueOrNull!.items) {
       final key = expression.key == null
@@ -149,6 +151,7 @@ extension on _ExpressionEvaluator {
     if (collection case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);
     }
+
     final keyed = <({DataValue item, DataValue key, int index})>[];
     for (final entry in collection.valueOrNull!.items.indexed) {
       final key = _evaluateBound(
@@ -161,6 +164,7 @@ extension on _ExpressionEvaluator {
       if (key case TypeFailure()) return key;
       keyed.add((item: entry.$2, key: key.valueOrNull!, index: entry.$1));
     }
+
     TypeResult<int> compare(
       ({DataValue item, DataValue key, int index}) left,
       ({DataValue item, DataValue key, int index}) right,
@@ -176,6 +180,7 @@ extension on _ExpressionEvaluator {
               ])
             : TypeResult.success(value);
       }
+
       final comparator = expression.comparator!;
       final context = this.context
           .withBinding(
@@ -198,11 +203,14 @@ extension on _ExpressionEvaluator {
           );
       final child = _ExpressionEvaluator(context, budget, registry);
       final result = child.evaluate(comparator.comparison, depth + 1);
+
       nodes += child.nodes;
+
       evaluations += child.evaluations;
       if (result case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
       }
+
       final value = result.valueOrNull;
       if (value is! IntegerValue) {
         return TypeResult.failure([
@@ -225,9 +233,11 @@ extension on _ExpressionEvaluator {
       }
       final direction =
           expression.direction == CollectionSortDirection.ascending ? 1 : -1;
+
       final compared = result.valueOrNull! * direction;
       return compared == 0 ? left.index.compareTo(right.index) : compared;
     });
+
     if (failure != null) return failure!;
     return TypeResult.success(
       ListValue(keyed.map((entry) => entry.item).toList()),
@@ -282,6 +292,7 @@ extension on _ExpressionEvaluator {
     }
     final items = collection.valueOrNull!.items;
     if (items.isEmpty) return _none(collection.valueOrNull!.itemType);
+
     var accumulator = items.first;
     for (final item in items.skip(1)) {
       final next = _evaluateReduction(
@@ -307,6 +318,7 @@ extension on _ExpressionEvaluator {
     }
     final initial = evaluate(expression.initial, depth + 1);
     if (initial case TypeFailure()) return initial;
+
     var accumulator = initial.valueOrNull!;
     for (final item in collection.valueOrNull!.items) {
       final next = _evaluateReduction(
@@ -367,6 +379,7 @@ extension on _ExpressionEvaluator {
     if (countValue is! IntegerValue || countValue.value < BigInt.zero) {
       return _failure("Collection count must be a nonnegative integer");
     }
+
     final amount = countValue.value.toInt();
     return TypeResult.success(
       ListValue(
@@ -479,7 +492,9 @@ extension on _ExpressionEvaluator {
     }
     final child = _ExpressionEvaluator(childContext, budget, registry);
     final result = child.evaluate(expression, depth + 1);
+
     nodes += child.nodes;
+
     evaluations += child.evaluations;
     return result;
   }

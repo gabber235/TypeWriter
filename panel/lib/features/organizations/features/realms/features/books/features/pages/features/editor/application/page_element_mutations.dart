@@ -146,6 +146,7 @@ mixin _PageElementMutations
         .whereType<DefinitionPageEntry>()
         .map((entry) => entry.definition.placement.y + 1)
         .fold(0, (maximum, value) => value > maximum ? value : maximum);
+
     await _submit(
       _commands.createElements([
         for (final indexed in definitions.indexed)
@@ -188,6 +189,7 @@ mixin _PageElementMutations
       }),
     );
     _replaceFromSession();
+
     return [for (final id in elementIds) ids[id]!.id];
   }
 

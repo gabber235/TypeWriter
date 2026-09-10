@@ -82,6 +82,7 @@ final class MergedSearchSource implements SearchSource {
     for (final source in sources) {
       source.dispose();
     }
+
     unawaited(_snapshots.close());
     unawaited(_selectors.close());
   }
@@ -94,17 +95,21 @@ final class MergedSearchSource implements SearchSource {
 
   SearchSourceSnapshot _mergeSnapshots() {
     final available = _latestSnapshots.whereType<SearchSourceSnapshot>();
+
     final nodes = <SearchNode>[];
     final actions = <Type, SearchAction>{};
     final guidance = <SearchGuidance>[];
     final guidanceIds = <String>{};
+
     final errors = <SearchErrorSummary>[];
+
     final errorIds = <String>{};
     _resultSources.clear();
 
     for (var index = 0; index < _latestSnapshots.length; index++) {
       final snapshot = _latestSnapshots[index];
       if (snapshot == null) continue;
+
       nodes.addAll(snapshot.nodes);
       for (final entry in snapshot.actions.entries) {
         actions.putIfAbsent(entry.key, () => entry.value);
@@ -126,6 +131,7 @@ final class MergedSearchSource implements SearchSource {
     }
 
     final statuses = available.map((snapshot) => snapshot.status).toList();
+
     if (statuses.isEmpty || statuses.every((status) => status == .idle)) {
       return SearchSourceSnapshot.idle(
         nodes: nodes,

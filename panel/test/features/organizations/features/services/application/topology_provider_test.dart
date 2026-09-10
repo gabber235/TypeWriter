@@ -96,6 +96,7 @@ void main() {
         ),
       );
       expect(removed.hosts.single.revision, 2);
+
       expect(removed.hosts.single.state.status, TopologyHostStatus.active);
       expect(
         removed
@@ -133,6 +134,7 @@ void main() {
       (previous, next) => value = next,
       fireImmediately: true,
     );
+
     addTearDown(subscription.close);
     await _waitFor(
       () =>
@@ -241,6 +243,7 @@ void main() {
         engine: null,
         removedResources: [_realm().realmId],
       );
+
       expect(observed.applyConfiguration(old), observed);
     },
   );

@@ -18,6 +18,7 @@ void main() {
           createdAt: now,
           state: ServiceState(status: ServiceStateStatus.online, lastSeen: now),
         );
+
         final host = TopologyHost(
           hostId: recordId("service_host:deadline"),
           serviceId: service.serviceId,
@@ -32,6 +33,7 @@ void main() {
             updatedAt: now,
           ),
         );
+
         final container = ProviderContainer.test(
           overrides: [
             servicesProvider.overrideWith(() => _Services(service)),
@@ -50,6 +52,7 @@ void main() {
         final subscription = container.listen(provider, (_, next) {});
         final connection = hostConnectedProvider(host.hostId);
         final hostSubscription = container.listen(connection, (_, next) {});
+
         for (
           var attempt = 0;
           attempt < 10 && !container.read(connection);
@@ -57,12 +60,14 @@ void main() {
         ) {
           await tester.pump(const Duration(milliseconds: 1));
         }
+
         expect(container.read(connection), isTrue);
         expect(container.read(provider)[service.serviceId], isTrue);
         now = now.add(const Duration(minutes: 2));
         await tester.pump(const Duration(minutes: 2));
         expect(container.read(provider)[service.serviceId], isFalse);
         expect(container.read(connection), isFalse);
+
         now = service.state!.lastSeen;
         tester.binding.handleAppLifecycleStateChanged(
           AppLifecycleState.inactive,
@@ -73,6 +78,7 @@ void main() {
         await tester.pump();
         expect(container.read(provider)[service.serviceId], isTrue);
         expect(container.read(connection), isTrue);
+
         hostSubscription.close();
         subscription.close();
         container.dispose();

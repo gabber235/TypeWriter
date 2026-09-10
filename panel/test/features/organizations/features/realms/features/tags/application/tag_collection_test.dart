@@ -52,6 +52,7 @@ void main() {
       expect(_selectable(snapshot, "descendant"), isFalse);
       expect(_reason(snapshot, "descendant"), contains("descendant"));
       expect(_selectable(snapshot, "parent"), isTrue);
+
       expect(_reason(snapshot, "parent"), isNull);
     },
   );
@@ -124,6 +125,7 @@ void main() {
       final layoutNode = root.children.singleWhere(
         (node) => node.id == "tag.layout",
       );
+
       final layout = layoutNode.element as SectionElement;
       final layoutGrid = layout.child.element as GridElement;
       final directParents =
@@ -141,6 +143,7 @@ void main() {
                   )
                   .element
               as ConditionalElement;
+
       final inheritanceSection = inheritance.whenTrue.element as SectionElement;
       final graph = inheritanceSection.child.element as CollectionGraphElement;
 
@@ -156,6 +159,7 @@ void main() {
       );
       final summaryLayout =
           summary.presentation.layout as PresentationStandardSequenceLayout;
+
       expect(summaryLayout.layout, isA<PresentationWrapLayout>());
       expect(summary.presentation.empty, isNotNull);
       _expectTagChip(summaryLookup.found.element as ChipElement);
@@ -163,6 +167,7 @@ void main() {
       expect(graph.childBindingId, const BindingId(46));
       final rootSequence =
           graph.rootSequence.layout as PresentationStandardSequenceLayout;
+
       final rootColumn = rootSequence.layout as PresentationColumnLayout;
       expect(rootColumn.spacing, 12);
       expect(graph.node.presentationSlotIds, {"tag.inheritance.children"});
@@ -173,18 +178,21 @@ void main() {
         hierarchy.layout.crossAxisAlignment,
         PresentationCrossAxisAlignment.stretch,
       );
+
       final branching = graph.node.element as ConditionalElement;
       final branchNode = branching.whenTrue;
       final branch = branchNode.element as SectionElement;
       expect(branch.border, isA<PresentationBorderSides>());
       final branchBorder = branch.border! as PresentationBorderSides;
       expect(branchBorder.top, isNull);
+
       expect(branchBorder.start?.width, 4);
       expect(branchBorder.end, isNull);
       expect(branchBorder.bottom, isNull);
       expect(branch.child.element, isA<PresentationSlotElement>());
       final branchTitle = branchNode.header!.title;
       expect(branchTitle, isA<PresentationHeaderNodeTitle>());
+
       final containerNode = (branchTitle! as PresentationHeaderNodeTitle).node;
       expect(containerNode.element, isA<ContainerElement>());
 
@@ -194,6 +202,7 @@ void main() {
       expect(layoutGrid.verticalSpacing, 12);
       _expectPositionControl(layoutGrid, "x", "X", "X position");
       _expectPositionControl(layoutGrid, "y", "Y", "Y position");
+
       _expectDimensionControl(layoutGrid, "width", "Width");
       _expectDimensionControl(layoutGrid, "height", "Height");
     },
@@ -238,6 +247,7 @@ void main() {
       expect(find.text("Y position"), findsNothing);
       expect(find.text("Width"), findsOneWidget);
       expect(find.text("Height"), findsOneWidget);
+
       expect(find.bySemanticsLabel("X position"), findsWidgets);
       expect(find.bySemanticsLabel("Y position"), findsWidgets);
 
@@ -251,6 +261,7 @@ void main() {
       expect(fields[1].decoration?.prefixIcon, isNotNull);
       expect(fields[2].decoration?.prefixIcon, isNull);
       expect(fields[2].icon, HeroiconsSolid.hashtag);
+
       expect(fields[3].decoration?.prefixIcon, isNull);
       expect(fields[3].icon, HeroiconsSolid.hashtag);
 
@@ -264,6 +275,7 @@ void main() {
       expect(positions[2].dy, positions[3].dy);
       expect(positions[2].dx, lessThan(positions[3].dx));
       expect(positions[2].dy, greaterThan(positions[0].dy));
+
       expect(tester.takeException(), isNull);
     },
   );

@@ -57,6 +57,7 @@ Widget sectionRendererUseCase(BuildContext context) {
     min: 0,
     max: 32,
   );
+
   final contentVertical = context.knobs.double.slider(
     label: "Content vertical padding",
     initialValue: 4,

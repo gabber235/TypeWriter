@@ -137,6 +137,7 @@ extension SkirPresentationDataDecoder on SkirPresentationDecoder {
     }
     final roots = expressions.binding(value.roots);
     final rootSequence = _sequence(value.rootSequence);
+
     final node = decodeNode(value.node);
     final children = _sequence(value.children);
     final diagnostics = [

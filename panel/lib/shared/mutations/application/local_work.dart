@@ -119,7 +119,9 @@ final class LocalWork extends ChangeNotifier {
         return commit.send();
       },
     );
+
     track(submission);
+
     unawaited(submission.run());
     return submission;
   }
@@ -146,6 +148,7 @@ final class LocalWork extends ChangeNotifier {
       }
     }
     _submissions[submission.id] = submission;
+
     submission.addListener(_changed);
     _changed();
   }
@@ -159,6 +162,7 @@ final class LocalWork extends ChangeNotifier {
     }
     _expiry.remove(id)?.cancel();
     _submissions.remove(id)?.removeListener(_changed);
+
     submission.dispose();
     notifyListeners();
   }
@@ -194,6 +198,7 @@ final class LocalWork extends ChangeNotifier {
       existing.source.refreshTarget(target);
       return existing.source;
     }
+
     late final EditorResource resource;
     final source = TransactionalEditorSource(
       document: target.document,
@@ -202,7 +207,9 @@ final class LocalWork extends ChangeNotifier {
       snapshot: target.snapshot,
       workspace: this,
     );
+
     resource = EditorResource(target, source);
+
     _resources[key] = resource;
     resource.listener = () {
       notifyListeners();
@@ -210,6 +217,7 @@ final class LocalWork extends ChangeNotifier {
         if (!_disposed && resource.leases == 0 && !source.hasWork) _remove(key);
       });
     };
+
     source.addListener(resource.listener!);
     return source;
   }
@@ -250,7 +258,9 @@ final class LocalWork extends ChangeNotifier {
         ..removeListener(_changed)
         ..dispose();
     }
+
     _expiry.clear();
+
     _submissions.clear();
     super.dispose();
   }

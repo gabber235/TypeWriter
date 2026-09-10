@@ -71,6 +71,7 @@ final class SkirTypeStructureCodec {
               codec,
             ).encode(field.initialValue!).mapValue((value) => value);
       diagnostics.addAll(initial.diagnostics);
+
       fields.add(
         wire.RecordField(
           name: field.name,
@@ -103,6 +104,7 @@ final class SkirTypeStructureCodec {
       diagnostics.addAll(result.diagnostics);
       final fieldType = result.valueOrNull;
       if (fieldType == null) continue;
+
       final initial = field.initializer == null
           ? const TypeResult<DataValue?>.success(null)
           : SkirDataValueCodec(codec).decode(field.initializer);

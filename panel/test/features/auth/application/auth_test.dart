@@ -32,6 +32,7 @@ void main() {
       expect(userInfo.email, equals("test@example.com"));
       expect(userInfo.avatarUrl, equals("https://example.com/avatar.png"));
       expect(userInfo.emailVerified, isTrue);
+
       expect(userInfo.entitlements, equals(["premium", "beta"]));
       expect(userInfo.groups, equals(["group1", "group2"]));
       expect(userInfo.discord, equals(discord));
@@ -46,6 +47,7 @@ void main() {
       expect(userInfo.email, isNull);
       expect(userInfo.avatarUrl, isNull);
       expect(userInfo.emailVerified, isNull);
+
       expect(userInfo.entitlements, isNull);
       expect(userInfo.groups, isNull);
       expect(userInfo.discord, isNull);

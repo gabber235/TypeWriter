@@ -29,7 +29,9 @@ extension IconElementRendering on IconElement {
     final label = semanticLabel == null
         ? null
         : scope.expressionText(semanticLabel!);
+
     final resolvedColor = resolvePresentationColor(color, scope);
+
     final resolvedSize = resolvePresentationSize(size, scope);
     final diagnostics = [
       ...resolvedColor.diagnostics,

@@ -33,6 +33,7 @@ void main() {
     final snapshots = <SearchSourceSnapshot>[];
     final subscription = source.snapshots.listen(snapshots.add);
     addTearDown(subscription.cancel);
+
     final query = _query("speed");
 
     source.search(query);
@@ -47,6 +48,7 @@ void main() {
       ),
     );
     await Future<void>.delayed(Duration.zero);
+
     expect(_resultIds(snapshots.last), ["speed", "haste"]);
 
     transport.controllers.single.add(

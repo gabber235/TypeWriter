@@ -89,6 +89,7 @@ extension ElementDefinitionType on ElementDefinition {
         ),
       ]);
     }
+
     final iconDiagnostics = icon.validate();
     if (iconDiagnostics.isNotEmpty) {
       return TypeResult.failure(iconDiagnostics);

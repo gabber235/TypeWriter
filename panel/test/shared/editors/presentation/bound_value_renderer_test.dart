@@ -231,6 +231,7 @@ void main() {
     final data = tester.getSemantics(mergedControl.first).getSemanticsData();
     expect(data.label, "Y position");
     expect(data.hasAction(SemanticsAction.tap), isTrue);
+
     expect(data.hasAction(SemanticsAction.focus), isTrue);
 
     final editor = find.descendant(
@@ -244,6 +245,7 @@ void main() {
     await tester.pump();
     final editorData = tester.getSemantics(editor).getSemanticsData();
     expect(editorData.hasAction(SemanticsAction.setText), isTrue);
+
     expect(find.bySemanticsLabel(RegExp(r"^Y$")), findsNothing);
     semantics.dispose();
   });

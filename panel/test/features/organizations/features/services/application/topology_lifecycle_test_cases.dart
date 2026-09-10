@@ -13,6 +13,7 @@ void topologyLifecycleTests() {
     addTearDown(container.dispose);
     final provider = organizationTopologyControllerProvider(_organizationId);
     container.listen(provider, (_, _) {});
+
     expect(await container.read(provider.future), OrganizationTopology.empty);
     expect(nats.subscriptionSubjects, isEmpty);
     expect(nats.requests, isEmpty);
@@ -46,6 +47,7 @@ void topologyLifecycleTests() {
     addTearDown(nats.dispose);
     addTearDown(container.dispose);
     final provider = organizationTopologyControllerProvider(_organizationId);
+
     container.listen(provider, (_, _) {});
     await container.read(provider.future);
     final command = container
@@ -63,6 +65,7 @@ void topologyLifecycleTests() {
     );
     container.invalidate(provider);
     await container.read(provider.future);
+
     expect(nats.subscriptionSubjects, [_listenSubject]);
     response.complete(
       skir.ConfigureServiceHostResponse.createSuccess(

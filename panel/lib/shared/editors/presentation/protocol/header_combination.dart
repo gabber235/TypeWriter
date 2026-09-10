@@ -44,6 +44,7 @@ extension PresentationNodeHeaderCombination on PresentationNode {
     if (binding != anchor) {
       return ResolvedHeaderChain(header: outer, suppressed: suppressed);
     }
+
     final nextSuppressed = {...suppressed, (child.$1.id, binding)};
     return child.$1._collect(
       child.$2,
@@ -131,8 +132,11 @@ extension on DefaultPresentationElement {
     if (selected != null && scope.activePresentations.contains(selected.id)) {
       return null;
     }
+
     if (selected == null) return (child, scope);
+
     final input = selected.primaryInput;
+
     if (input == null) return null;
     return scope.bindPresentation(selected, {input: binding}).valueOrNull;
   }

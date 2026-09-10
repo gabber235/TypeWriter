@@ -22,6 +22,7 @@ void main() {
     final trunkBounds = trunk.getBounds();
     final trunkMetrics = trunk.computeMetrics().toList(growable: false);
     expect(trunkMetrics, hasLength(2));
+
     final source = trunkMetrics.first.getTangentForOffset(0)!.position;
     final junction = trunkMetrics.last.getTangentForOffset(0)!.position;
     final primaryJunction = trunkMetrics.first
@@ -58,6 +59,7 @@ void main() {
     expect(metrics, hasLength(1));
     final metric = metrics.single;
     final start = metric.getTangentForOffset(0)!.position;
+
     final end = metric.getTangentForOffset(metric.length)!.position;
     final manhattanLength =
         (end.dx - start.dx).abs() + (end.dy - start.dy).abs();

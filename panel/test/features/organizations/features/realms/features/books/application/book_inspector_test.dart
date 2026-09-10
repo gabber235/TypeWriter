@@ -54,6 +54,7 @@ void main() {
       color: Colors.deepPurple,
       tagIds: [directTag.tagId],
     );
+
     final container = ProviderContainer.test(
       overrides: [
         organizationIdProvider.overrideWithValue(recordId("organization:test")),
@@ -82,6 +83,7 @@ void main() {
       container.read(booksProvider.future),
       container.read(tagsProvider.future),
     ]);
+
     container
         .read(selectionProvider.notifier)
         .select(BookIdentifier(book.bookId));
@@ -90,6 +92,7 @@ void main() {
     final open = selected.capabilities
         .whereType<OpenSelectionCapability>()
         .single;
+
     expect(open.allowMultiSelect, isFalse);
     final inspector = selected as BookSelection;
     final document = inspector.document;
@@ -102,6 +105,7 @@ void main() {
                 .singleWhere((node) => node.id == "book.tags.search")
                 .element
             as SearchInputElement;
+
     final effectiveVisibility =
         root.children
                 .singleWhere(
@@ -125,6 +129,7 @@ void main() {
       DataPath.root.field("tags"): EditorMergePolicy.set,
     });
     expect(direct.selectionMode, SearchSelectionMode.multiple);
+
     expect(direct.provider, isA<CollectionSearchProvider>());
     final summaryLayout =
         directSummary.presentation.layout as PresentationStandardSequenceLayout;
@@ -132,10 +137,12 @@ void main() {
     expect(directSummary.presentation.empty, isNotNull);
     _expectTagChip(summaryChip);
     expect(effective.sourceId, tagCollectionSourceId);
+
     expect(effective.relation, tagInheritsRelationId);
     expect(effective.direction, CollectionGraphDirection.forward);
     expect(effective.childrenBindingId, const BindingId(45));
     expect(effective.childBindingId, const BindingId(46));
+
     expect(effective.node.presentationSlotIds, {"book.effectiveTags.children"});
     final hierarchy =
         effective.children.layout as PresentationHierarchySequenceLayout;
@@ -146,12 +153,14 @@ void main() {
     );
     final branching = effective.node.element as ConditionalElement;
     final branchNode = branching.whenTrue;
+
     final branch = branchNode.element as SectionElement;
     expect(branch.border, isA<PresentationBorderSides>());
     final branchBorder = branch.border! as PresentationBorderSides;
     expect(branchBorder.top, isNull);
     expect(branchBorder.start?.width, 4);
     expect(branchBorder.end, isNull);
+
     expect(branchBorder.bottom, isNull);
     expect(branch.child.element, isA<PresentationSlotElement>());
     final branchTitle = branchNode.header!.title;

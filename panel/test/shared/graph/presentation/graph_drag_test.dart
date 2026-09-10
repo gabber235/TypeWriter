@@ -116,6 +116,7 @@ void main() {
       await g.moveTo(startTopLeft + const Offset(24, 0));
       await tester.pump();
       expect(dragInside.value, isTrue);
+
       await g.up();
       await tester.pumpAndSettle();
 
@@ -133,6 +134,7 @@ void main() {
       await tester.pump();
       expect(dragInside.value, isTrue);
       await g.up();
+
       await tester.pumpAndSettle();
 
       expect(accepted, greaterThanOrEqualTo(2));

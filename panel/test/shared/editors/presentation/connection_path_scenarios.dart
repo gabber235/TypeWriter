@@ -12,6 +12,7 @@ void registerConnectionPathScenarios() {
     await tester.pump();
     final dynamic leftToRight = _connectionResolution(tester);
     final Rect leftBounds = leftToRight.strokes.single.path.getBounds();
+
     expect(leftToRight.markers.single.angle.abs(), greaterThan(0.1));
 
     await tester.pumpTestApp(
