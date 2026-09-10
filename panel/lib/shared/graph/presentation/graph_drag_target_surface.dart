@@ -83,12 +83,10 @@ class _GraphDragTargetRegionMarker {
 class RenderGraphDragTargetSurface extends RenderBox
     with SlottedContainerRenderObjectMixin<GraphDragTargetSlot, RenderBox> {
   RenderGraphDragTargetSurface({
-    required Rect viewport,
-    required bool enabled,
-    required ValueListenable<GraphIdentifier?> activeDragId,
-  }) : _viewport = viewport,
-       _enabled = enabled,
-       _activeDragId = activeDragId;
+    required this._viewport,
+    required this._enabled,
+    required this._activeDragId,
+  });
 
   Rect _viewport;
   Rect get viewport => _viewport;

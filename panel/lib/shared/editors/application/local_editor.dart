@@ -7,8 +7,8 @@ final class LocalEditor extends ChangeNotifier implements EditOwner {
   LocalEditor({
     required this.rootType,
     required this.typeCatalog,
-    required DataValue value,
-  }) : _value = value;
+    required this._value,
+  });
 
   @override
   TypeExpression rootType;

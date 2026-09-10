@@ -17,10 +17,9 @@ sealed class RouteReevaluationState with _$RouteReevaluationState {
 
 final class RouteReevaluationCoordinator {
   RouteReevaluationCoordinator({
-    required RouteAccessCoordinator access,
-    required Future<void> Function() reevaluateGuards,
-  }) : _access = access,
-       _reevaluateGuards = reevaluateGuards {
+    required this._access,
+    required this._reevaluateGuards,
+  }) {
     _access.addListener(_requestReevaluation);
   }
 

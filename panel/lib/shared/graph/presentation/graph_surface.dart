@@ -86,14 +86,11 @@ class RenderGraphSurface extends RenderBox
         ContainerRenderObjectMixin<RenderBox, GraphSurfaceParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, GraphSurfaceParentData> {
   RenderGraphSurface({
-    required GraphLayoutResult layout,
-    required Rect viewport,
-    required Color dotColor,
-    required Set<GraphIdentifier> visibleIds,
-  }) : _layout = layout,
-       _viewport = viewport,
-       _dotColor = dotColor,
-       _visibleIds = visibleIds;
+    required this._layout,
+    required this._viewport,
+    required this._dotColor,
+    required this._visibleIds,
+  });
 
   GraphLayoutResult _layout;
   GraphLayoutResult get graphLayout => _layout;

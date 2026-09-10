@@ -12,15 +12,12 @@ final class MutationSubmission<T> extends ChangeNotifier {
   MutationSubmission({
     required this.id,
     required this.label,
-    required Future<SubmissionResult<T>> Function() send,
-    Future<void> Function(SubmissionResult<T>)? integrate,
-    void Function()? onDispose,
+    required this._send,
+    this._integrate,
+    this._onDispose,
     this.replay = SubmissionReplay.unsupported,
     Set<Object> resources = const {},
-  }) : resources = Set.unmodifiable(resources),
-       _send = send,
-       _integrate = integrate,
-       _onDispose = onDispose;
+  }) : resources = Set.unmodifiable(resources);
 
   final Object id;
   final Set<Object> resources;

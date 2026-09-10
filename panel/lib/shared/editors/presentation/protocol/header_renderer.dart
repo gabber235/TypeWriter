@@ -340,15 +340,12 @@ class _RenderHeaderLayout extends RenderBox
         ContainerRenderObjectMixin<RenderBox, _HeaderLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, _HeaderLayoutParentData> {
   _RenderHeaderLayout({
-    required int beforeTitleCount,
-    required int afterTitleCount,
-    required int endCount,
-    required TextDirection textDirection,
+    required this._beforeTitleCount,
+    required this._afterTitleCount,
+    required this._endCount,
+    required this._textDirection,
     required this.onVisibleEndCountChanged,
-  }) : _beforeTitleCount = beforeTitleCount,
-       _afterTitleCount = afterTitleCount,
-       _endCount = endCount,
-       _textDirection = textDirection;
+  });
 
   int _beforeTitleCount;
   int get beforeTitleCount => _beforeTitleCount;

@@ -105,16 +105,12 @@ class OutlineDecorator
 class _RenderOutlineDecorator extends RenderBox
     with SlottedContainerRenderObjectMixin<OutlineSlot, RenderBox> {
   _RenderOutlineDecorator({
-    required bool show,
-    required Color outerColor,
-    required Color? innerColor,
-    required double outerThickness,
-    required double innerThickness,
-  }) : _show = show,
-       _outerColor = outerColor,
-       _innerColor = innerColor,
-       _outerThickness = outerThickness,
-       _innerThickness = innerThickness;
+    required this._show,
+    required this._outerColor,
+    required this._innerColor,
+    required this._outerThickness,
+    required this._innerThickness,
+  });
 
   bool get show => _show;
   bool _show;

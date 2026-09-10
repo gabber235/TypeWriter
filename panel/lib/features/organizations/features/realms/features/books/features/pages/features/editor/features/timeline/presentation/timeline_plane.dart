@@ -76,12 +76,10 @@ class RenderTimelinePlane extends RenderBox
         ContainerRenderObjectMixin<RenderBox, _TimelinePlaneParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, _TimelinePlaneParentData> {
   RenderTimelinePlane({
-    required TimelinePlacementResult timelinePlacement,
-    required TimelineViewport viewport,
-    required TimelineStyle style,
-  }) : _timelinePlacement = timelinePlacement,
-       _viewport = viewport,
-       _style = style;
+    required this._timelinePlacement,
+    required this._viewport,
+    required this._style,
+  });
 
   TimelinePlacementResult _timelinePlacement;
   TimelineViewport _viewport;

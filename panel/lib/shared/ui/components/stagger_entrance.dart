@@ -432,9 +432,8 @@ class _StaggerCoordinator {
     required this.parent,
     required this.settings,
     required this.localController,
-    required bool animationsDisabled,
-  }) : groupNode = _StaggerGroupNode(),
-       _animationsDisabled = animationsDisabled {
+    required this._animationsDisabled,
+  }) : groupNode = _StaggerGroupNode() {
     groupNode.coordinator = this;
   }
 

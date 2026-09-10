@@ -35,10 +35,9 @@ class InputFieldController {
   InputFieldController._({
     required this.inputFocusNode,
     required this.surroundingFocusNode,
-    required bool ownsInputFocusNode,
-    required bool ownsSurroundingFocusNode,
-  }) : _ownsInputFocusNode = ownsInputFocusNode,
-       _ownsSurroundingFocusNode = ownsSurroundingFocusNode;
+    required this._ownsInputFocusNode,
+    required this._ownsSurroundingFocusNode,
+  });
 
   /// Focus node of the inner input widget.
   final FocusNode inputFocusNode;

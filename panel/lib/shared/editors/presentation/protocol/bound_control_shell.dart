@@ -91,12 +91,12 @@ class BoundControlShell extends HookWidget {
 
 final class BoundControlField {
   const BoundControlField._({
-    required PresentationRenderScope scope,
+    required this._scope,
     required this.binding,
     required this.interaction,
     required this.enabled,
     required this.readOnly,
-  }) : _scope = scope;
+  });
 
   final PresentationRenderScope _scope;
   final ResolvedBinding binding;

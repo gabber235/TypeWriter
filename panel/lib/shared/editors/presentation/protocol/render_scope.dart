@@ -25,10 +25,10 @@ typedef EditorInteractionStarter =
 final class VirtualBindingHost {
   VirtualBindingHost({
     required this.id,
-    required BindingSnapshot snapshot,
+    required this._snapshot,
     required this.onChanged,
     this.interactionTarget,
-  }) : _snapshot = snapshot;
+  });
 
   final BindingId id;
   final ValueChanged<DataValue> onChanged;

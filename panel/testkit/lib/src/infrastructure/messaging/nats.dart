@@ -173,8 +173,8 @@ final class FakeNatsSubscription implements NatsSubscription {
   FakeNatsSubscription({
     required this.id,
     required this.subject,
-    required void Function(int id) onUnsubscribe,
-  }) : _onUnsubscribe = onUnsubscribe;
+    required this._onUnsubscribe,
+  });
 
   final int id;
   final String subject;

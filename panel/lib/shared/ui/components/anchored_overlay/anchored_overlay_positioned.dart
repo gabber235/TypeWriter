@@ -43,14 +43,11 @@ class AnchoredOverlayPositioned extends SingleChildRenderObjectWidget {
 class RenderAnchoredOverlayPositioned extends RenderBox
     with RenderObjectWithChildMixin<RenderBox> {
   RenderAnchoredOverlayPositioned({
-    required Rect anchorRect,
-    required Size overlaySize,
-    required Rect boundaryRect,
-    required AnchoredOverlayConfig config,
-  }) : _anchorRect = anchorRect,
-       _overlaySize = overlaySize,
-       _boundaryRect = boundaryRect,
-       _config = config;
+    required this._anchorRect,
+    required this._overlaySize,
+    required this._boundaryRect,
+    required this._config,
+  });
 
   Rect get anchorRect => _anchorRect;
   Rect _anchorRect;

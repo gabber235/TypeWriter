@@ -7,10 +7,10 @@ import "../../../../support/test_utils.dart";
 final class TestEditorSource extends ChangeNotifier implements EditorSource {
   TestEditorSource({
     required this.rootType,
-    required DataValue value,
+    required this._value,
     this.registry,
     this.rootPresentation,
-  }) : _value = value;
+  });
 
   @override
   final TypeExpression rootType;

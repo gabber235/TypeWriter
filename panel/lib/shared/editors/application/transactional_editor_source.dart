@@ -25,25 +25,19 @@ final class TransactionalEditorSource extends ChangeNotifier
     implements EditorSource {
   TransactionalEditorSource({
     required EditorDocument document,
-    EditorCommitter? commit,
-    EditableResource? resource,
+    this._commit,
+    this._resource,
     this.workspace,
-    EditorSnapshot? snapshot,
-    EditorMutationValidator? validate,
-    List<TypeDiagnostic> Function(DataValue)? validateDraft,
+    this._snapshot,
+    this._validate,
+    this._validateDraft,
     this.commitPolicy = EditorCommitPolicy.autosaveChanges,
-    EditorDelayScheduler scheduler = const TimerEditorDelayScheduler(),
+    this._scheduler = const TimerEditorDelayScheduler(),
     EditorJitterSource? jitter,
     this.debounce = const Duration(milliseconds: 250),
     this.onDeleted,
   }) : _document = document,
        _draft = document.confirmedValue,
-       _commit = commit,
-       _snapshot = snapshot,
-       _resource = resource,
-       _validate = validate,
-       _validateDraft = validateDraft,
-       _scheduler = scheduler,
        _jitter = jitter ?? RandomEditorJitterSource();
 
   EditorDocument _document;

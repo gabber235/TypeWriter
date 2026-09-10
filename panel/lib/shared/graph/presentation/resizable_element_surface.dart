@@ -56,12 +56,10 @@ class ResizableElementSurface
 class RenderResizableElementSurface extends RenderBox
     with SlottedContainerRenderObjectMixin<ResizableElementSlot, RenderBox> {
   RenderResizableElementSurface({
-    required double handleSize,
-    required double animationProgress,
-    required Color outlineColor,
-  }) : _handleSize = handleSize,
-       _animationProgress = animationProgress,
-       _outlineColor = outlineColor;
+    required this._handleSize,
+    required this._animationProgress,
+    required this._outlineColor,
+  });
 
   double _handleSize;
   double get handleSize => _handleSize;

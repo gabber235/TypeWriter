@@ -302,7 +302,7 @@ class _RenderActionRowLayout extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, _ActionRowParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, _ActionRowParentData> {
-  _RenderActionRowLayout({required double spacing}) : _spacing = spacing;
+  _RenderActionRowLayout({required this._spacing});
 
   double _spacing;
   double get spacing => _spacing;

@@ -8,8 +8,8 @@ class SearchController extends ChangeNotifier {
     required SearchSource source,
     required List<QuerySelectorDefinition> baseSelectors,
     String initialQuery = "",
-    VoidCallback? onCloseRequested,
-  }) : _onCloseRequested = onCloseRequested {
+    this._onCloseRequested,
+  }) {
     _sourceController = SourceController(
       source: source,
       baseSelectors: baseSelectors,

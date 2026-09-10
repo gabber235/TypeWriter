@@ -13,7 +13,6 @@ linter:
     avoid_final_parameters: true
     avoid_multiple_declarations_per_line: true
     avoid_positional_boolean_parameters: false
-    avoid_private_typedef_functions: true
     avoid_redundant_argument_values: false
     avoid_setters_without_getters: true
     avoid_types_on_closure_parameters: true
@@ -33,7 +32,6 @@ linter:
     no_literal_bool_comparisons: true
     noop_primitive_operations: true
     omit_local_variable_types: true
-    one_member_abstracts: true
     only_throw_errors: true
     parameter_assignments: true
     prefer_asserts_in_initializer_lists: true
@@ -53,7 +51,6 @@ linter:
     tighten_type_of_initializing_formals: true
     type_annotate_public_apis: true
     unawaited_futures: true
-    unnecessary_await_in_return: true
     unnecessary_brace_in_string_interps: true
     unnecessary_breaks: true
     unnecessary_const: true

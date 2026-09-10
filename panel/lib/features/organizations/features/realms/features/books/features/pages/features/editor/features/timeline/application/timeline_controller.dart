@@ -236,10 +236,9 @@ class ResizeEndTimelinePreview implements TimelinePreview {
 class TimelineController extends ChangeNotifier {
   TimelineController({
     required TickerProvider tickerProvider,
-    double headerWidth = 200,
+    this._headerWidth = 200,
     double pixelsPerFrame = 6,
-  }) : _headerWidth = headerWidth,
-       _pixelsPerFrame = SpringValue(value: pixelsPerFrame) {
+  }) : _pixelsPerFrame = SpringValue(value: pixelsPerFrame) {
     _ticker = tickerProvider.createTicker(_tick);
   }
 

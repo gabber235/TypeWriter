@@ -155,14 +155,11 @@ class _TreeBarLayout extends SingleChildRenderObjectWidget {
 class _RenderTreeBarLayout extends RenderBox
     with RenderObjectWithChildMixin<RenderBox> {
   _RenderTreeBarLayout({
-    required double barWidth,
-    required EdgeInsets barMargin,
-    required Color barColor,
-    required Radius borderRadius,
-  }) : _barWidth = barWidth,
-       _barMargin = barMargin,
-       _barColor = barColor,
-       _borderRadius = borderRadius;
+    required this._barWidth,
+    required this._barMargin,
+    required this._barColor,
+    required this._borderRadius,
+  });
 
   double _barWidth;
   double get barWidth => _barWidth;
