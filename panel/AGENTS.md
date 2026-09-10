@@ -27,6 +27,10 @@ When adding keyboard shortcuts, prefer invoking an existing Intent instead of ha
 
 Prefer Freezed for immutable Dart models instead of manually implementing immutable classes. This includes union and sealed model shapes, which should use Freezed unions instead of manually implemented class hierarchies. Use an ordinary class when the object is intentionally mutable or Freezed cannot express the required behavior cleanly.
 
+Use Freezed value objects instead of typedef record aliases for state and scope models.
+
+Use `mapUnready` instead of `whenData` so previous values survive reload.
+
 ## Widgetbook stories
 
 Every new UI component must include an accompanying Widgetbook story in the same change so the component can always be inspected visually.
