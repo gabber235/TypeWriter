@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'nats_realm_editor_catalog_source.dart';
@@ -9,6 +9,7 @@ part of 'nats_realm_editor_catalog_source.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ _$DecodedCatalogPartsCopyWith<_DecodedCatalogParts> get copyWith => __$DecodedCa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DecodedCatalogParts&&const DeepCollectionEquality().equals(other.presentations, presentations)&&const DeepCollectionEquality().equals(other.conversions, conversions)&&const DeepCollectionEquality().equals(other.capabilities, capabilities)&&const DeepCollectionEquality().equals(other.subtypeResults, subtypeResults)&&const DeepCollectionEquality().equals(other.diagnostics, diagnostics));
+  final _this = this as _DecodedCatalogParts;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DecodedCatalogParts&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&const DeepCollectionEquality().equals(other.conversions, _this.conversions)&&const DeepCollectionEquality().equals(other.capabilities, _this.capabilities)&&const DeepCollectionEquality().equals(other.subtypeResults, _this.subtypeResults)&&const DeepCollectionEquality().equals(other.diagnostics, _this.diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(presentations),const DeepCollectionEquality().hash(conversions),const DeepCollectionEquality().hash(capabilities),const DeepCollectionEquality().hash(subtypeResults),const DeepCollectionEquality().hash(diagnostics));
+int get hashCode {
+  final _this = this as _DecodedCatalogParts;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.presentations),const DeepCollectionEquality().hash(_this.conversions),const DeepCollectionEquality().hash(_this.capabilities),const DeepCollectionEquality().hash(_this.subtypeResults),const DeepCollectionEquality().hash(_this.diagnostics));
+}
 
 @override
 String toString() {
-  return '_DecodedCatalogParts(presentations: $presentations, conversions: $conversions, capabilities: $capabilities, subtypeResults: $subtypeResults, diagnostics: $diagnostics)';
+  final _this = this as _DecodedCatalogParts;
+  return '_DecodedCatalogParts(presentations: ${_this.presentations}, conversions: ${_this.conversions}, capabilities: ${_this.capabilities}, subtypeResults: ${_this.subtypeResults}, diagnostics: ${_this.diagnostics})';
 }
 
 
@@ -63,7 +69,7 @@ class __$DecodedCatalogPartsCopyWithImpl<$Res>
 /// Create a copy of _DecodedCatalogParts
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? presentations = null,Object? conversions = null,Object? capabilities = null,Object? subtypeResults = null,Object? diagnostics = null,}) {
-  return _then(_self.copyWith(
+  return _then(_DecodedCatalogParts(
 presentations: null == presentations ? _self.presentations : presentations // ignore: cast_nullable_to_non_nullable
 as Map<PresentationId, PresentationDefinition>,conversions: null == conversions ? _self.conversions : conversions // ignore: cast_nullable_to_non_nullable
 as Map<ConversionId, ConversionDefinition>,capabilities: null == capabilities ? _self.capabilities : capabilities // ignore: cast_nullable_to_non_nullable
@@ -210,8 +216,8 @@ return $default(_that.presentations,_that.conversions,_that.capabilities,_that.s
 
 
 class _DecodedCatalogPartsValue implements _DecodedCatalogParts {
-  const _DecodedCatalogPartsValue({required final  Map<PresentationId, PresentationDefinition> presentations, required final  Map<ConversionId, ConversionDefinition> conversions, required final  Map<CapabilityId, CapabilityDefinition> capabilities, required final  Map<String, RealmEditorSubtypeResult> subtypeResults, required final  List<TypeDiagnostic> diagnostics}): _presentations = presentations,_conversions = conversions,_capabilities = capabilities,_subtypeResults = subtypeResults,_diagnostics = diagnostics;
-  
+  const _DecodedCatalogPartsValue({required  Map<PresentationId, PresentationDefinition> presentations, required  Map<ConversionId, ConversionDefinition> conversions, required  Map<CapabilityId, CapabilityDefinition> capabilities, required  Map<String, RealmEditorSubtypeResult> subtypeResults, required  List<TypeDiagnostic> diagnostics}): _presentations = presentations,_conversions = conversions,_capabilities = capabilities,_subtypeResults = subtypeResults,_diagnostics = diagnostics;
+
 
  final  Map<PresentationId, PresentationDefinition> _presentations;
 @override Map<PresentationId, PresentationDefinition> get presentations {
@@ -259,16 +265,18 @@ _$DecodedCatalogPartsValueCopyWith<_DecodedCatalogPartsValue> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DecodedCatalogPartsValue&&const DeepCollectionEquality().equals(other._presentations, _presentations)&&const DeepCollectionEquality().equals(other._conversions, _conversions)&&const DeepCollectionEquality().equals(other._capabilities, _capabilities)&&const DeepCollectionEquality().equals(other._subtypeResults, _subtypeResults)&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DecodedCatalogPartsValue&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&const DeepCollectionEquality().equals(other.conversions, _conversions)&&const DeepCollectionEquality().equals(other.capabilities, _capabilities)&&const DeepCollectionEquality().equals(other.subtypeResults, _subtypeResults)&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_conversions),const DeepCollectionEquality().hash(_capabilities),const DeepCollectionEquality().hash(_subtypeResults),const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_conversions),const DeepCollectionEquality().hash(_capabilities),const DeepCollectionEquality().hash(_subtypeResults),const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return '_DecodedCatalogParts(presentations: $presentations, conversions: $conversions, capabilities: $capabilities, subtypeResults: $subtypeResults, diagnostics: $diagnostics)';
+    return '_DecodedCatalogParts(presentations: $presentations, conversions: $conversions, capabilities: $capabilities, subtypeResults: $subtypeResults, diagnostics: $diagnostics)';
 }
 
 

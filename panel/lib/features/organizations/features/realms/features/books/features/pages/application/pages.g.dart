@@ -85,7 +85,7 @@ abstract class _$BookPages extends $AsyncNotifier<List<Page>> {
   FutureOr<List<Page>> build(skir.RecordId bookId, String search);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<Page>>, List<Page>>;
     final element =
         ref.element
@@ -95,7 +95,7 @@ abstract class _$BookPages extends $AsyncNotifier<List<Page>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
   }
 }
 
@@ -173,7 +173,7 @@ abstract class _$Pages extends $AsyncNotifier<Page> {
   FutureOr<Page> build(skir.RecordId pageId);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<Page>, Page>;
     final element =
         ref.element
@@ -183,7 +183,7 @@ abstract class _$Pages extends $AsyncNotifier<Page> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 

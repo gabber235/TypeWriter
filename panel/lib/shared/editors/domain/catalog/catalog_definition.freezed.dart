@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'catalog_definition.dart';
@@ -9,6 +9,7 @@ part of 'catalog_definition.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PresentationDefinitionCopyWith<PresentationDefinition> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationDefinition&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.inputs, inputs)&&(identical(other.root, root) || other.root == root)&&(identical(other.primaryInput, primaryInput) || other.primaryInput == primaryInput));
+  final _this = this as PresentationDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&const DeepCollectionEquality().equals(other.inputs, _this.inputs)&&(identical(other.root, _this.root) || other.root == _this.root)&&(identical(other.primaryInput, _this.primaryInput) || other.primaryInput == _this.primaryInput));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(inputs),root,primaryInput);
+int get hashCode {
+  final _this = this as PresentationDefinition;
+  return Object.hash(runtimeType,_this.id,const DeepCollectionEquality().hash(_this.inputs),_this.root,_this.primaryInput);
+}
 
 @override
 String toString() {
-  return 'PresentationDefinition(id: $id, inputs: $inputs, root: $root, primaryInput: $primaryInput)';
+  final _this = this as PresentationDefinition;
+  return 'PresentationDefinition(id: ${_this.id}, inputs: ${_this.inputs}, root: ${_this.root}, primaryInput: ${_this.primaryInput})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PresentationDefinitionCopyWithImpl<$Res>
 /// Create a copy of PresentationDefinition
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? inputs = null,Object? root = null,Object? primaryInput = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationDefinition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as PresentationId,inputs: null == inputs ? _self.inputs : inputs // ignore: cast_nullable_to_non_nullable
 as List<PresentationInputParameter>,root: null == root ? _self.root : root // ignore: cast_nullable_to_non_nullable
@@ -76,7 +82,7 @@ as BindingId?,
 @override
 @pragma('vm:prefer-inline')
 $PresentationIdCopyWith<$Res> get id {
-  
+
   return $PresentationIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -85,7 +91,7 @@ $PresentationIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $PresentationNodeCopyWith<$Res> get root {
-  
+
   return $PresentationNodeCopyWith<$Res>(_self.root, (value) {
     return _then(_self.copyWith(root: value));
   });
@@ -239,8 +245,8 @@ return $default(_that.id,_that.inputs,_that.root,_that.primaryInput);case _:
 
 
 class _PresentationDefinition extends PresentationDefinition {
-  const _PresentationDefinition({required this.id, required final  List<PresentationInputParameter> inputs, required this.root, this.primaryInput}): _inputs = inputs,super._();
-  
+  const _PresentationDefinition({required this.id, required  List<PresentationInputParameter> inputs, required this.root, this.primaryInput}): _inputs = inputs,super._();
+
 
 @override final  PresentationId id;
  final  List<PresentationInputParameter> _inputs;
@@ -263,16 +269,18 @@ _$PresentationDefinitionCopyWith<_PresentationDefinition> get copyWith => __$Pre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationDefinition&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._inputs, _inputs)&&(identical(other.root, root) || other.root == root)&&(identical(other.primaryInput, primaryInput) || other.primaryInput == primaryInput));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationDefinition&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.inputs, _inputs)&&(identical(other.root, root) || other.root == root)&&(identical(other.primaryInput, primaryInput) || other.primaryInput == primaryInput));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_inputs),root,primaryInput);
+int get hashCode {
+    return Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_inputs),root,primaryInput);
+}
 
 @override
 String toString() {
-  return 'PresentationDefinition(id: $id, inputs: $inputs, root: $root, primaryInput: $primaryInput)';
+    return 'PresentationDefinition(id: $id, inputs: $inputs, root: $root, primaryInput: $primaryInput)';
 }
 
 
@@ -315,7 +323,7 @@ as BindingId?,
 @override
 @pragma('vm:prefer-inline')
 $PresentationIdCopyWith<$Res> get id {
-  
+
   return $PresentationIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -324,7 +332,7 @@ $PresentationIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $PresentationNodeCopyWith<$Res> get root {
-  
+
   return $PresentationNodeCopyWith<$Res>(_self.root, (value) {
     return _then(_self.copyWith(root: value));
   });
@@ -357,16 +365,21 @@ $PresentationInputParameterCopyWith<PresentationInputParameter> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationInputParameter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.access, access) || other.access == access));
+  final _this = this as PresentationInputParameter;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationInputParameter&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.access, _this.access) || other.access == _this.access));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,access);
+int get hashCode {
+  final _this = this as PresentationInputParameter;
+  return Object.hash(runtimeType,_this.id,_this.name,_this.type,_this.access);
+}
 
 @override
 String toString() {
-  return 'PresentationInputParameter(id: $id, name: $name, type: $type, access: $access)';
+  final _this = this as PresentationInputParameter;
+  return 'PresentationInputParameter(id: ${_this.id}, name: ${_this.name}, type: ${_this.type}, access: ${_this.access})';
 }
 
 
@@ -395,7 +408,7 @@ class _$PresentationInputParameterCopyWithImpl<$Res>
 /// Create a copy of PresentationInputParameter
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? type = null,Object? access = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationInputParameter(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as BindingId,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -408,7 +421,7 @@ as PresentationInputAccess,
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get id {
-  
+
   return $BindingIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -417,7 +430,7 @@ $BindingIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -560,7 +573,7 @@ return $default(_that.id,_that.name,_that.type,_that.access);case _:
 
 class _PresentationInputParameter implements PresentationInputParameter {
   const _PresentationInputParameter({required this.id, required this.name, required this.type, this.access = PresentationInputAccess.read});
-  
+
 
 @override final  BindingId id;
 @override final  String name;
@@ -577,16 +590,18 @@ _$PresentationInputParameterCopyWith<_PresentationInputParameter> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationInputParameter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.access, access) || other.access == access));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationInputParameter&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.access, access) || other.access == access));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,type,access);
+int get hashCode {
+    return Object.hash(runtimeType,id,name,type,access);
+}
 
 @override
 String toString() {
-  return 'PresentationInputParameter(id: $id, name: $name, type: $type, access: $access)';
+    return 'PresentationInputParameter(id: $id, name: $name, type: $type, access: $access)';
 }
 
 
@@ -629,7 +644,7 @@ as PresentationInputAccess,
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get id {
-  
+
   return $BindingIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -638,7 +653,7 @@ $BindingIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -659,16 +674,21 @@ $CapabilityDefinitionCopyWith<CapabilityDefinition> get copyWith => _$Capability
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CapabilityDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.requestType, requestType) || other.requestType == requestType));
+  final _this = this as CapabilityDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CapabilityDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.requestType, _this.requestType) || other.requestType == _this.requestType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,requestType);
+int get hashCode {
+  final _this = this as CapabilityDefinition;
+  return Object.hash(runtimeType,_this.id,_this.requestType);
+}
 
 @override
 String toString() {
-  return 'CapabilityDefinition(id: $id, requestType: $requestType)';
+  final _this = this as CapabilityDefinition;
+  return 'CapabilityDefinition(id: ${_this.id}, requestType: ${_this.requestType})';
 }
 
 
@@ -708,7 +728,7 @@ as ResolvedTypeRef,
 @override
 @pragma('vm:prefer-inline')
 $CapabilityIdCopyWith<$Res> get id {
-  
+
   return $CapabilityIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -717,7 +737,7 @@ $CapabilityIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get requestType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.requestType, (value) {
     return _then(_self.copyWith(requestType: value));
   });
@@ -866,7 +886,7 @@ return command(_that.id,_that.requestType);case _:
 
 class SearchCapabilityDefinition implements CapabilityDefinition {
   const SearchCapabilityDefinition({required this.id, required this.requestType, required this.resultType});
-  
+
 
 @override final  CapabilityId id;
 @override final  ResolvedTypeRef requestType;
@@ -882,16 +902,18 @@ $SearchCapabilityDefinitionCopyWith<SearchCapabilityDefinition> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchCapabilityDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.requestType, requestType) || other.requestType == requestType)&&(identical(other.resultType, resultType) || other.resultType == resultType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchCapabilityDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.requestType, requestType) || other.requestType == requestType)&&(identical(other.resultType, resultType) || other.resultType == resultType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,requestType,resultType);
+int get hashCode {
+    return Object.hash(runtimeType,id,requestType,resultType);
+}
 
 @override
 String toString() {
-  return 'CapabilityDefinition.search(id: $id, requestType: $requestType, resultType: $resultType)';
+    return 'CapabilityDefinition.search(id: $id, requestType: $requestType, resultType: $resultType)';
 }
 
 
@@ -933,7 +955,7 @@ as ResolvedTypeRef,
 @override
 @pragma('vm:prefer-inline')
 $CapabilityIdCopyWith<$Res> get id {
-  
+
   return $CapabilityIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -942,7 +964,7 @@ $CapabilityIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get requestType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.requestType, (value) {
     return _then(_self.copyWith(requestType: value));
   });
@@ -951,7 +973,7 @@ $ResolvedTypeRefCopyWith<$Res> get requestType {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get resultType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.resultType, (value) {
     return _then(_self.copyWith(resultType: value));
   });
@@ -963,7 +985,7 @@ $ResolvedTypeRefCopyWith<$Res> get resultType {
 
 class ComputationCapabilityDefinition implements CapabilityDefinition {
   const ComputationCapabilityDefinition({required this.id, required this.requestType, required this.resultType});
-  
+
 
 @override final  CapabilityId id;
 @override final  ResolvedTypeRef requestType;
@@ -979,16 +1001,18 @@ $ComputationCapabilityDefinitionCopyWith<ComputationCapabilityDefinition> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ComputationCapabilityDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.requestType, requestType) || other.requestType == requestType)&&(identical(other.resultType, resultType) || other.resultType == resultType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ComputationCapabilityDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.requestType, requestType) || other.requestType == requestType)&&(identical(other.resultType, resultType) || other.resultType == resultType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,requestType,resultType);
+int get hashCode {
+    return Object.hash(runtimeType,id,requestType,resultType);
+}
 
 @override
 String toString() {
-  return 'CapabilityDefinition.computation(id: $id, requestType: $requestType, resultType: $resultType)';
+    return 'CapabilityDefinition.computation(id: $id, requestType: $requestType, resultType: $resultType)';
 }
 
 
@@ -1030,7 +1054,7 @@ as ResolvedTypeRef,
 @override
 @pragma('vm:prefer-inline')
 $CapabilityIdCopyWith<$Res> get id {
-  
+
   return $CapabilityIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -1039,7 +1063,7 @@ $CapabilityIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get requestType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.requestType, (value) {
     return _then(_self.copyWith(requestType: value));
   });
@@ -1048,7 +1072,7 @@ $ResolvedTypeRefCopyWith<$Res> get requestType {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get resultType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.resultType, (value) {
     return _then(_self.copyWith(resultType: value));
   });
@@ -1060,7 +1084,7 @@ $ResolvedTypeRefCopyWith<$Res> get resultType {
 
 class CommandCapabilityDefinition implements CapabilityDefinition {
   const CommandCapabilityDefinition({required this.id, required this.requestType});
-  
+
 
 @override final  CapabilityId id;
 @override final  ResolvedTypeRef requestType;
@@ -1075,16 +1099,18 @@ $CommandCapabilityDefinitionCopyWith<CommandCapabilityDefinition> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommandCapabilityDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.requestType, requestType) || other.requestType == requestType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CommandCapabilityDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.requestType, requestType) || other.requestType == requestType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,requestType);
+int get hashCode {
+    return Object.hash(runtimeType,id,requestType);
+}
 
 @override
 String toString() {
-  return 'CapabilityDefinition.command(id: $id, requestType: $requestType)';
+    return 'CapabilityDefinition.command(id: $id, requestType: $requestType)';
 }
 
 
@@ -1125,7 +1151,7 @@ as ResolvedTypeRef,
 @override
 @pragma('vm:prefer-inline')
 $CapabilityIdCopyWith<$Res> get id {
-  
+
   return $CapabilityIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -1134,7 +1160,7 @@ $CapabilityIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get requestType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.requestType, (value) {
     return _then(_self.copyWith(requestType: value));
   });
@@ -1155,16 +1181,21 @@ $TypedValueEnvelopeCopyWith<TypedValueEnvelope> get copyWith => _$TypedValueEnve
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedValueEnvelope&&(identical(other.rootType, rootType) || other.rootType == rootType)&&(identical(other.rootValue, rootValue) || other.rootValue == rootValue));
+  final _this = this as TypedValueEnvelope;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedValueEnvelope&&(identical(other.rootType, _this.rootType) || other.rootType == _this.rootType)&&(identical(other.rootValue, _this.rootValue) || other.rootValue == _this.rootValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rootType,rootValue);
+int get hashCode {
+  final _this = this as TypedValueEnvelope;
+  return Object.hash(runtimeType,_this.rootType,_this.rootValue);
+}
 
 @override
 String toString() {
-  return 'TypedValueEnvelope(rootType: $rootType, rootValue: $rootValue)';
+  final _this = this as TypedValueEnvelope;
+  return 'TypedValueEnvelope(rootType: ${_this.rootType}, rootValue: ${_this.rootValue})';
 }
 
 
@@ -1193,7 +1224,7 @@ class _$TypedValueEnvelopeCopyWithImpl<$Res>
 /// Create a copy of TypedValueEnvelope
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? rootType = null,Object? rootValue = null,}) {
-  return _then(_self.copyWith(
+  return _then(TypedValueEnvelope(
 rootType: null == rootType ? _self.rootType : rootType // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,rootValue: null == rootValue ? _self.rootValue : rootValue // ignore: cast_nullable_to_non_nullable
 as DataValue,
@@ -1204,7 +1235,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get rootType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.rootType, (value) {
     return _then(_self.copyWith(rootType: value));
   });
@@ -1213,7 +1244,7 @@ $ResolvedTypeRefCopyWith<$Res> get rootType {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get rootValue {
-  
+
   return $DataValueCopyWith<$Res>(_self.rootValue, (value) {
     return _then(_self.copyWith(rootValue: value));
   });
@@ -1356,7 +1387,7 @@ return $default(_that.rootType,_that.rootValue);case _:
 
 class _TypedValueEnvelope implements TypedValueEnvelope {
   const _TypedValueEnvelope({required this.rootType, required this.rootValue});
-  
+
 
 @override final  ResolvedTypeRef rootType;
 @override final  DataValue rootValue;
@@ -1371,16 +1402,18 @@ _$TypedValueEnvelopeCopyWith<_TypedValueEnvelope> get copyWith => __$TypedValueE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypedValueEnvelope&&(identical(other.rootType, rootType) || other.rootType == rootType)&&(identical(other.rootValue, rootValue) || other.rootValue == rootValue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypedValueEnvelope&&(identical(other.rootType, rootType) || other.rootType == rootType)&&(identical(other.rootValue, rootValue) || other.rootValue == rootValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rootType,rootValue);
+int get hashCode {
+    return Object.hash(runtimeType,rootType,rootValue);
+}
 
 @override
 String toString() {
-  return 'TypedValueEnvelope(rootType: $rootType, rootValue: $rootValue)';
+    return 'TypedValueEnvelope(rootType: $rootType, rootValue: $rootValue)';
 }
 
 
@@ -1421,7 +1454,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get rootType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.rootType, (value) {
     return _then(_self.copyWith(rootType: value));
   });
@@ -1430,7 +1463,7 @@ $ResolvedTypeRefCopyWith<$Res> get rootType {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get rootValue {
-  
+
   return $DataValueCopyWith<$Res>(_self.rootValue, (value) {
     return _then(_self.copyWith(rootValue: value));
   });

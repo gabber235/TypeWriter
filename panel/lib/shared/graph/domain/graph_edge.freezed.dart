@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'graph_edge.dart';
@@ -9,6 +9,7 @@ part of 'graph_edge.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $GraphEdgeCopyWith<GraphEdge> get copyWith => _$GraphEdgeCopyWithImpl<GraphEdge>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphEdge&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.color, color) || other.color == color)&&(identical(other.sourceSide, sourceSide) || other.sourceSide == sourceSide)&&(identical(other.targetSide, targetSide) || other.targetSide == targetSide));
+  final _this = this as GraphEdge;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphEdge&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.target, _this.target) || other.target == _this.target)&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.sourceSide, _this.sourceSide) || other.sourceSide == _this.sourceSide)&&(identical(other.targetSide, _this.targetSide) || other.targetSide == _this.targetSide));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,source,target,color,sourceSide,targetSide);
+int get hashCode {
+  final _this = this as GraphEdge;
+  return Object.hash(runtimeType,_this.id,_this.source,_this.target,_this.color,_this.sourceSide,_this.targetSide);
+}
 
 @override
 String toString() {
-  return 'GraphEdge(id: $id, source: $source, target: $target, color: $color, sourceSide: $sourceSide, targetSide: $targetSide)';
+  final _this = this as GraphEdge;
+  return 'GraphEdge(id: ${_this.id}, source: ${_this.source}, target: ${_this.target}, color: ${_this.color}, sourceSide: ${_this.sourceSide}, targetSide: ${_this.targetSide})';
 }
 
 
@@ -63,7 +69,7 @@ class _$GraphEdgeCopyWithImpl<$Res>
 /// Create a copy of GraphEdge
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? source = null,Object? target = null,Object? color = null,Object? sourceSide = null,Object? targetSide = null,}) {
-  return _then(_self.copyWith(
+  return _then(GraphEdge(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as GraphIdentifier,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
@@ -212,7 +218,7 @@ return $default(_that.id,_that.source,_that.target,_that.color,_that.sourceSide,
 
 class _GraphEdge extends GraphEdge {
   const _GraphEdge({required this.id, required this.source, required this.target, required this.color, this.sourceSide = EdgeSide.right, this.targetSide = EdgeSide.left}): super._();
-  
+
 
 @override final  String id;
 @override final  GraphIdentifier source;
@@ -231,16 +237,18 @@ _$GraphEdgeCopyWith<_GraphEdge> get copyWith => __$GraphEdgeCopyWithImpl<_GraphE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphEdge&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.color, color) || other.color == color)&&(identical(other.sourceSide, sourceSide) || other.sourceSide == sourceSide)&&(identical(other.targetSide, targetSide) || other.targetSide == targetSide));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphEdge&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.color, color) || other.color == color)&&(identical(other.sourceSide, sourceSide) || other.sourceSide == sourceSide)&&(identical(other.targetSide, targetSide) || other.targetSide == targetSide));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,source,target,color,sourceSide,targetSide);
+int get hashCode {
+    return Object.hash(runtimeType,id,source,target,color,sourceSide,targetSide);
+}
 
 @override
 String toString() {
-  return 'GraphEdge(id: $id, source: $source, target: $target, color: $color, sourceSide: $sourceSide, targetSide: $targetSide)';
+    return 'GraphEdge(id: $id, source: $source, target: $target, color: $color, sourceSide: $sourceSide, targetSide: $targetSide)';
 }
 
 

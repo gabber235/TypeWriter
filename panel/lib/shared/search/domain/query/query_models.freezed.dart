@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'query_models.dart';
@@ -9,6 +9,7 @@ part of 'query_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $QueryCursorContextCopyWith<QueryCursorContext> get copyWith => _$QueryCursorCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange));
+  final _this = this as QueryCursorContext;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryCursorContext&&(identical(other.cursorOffset, _this.cursorOffset) || other.cursorOffset == _this.cursorOffset)&&(identical(other.activeRange, _this.activeRange) || other.activeRange == _this.activeRange));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cursorOffset,activeRange);
+int get hashCode {
+  final _this = this as QueryCursorContext;
+  return Object.hash(runtimeType,_this.cursorOffset,_this.activeRange);
+}
 
 @override
 String toString() {
-  return 'QueryCursorContext(cursorOffset: $cursorOffset, activeRange: $activeRange)';
+  final _this = this as QueryCursorContext;
+  return 'QueryCursorContext(cursorOffset: ${_this.cursorOffset}, activeRange: ${_this.activeRange})';
 }
 
 
@@ -220,7 +226,7 @@ return unknown(_that.cursorOffset,_that.activeRange,_that.partial,_that.side);ca
 
 class SelectorKeyCursorContext implements QueryCursorContext {
   const SelectorKeyCursorContext({required this.cursorOffset, required this.activeRange, required this.partialKey});
-  
+
 
 @override final  int cursorOffset;
 @override final  QueryRange activeRange;
@@ -236,16 +242,18 @@ $SelectorKeyCursorContextCopyWith<SelectorKeyCursorContext> get copyWith => _$Se
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorKeyCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.partialKey, partialKey) || other.partialKey == partialKey));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorKeyCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.partialKey, partialKey) || other.partialKey == partialKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cursorOffset,activeRange,partialKey);
+int get hashCode {
+    return Object.hash(runtimeType,cursorOffset,activeRange,partialKey);
+}
 
 @override
 String toString() {
-  return 'QueryCursorContext.selectorKey(cursorOffset: $cursorOffset, activeRange: $activeRange, partialKey: $partialKey)';
+    return 'QueryCursorContext.selectorKey(cursorOffset: $cursorOffset, activeRange: $activeRange, partialKey: $partialKey)';
 }
 
 
@@ -290,7 +298,7 @@ as String,
 
 class SelectorValueCursorContext implements QueryCursorContext {
   const SelectorValueCursorContext({required this.cursorOffset, required this.activeRange, required this.selectorId, required this.partialValue, required this.keyRange, required this.valueRange});
-  
+
 
 @override final  int cursorOffset;
 @override final  QueryRange activeRange;
@@ -309,16 +317,18 @@ $SelectorValueCursorContextCopyWith<SelectorValueCursorContext> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorValueCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.partialValue, partialValue) || other.partialValue == partialValue)&&(identical(other.keyRange, keyRange) || other.keyRange == keyRange)&&(identical(other.valueRange, valueRange) || other.valueRange == valueRange));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorValueCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.partialValue, partialValue) || other.partialValue == partialValue)&&(identical(other.keyRange, keyRange) || other.keyRange == keyRange)&&(identical(other.valueRange, valueRange) || other.valueRange == valueRange));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cursorOffset,activeRange,selectorId,partialValue,keyRange,valueRange);
+int get hashCode {
+    return Object.hash(runtimeType,cursorOffset,activeRange,selectorId,partialValue,keyRange,valueRange);
+}
 
 @override
 String toString() {
-  return 'QueryCursorContext.selectorValue(cursorOffset: $cursorOffset, activeRange: $activeRange, selectorId: $selectorId, partialValue: $partialValue, keyRange: $keyRange, valueRange: $valueRange)';
+    return 'QueryCursorContext.selectorValue(cursorOffset: $cursorOffset, activeRange: $activeRange, selectorId: $selectorId, partialValue: $partialValue, keyRange: $keyRange, valueRange: $valueRange)';
 }
 
 
@@ -366,7 +376,7 @@ as QueryRange?,
 
 class OperatorCursorContext implements QueryCursorContext {
   const OperatorCursorContext({required this.cursorOffset, required this.activeRange, required this.partialOperator});
-  
+
 
 @override final  int cursorOffset;
 @override final  QueryRange activeRange;
@@ -382,16 +392,18 @@ $OperatorCursorContextCopyWith<OperatorCursorContext> get copyWith => _$Operator
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OperatorCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.partialOperator, partialOperator) || other.partialOperator == partialOperator));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OperatorCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.partialOperator, partialOperator) || other.partialOperator == partialOperator));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cursorOffset,activeRange,partialOperator);
+int get hashCode {
+    return Object.hash(runtimeType,cursorOffset,activeRange,partialOperator);
+}
 
 @override
 String toString() {
-  return 'QueryCursorContext.operator(cursorOffset: $cursorOffset, activeRange: $activeRange, partialOperator: $partialOperator)';
+    return 'QueryCursorContext.operator(cursorOffset: $cursorOffset, activeRange: $activeRange, partialOperator: $partialOperator)';
 }
 
 
@@ -436,7 +448,7 @@ as String,
 
 class UnknownCursorContext implements QueryCursorContext {
   const UnknownCursorContext({required this.cursorOffset, required this.activeRange, required this.partial, required this.side});
-  
+
 
 @override final  int cursorOffset;
 @override final  QueryRange activeRange;
@@ -453,16 +465,18 @@ $UnknownCursorContextCopyWith<UnknownCursorContext> get copyWith => _$UnknownCur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnknownCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.partial, partial) || other.partial == partial)&&(identical(other.side, side) || other.side == side));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UnknownCursorContext&&(identical(other.cursorOffset, cursorOffset) || other.cursorOffset == cursorOffset)&&(identical(other.activeRange, activeRange) || other.activeRange == activeRange)&&(identical(other.partial, partial) || other.partial == partial)&&(identical(other.side, side) || other.side == side));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cursorOffset,activeRange,partial,side);
+int get hashCode {
+    return Object.hash(runtimeType,cursorOffset,activeRange,partial,side);
+}
 
 @override
 String toString() {
-  return 'QueryCursorContext.unknown(cursorOffset: $cursorOffset, activeRange: $activeRange, partial: $partial, side: $side)';
+    return 'QueryCursorContext.unknown(cursorOffset: $cursorOffset, activeRange: $activeRange, partial: $partial, side: $side)';
 }
 
 
@@ -517,16 +531,21 @@ $QuerySuggestionCopyWith<QuerySuggestion> get copyWith => _$QuerySuggestionCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuerySuggestion&&(identical(other.label, label) || other.label == label)&&(identical(other.replaceRange, replaceRange) || other.replaceRange == replaceRange));
+  final _this = this as QuerySuggestion;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuerySuggestion&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.replaceRange, _this.replaceRange) || other.replaceRange == _this.replaceRange));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,replaceRange);
+int get hashCode {
+  final _this = this as QuerySuggestion;
+  return Object.hash(runtimeType,_this.label,_this.replaceRange);
+}
 
 @override
 String toString() {
-  return 'QuerySuggestion(label: $label, replaceRange: $replaceRange)';
+  final _this = this as QuerySuggestion;
+  return 'QuerySuggestion(label: ${_this.label}, replaceRange: ${_this.replaceRange})';
 }
 
 
@@ -706,7 +725,7 @@ return operator(_that.label,_that.replaceRange,_that.operatorToken);case _:
 
 class SelectorKeySuggestion implements QuerySuggestion {
   const SelectorKeySuggestion({required this.label, required this.replaceRange, required this.selectorId});
-  
+
 
 @override final  String label;
 @override final  QueryRange replaceRange;
@@ -722,16 +741,18 @@ $SelectorKeySuggestionCopyWith<SelectorKeySuggestion> get copyWith => _$Selector
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorKeySuggestion&&(identical(other.label, label) || other.label == label)&&(identical(other.replaceRange, replaceRange) || other.replaceRange == replaceRange)&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorKeySuggestion&&(identical(other.label, label) || other.label == label)&&(identical(other.replaceRange, replaceRange) || other.replaceRange == replaceRange)&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,replaceRange,selectorId);
+int get hashCode {
+    return Object.hash(runtimeType,label,replaceRange,selectorId);
+}
 
 @override
 String toString() {
-  return 'QuerySuggestion.selectorKey(label: $label, replaceRange: $replaceRange, selectorId: $selectorId)';
+    return 'QuerySuggestion.selectorKey(label: $label, replaceRange: $replaceRange, selectorId: $selectorId)';
 }
 
 
@@ -776,7 +797,7 @@ as String,
 
 class SelectorValueSuggestion implements QuerySuggestion {
   const SelectorValueSuggestion({required this.label, required this.replaceRange, required this.selectorId, required this.value});
-  
+
 
 @override final  String label;
 @override final  QueryRange replaceRange;
@@ -793,16 +814,18 @@ $SelectorValueSuggestionCopyWith<SelectorValueSuggestion> get copyWith => _$Sele
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorValueSuggestion&&(identical(other.label, label) || other.label == label)&&(identical(other.replaceRange, replaceRange) || other.replaceRange == replaceRange)&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectorValueSuggestion&&(identical(other.label, label) || other.label == label)&&(identical(other.replaceRange, replaceRange) || other.replaceRange == replaceRange)&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,replaceRange,selectorId,value);
+int get hashCode {
+    return Object.hash(runtimeType,label,replaceRange,selectorId,value);
+}
 
 @override
 String toString() {
-  return 'QuerySuggestion.selectorValue(label: $label, replaceRange: $replaceRange, selectorId: $selectorId, value: $value)';
+    return 'QuerySuggestion.selectorValue(label: $label, replaceRange: $replaceRange, selectorId: $selectorId, value: $value)';
 }
 
 
@@ -848,7 +871,7 @@ as String,
 
 class OperatorSuggestion implements QuerySuggestion {
   const OperatorSuggestion({required this.label, required this.replaceRange, required this.operatorToken});
-  
+
 
 @override final  String label;
 @override final  QueryRange replaceRange;
@@ -864,16 +887,18 @@ $OperatorSuggestionCopyWith<OperatorSuggestion> get copyWith => _$OperatorSugges
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OperatorSuggestion&&(identical(other.label, label) || other.label == label)&&(identical(other.replaceRange, replaceRange) || other.replaceRange == replaceRange)&&(identical(other.operatorToken, operatorToken) || other.operatorToken == operatorToken));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OperatorSuggestion&&(identical(other.label, label) || other.label == label)&&(identical(other.replaceRange, replaceRange) || other.replaceRange == replaceRange)&&(identical(other.operatorToken, operatorToken) || other.operatorToken == operatorToken));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,replaceRange,operatorToken);
+int get hashCode {
+    return Object.hash(runtimeType,label,replaceRange,operatorToken);
+}
 
 @override
 String toString() {
-  return 'QuerySuggestion.operator(label: $label, replaceRange: $replaceRange, operatorToken: $operatorToken)';
+    return 'QuerySuggestion.operator(label: $label, replaceRange: $replaceRange, operatorToken: $operatorToken)';
 }
 
 

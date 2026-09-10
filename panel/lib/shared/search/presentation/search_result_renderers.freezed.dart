@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'search_result_renderers.dart';
@@ -9,6 +9,7 @@ part of 'search_result_renderers.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SearchResultRowContextCopyWith<SearchResultRowContext> get copyWith => _$Search
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultRowContext&&(identical(other.result, result) || other.result == result)&&(identical(other.selected, selected) || other.selected == selected)&&(identical(other.focused, focused) || other.focused == focused)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.onTap, onTap) || other.onTap == onTap)&&(identical(other.shortcutActivator, shortcutActivator) || other.shortcutActivator == shortcutActivator));
+  final _this = this as SearchResultRowContext;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultRowContext&&(identical(other.result, _this.result) || other.result == _this.result)&&(identical(other.selected, _this.selected) || other.selected == _this.selected)&&(identical(other.focused, _this.focused) || other.focused == _this.focused)&&(identical(other.loading, _this.loading) || other.loading == _this.loading)&&(identical(other.onTap, _this.onTap) || other.onTap == _this.onTap)&&(identical(other.shortcutActivator, _this.shortcutActivator) || other.shortcutActivator == _this.shortcutActivator));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,selected,focused,loading,onTap,shortcutActivator);
+int get hashCode {
+  final _this = this as SearchResultRowContext;
+  return Object.hash(runtimeType,_this.result,_this.selected,_this.focused,_this.loading,_this.onTap,_this.shortcutActivator);
+}
 
 @override
 String toString() {
-  return 'SearchResultRowContext(result: $result, selected: $selected, focused: $focused, loading: $loading, onTap: $onTap, shortcutActivator: $shortcutActivator)';
+  final _this = this as SearchResultRowContext;
+  return 'SearchResultRowContext(result: ${_this.result}, selected: ${_this.selected}, focused: ${_this.focused}, loading: ${_this.loading}, onTap: ${_this.onTap}, shortcutActivator: ${_this.shortcutActivator})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SearchResultRowContextCopyWithImpl<$Res>
 /// Create a copy of SearchResultRowContext
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? result = null,Object? selected = null,Object? focused = null,Object? loading = null,Object? onTap = null,Object? shortcutActivator = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchResultRowContext(
 result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
 as SearchResult,selected: null == selected ? _self.selected : selected // ignore: cast_nullable_to_non_nullable
 as bool,focused: null == focused ? _self.focused : focused // ignore: cast_nullable_to_non_nullable
@@ -78,7 +84,7 @@ as ShortcutActivator?,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });
@@ -221,7 +227,7 @@ return $default(_that.result,_that.selected,_that.focused,_that.loading,_that.on
 
 class _SearchResultRowContext implements SearchResultRowContext {
   const _SearchResultRowContext({required this.result, required this.selected, required this.focused, required this.loading, required this.onTap, this.shortcutActivator});
-  
+
 
 @override final  SearchResult result;
 @override final  bool selected;
@@ -240,16 +246,18 @@ _$SearchResultRowContextCopyWith<_SearchResultRowContext> get copyWith => __$Sea
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResultRowContext&&(identical(other.result, result) || other.result == result)&&(identical(other.selected, selected) || other.selected == selected)&&(identical(other.focused, focused) || other.focused == focused)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.onTap, onTap) || other.onTap == onTap)&&(identical(other.shortcutActivator, shortcutActivator) || other.shortcutActivator == shortcutActivator));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResultRowContext&&(identical(other.result, result) || other.result == result)&&(identical(other.selected, selected) || other.selected == selected)&&(identical(other.focused, focused) || other.focused == focused)&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.onTap, onTap) || other.onTap == onTap)&&(identical(other.shortcutActivator, shortcutActivator) || other.shortcutActivator == shortcutActivator));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,selected,focused,loading,onTap,shortcutActivator);
+int get hashCode {
+    return Object.hash(runtimeType,result,selected,focused,loading,onTap,shortcutActivator);
+}
 
 @override
 String toString() {
-  return 'SearchResultRowContext(result: $result, selected: $selected, focused: $focused, loading: $loading, onTap: $onTap, shortcutActivator: $shortcutActivator)';
+    return 'SearchResultRowContext(result: $result, selected: $selected, focused: $focused, loading: $loading, onTap: $onTap, shortcutActivator: $shortcutActivator)';
 }
 
 
@@ -294,7 +302,7 @@ as ShortcutActivator?,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });
@@ -315,16 +323,21 @@ $SearchResultPreviewContextCopyWith<SearchResultPreviewContext> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContext&&(identical(other.result, result) || other.result == result));
+  final _this = this as SearchResultPreviewContext;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContext&&(identical(other.result, _this.result) || other.result == _this.result));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result);
+int get hashCode {
+  final _this = this as SearchResultPreviewContext;
+  return Object.hash(runtimeType,_this.result);
+}
 
 @override
 String toString() {
-  return 'SearchResultPreviewContext(result: $result)';
+  final _this = this as SearchResultPreviewContext;
+  return 'SearchResultPreviewContext(result: ${_this.result})';
 }
 
 
@@ -363,7 +376,7 @@ as SearchResult,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });
@@ -512,7 +525,7 @@ return error(_that.result,_that.message);case _:
 
 class SearchResultPreviewContextLoading implements SearchResultPreviewContext {
   const SearchResultPreviewContextLoading({required this.result});
-  
+
 
 @override final  SearchResult result;
 
@@ -526,16 +539,18 @@ $SearchResultPreviewContextLoadingCopyWith<SearchResultPreviewContextLoading> ge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContextLoading&&(identical(other.result, result) || other.result == result));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContextLoading&&(identical(other.result, result) || other.result == result));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result);
+int get hashCode {
+    return Object.hash(runtimeType,result);
+}
 
 @override
 String toString() {
-  return 'SearchResultPreviewContext.loading(result: $result)';
+    return 'SearchResultPreviewContext.loading(result: $result)';
 }
 
 
@@ -575,7 +590,7 @@ as SearchResult,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });
@@ -587,7 +602,7 @@ $SearchResultCopyWith<$Res> get result {
 
 class SearchResultPreviewContextData implements SearchResultPreviewContext {
   const SearchResultPreviewContextData({required this.result, required this.data});
-  
+
 
 @override final  SearchResult result;
  final  Object data;
@@ -602,16 +617,18 @@ $SearchResultPreviewContextDataCopyWith<SearchResultPreviewContextData> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContextData&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other.data, data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContextData&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other.data, data));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,const DeepCollectionEquality().hash(data));
+int get hashCode {
+    return Object.hash(runtimeType,result,const DeepCollectionEquality().hash(data));
+}
 
 @override
 String toString() {
-  return 'SearchResultPreviewContext.data(result: $result, data: $data)';
+    return 'SearchResultPreviewContext.data(result: $result, data: $data)';
 }
 
 
@@ -651,7 +668,7 @@ as SearchResult,data: null == data ? _self.data : data ,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });
@@ -663,7 +680,7 @@ $SearchResultCopyWith<$Res> get result {
 
 class SearchResultPreviewContextError implements SearchResultPreviewContext {
   const SearchResultPreviewContextError({required this.result, required this.message}): assert(message != "", 'Message must not be empty.');
-  
+
 
 @override final  SearchResult result;
  final  String message;
@@ -678,16 +695,18 @@ $SearchResultPreviewContextErrorCopyWith<SearchResultPreviewContextError> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContextError&&(identical(other.result, result) || other.result == result)&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultPreviewContextError&&(identical(other.result, result) || other.result == result)&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,message);
+int get hashCode {
+    return Object.hash(runtimeType,result,message);
+}
 
 @override
 String toString() {
-  return 'SearchResultPreviewContext.error(result: $result, message: $message)';
+    return 'SearchResultPreviewContext.error(result: $result, message: $message)';
 }
 
 
@@ -728,7 +747,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });

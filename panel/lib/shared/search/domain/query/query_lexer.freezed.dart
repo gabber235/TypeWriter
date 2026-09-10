@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'query_lexer.dart';
@@ -9,6 +9,7 @@ part of 'query_lexer.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $QueryLexerTokenCopyWith<QueryLexerToken> get copyWith => _$QueryLexerTokenCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerToken&&(identical(other.raw, raw) || other.raw == raw)&&(identical(other.range, range) || other.range == range)&&const DeepCollectionEquality().equals(other.issues, issues));
+  final _this = this as QueryLexerToken;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerToken&&(identical(other.raw, _this.raw) || other.raw == _this.raw)&&(identical(other.range, _this.range) || other.range == _this.range)&&const DeepCollectionEquality().equals(other.issues, _this.issues));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,raw,range,const DeepCollectionEquality().hash(issues));
+int get hashCode {
+  final _this = this as QueryLexerToken;
+  return Object.hash(runtimeType,_this.raw,_this.range,const DeepCollectionEquality().hash(_this.issues));
+}
 
 @override
 String toString() {
-  return 'QueryLexerToken(raw: $raw, range: $range, issues: $issues)';
+  final _this = this as QueryLexerToken;
+  return 'QueryLexerToken(raw: ${_this.raw}, range: ${_this.range}, issues: ${_this.issues})';
 }
 
 
@@ -214,8 +220,8 @@ return negation(_that.token,_that.raw,_that.range,_that.operatorRange,_that.issu
 
 
 class QueryLexerKeyValueSelectorToken implements QueryLexerToken, QueryLexerSelectorToken {
-  const QueryLexerKeyValueSelectorToken({required this.selectorId, required this.keyRange, required this.raw, required this.range, this.value, this.valueRange, final  List<QueryParseIssue> issues = const <QueryParseIssue>[]}): assert(value != null || issues.length > 0, 'When no value is provided, an issue must be present'),_issues = issues;
-  
+  const QueryLexerKeyValueSelectorToken({required this.selectorId, required this.keyRange, required this.raw, required this.range, this.value, this.valueRange,  List<QueryParseIssue> issues = const <QueryParseIssue>[]}): assert(value != null || issues.length > 0, 'When no value is provided, an issue must be present'),_issues = issues;
+
 
  final  String selectorId;
  final  QueryRange keyRange;
@@ -241,16 +247,18 @@ $QueryLexerKeyValueSelectorTokenCopyWith<QueryLexerKeyValueSelectorToken> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerKeyValueSelectorToken&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.keyRange, keyRange) || other.keyRange == keyRange)&&(identical(other.raw, raw) || other.raw == raw)&&(identical(other.range, range) || other.range == range)&&(identical(other.value, value) || other.value == value)&&(identical(other.valueRange, valueRange) || other.valueRange == valueRange)&&const DeepCollectionEquality().equals(other._issues, _issues));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerKeyValueSelectorToken&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.keyRange, keyRange) || other.keyRange == keyRange)&&(identical(other.raw, raw) || other.raw == raw)&&(identical(other.range, range) || other.range == range)&&(identical(other.value, value) || other.value == value)&&(identical(other.valueRange, valueRange) || other.valueRange == valueRange)&&const DeepCollectionEquality().equals(other.issues, _issues));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectorId,keyRange,raw,range,value,valueRange,const DeepCollectionEquality().hash(_issues));
+int get hashCode {
+    return Object.hash(runtimeType,selectorId,keyRange,raw,range,value,valueRange,const DeepCollectionEquality().hash(_issues));
+}
 
 @override
 String toString() {
-  return 'QueryLexerToken.keyValueSelector(selectorId: $selectorId, keyRange: $keyRange, raw: $raw, range: $range, value: $value, valueRange: $valueRange, issues: $issues)';
+    return 'QueryLexerToken.keyValueSelector(selectorId: $selectorId, keyRange: $keyRange, raw: $raw, range: $range, value: $value, valueRange: $valueRange, issues: $issues)';
 }
 
 
@@ -298,8 +306,8 @@ as List<QueryParseIssue>,
 
 
 class QueryLexerOperatorToken implements QueryLexerToken {
-  const QueryLexerOperatorToken({required this.type, required this.raw, required this.range, required this.left, required this.right, required this.operatorRange, final  List<QueryParseIssue> issues = const <QueryParseIssue>[]}): _issues = issues;
-  
+  const QueryLexerOperatorToken({required this.type, required this.raw, required this.range, required this.left, required this.right, required this.operatorRange,  List<QueryParseIssue> issues = const <QueryParseIssue>[]}): _issues = issues;
+
 
  final  QueryLexerOperatorType type;
 @override final  String raw;
@@ -325,16 +333,18 @@ $QueryLexerOperatorTokenCopyWith<QueryLexerOperatorToken> get copyWith => _$Quer
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerOperatorToken&&(identical(other.type, type) || other.type == type)&&(identical(other.raw, raw) || other.raw == raw)&&(identical(other.range, range) || other.range == range)&&(identical(other.left, left) || other.left == left)&&(identical(other.right, right) || other.right == right)&&(identical(other.operatorRange, operatorRange) || other.operatorRange == operatorRange)&&const DeepCollectionEquality().equals(other._issues, _issues));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerOperatorToken&&(identical(other.type, type) || other.type == type)&&(identical(other.raw, raw) || other.raw == raw)&&(identical(other.range, range) || other.range == range)&&(identical(other.left, left) || other.left == left)&&(identical(other.right, right) || other.right == right)&&(identical(other.operatorRange, operatorRange) || other.operatorRange == operatorRange)&&const DeepCollectionEquality().equals(other.issues, _issues));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,raw,range,left,right,operatorRange,const DeepCollectionEquality().hash(_issues));
+int get hashCode {
+    return Object.hash(runtimeType,type,raw,range,left,right,operatorRange,const DeepCollectionEquality().hash(_issues));
+}
 
 @override
 String toString() {
-  return 'QueryLexerToken.operator(type: $type, raw: $raw, range: $range, left: $left, right: $right, operatorRange: $operatorRange, issues: $issues)';
+    return 'QueryLexerToken.operator(type: $type, raw: $raw, range: $range, left: $left, right: $right, operatorRange: $operatorRange, issues: $issues)';
 }
 
 
@@ -380,7 +390,7 @@ as List<QueryParseIssue>,
 @override
 @pragma('vm:prefer-inline')
 $QueryLexerTokenCopyWith<$Res> get left {
-  
+
   return $QueryLexerTokenCopyWith<$Res>(_self.left, (value) {
     return _then(_self.copyWith(left: value));
   });
@@ -389,7 +399,7 @@ $QueryLexerTokenCopyWith<$Res> get left {
 @override
 @pragma('vm:prefer-inline')
 $QueryLexerTokenCopyWith<$Res> get right {
-  
+
   return $QueryLexerTokenCopyWith<$Res>(_self.right, (value) {
     return _then(_self.copyWith(right: value));
   });
@@ -400,8 +410,8 @@ $QueryLexerTokenCopyWith<$Res> get right {
 
 
 class QueryLexerNegationToken implements QueryLexerToken {
-  const QueryLexerNegationToken({required this.token, required this.raw, required this.range, required this.operatorRange, final  List<QueryParseIssue> issues = const <QueryParseIssue>[]}): _issues = issues;
-  
+  const QueryLexerNegationToken({required this.token, required this.raw, required this.range, required this.operatorRange,  List<QueryParseIssue> issues = const <QueryParseIssue>[]}): _issues = issues;
+
 
  final  QueryLexerToken token;
 @override final  String raw;
@@ -425,16 +435,18 @@ $QueryLexerNegationTokenCopyWith<QueryLexerNegationToken> get copyWith => _$Quer
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerNegationToken&&(identical(other.token, token) || other.token == token)&&(identical(other.raw, raw) || other.raw == raw)&&(identical(other.range, range) || other.range == range)&&(identical(other.operatorRange, operatorRange) || other.operatorRange == operatorRange)&&const DeepCollectionEquality().equals(other._issues, _issues));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryLexerNegationToken&&(identical(other.token, token) || other.token == token)&&(identical(other.raw, raw) || other.raw == raw)&&(identical(other.range, range) || other.range == range)&&(identical(other.operatorRange, operatorRange) || other.operatorRange == operatorRange)&&const DeepCollectionEquality().equals(other.issues, _issues));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token,raw,range,operatorRange,const DeepCollectionEquality().hash(_issues));
+int get hashCode {
+    return Object.hash(runtimeType,token,raw,range,operatorRange,const DeepCollectionEquality().hash(_issues));
+}
 
 @override
 String toString() {
-  return 'QueryLexerToken.negation(token: $token, raw: $raw, range: $range, operatorRange: $operatorRange, issues: $issues)';
+    return 'QueryLexerToken.negation(token: $token, raw: $raw, range: $range, operatorRange: $operatorRange, issues: $issues)';
 }
 
 
@@ -478,7 +490,7 @@ as List<QueryParseIssue>,
 @override
 @pragma('vm:prefer-inline')
 $QueryLexerTokenCopyWith<$Res> get token {
-  
+
   return $QueryLexerTokenCopyWith<$Res>(_self.token, (value) {
     return _then(_self.copyWith(token: value));
   });

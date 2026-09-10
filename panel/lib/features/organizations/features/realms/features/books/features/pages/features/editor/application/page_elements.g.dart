@@ -395,7 +395,7 @@ abstract class _$PageElements extends $AsyncNotifier<List<PageElement>> {
   );
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<List<PageElement>>, List<PageElement>>;
     final element =
@@ -406,6 +406,9 @@ abstract class _$PageElements extends $AsyncNotifier<List<PageElement>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args.$1, _$args.$2, _$args.$3));
+    return element.handleCreate(
+      ref,
+      () => build(_$args.$1, _$args.$2, _$args.$3),
+    );
   }
 }

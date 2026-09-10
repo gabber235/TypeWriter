@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'services.dart';
@@ -9,6 +9,7 @@ part of 'services.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ServiceCopyWith<Service> get copyWith => _$ServiceCopyWithImpl<Service>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Service&&(identical(other.serviceId, serviceId) || other.serviceId == serviceId)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.registration, registration) || other.registration == registration)&&(identical(other.state, state) || other.state == state));
+  final _this = this as Service;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Service&&(identical(other.serviceId, _this.serviceId) || other.serviceId == _this.serviceId)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.organization, _this.organization) || other.organization == _this.organization)&&(identical(other.registration, _this.registration) || other.registration == _this.registration)&&(identical(other.state, _this.state) || other.state == _this.state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,serviceId,revision,name,role,createdAt,organization,registration,state);
+int get hashCode {
+  final _this = this as Service;
+  return Object.hash(runtimeType,_this.serviceId,_this.revision,_this.name,_this.role,_this.createdAt,_this.organization,_this.registration,_this.state);
+}
 
 @override
 String toString() {
-  return 'Service(serviceId: $serviceId, revision: $revision, name: $name, role: $role, createdAt: $createdAt, organization: $organization, registration: $registration, state: $state)';
+  final _this = this as Service;
+  return 'Service(serviceId: ${_this.serviceId}, revision: ${_this.revision}, name: ${_this.name}, role: ${_this.role}, createdAt: ${_this.createdAt}, organization: ${_this.organization}, registration: ${_this.registration}, state: ${_this.state})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ServiceCopyWithImpl<$Res>
 /// Create a copy of Service
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? serviceId = null,Object? revision = null,Object? name = null,Object? role = null,Object? createdAt = null,Object? organization = freezed,Object? registration = freezed,Object? state = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(Service(
 serviceId: null == serviceId ? _self.serviceId : serviceId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -80,7 +86,7 @@ as ServiceState?,
 @override
 @pragma('vm:prefer-inline')
 $ServiceRoleCopyWith<$Res> get role {
-  
+
   return $ServiceRoleCopyWith<$Res>(_self.role, (value) {
     return _then(_self.copyWith(role: value));
   });
@@ -247,7 +253,7 @@ return $default(_that.serviceId,_that.revision,_that.name,_that.role,_that.creat
 
 class _Service extends Service {
    _Service({required this.serviceId, required this.revision, required this.name, required this.role, required this.createdAt, this.organization, this.registration, this.state}): assert(name.isNotEmpty, 'Name must not be empty.'),super._();
-  
+
 
 @override final  skir.RecordId serviceId;
 @override final  int revision;
@@ -268,16 +274,18 @@ _$ServiceCopyWith<_Service> get copyWith => __$ServiceCopyWithImpl<_Service>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Service&&(identical(other.serviceId, serviceId) || other.serviceId == serviceId)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.registration, registration) || other.registration == registration)&&(identical(other.state, state) || other.state == state));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Service&&(identical(other.serviceId, serviceId) || other.serviceId == serviceId)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.organization, organization) || other.organization == organization)&&(identical(other.registration, registration) || other.registration == registration)&&(identical(other.state, state) || other.state == state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,serviceId,revision,name,role,createdAt,organization,registration,state);
+int get hashCode {
+    return Object.hash(runtimeType,serviceId,revision,name,role,createdAt,organization,registration,state);
+}
 
 @override
 String toString() {
-  return 'Service(serviceId: $serviceId, revision: $revision, name: $name, role: $role, createdAt: $createdAt, organization: $organization, registration: $registration, state: $state)';
+    return 'Service(serviceId: $serviceId, revision: $revision, name: $name, role: $role, createdAt: $createdAt, organization: $organization, registration: $registration, state: $state)';
 }
 
 
@@ -324,7 +332,7 @@ as ServiceState?,
 @override
 @pragma('vm:prefer-inline')
 $ServiceRoleCopyWith<$Res> get role {
-  
+
   return $ServiceRoleCopyWith<$Res>(_self.role, (value) {
     return _then(_self.copyWith(role: value));
   });
@@ -369,16 +377,21 @@ $ServiceRoleCopyWith<ServiceRole> get copyWith => _$ServiceRoleCopyWithImpl<Serv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceRole&&(identical(other.version, version) || other.version == version));
+  final _this = this as ServiceRole;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceRole&&(identical(other.version, _this.version) || other.version == _this.version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,version);
+int get hashCode {
+  final _this = this as ServiceRole;
+  return Object.hash(runtimeType,_this.version);
+}
 
 @override
 String toString() {
-  return 'ServiceRole(version: $version)';
+  final _this = this as ServiceRole;
+  return 'ServiceRole(version: ${_this.version})';
 }
 
 
@@ -551,7 +564,7 @@ return custom(_that.version,_that.name);case _:
 
 class HostServiceRole extends ServiceRole {
    HostServiceRole({required this.version}): assert(version.isNotEmpty, 'Version must not be empty.'),super._();
-  
+
 
 @override final  String version;
 
@@ -565,16 +578,18 @@ $HostServiceRoleCopyWith<HostServiceRole> get copyWith => _$HostServiceRoleCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HostServiceRole&&(identical(other.version, version) || other.version == version));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HostServiceRole&&(identical(other.version, version) || other.version == version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,version);
+int get hashCode {
+    return Object.hash(runtimeType,version);
+}
 
 @override
 String toString() {
-  return 'ServiceRole.host(version: $version)';
+    return 'ServiceRole.host(version: $version)';
 }
 
 
@@ -617,7 +632,7 @@ as String,
 
 class CustomServiceRole extends ServiceRole {
    CustomServiceRole({required this.version, required this.name}): assert(version.isNotEmpty, 'Version must not be empty.'),assert(name.isNotEmpty, 'Name must not be empty.'),super._();
-  
+
 
 @override final  String version;
  final  String name;
@@ -632,16 +647,18 @@ $CustomServiceRoleCopyWith<CustomServiceRole> get copyWith => _$CustomServiceRol
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomServiceRole&&(identical(other.version, version) || other.version == version)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomServiceRole&&(identical(other.version, version) || other.version == version)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,version,name);
+int get hashCode {
+    return Object.hash(runtimeType,version,name);
+}
 
 @override
 String toString() {
-  return 'ServiceRole.custom(version: $version, name: $name)';
+    return 'ServiceRole.custom(version: $version, name: $name)';
 }
 
 
@@ -694,16 +711,21 @@ $ServiceRegistrationCopyWith<ServiceRegistration> get copyWith => _$ServiceRegis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceRegistration&&(identical(other.token, token) || other.token == token)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
+  final _this = this as ServiceRegistration;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceRegistration&&(identical(other.token, _this.token) || other.token == _this.token)&&(identical(other.expiresAt, _this.expiresAt) || other.expiresAt == _this.expiresAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token,expiresAt);
+int get hashCode {
+  final _this = this as ServiceRegistration;
+  return Object.hash(runtimeType,_this.token,_this.expiresAt);
+}
 
 @override
 String toString() {
-  return 'ServiceRegistration(token: $token, expiresAt: $expiresAt)';
+  final _this = this as ServiceRegistration;
+  return 'ServiceRegistration(token: ${_this.token}, expiresAt: ${_this.expiresAt})';
 }
 
 
@@ -732,7 +754,7 @@ class _$ServiceRegistrationCopyWithImpl<$Res>
 /// Create a copy of ServiceRegistration
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? expiresAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(ServiceRegistration(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String,expiresAt: null == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -877,7 +899,7 @@ return $default(_that.token,_that.expiresAt);case _:
 
 class _ServiceRegistration extends ServiceRegistration {
   const _ServiceRegistration({required this.token, required this.expiresAt}): super._();
-  
+
 
 @override final  String token;
 @override final  DateTime expiresAt;
@@ -892,16 +914,18 @@ _$ServiceRegistrationCopyWith<_ServiceRegistration> get copyWith => __$ServiceRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServiceRegistration&&(identical(other.token, token) || other.token == token)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServiceRegistration&&(identical(other.token, token) || other.token == token)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token,expiresAt);
+int get hashCode {
+    return Object.hash(runtimeType,token,expiresAt);
+}
 
 @override
 String toString() {
-  return 'ServiceRegistration(token: $token, expiresAt: $expiresAt)';
+    return 'ServiceRegistration(token: $token, expiresAt: $expiresAt)';
 }
 
 
@@ -954,16 +978,21 @@ $ServiceStateCopyWith<ServiceState> get copyWith => _$ServiceStateCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceState&&(identical(other.status, status) || other.status == status)&&(identical(other.lastSeen, lastSeen) || other.lastSeen == lastSeen));
+  final _this = this as ServiceState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServiceState&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.lastSeen, _this.lastSeen) || other.lastSeen == _this.lastSeen));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,lastSeen);
+int get hashCode {
+  final _this = this as ServiceState;
+  return Object.hash(runtimeType,_this.status,_this.lastSeen);
+}
 
 @override
 String toString() {
-  return 'ServiceState(status: $status, lastSeen: $lastSeen)';
+  final _this = this as ServiceState;
+  return 'ServiceState(status: ${_this.status}, lastSeen: ${_this.lastSeen})';
 }
 
 
@@ -992,7 +1021,7 @@ class _$ServiceStateCopyWithImpl<$Res>
 /// Create a copy of ServiceState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? lastSeen = null,}) {
-  return _then(_self.copyWith(
+  return _then(ServiceState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as ServiceStateStatus,lastSeen: null == lastSeen ? _self.lastSeen : lastSeen // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -1137,7 +1166,7 @@ return $default(_that.status,_that.lastSeen);case _:
 
 class _ServiceState extends ServiceState {
   const _ServiceState({required this.status, required this.lastSeen}): super._();
-  
+
 
 @override final  ServiceStateStatus status;
 @override final  DateTime lastSeen;
@@ -1152,16 +1181,18 @@ _$ServiceStateCopyWith<_ServiceState> get copyWith => __$ServiceStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServiceState&&(identical(other.status, status) || other.status == status)&&(identical(other.lastSeen, lastSeen) || other.lastSeen == lastSeen));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServiceState&&(identical(other.status, status) || other.status == status)&&(identical(other.lastSeen, lastSeen) || other.lastSeen == lastSeen));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,lastSeen);
+int get hashCode {
+    return Object.hash(runtimeType,status,lastSeen);
+}
 
 @override
 String toString() {
-  return 'ServiceState(status: $status, lastSeen: $lastSeen)';
+    return 'ServiceState(status: $status, lastSeen: $lastSeen)';
 }
 
 
@@ -1214,16 +1245,21 @@ $TopologyRevisionCopyWith<TopologyRevision> get copyWith => _$TopologyRevisionCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRevision&&(identical(other.desired, desired) || other.desired == desired)&&(identical(other.applied, applied) || other.applied == applied));
+  final _this = this as TopologyRevision;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRevision&&(identical(other.desired, _this.desired) || other.desired == _this.desired)&&(identical(other.applied, _this.applied) || other.applied == _this.applied));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,desired,applied);
+int get hashCode {
+  final _this = this as TopologyRevision;
+  return Object.hash(runtimeType,_this.desired,_this.applied);
+}
 
 @override
 String toString() {
-  return 'TopologyRevision(desired: $desired, applied: $applied)';
+  final _this = this as TopologyRevision;
+  return 'TopologyRevision(desired: ${_this.desired}, applied: ${_this.applied})';
 }
 
 
@@ -1252,7 +1288,7 @@ class _$TopologyRevisionCopyWithImpl<$Res>
 /// Create a copy of TopologyRevision
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? desired = null,Object? applied = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyRevision(
 desired: null == desired ? _self.desired : desired // ignore: cast_nullable_to_non_nullable
 as int,applied: null == applied ? _self.applied : applied // ignore: cast_nullable_to_non_nullable
 as int,
@@ -1397,7 +1433,7 @@ return $default(_that.desired,_that.applied);case _:
 
 class _TopologyRevision implements TopologyRevision {
   const _TopologyRevision({required this.desired, required this.applied});
-  
+
 
 @override final  int desired;
 @override final  int applied;
@@ -1412,16 +1448,18 @@ _$TopologyRevisionCopyWith<_TopologyRevision> get copyWith => __$TopologyRevisio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRevision&&(identical(other.desired, desired) || other.desired == desired)&&(identical(other.applied, applied) || other.applied == applied));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRevision&&(identical(other.desired, desired) || other.desired == desired)&&(identical(other.applied, applied) || other.applied == applied));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,desired,applied);
+int get hashCode {
+    return Object.hash(runtimeType,desired,applied);
+}
 
 @override
 String toString() {
-  return 'TopologyRevision(desired: $desired, applied: $applied)';
+    return 'TopologyRevision(desired: $desired, applied: $applied)';
 }
 
 
@@ -1474,16 +1512,21 @@ $TopologyEngineTargetCopyWith<TopologyEngineTarget> get copyWith => _$TopologyEn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyEngineTarget&&(identical(other.engineId, engineId) || other.engineId == engineId)&&(identical(other.versionConstraint, versionConstraint) || other.versionConstraint == versionConstraint));
+  final _this = this as TopologyEngineTarget;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyEngineTarget&&(identical(other.engineId, _this.engineId) || other.engineId == _this.engineId)&&(identical(other.versionConstraint, _this.versionConstraint) || other.versionConstraint == _this.versionConstraint));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,engineId,versionConstraint);
+int get hashCode {
+  final _this = this as TopologyEngineTarget;
+  return Object.hash(runtimeType,_this.engineId,_this.versionConstraint);
+}
 
 @override
 String toString() {
-  return 'TopologyEngineTarget(engineId: $engineId, versionConstraint: $versionConstraint)';
+  final _this = this as TopologyEngineTarget;
+  return 'TopologyEngineTarget(engineId: ${_this.engineId}, versionConstraint: ${_this.versionConstraint})';
 }
 
 
@@ -1512,7 +1555,7 @@ class _$TopologyEngineTargetCopyWithImpl<$Res>
 /// Create a copy of TopologyEngineTarget
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? engineId = null,Object? versionConstraint = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyEngineTarget(
 engineId: null == engineId ? _self.engineId : engineId // ignore: cast_nullable_to_non_nullable
 as String,versionConstraint: null == versionConstraint ? _self.versionConstraint : versionConstraint // ignore: cast_nullable_to_non_nullable
 as String,
@@ -1657,7 +1700,7 @@ return $default(_that.engineId,_that.versionConstraint);case _:
 
 class _TopologyEngineTarget extends TopologyEngineTarget {
   const _TopologyEngineTarget({required this.engineId, required this.versionConstraint}): super._();
-  
+
 
 @override final  String engineId;
 @override final  String versionConstraint;
@@ -1672,16 +1715,18 @@ _$TopologyEngineTargetCopyWith<_TopologyEngineTarget> get copyWith => __$Topolog
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyEngineTarget&&(identical(other.engineId, engineId) || other.engineId == engineId)&&(identical(other.versionConstraint, versionConstraint) || other.versionConstraint == versionConstraint));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyEngineTarget&&(identical(other.engineId, engineId) || other.engineId == engineId)&&(identical(other.versionConstraint, versionConstraint) || other.versionConstraint == versionConstraint));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,engineId,versionConstraint);
+int get hashCode {
+    return Object.hash(runtimeType,engineId,versionConstraint);
+}
 
 @override
 String toString() {
-  return 'TopologyEngineTarget(engineId: $engineId, versionConstraint: $versionConstraint)';
+    return 'TopologyEngineTarget(engineId: $engineId, versionConstraint: $versionConstraint)';
 }
 
 
@@ -1734,16 +1779,21 @@ $TopologySupportedEngineCopyWith<TopologySupportedEngine> get copyWith => _$Topo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologySupportedEngine&&(identical(other.engineId, engineId) || other.engineId == engineId));
+  final _this = this as TopologySupportedEngine;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologySupportedEngine&&(identical(other.engineId, _this.engineId) || other.engineId == _this.engineId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,engineId);
+int get hashCode {
+  final _this = this as TopologySupportedEngine;
+  return Object.hash(runtimeType,_this.engineId);
+}
 
 @override
 String toString() {
-  return 'TopologySupportedEngine(engineId: $engineId)';
+  final _this = this as TopologySupportedEngine;
+  return 'TopologySupportedEngine(engineId: ${_this.engineId})';
 }
 
 
@@ -1772,7 +1822,7 @@ class _$TopologySupportedEngineCopyWithImpl<$Res>
 /// Create a copy of TopologySupportedEngine
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? engineId = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologySupportedEngine(
 engineId: null == engineId ? _self.engineId : engineId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -1916,7 +1966,7 @@ return $default(_that.engineId);case _:
 
 class _TopologySupportedEngine implements TopologySupportedEngine {
   const _TopologySupportedEngine({required this.engineId});
-  
+
 
 @override final  String engineId;
 
@@ -1930,16 +1980,18 @@ _$TopologySupportedEngineCopyWith<_TopologySupportedEngine> get copyWith => __$T
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologySupportedEngine&&(identical(other.engineId, engineId) || other.engineId == engineId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologySupportedEngine&&(identical(other.engineId, engineId) || other.engineId == engineId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,engineId);
+int get hashCode {
+    return Object.hash(runtimeType,engineId);
+}
 
 @override
 String toString() {
-  return 'TopologySupportedEngine(engineId: $engineId)';
+    return 'TopologySupportedEngine(engineId: $engineId)';
 }
 
 
@@ -1991,16 +2043,21 @@ $TopologyHostStateCopyWith<TopologyHostState> get copyWith => _$TopologyHostStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyHostState&&(identical(other.status, status) || other.status == status)&&(identical(other.message, message) || other.message == message)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  final _this = this as TopologyHostState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyHostState&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,message,updatedAt);
+int get hashCode {
+  final _this = this as TopologyHostState;
+  return Object.hash(runtimeType,_this.status,_this.message,_this.updatedAt);
+}
 
 @override
 String toString() {
-  return 'TopologyHostState(status: $status, message: $message, updatedAt: $updatedAt)';
+  final _this = this as TopologyHostState;
+  return 'TopologyHostState(status: ${_this.status}, message: ${_this.message}, updatedAt: ${_this.updatedAt})';
 }
 
 
@@ -2029,7 +2086,7 @@ class _$TopologyHostStateCopyWithImpl<$Res>
 /// Create a copy of TopologyHostState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? message = freezed,Object? updatedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyHostState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TopologyHostStatus,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -2175,7 +2232,7 @@ return $default(_that.status,_that.message,_that.updatedAt);case _:
 
 class _TopologyHostState implements TopologyHostState {
   const _TopologyHostState({required this.status, required this.message, required this.updatedAt});
-  
+
 
 @override final  TopologyHostStatus status;
 @override final  String? message;
@@ -2191,16 +2248,18 @@ _$TopologyHostStateCopyWith<_TopologyHostState> get copyWith => __$TopologyHostS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyHostState&&(identical(other.status, status) || other.status == status)&&(identical(other.message, message) || other.message == message)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyHostState&&(identical(other.status, status) || other.status == status)&&(identical(other.message, message) || other.message == message)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,message,updatedAt);
+int get hashCode {
+    return Object.hash(runtimeType,status,message,updatedAt);
+}
 
 @override
 String toString() {
-  return 'TopologyHostState(status: $status, message: $message, updatedAt: $updatedAt)';
+    return 'TopologyHostState(status: $status, message: $message, updatedAt: $updatedAt)';
 }
 
 
@@ -2254,16 +2313,21 @@ $TopologyRuntimeStateCopyWith<TopologyRuntimeState> get copyWith => _$TopologyRu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRuntimeState&&(identical(other.status, status) || other.status == status)&&(identical(other.activeArtifactVersion, activeArtifactVersion) || other.activeArtifactVersion == activeArtifactVersion)&&(identical(other.message, message) || other.message == message)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  final _this = this as TopologyRuntimeState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRuntimeState&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.activeArtifactVersion, _this.activeArtifactVersion) || other.activeArtifactVersion == _this.activeArtifactVersion)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,activeArtifactVersion,message,updatedAt);
+int get hashCode {
+  final _this = this as TopologyRuntimeState;
+  return Object.hash(runtimeType,_this.status,_this.activeArtifactVersion,_this.message,_this.updatedAt);
+}
 
 @override
 String toString() {
-  return 'TopologyRuntimeState(status: $status, activeArtifactVersion: $activeArtifactVersion, message: $message, updatedAt: $updatedAt)';
+  final _this = this as TopologyRuntimeState;
+  return 'TopologyRuntimeState(status: ${_this.status}, activeArtifactVersion: ${_this.activeArtifactVersion}, message: ${_this.message}, updatedAt: ${_this.updatedAt})';
 }
 
 
@@ -2292,7 +2356,7 @@ class _$TopologyRuntimeStateCopyWithImpl<$Res>
 /// Create a copy of TopologyRuntimeState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? activeArtifactVersion = freezed,Object? message = freezed,Object? updatedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyRuntimeState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TopologyRuntimeStatus,activeArtifactVersion: freezed == activeArtifactVersion ? _self.activeArtifactVersion : activeArtifactVersion // ignore: cast_nullable_to_non_nullable
 as String?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
@@ -2439,7 +2503,7 @@ return $default(_that.status,_that.activeArtifactVersion,_that.message,_that.upd
 
 class _TopologyRuntimeState implements TopologyRuntimeState {
   const _TopologyRuntimeState({required this.status, required this.activeArtifactVersion, required this.message, required this.updatedAt});
-  
+
 
 @override final  TopologyRuntimeStatus status;
 @override final  String? activeArtifactVersion;
@@ -2456,16 +2520,18 @@ _$TopologyRuntimeStateCopyWith<_TopologyRuntimeState> get copyWith => __$Topolog
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRuntimeState&&(identical(other.status, status) || other.status == status)&&(identical(other.activeArtifactVersion, activeArtifactVersion) || other.activeArtifactVersion == activeArtifactVersion)&&(identical(other.message, message) || other.message == message)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRuntimeState&&(identical(other.status, status) || other.status == status)&&(identical(other.activeArtifactVersion, activeArtifactVersion) || other.activeArtifactVersion == activeArtifactVersion)&&(identical(other.message, message) || other.message == message)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,activeArtifactVersion,message,updatedAt);
+int get hashCode {
+    return Object.hash(runtimeType,status,activeArtifactVersion,message,updatedAt);
+}
 
 @override
 String toString() {
-  return 'TopologyRuntimeState(status: $status, activeArtifactVersion: $activeArtifactVersion, message: $message, updatedAt: $updatedAt)';
+    return 'TopologyRuntimeState(status: $status, activeArtifactVersion: $activeArtifactVersion, message: $message, updatedAt: $updatedAt)';
 }
 
 
@@ -2520,16 +2586,21 @@ $TopologyOwnerHostCopyWith<TopologyOwnerHost> get copyWith => _$TopologyOwnerHos
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyOwnerHost&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
+  final _this = this as TopologyOwnerHost;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyOwnerHost&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name);
+int get hashCode {
+  final _this = this as TopologyOwnerHost;
+  return Object.hash(runtimeType,_this.id,_this.name);
+}
 
 @override
 String toString() {
-  return 'TopologyOwnerHost(id: $id, name: $name)';
+  final _this = this as TopologyOwnerHost;
+  return 'TopologyOwnerHost(id: ${_this.id}, name: ${_this.name})';
 }
 
 
@@ -2558,7 +2629,7 @@ class _$TopologyOwnerHostCopyWithImpl<$Res>
 /// Create a copy of TopologyOwnerHost
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyOwnerHost(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
@@ -2703,7 +2774,7 @@ return $default(_that.id,_that.name);case _:
 
 class _TopologyOwnerHost implements TopologyOwnerHost {
   const _TopologyOwnerHost({required this.id, required this.name});
-  
+
 
 @override final  skir.RecordId id;
 @override final  String name;
@@ -2718,16 +2789,18 @@ _$TopologyOwnerHostCopyWith<_TopologyOwnerHost> get copyWith => __$TopologyOwner
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyOwnerHost&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyOwnerHost&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name);
+int get hashCode {
+    return Object.hash(runtimeType,id,name);
+}
 
 @override
 String toString() {
-  return 'TopologyOwnerHost(id: $id, name: $name)';
+    return 'TopologyOwnerHost(id: $id, name: $name)';
 }
 
 
@@ -2780,16 +2853,21 @@ $TopologyRealmInfoCopyWith<TopologyRealmInfo> get copyWith => _$TopologyRealmInf
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRealmInfo&&(identical(other.realmId, realmId) || other.realmId == realmId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost));
+  final _this = this as TopologyRealmInfo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRealmInfo&&(identical(other.realmId, _this.realmId) || other.realmId == _this.realmId)&&(identical(other.ownerHost, _this.ownerHost) || other.ownerHost == _this.ownerHost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,realmId,ownerHost);
+int get hashCode {
+  final _this = this as TopologyRealmInfo;
+  return Object.hash(runtimeType,_this.realmId,_this.ownerHost);
+}
 
 @override
 String toString() {
-  return 'TopologyRealmInfo(realmId: $realmId, ownerHost: $ownerHost)';
+  final _this = this as TopologyRealmInfo;
+  return 'TopologyRealmInfo(realmId: ${_this.realmId}, ownerHost: ${_this.ownerHost})';
 }
 
 
@@ -2818,7 +2896,7 @@ class _$TopologyRealmInfoCopyWithImpl<$Res>
 /// Create a copy of TopologyRealmInfo
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? realmId = null,Object? ownerHost = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyRealmInfo(
 realmId: null == realmId ? _self.realmId : realmId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,ownerHost: null == ownerHost ? _self.ownerHost : ownerHost // ignore: cast_nullable_to_non_nullable
 as TopologyOwnerHost,
@@ -2829,7 +2907,7 @@ as TopologyOwnerHost,
 @override
 @pragma('vm:prefer-inline')
 $TopologyOwnerHostCopyWith<$Res> get ownerHost {
-  
+
   return $TopologyOwnerHostCopyWith<$Res>(_self.ownerHost, (value) {
     return _then(_self.copyWith(ownerHost: value));
   });
@@ -2972,7 +3050,7 @@ return $default(_that.realmId,_that.ownerHost);case _:
 
 class _TopologyRealmInfo implements TopologyRealmInfo {
   const _TopologyRealmInfo({required this.realmId, required this.ownerHost});
-  
+
 
 @override final  skir.RecordId realmId;
 @override final  TopologyOwnerHost ownerHost;
@@ -2987,16 +3065,18 @@ _$TopologyRealmInfoCopyWith<_TopologyRealmInfo> get copyWith => __$TopologyRealm
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRealmInfo&&(identical(other.realmId, realmId) || other.realmId == realmId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRealmInfo&&(identical(other.realmId, realmId) || other.realmId == realmId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,realmId,ownerHost);
+int get hashCode {
+    return Object.hash(runtimeType,realmId,ownerHost);
+}
 
 @override
 String toString() {
-  return 'TopologyRealmInfo(realmId: $realmId, ownerHost: $ownerHost)';
+    return 'TopologyRealmInfo(realmId: $realmId, ownerHost: $ownerHost)';
 }
 
 
@@ -3037,7 +3117,7 @@ as TopologyOwnerHost,
 @override
 @pragma('vm:prefer-inline')
 $TopologyOwnerHostCopyWith<$Res> get ownerHost {
-  
+
   return $TopologyOwnerHostCopyWith<$Res>(_self.ownerHost, (value) {
     return _then(_self.copyWith(ownerHost: value));
   });
@@ -3058,16 +3138,21 @@ $TopologyHostCopyWith<TopologyHost> get copyWith => _$TopologyHostCopyWithImpl<T
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyHost&&(identical(other.hostId, hostId) || other.hostId == hostId)&&(identical(other.serviceId, serviceId) || other.serviceId == serviceId)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.entrypoint, entrypoint) || other.entrypoint == entrypoint)&&(identical(other.canHostRealm, canHostRealm) || other.canHostRealm == canHostRealm)&&const DeepCollectionEquality().equals(other.supportedEngines, supportedEngines)&&(identical(other.topologyRevision, topologyRevision) || other.topologyRevision == topologyRevision)&&(identical(other.state, state) || other.state == state));
+  final _this = this as TopologyHost;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyHost&&(identical(other.hostId, _this.hostId) || other.hostId == _this.hostId)&&(identical(other.serviceId, _this.serviceId) || other.serviceId == _this.serviceId)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.entrypoint, _this.entrypoint) || other.entrypoint == _this.entrypoint)&&(identical(other.canHostRealm, _this.canHostRealm) || other.canHostRealm == _this.canHostRealm)&&const DeepCollectionEquality().equals(other.supportedEngines, _this.supportedEngines)&&(identical(other.topologyRevision, _this.topologyRevision) || other.topologyRevision == _this.topologyRevision)&&(identical(other.state, _this.state) || other.state == _this.state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hostId,serviceId,revision,entrypoint,canHostRealm,const DeepCollectionEquality().hash(supportedEngines),topologyRevision,state);
+int get hashCode {
+  final _this = this as TopologyHost;
+  return Object.hash(runtimeType,_this.hostId,_this.serviceId,_this.revision,_this.entrypoint,_this.canHostRealm,const DeepCollectionEquality().hash(_this.supportedEngines),_this.topologyRevision,_this.state);
+}
 
 @override
 String toString() {
-  return 'TopologyHost(hostId: $hostId, serviceId: $serviceId, revision: $revision, entrypoint: $entrypoint, canHostRealm: $canHostRealm, supportedEngines: $supportedEngines, topologyRevision: $topologyRevision, state: $state)';
+  final _this = this as TopologyHost;
+  return 'TopologyHost(hostId: ${_this.hostId}, serviceId: ${_this.serviceId}, revision: ${_this.revision}, entrypoint: ${_this.entrypoint}, canHostRealm: ${_this.canHostRealm}, supportedEngines: ${_this.supportedEngines}, topologyRevision: ${_this.topologyRevision}, state: ${_this.state})';
 }
 
 
@@ -3096,7 +3181,7 @@ class _$TopologyHostCopyWithImpl<$Res>
 /// Create a copy of TopologyHost
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? hostId = null,Object? serviceId = null,Object? revision = null,Object? entrypoint = null,Object? canHostRealm = null,Object? supportedEngines = null,Object? topologyRevision = null,Object? state = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyHost(
 hostId: null == hostId ? _self.hostId : hostId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,serviceId: null == serviceId ? _self.serviceId : serviceId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
@@ -3113,7 +3198,7 @@ as TopologyHostState,
 @override
 @pragma('vm:prefer-inline')
 $TopologyRevisionCopyWith<$Res> get topologyRevision {
-  
+
   return $TopologyRevisionCopyWith<$Res>(_self.topologyRevision, (value) {
     return _then(_self.copyWith(topologyRevision: value));
   });
@@ -3122,7 +3207,7 @@ $TopologyRevisionCopyWith<$Res> get topologyRevision {
 @override
 @pragma('vm:prefer-inline')
 $TopologyHostStateCopyWith<$Res> get state {
-  
+
   return $TopologyHostStateCopyWith<$Res>(_self.state, (value) {
     return _then(_self.copyWith(state: value));
   });
@@ -3264,8 +3349,8 @@ return $default(_that.hostId,_that.serviceId,_that.revision,_that.entrypoint,_th
 
 
 class _TopologyHost implements TopologyHost {
-  const _TopologyHost({required this.hostId, required this.serviceId, required this.revision, required this.entrypoint, required this.canHostRealm, required final  List<TopologySupportedEngine> supportedEngines, required this.topologyRevision, required this.state}): _supportedEngines = supportedEngines;
-  
+  const _TopologyHost({required this.hostId, required this.serviceId, required this.revision, required this.entrypoint, required this.canHostRealm, required  List<TopologySupportedEngine> supportedEngines, required this.topologyRevision, required this.state}): _supportedEngines = supportedEngines;
+
 
 @override final  skir.RecordId hostId;
 @override final  skir.RecordId serviceId;
@@ -3292,16 +3377,18 @@ _$TopologyHostCopyWith<_TopologyHost> get copyWith => __$TopologyHostCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyHost&&(identical(other.hostId, hostId) || other.hostId == hostId)&&(identical(other.serviceId, serviceId) || other.serviceId == serviceId)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.entrypoint, entrypoint) || other.entrypoint == entrypoint)&&(identical(other.canHostRealm, canHostRealm) || other.canHostRealm == canHostRealm)&&const DeepCollectionEquality().equals(other._supportedEngines, _supportedEngines)&&(identical(other.topologyRevision, topologyRevision) || other.topologyRevision == topologyRevision)&&(identical(other.state, state) || other.state == state));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyHost&&(identical(other.hostId, hostId) || other.hostId == hostId)&&(identical(other.serviceId, serviceId) || other.serviceId == serviceId)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.entrypoint, entrypoint) || other.entrypoint == entrypoint)&&(identical(other.canHostRealm, canHostRealm) || other.canHostRealm == canHostRealm)&&const DeepCollectionEquality().equals(other.supportedEngines, _supportedEngines)&&(identical(other.topologyRevision, topologyRevision) || other.topologyRevision == topologyRevision)&&(identical(other.state, state) || other.state == state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hostId,serviceId,revision,entrypoint,canHostRealm,const DeepCollectionEquality().hash(_supportedEngines),topologyRevision,state);
+int get hashCode {
+    return Object.hash(runtimeType,hostId,serviceId,revision,entrypoint,canHostRealm,const DeepCollectionEquality().hash(_supportedEngines),topologyRevision,state);
+}
 
 @override
 String toString() {
-  return 'TopologyHost(hostId: $hostId, serviceId: $serviceId, revision: $revision, entrypoint: $entrypoint, canHostRealm: $canHostRealm, supportedEngines: $supportedEngines, topologyRevision: $topologyRevision, state: $state)';
+    return 'TopologyHost(hostId: $hostId, serviceId: $serviceId, revision: $revision, entrypoint: $entrypoint, canHostRealm: $canHostRealm, supportedEngines: $supportedEngines, topologyRevision: $topologyRevision, state: $state)';
 }
 
 
@@ -3348,7 +3435,7 @@ as TopologyHostState,
 @override
 @pragma('vm:prefer-inline')
 $TopologyRevisionCopyWith<$Res> get topologyRevision {
-  
+
   return $TopologyRevisionCopyWith<$Res>(_self.topologyRevision, (value) {
     return _then(_self.copyWith(topologyRevision: value));
   });
@@ -3357,7 +3444,7 @@ $TopologyRevisionCopyWith<$Res> get topologyRevision {
 @override
 @pragma('vm:prefer-inline')
 $TopologyHostStateCopyWith<$Res> get state {
-  
+
   return $TopologyHostStateCopyWith<$Res>(_self.state, (value) {
     return _then(_self.copyWith(state: value));
   });
@@ -3378,16 +3465,21 @@ $TopologyRealmCopyWith<TopologyRealm> get copyWith => _$TopologyRealmCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRealm&&(identical(other.realmId, realmId) || other.realmId == realmId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.targetEngine, targetEngine) || other.targetEngine == targetEngine)&&(identical(other.state, state) || other.state == state));
+  final _this = this as TopologyRealm;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyRealm&&(identical(other.realmId, _this.realmId) || other.realmId == _this.realmId)&&(identical(other.ownerHost, _this.ownerHost) || other.ownerHost == _this.ownerHost)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.targetEngine, _this.targetEngine) || other.targetEngine == _this.targetEngine)&&(identical(other.state, _this.state) || other.state == _this.state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,realmId,ownerHost,revision,targetEngine,state);
+int get hashCode {
+  final _this = this as TopologyRealm;
+  return Object.hash(runtimeType,_this.realmId,_this.ownerHost,_this.revision,_this.targetEngine,_this.state);
+}
 
 @override
 String toString() {
-  return 'TopologyRealm(realmId: $realmId, ownerHost: $ownerHost, revision: $revision, targetEngine: $targetEngine, state: $state)';
+  final _this = this as TopologyRealm;
+  return 'TopologyRealm(realmId: ${_this.realmId}, ownerHost: ${_this.ownerHost}, revision: ${_this.revision}, targetEngine: ${_this.targetEngine}, state: ${_this.state})';
 }
 
 
@@ -3416,7 +3508,7 @@ class _$TopologyRealmCopyWithImpl<$Res>
 /// Create a copy of TopologyRealm
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? realmId = null,Object? ownerHost = null,Object? revision = null,Object? targetEngine = null,Object? state = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyRealm(
 realmId: null == realmId ? _self.realmId : realmId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,ownerHost: null == ownerHost ? _self.ownerHost : ownerHost // ignore: cast_nullable_to_non_nullable
 as TopologyOwnerHost,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
@@ -3430,7 +3522,7 @@ as TopologyRuntimeState,
 @override
 @pragma('vm:prefer-inline')
 $TopologyOwnerHostCopyWith<$Res> get ownerHost {
-  
+
   return $TopologyOwnerHostCopyWith<$Res>(_self.ownerHost, (value) {
     return _then(_self.copyWith(ownerHost: value));
   });
@@ -3439,7 +3531,7 @@ $TopologyOwnerHostCopyWith<$Res> get ownerHost {
 @override
 @pragma('vm:prefer-inline')
 $TopologyEngineTargetCopyWith<$Res> get targetEngine {
-  
+
   return $TopologyEngineTargetCopyWith<$Res>(_self.targetEngine, (value) {
     return _then(_self.copyWith(targetEngine: value));
   });
@@ -3448,7 +3540,7 @@ $TopologyEngineTargetCopyWith<$Res> get targetEngine {
 @override
 @pragma('vm:prefer-inline')
 $TopologyRuntimeStateCopyWith<$Res> get state {
-  
+
   return $TopologyRuntimeStateCopyWith<$Res>(_self.state, (value) {
     return _then(_self.copyWith(state: value));
   });
@@ -3591,7 +3683,7 @@ return $default(_that.realmId,_that.ownerHost,_that.revision,_that.targetEngine,
 
 class _TopologyRealm implements TopologyRealm {
   const _TopologyRealm({required this.realmId, required this.ownerHost, required this.revision, required this.targetEngine, required this.state});
-  
+
 
 @override final  skir.RecordId realmId;
 @override final  TopologyOwnerHost ownerHost;
@@ -3609,16 +3701,18 @@ _$TopologyRealmCopyWith<_TopologyRealm> get copyWith => __$TopologyRealmCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRealm&&(identical(other.realmId, realmId) || other.realmId == realmId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.targetEngine, targetEngine) || other.targetEngine == targetEngine)&&(identical(other.state, state) || other.state == state));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyRealm&&(identical(other.realmId, realmId) || other.realmId == realmId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.targetEngine, targetEngine) || other.targetEngine == targetEngine)&&(identical(other.state, state) || other.state == state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,realmId,ownerHost,revision,targetEngine,state);
+int get hashCode {
+    return Object.hash(runtimeType,realmId,ownerHost,revision,targetEngine,state);
+}
 
 @override
 String toString() {
-  return 'TopologyRealm(realmId: $realmId, ownerHost: $ownerHost, revision: $revision, targetEngine: $targetEngine, state: $state)';
+    return 'TopologyRealm(realmId: $realmId, ownerHost: $ownerHost, revision: $revision, targetEngine: $targetEngine, state: $state)';
 }
 
 
@@ -3662,7 +3756,7 @@ as TopologyRuntimeState,
 @override
 @pragma('vm:prefer-inline')
 $TopologyOwnerHostCopyWith<$Res> get ownerHost {
-  
+
   return $TopologyOwnerHostCopyWith<$Res>(_self.ownerHost, (value) {
     return _then(_self.copyWith(ownerHost: value));
   });
@@ -3671,7 +3765,7 @@ $TopologyOwnerHostCopyWith<$Res> get ownerHost {
 @override
 @pragma('vm:prefer-inline')
 $TopologyEngineTargetCopyWith<$Res> get targetEngine {
-  
+
   return $TopologyEngineTargetCopyWith<$Res>(_self.targetEngine, (value) {
     return _then(_self.copyWith(targetEngine: value));
   });
@@ -3680,7 +3774,7 @@ $TopologyEngineTargetCopyWith<$Res> get targetEngine {
 @override
 @pragma('vm:prefer-inline')
 $TopologyRuntimeStateCopyWith<$Res> get state {
-  
+
   return $TopologyRuntimeStateCopyWith<$Res>(_self.state, (value) {
     return _then(_self.copyWith(state: value));
   });
@@ -3701,16 +3795,21 @@ $TopologyEngineCopyWith<TopologyEngine> get copyWith => _$TopologyEngineCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyEngine&&(identical(other.engineId, engineId) || other.engineId == engineId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost)&&(identical(other.realm, realm) || other.realm == realm)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.target, target) || other.target == target)&&(identical(other.state, state) || other.state == state));
+  final _this = this as TopologyEngine;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyEngine&&(identical(other.engineId, _this.engineId) || other.engineId == _this.engineId)&&(identical(other.ownerHost, _this.ownerHost) || other.ownerHost == _this.ownerHost)&&(identical(other.realm, _this.realm) || other.realm == _this.realm)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.target, _this.target) || other.target == _this.target)&&(identical(other.state, _this.state) || other.state == _this.state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,engineId,ownerHost,realm,revision,target,state);
+int get hashCode {
+  final _this = this as TopologyEngine;
+  return Object.hash(runtimeType,_this.engineId,_this.ownerHost,_this.realm,_this.revision,_this.target,_this.state);
+}
 
 @override
 String toString() {
-  return 'TopologyEngine(engineId: $engineId, ownerHost: $ownerHost, realm: $realm, revision: $revision, target: $target, state: $state)';
+  final _this = this as TopologyEngine;
+  return 'TopologyEngine(engineId: ${_this.engineId}, ownerHost: ${_this.ownerHost}, realm: ${_this.realm}, revision: ${_this.revision}, target: ${_this.target}, state: ${_this.state})';
 }
 
 
@@ -3739,7 +3838,7 @@ class _$TopologyEngineCopyWithImpl<$Res>
 /// Create a copy of TopologyEngine
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? engineId = null,Object? ownerHost = null,Object? realm = null,Object? revision = null,Object? target = null,Object? state = null,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyEngine(
 engineId: null == engineId ? _self.engineId : engineId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,ownerHost: null == ownerHost ? _self.ownerHost : ownerHost // ignore: cast_nullable_to_non_nullable
 as TopologyOwnerHost,realm: null == realm ? _self.realm : realm // ignore: cast_nullable_to_non_nullable
@@ -3754,7 +3853,7 @@ as TopologyRuntimeState,
 @override
 @pragma('vm:prefer-inline')
 $TopologyOwnerHostCopyWith<$Res> get ownerHost {
-  
+
   return $TopologyOwnerHostCopyWith<$Res>(_self.ownerHost, (value) {
     return _then(_self.copyWith(ownerHost: value));
   });
@@ -3763,7 +3862,7 @@ $TopologyOwnerHostCopyWith<$Res> get ownerHost {
 @override
 @pragma('vm:prefer-inline')
 $TopologyRealmInfoCopyWith<$Res> get realm {
-  
+
   return $TopologyRealmInfoCopyWith<$Res>(_self.realm, (value) {
     return _then(_self.copyWith(realm: value));
   });
@@ -3772,7 +3871,7 @@ $TopologyRealmInfoCopyWith<$Res> get realm {
 @override
 @pragma('vm:prefer-inline')
 $TopologyEngineTargetCopyWith<$Res> get target {
-  
+
   return $TopologyEngineTargetCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -3781,7 +3880,7 @@ $TopologyEngineTargetCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TopologyRuntimeStateCopyWith<$Res> get state {
-  
+
   return $TopologyRuntimeStateCopyWith<$Res>(_self.state, (value) {
     return _then(_self.copyWith(state: value));
   });
@@ -3924,7 +4023,7 @@ return $default(_that.engineId,_that.ownerHost,_that.realm,_that.revision,_that.
 
 class _TopologyEngine implements TopologyEngine {
   const _TopologyEngine({required this.engineId, required this.ownerHost, required this.realm, required this.revision, required this.target, required this.state});
-  
+
 
 @override final  skir.RecordId engineId;
 @override final  TopologyOwnerHost ownerHost;
@@ -3943,16 +4042,18 @@ _$TopologyEngineCopyWith<_TopologyEngine> get copyWith => __$TopologyEngineCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyEngine&&(identical(other.engineId, engineId) || other.engineId == engineId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost)&&(identical(other.realm, realm) || other.realm == realm)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.target, target) || other.target == target)&&(identical(other.state, state) || other.state == state));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyEngine&&(identical(other.engineId, engineId) || other.engineId == engineId)&&(identical(other.ownerHost, ownerHost) || other.ownerHost == ownerHost)&&(identical(other.realm, realm) || other.realm == realm)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.target, target) || other.target == target)&&(identical(other.state, state) || other.state == state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,engineId,ownerHost,realm,revision,target,state);
+int get hashCode {
+    return Object.hash(runtimeType,engineId,ownerHost,realm,revision,target,state);
+}
 
 @override
 String toString() {
-  return 'TopologyEngine(engineId: $engineId, ownerHost: $ownerHost, realm: $realm, revision: $revision, target: $target, state: $state)';
+    return 'TopologyEngine(engineId: $engineId, ownerHost: $ownerHost, realm: $realm, revision: $revision, target: $target, state: $state)';
 }
 
 
@@ -3997,7 +4098,7 @@ as TopologyRuntimeState,
 @override
 @pragma('vm:prefer-inline')
 $TopologyOwnerHostCopyWith<$Res> get ownerHost {
-  
+
   return $TopologyOwnerHostCopyWith<$Res>(_self.ownerHost, (value) {
     return _then(_self.copyWith(ownerHost: value));
   });
@@ -4006,7 +4107,7 @@ $TopologyOwnerHostCopyWith<$Res> get ownerHost {
 @override
 @pragma('vm:prefer-inline')
 $TopologyRealmInfoCopyWith<$Res> get realm {
-  
+
   return $TopologyRealmInfoCopyWith<$Res>(_self.realm, (value) {
     return _then(_self.copyWith(realm: value));
   });
@@ -4015,7 +4116,7 @@ $TopologyRealmInfoCopyWith<$Res> get realm {
 @override
 @pragma('vm:prefer-inline')
 $TopologyEngineTargetCopyWith<$Res> get target {
-  
+
   return $TopologyEngineTargetCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -4024,7 +4125,7 @@ $TopologyEngineTargetCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TopologyRuntimeStateCopyWith<$Res> get state {
-  
+
   return $TopologyRuntimeStateCopyWith<$Res>(_self.state, (value) {
     return _then(_self.copyWith(state: value));
   });
@@ -4045,16 +4146,21 @@ $TopologyConfigurationResultCopyWith<TopologyConfigurationResult> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyConfigurationResult&&(identical(other.host, host) || other.host == host)&&(identical(other.realm, realm) || other.realm == realm)&&(identical(other.engine, engine) || other.engine == engine));
+  final _this = this as TopologyConfigurationResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopologyConfigurationResult&&(identical(other.host, _this.host) || other.host == _this.host)&&(identical(other.realm, _this.realm) || other.realm == _this.realm)&&(identical(other.engine, _this.engine) || other.engine == _this.engine));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,host,realm,engine);
+int get hashCode {
+  final _this = this as TopologyConfigurationResult;
+  return Object.hash(runtimeType,_this.host,_this.realm,_this.engine);
+}
 
 @override
 String toString() {
-  return 'TopologyConfigurationResult(host: $host, realm: $realm, engine: $engine)';
+  final _this = this as TopologyConfigurationResult;
+  return 'TopologyConfigurationResult(host: ${_this.host}, realm: ${_this.realm}, engine: ${_this.engine})';
 }
 
 
@@ -4083,7 +4189,7 @@ class _$TopologyConfigurationResultCopyWithImpl<$Res>
 /// Create a copy of TopologyConfigurationResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? host = null,Object? realm = freezed,Object? engine = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TopologyConfigurationResult(
 host: null == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
 as TopologyHost,realm: freezed == realm ? _self.realm : realm // ignore: cast_nullable_to_non_nullable
 as TopologyRealm?,engine: freezed == engine ? _self.engine : engine // ignore: cast_nullable_to_non_nullable
@@ -4095,7 +4201,7 @@ as TopologyEngine?,
 @override
 @pragma('vm:prefer-inline')
 $TopologyHostCopyWith<$Res> get host {
-  
+
   return $TopologyHostCopyWith<$Res>(_self.host, (value) {
     return _then(_self.copyWith(host: value));
   });
@@ -4262,7 +4368,7 @@ return $default(_that.host,_that.realm,_that.engine);case _:
 
 class _TopologyConfigurationResult implements TopologyConfigurationResult {
   const _TopologyConfigurationResult({required this.host, required this.realm, required this.engine});
-  
+
 
 @override final  TopologyHost host;
 @override final  TopologyRealm? realm;
@@ -4278,16 +4384,18 @@ _$TopologyConfigurationResultCopyWith<_TopologyConfigurationResult> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyConfigurationResult&&(identical(other.host, host) || other.host == host)&&(identical(other.realm, realm) || other.realm == realm)&&(identical(other.engine, engine) || other.engine == engine));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopologyConfigurationResult&&(identical(other.host, host) || other.host == host)&&(identical(other.realm, realm) || other.realm == realm)&&(identical(other.engine, engine) || other.engine == engine));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,host,realm,engine);
+int get hashCode {
+    return Object.hash(runtimeType,host,realm,engine);
+}
 
 @override
 String toString() {
-  return 'TopologyConfigurationResult(host: $host, realm: $realm, engine: $engine)';
+    return 'TopologyConfigurationResult(host: $host, realm: $realm, engine: $engine)';
 }
 
 
@@ -4329,7 +4437,7 @@ as TopologyEngine?,
 @override
 @pragma('vm:prefer-inline')
 $TopologyHostCopyWith<$Res> get host {
-  
+
   return $TopologyHostCopyWith<$Res>(_self.host, (value) {
     return _then(_self.copyWith(host: value));
   });
@@ -4374,16 +4482,21 @@ $OrganizationTopologyCopyWith<OrganizationTopology> get copyWith => _$Organizati
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationTopology&&const DeepCollectionEquality().equals(other.hosts, hosts)&&const DeepCollectionEquality().equals(other.realmInstances, realmInstances)&&const DeepCollectionEquality().equals(other.engineInstances, engineInstances));
+  final _this = this as OrganizationTopology;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationTopology&&const DeepCollectionEquality().equals(other.hosts, _this.hosts)&&const DeepCollectionEquality().equals(other.realmInstances, _this.realmInstances)&&const DeepCollectionEquality().equals(other.engineInstances, _this.engineInstances));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(hosts),const DeepCollectionEquality().hash(realmInstances),const DeepCollectionEquality().hash(engineInstances));
+int get hashCode {
+  final _this = this as OrganizationTopology;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.hosts),const DeepCollectionEquality().hash(_this.realmInstances),const DeepCollectionEquality().hash(_this.engineInstances));
+}
 
 @override
 String toString() {
-  return 'OrganizationTopology(hosts: $hosts, realmInstances: $realmInstances, engineInstances: $engineInstances)';
+  final _this = this as OrganizationTopology;
+  return 'OrganizationTopology(hosts: ${_this.hosts}, realmInstances: ${_this.realmInstances}, engineInstances: ${_this.engineInstances})';
 }
 
 
@@ -4412,7 +4525,7 @@ class _$OrganizationTopologyCopyWithImpl<$Res>
 /// Create a copy of OrganizationTopology
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? hosts = null,Object? realmInstances = null,Object? engineInstances = null,}) {
-  return _then(_self.copyWith(
+  return _then(OrganizationTopology(
 hosts: null == hosts ? _self.hosts : hosts // ignore: cast_nullable_to_non_nullable
 as List<TopologyHost>,realmInstances: null == realmInstances ? _self.realmInstances : realmInstances // ignore: cast_nullable_to_non_nullable
 as List<TopologyRealm>,engineInstances: null == engineInstances ? _self.engineInstances : engineInstances // ignore: cast_nullable_to_non_nullable
@@ -4557,8 +4670,8 @@ return $default(_that.hosts,_that.realmInstances,_that.engineInstances);case _:
 
 
 class _OrganizationTopology extends OrganizationTopology {
-  const _OrganizationTopology({required final  List<TopologyHost> hosts, required final  List<TopologyRealm> realmInstances, required final  List<TopologyEngine> engineInstances}): _hosts = hosts,_realmInstances = realmInstances,_engineInstances = engineInstances,super._();
-  
+  const _OrganizationTopology({required  List<TopologyHost> hosts, required  List<TopologyRealm> realmInstances, required  List<TopologyEngine> engineInstances}): _hosts = hosts,_realmInstances = realmInstances,_engineInstances = engineInstances,super._();
+
 
  final  List<TopologyHost> _hosts;
 @override List<TopologyHost> get hosts {
@@ -4592,16 +4705,18 @@ _$OrganizationTopologyCopyWith<_OrganizationTopology> get copyWith => __$Organiz
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationTopology&&const DeepCollectionEquality().equals(other._hosts, _hosts)&&const DeepCollectionEquality().equals(other._realmInstances, _realmInstances)&&const DeepCollectionEquality().equals(other._engineInstances, _engineInstances));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationTopology&&const DeepCollectionEquality().equals(other.hosts, _hosts)&&const DeepCollectionEquality().equals(other.realmInstances, _realmInstances)&&const DeepCollectionEquality().equals(other.engineInstances, _engineInstances));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_hosts),const DeepCollectionEquality().hash(_realmInstances),const DeepCollectionEquality().hash(_engineInstances));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_hosts),const DeepCollectionEquality().hash(_realmInstances),const DeepCollectionEquality().hash(_engineInstances));
+}
 
 @override
 String toString() {
-  return 'OrganizationTopology(hosts: $hosts, realmInstances: $realmInstances, engineInstances: $engineInstances)';
+    return 'OrganizationTopology(hosts: $hosts, realmInstances: $realmInstances, engineInstances: $engineInstances)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'conversion_graph.dart';
@@ -9,6 +9,7 @@ part of 'conversion_graph.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ _$ConversionPathCopyWith<_ConversionPath> get copyWith => __$ConversionPathCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPath&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.edges, edges)&&const DeepCollectionEquality().equals(other.visited, visited)&&(identical(other.cost, cost) || other.cost == cost));
+  final _this = this as _ConversionPath;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPath&&(identical(other.type, _this.type) || other.type == _this.type)&&const DeepCollectionEquality().equals(other.edges, _this.edges)&&const DeepCollectionEquality().equals(other.visited, _this.visited)&&(identical(other.cost, _this.cost) || other.cost == _this.cost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,const DeepCollectionEquality().hash(edges),const DeepCollectionEquality().hash(visited),cost);
+int get hashCode {
+  final _this = this as _ConversionPath;
+  return Object.hash(runtimeType,_this.type,const DeepCollectionEquality().hash(_this.edges),const DeepCollectionEquality().hash(_this.visited),_this.cost);
+}
 
 @override
 String toString() {
-  return '_ConversionPath(type: $type, edges: $edges, visited: $visited, cost: $cost)';
+  final _this = this as _ConversionPath;
+  return '_ConversionPath(type: ${_this.type}, edges: ${_this.edges}, visited: ${_this.visited}, cost: ${_this.cost})';
 }
 
 
@@ -63,7 +69,7 @@ class __$ConversionPathCopyWithImpl<$Res>
 /// Create a copy of _ConversionPath
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? edges = null,Object? visited = null,Object? cost = null,}) {
-  return _then(_self.copyWith(
+  return _then(_ConversionPath(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,edges: null == edges ? _self.edges : edges // ignore: cast_nullable_to_non_nullable
 as List<ConversionDefinition>,visited: null == visited ? _self.visited : visited // ignore: cast_nullable_to_non_nullable
@@ -76,7 +82,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get type {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -218,8 +224,8 @@ return $default(_that.type,_that.edges,_that.visited,_that.cost);case _:
 
 
 class _ConversionPathValue implements _ConversionPath {
-  const _ConversionPathValue({required this.type, required final  List<ConversionDefinition> edges, required final  Set<ResolvedTypeRef> visited, required this.cost}): _edges = edges,_visited = visited;
-  
+  const _ConversionPathValue({required this.type, required  List<ConversionDefinition> edges, required  Set<ResolvedTypeRef> visited, required this.cost}): _edges = edges,_visited = visited;
+
 
 @override final  ResolvedTypeRef type;
  final  List<ConversionDefinition> _edges;
@@ -248,16 +254,18 @@ _$ConversionPathValueCopyWith<_ConversionPathValue> get copyWith => __$Conversio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPathValue&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._edges, _edges)&&const DeepCollectionEquality().equals(other._visited, _visited)&&(identical(other.cost, cost) || other.cost == cost));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPathValue&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.edges, _edges)&&const DeepCollectionEquality().equals(other.visited, _visited)&&(identical(other.cost, cost) || other.cost == cost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,const DeepCollectionEquality().hash(_edges),const DeepCollectionEquality().hash(_visited),cost);
+int get hashCode {
+    return Object.hash(runtimeType,type,const DeepCollectionEquality().hash(_edges),const DeepCollectionEquality().hash(_visited),cost);
+}
 
 @override
 String toString() {
-  return '_ConversionPath(type: $type, edges: $edges, visited: $visited, cost: $cost)';
+    return '_ConversionPath(type: $type, edges: $edges, visited: $visited, cost: $cost)';
 }
 
 
@@ -300,7 +308,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get type {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });

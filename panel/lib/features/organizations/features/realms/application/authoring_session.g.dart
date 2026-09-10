@@ -101,7 +101,7 @@ abstract class _$AuthoringSession extends $Notifier<AuthoringSessionState> {
   );
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AuthoringSessionState, AuthoringSessionState>;
     final element =
         ref.element
@@ -111,7 +111,7 @@ abstract class _$AuthoringSession extends $Notifier<AuthoringSessionState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
+    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
   }
 }
 

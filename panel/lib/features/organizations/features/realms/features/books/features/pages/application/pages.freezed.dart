@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'pages.dart';
@@ -9,6 +9,7 @@ part of 'pages.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PageCopyWith<Page> get copyWith => _$PageCopyWithImpl<Page>(this as Page, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Page&&(identical(other.pageId, pageId) || other.pageId == pageId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.name, name) || other.name == name)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.chapter, chapter) || other.chapter == chapter)&&(identical(other.priority, priority) || other.priority == priority));
+  final _this = this as Page;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Page&&(identical(other.pageId, _this.pageId) || other.pageId == _this.pageId)&&(identical(other.authoringSequence, _this.authoringSequence) || other.authoringSequence == _this.authoringSequence)&&(identical(other.bookId, _this.bookId) || other.bookId == _this.bookId)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.chapter, _this.chapter) || other.chapter == _this.chapter)&&(identical(other.priority, _this.priority) || other.priority == _this.priority));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pageId,authoringSequence,bookId,name,kind,chapter,priority);
+int get hashCode {
+  final _this = this as Page;
+  return Object.hash(runtimeType,_this.pageId,_this.authoringSequence,_this.bookId,_this.name,_this.kind,_this.chapter,_this.priority);
+}
 
 @override
 String toString() {
-  return 'Page(pageId: $pageId, authoringSequence: $authoringSequence, bookId: $bookId, name: $name, kind: $kind, chapter: $chapter, priority: $priority)';
+  final _this = this as Page;
+  return 'Page(pageId: ${_this.pageId}, authoringSequence: ${_this.authoringSequence}, bookId: ${_this.bookId}, name: ${_this.name}, kind: ${_this.kind}, chapter: ${_this.chapter}, priority: ${_this.priority})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PageCopyWithImpl<$Res>
 /// Create a copy of Page
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? pageId = null,Object? authoringSequence = null,Object? bookId = null,Object? name = null,Object? kind = null,Object? chapter = null,Object? priority = null,}) {
-  return _then(_self.copyWith(
+  return _then(Page(
 pageId: null == pageId ? _self.pageId : pageId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,authoringSequence: null == authoringSequence ? _self.authoringSequence : authoringSequence // ignore: cast_nullable_to_non_nullable
 as int,bookId: null == bookId ? _self.bookId : bookId // ignore: cast_nullable_to_non_nullable
@@ -79,7 +85,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $PageKindRefCopyWith<$Res> get kind {
-  
+
   return $PageKindRefCopyWith<$Res>(_self.kind, (value) {
     return _then(_self.copyWith(kind: value));
   });
@@ -222,7 +228,7 @@ return $default(_that.pageId,_that.authoringSequence,_that.bookId,_that.name,_th
 
 class _Page extends Page {
   const _Page({required this.pageId, required this.authoringSequence, required this.bookId, required this.name, required this.kind, required this.chapter, required this.priority}): assert(name != "", 'Name must not be empty.'),super._();
-  
+
 
 @override final  skir.RecordId pageId;
 @override final  int authoringSequence;
@@ -242,16 +248,18 @@ _$PageCopyWith<_Page> get copyWith => __$PageCopyWithImpl<_Page>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Page&&(identical(other.pageId, pageId) || other.pageId == pageId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.name, name) || other.name == name)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.chapter, chapter) || other.chapter == chapter)&&(identical(other.priority, priority) || other.priority == priority));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Page&&(identical(other.pageId, pageId) || other.pageId == pageId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.name, name) || other.name == name)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.chapter, chapter) || other.chapter == chapter)&&(identical(other.priority, priority) || other.priority == priority));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pageId,authoringSequence,bookId,name,kind,chapter,priority);
+int get hashCode {
+    return Object.hash(runtimeType,pageId,authoringSequence,bookId,name,kind,chapter,priority);
+}
 
 @override
 String toString() {
-  return 'Page(pageId: $pageId, authoringSequence: $authoringSequence, bookId: $bookId, name: $name, kind: $kind, chapter: $chapter, priority: $priority)';
+    return 'Page(pageId: $pageId, authoringSequence: $authoringSequence, bookId: $bookId, name: $name, kind: $kind, chapter: $chapter, priority: $priority)';
 }
 
 
@@ -297,7 +305,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $PageKindRefCopyWith<$Res> get kind {
-  
+
   return $PageKindRefCopyWith<$Res>(_self.kind, (value) {
     return _then(_self.copyWith(kind: value));
   });

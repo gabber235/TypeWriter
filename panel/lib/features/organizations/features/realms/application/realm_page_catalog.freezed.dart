@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'realm_page_catalog.dart';
@@ -9,6 +9,7 @@ part of 'realm_page_catalog.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PageKindRefCopyWith<PageKindRef> get copyWith => _$PageKindRefCopyWithImpl<Page
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageKindRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision));
+  final _this = this as PageKindRef;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageKindRef&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.revision, _this.revision) || other.revision == _this.revision));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,revision);
+int get hashCode {
+  final _this = this as PageKindRef;
+  return Object.hash(runtimeType,_this.id,_this.revision);
+}
 
 @override
 String toString() {
-  return 'PageKindRef(id: $id, revision: $revision)';
+  final _this = this as PageKindRef;
+  return 'PageKindRef(id: ${_this.id}, revision: ${_this.revision})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PageKindRefCopyWithImpl<$Res>
 /// Create a copy of PageKindRef
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? revision = null,}) {
-  return _then(_self.copyWith(
+  return _then(PageKindRef(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
 as int,
@@ -208,7 +214,7 @@ return $default(_that.id,_that.revision);case _:
 
 class _PageKindRef extends PageKindRef {
   const _PageKindRef({required this.id, required this.revision}): super._();
-  
+
 
 @override final  String id;
 @override final  int revision;
@@ -223,16 +229,18 @@ _$PageKindRefCopyWith<_PageKindRef> get copyWith => __$PageKindRefCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageKindRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageKindRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,revision);
+int get hashCode {
+    return Object.hash(runtimeType,id,revision);
+}
 
 @override
 String toString() {
-  return 'PageKindRef(id: $id, revision: $revision)';
+    return 'PageKindRef(id: $id, revision: $revision)';
 }
 
 
@@ -280,7 +288,7 @@ mixin _$RealmPageEditor {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageEditor);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageEditor);
 }
 
 
@@ -289,7 +297,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'RealmPageEditor()';
+    return 'RealmPageEditor()';
 }
 
 
@@ -435,8 +443,8 @@ return timeline(_that.trackTypes,_that.segmentTypes,_that.keyframeTypes);case _:
 
 
 class RealmGraphPageEditor implements RealmPageEditor {
-  const RealmGraphPageEditor({required this.direction, required final  List<ResolvedTypeRef> nodeTypes}): _nodeTypes = nodeTypes;
-  
+  const RealmGraphPageEditor({required this.direction, required  List<ResolvedTypeRef> nodeTypes}): _nodeTypes = nodeTypes;
+
 
  final  GraphDirection direction;
  final  List<ResolvedTypeRef> _nodeTypes;
@@ -457,16 +465,18 @@ $RealmGraphPageEditorCopyWith<RealmGraphPageEditor> get copyWith => _$RealmGraph
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmGraphPageEditor&&(identical(other.direction, direction) || other.direction == direction)&&const DeepCollectionEquality().equals(other._nodeTypes, _nodeTypes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmGraphPageEditor&&(identical(other.direction, direction) || other.direction == direction)&&const DeepCollectionEquality().equals(other.nodeTypes, _nodeTypes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,direction,const DeepCollectionEquality().hash(_nodeTypes));
+int get hashCode {
+    return Object.hash(runtimeType,direction,const DeepCollectionEquality().hash(_nodeTypes));
+}
 
 @override
 String toString() {
-  return 'RealmPageEditor.graph(direction: $direction, nodeTypes: $nodeTypes)';
+    return 'RealmPageEditor.graph(direction: $direction, nodeTypes: $nodeTypes)';
 }
 
 
@@ -509,8 +519,8 @@ as List<ResolvedTypeRef>,
 
 
 class RealmTimelinePageEditor implements RealmPageEditor {
-  const RealmTimelinePageEditor({required final  List<ResolvedTypeRef> trackTypes, required final  List<ResolvedTypeRef> segmentTypes, required final  List<ResolvedTypeRef> keyframeTypes}): _trackTypes = trackTypes,_segmentTypes = segmentTypes,_keyframeTypes = keyframeTypes;
-  
+  const RealmTimelinePageEditor({required  List<ResolvedTypeRef> trackTypes, required  List<ResolvedTypeRef> segmentTypes, required  List<ResolvedTypeRef> keyframeTypes}): _trackTypes = trackTypes,_segmentTypes = segmentTypes,_keyframeTypes = keyframeTypes;
+
 
  final  List<ResolvedTypeRef> _trackTypes;
  List<ResolvedTypeRef> get trackTypes {
@@ -544,16 +554,18 @@ $RealmTimelinePageEditorCopyWith<RealmTimelinePageEditor> get copyWith => _$Real
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmTimelinePageEditor&&const DeepCollectionEquality().equals(other._trackTypes, _trackTypes)&&const DeepCollectionEquality().equals(other._segmentTypes, _segmentTypes)&&const DeepCollectionEquality().equals(other._keyframeTypes, _keyframeTypes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmTimelinePageEditor&&const DeepCollectionEquality().equals(other.trackTypes, _trackTypes)&&const DeepCollectionEquality().equals(other.segmentTypes, _segmentTypes)&&const DeepCollectionEquality().equals(other.keyframeTypes, _keyframeTypes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_trackTypes),const DeepCollectionEquality().hash(_segmentTypes),const DeepCollectionEquality().hash(_keyframeTypes));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_trackTypes),const DeepCollectionEquality().hash(_segmentTypes),const DeepCollectionEquality().hash(_keyframeTypes));
+}
 
 @override
 String toString() {
-  return 'RealmPageEditor.timeline(trackTypes: $trackTypes, segmentTypes: $segmentTypes, keyframeTypes: $keyframeTypes)';
+    return 'RealmPageEditor.timeline(trackTypes: $trackTypes, segmentTypes: $segmentTypes, keyframeTypes: $keyframeTypes)';
 }
 
 
@@ -607,16 +619,21 @@ $RealmPageDefinitionCopyWith<RealmPageDefinition> get copyWith => _$RealmPageDef
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageDefinition&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.editor, editor) || other.editor == editor)&&(identical(other.originArtifactId, originArtifactId) || other.originArtifactId == originArtifactId)&&(identical(other.sourcePart, sourcePart) || other.sourcePart == sourcePart));
+  final _this = this as RealmPageDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageDefinition&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.icon, _this.icon) || other.icon == _this.icon)&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.editor, _this.editor) || other.editor == _this.editor)&&(identical(other.originArtifactId, _this.originArtifactId) || other.originArtifactId == _this.originArtifactId)&&(identical(other.sourcePart, _this.sourcePart) || other.sourcePart == _this.sourcePart));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,kind,name,description,icon,color,editor,originArtifactId,sourcePart);
+int get hashCode {
+  final _this = this as RealmPageDefinition;
+  return Object.hash(runtimeType,_this.kind,_this.name,_this.description,_this.icon,_this.color,_this.editor,_this.originArtifactId,_this.sourcePart);
+}
 
 @override
 String toString() {
-  return 'RealmPageDefinition(kind: $kind, name: $name, description: $description, icon: $icon, color: $color, editor: $editor, originArtifactId: $originArtifactId, sourcePart: $sourcePart)';
+  final _this = this as RealmPageDefinition;
+  return 'RealmPageDefinition(kind: ${_this.kind}, name: ${_this.name}, description: ${_this.description}, icon: ${_this.icon}, color: ${_this.color}, editor: ${_this.editor}, originArtifactId: ${_this.originArtifactId}, sourcePart: ${_this.sourcePart})';
 }
 
 
@@ -645,7 +662,7 @@ class _$RealmPageDefinitionCopyWithImpl<$Res>
 /// Create a copy of RealmPageDefinition
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? kind = null,Object? name = null,Object? description = freezed,Object? icon = null,Object? color = null,Object? editor = null,Object? originArtifactId = null,Object? sourcePart = null,}) {
-  return _then(_self.copyWith(
+  return _then(RealmPageDefinition(
 kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as PageKindRef,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -662,7 +679,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $PageKindRefCopyWith<$Res> get kind {
-  
+
   return $PageKindRefCopyWith<$Res>(_self.kind, (value) {
     return _then(_self.copyWith(kind: value));
   });
@@ -671,7 +688,7 @@ $PageKindRefCopyWith<$Res> get kind {
 @override
 @pragma('vm:prefer-inline')
 $IconValueCopyWith<$Res> get icon {
-  
+
   return $IconValueCopyWith<$Res>(_self.icon, (value) {
     return _then(_self.copyWith(icon: value));
   });
@@ -680,7 +697,7 @@ $IconValueCopyWith<$Res> get icon {
 @override
 @pragma('vm:prefer-inline')
 $RealmPageEditorCopyWith<$Res> get editor {
-  
+
   return $RealmPageEditorCopyWith<$Res>(_self.editor, (value) {
     return _then(_self.copyWith(editor: value));
   });
@@ -823,7 +840,7 @@ return $default(_that.kind,_that.name,_that.description,_that.icon,_that.color,_
 
 class _RealmPageDefinition implements RealmPageDefinition {
   const _RealmPageDefinition({required this.kind, required this.name, required this.description, required this.icon, required this.color, required this.editor, required this.originArtifactId, required this.sourcePart});
-  
+
 
 @override final  PageKindRef kind;
 @override final  String name;
@@ -844,16 +861,18 @@ _$RealmPageDefinitionCopyWith<_RealmPageDefinition> get copyWith => __$RealmPage
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmPageDefinition&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.editor, editor) || other.editor == editor)&&(identical(other.originArtifactId, originArtifactId) || other.originArtifactId == originArtifactId)&&(identical(other.sourcePart, sourcePart) || other.sourcePart == sourcePart));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmPageDefinition&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.editor, editor) || other.editor == editor)&&(identical(other.originArtifactId, originArtifactId) || other.originArtifactId == originArtifactId)&&(identical(other.sourcePart, sourcePart) || other.sourcePart == sourcePart));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,kind,name,description,icon,color,editor,originArtifactId,sourcePart);
+int get hashCode {
+    return Object.hash(runtimeType,kind,name,description,icon,color,editor,originArtifactId,sourcePart);
+}
 
 @override
 String toString() {
-  return 'RealmPageDefinition(kind: $kind, name: $name, description: $description, icon: $icon, color: $color, editor: $editor, originArtifactId: $originArtifactId, sourcePart: $sourcePart)';
+    return 'RealmPageDefinition(kind: $kind, name: $name, description: $description, icon: $icon, color: $color, editor: $editor, originArtifactId: $originArtifactId, sourcePart: $sourcePart)';
 }
 
 
@@ -900,7 +919,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $PageKindRefCopyWith<$Res> get kind {
-  
+
   return $PageKindRefCopyWith<$Res>(_self.kind, (value) {
     return _then(_self.copyWith(kind: value));
   });
@@ -909,7 +928,7 @@ $PageKindRefCopyWith<$Res> get kind {
 @override
 @pragma('vm:prefer-inline')
 $IconValueCopyWith<$Res> get icon {
-  
+
   return $IconValueCopyWith<$Res>(_self.icon, (value) {
     return _then(_self.copyWith(icon: value));
   });
@@ -918,7 +937,7 @@ $IconValueCopyWith<$Res> get icon {
 @override
 @pragma('vm:prefer-inline')
 $RealmPageEditorCopyWith<$Res> get editor {
-  
+
   return $RealmPageEditorCopyWith<$Res>(_self.editor, (value) {
     return _then(_self.copyWith(editor: value));
   });
@@ -939,16 +958,21 @@ $RealmPageDiagnosticCopyWith<RealmPageDiagnostic> get copyWith => _$RealmPageDia
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageDiagnostic&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.originArtifactId, originArtifactId) || other.originArtifactId == originArtifactId)&&(identical(other.sourcePart, sourcePart) || other.sourcePart == sourcePart)&&(identical(other.declarationName, declarationName) || other.declarationName == declarationName)&&(identical(other.kind, kind) || other.kind == kind));
+  final _this = this as RealmPageDiagnostic;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageDiagnostic&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.originArtifactId, _this.originArtifactId) || other.originArtifactId == _this.originArtifactId)&&(identical(other.sourcePart, _this.sourcePart) || other.sourcePart == _this.sourcePart)&&(identical(other.declarationName, _this.declarationName) || other.declarationName == _this.declarationName)&&(identical(other.kind, _this.kind) || other.kind == _this.kind));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,code,message,originArtifactId,sourcePart,declarationName,kind);
+int get hashCode {
+  final _this = this as RealmPageDiagnostic;
+  return Object.hash(runtimeType,_this.code,_this.message,_this.originArtifactId,_this.sourcePart,_this.declarationName,_this.kind);
+}
 
 @override
 String toString() {
-  return 'RealmPageDiagnostic(code: $code, message: $message, originArtifactId: $originArtifactId, sourcePart: $sourcePart, declarationName: $declarationName, kind: $kind)';
+  final _this = this as RealmPageDiagnostic;
+  return 'RealmPageDiagnostic(code: ${_this.code}, message: ${_this.message}, originArtifactId: ${_this.originArtifactId}, sourcePart: ${_this.sourcePart}, declarationName: ${_this.declarationName}, kind: ${_this.kind})';
 }
 
 
@@ -977,7 +1001,7 @@ class _$RealmPageDiagnosticCopyWithImpl<$Res>
 /// Create a copy of RealmPageDiagnostic
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? originArtifactId = freezed,Object? sourcePart = freezed,Object? declarationName = freezed,Object? kind = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(RealmPageDiagnostic(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,originArtifactId: freezed == originArtifactId ? _self.originArtifactId : originArtifactId // ignore: cast_nullable_to_non_nullable
@@ -1138,7 +1162,7 @@ return $default(_that.code,_that.message,_that.originArtifactId,_that.sourcePart
 
 class _RealmPageDiagnostic implements RealmPageDiagnostic {
   const _RealmPageDiagnostic({required this.code, required this.message, required this.originArtifactId, required this.sourcePart, required this.declarationName, required this.kind});
-  
+
 
 @override final  String code;
 @override final  String message;
@@ -1157,16 +1181,18 @@ _$RealmPageDiagnosticCopyWith<_RealmPageDiagnostic> get copyWith => __$RealmPage
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmPageDiagnostic&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.originArtifactId, originArtifactId) || other.originArtifactId == originArtifactId)&&(identical(other.sourcePart, sourcePart) || other.sourcePart == sourcePart)&&(identical(other.declarationName, declarationName) || other.declarationName == declarationName)&&(identical(other.kind, kind) || other.kind == kind));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmPageDiagnostic&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.originArtifactId, originArtifactId) || other.originArtifactId == originArtifactId)&&(identical(other.sourcePart, sourcePart) || other.sourcePart == sourcePart)&&(identical(other.declarationName, declarationName) || other.declarationName == declarationName)&&(identical(other.kind, kind) || other.kind == kind));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,code,message,originArtifactId,sourcePart,declarationName,kind);
+int get hashCode {
+    return Object.hash(runtimeType,code,message,originArtifactId,sourcePart,declarationName,kind);
+}
 
 @override
 String toString() {
-  return 'RealmPageDiagnostic(code: $code, message: $message, originArtifactId: $originArtifactId, sourcePart: $sourcePart, declarationName: $declarationName, kind: $kind)';
+    return 'RealmPageDiagnostic(code: $code, message: $message, originArtifactId: $originArtifactId, sourcePart: $sourcePart, declarationName: $declarationName, kind: $kind)';
 }
 
 
@@ -1235,16 +1261,21 @@ $RealmPageCatalogCopyWith<RealmPageCatalog> get copyWith => _$RealmPageCatalogCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageCatalog&&const DeepCollectionEquality().equals(other.definitions, definitions)&&const DeepCollectionEquality().equals(other.diagnostics, diagnostics));
+  final _this = this as RealmPageCatalog;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmPageCatalog&&const DeepCollectionEquality().equals(other.definitions, _this.definitions)&&const DeepCollectionEquality().equals(other.diagnostics, _this.diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(definitions),const DeepCollectionEquality().hash(diagnostics));
+int get hashCode {
+  final _this = this as RealmPageCatalog;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.definitions),const DeepCollectionEquality().hash(_this.diagnostics));
+}
 
 @override
 String toString() {
-  return 'RealmPageCatalog(definitions: $definitions, diagnostics: $diagnostics)';
+  final _this = this as RealmPageCatalog;
+  return 'RealmPageCatalog(definitions: ${_this.definitions}, diagnostics: ${_this.diagnostics})';
 }
 
 
@@ -1273,7 +1304,7 @@ class _$RealmPageCatalogCopyWithImpl<$Res>
 /// Create a copy of RealmPageCatalog
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definitions = null,Object? diagnostics = null,}) {
-  return _then(_self.copyWith(
+  return _then(RealmPageCatalog(
 definitions: null == definitions ? _self.definitions : definitions // ignore: cast_nullable_to_non_nullable
 as Map<PageKindRef, RealmPageDefinition>,diagnostics: null == diagnostics ? _self.diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
 as List<RealmPageDiagnostic>,
@@ -1417,8 +1448,8 @@ return $default(_that.definitions,_that.diagnostics);case _:
 
 
 class _RealmPageCatalog implements RealmPageCatalog {
-  const _RealmPageCatalog({final  Map<PageKindRef, RealmPageDefinition> definitions = const {}, final  List<RealmPageDiagnostic> diagnostics = const []}): _definitions = definitions,_diagnostics = diagnostics;
-  
+  const _RealmPageCatalog({ Map<PageKindRef, RealmPageDefinition> definitions = const {},  List<RealmPageDiagnostic> diagnostics = const []}): _definitions = definitions,_diagnostics = diagnostics;
+
 
  final  Map<PageKindRef, RealmPageDefinition> _definitions;
 @override@JsonKey() Map<PageKindRef, RealmPageDefinition> get definitions {
@@ -1445,16 +1476,18 @@ _$RealmPageCatalogCopyWith<_RealmPageCatalog> get copyWith => __$RealmPageCatalo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmPageCatalog&&const DeepCollectionEquality().equals(other._definitions, _definitions)&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmPageCatalog&&const DeepCollectionEquality().equals(other.definitions, _definitions)&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_definitions),const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_definitions),const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'RealmPageCatalog(definitions: $definitions, diagnostics: $diagnostics)';
+    return 'RealmPageCatalog(definitions: $definitions, diagnostics: $diagnostics)';
 }
 
 

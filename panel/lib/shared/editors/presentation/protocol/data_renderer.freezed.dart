@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'data_renderer.dart';
@@ -9,6 +9,7 @@ part of 'data_renderer.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ _$RepeatedItemCopyWith<_RepeatedItem> get copyWith => __$RepeatedItemCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RepeatedItem&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.canonical, canonical) || other.canonical == canonical));
+  final _this = this as _RepeatedItem;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RepeatedItem&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.canonical, _this.canonical) || other.canonical == _this.canonical));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,value,revision,canonical);
+int get hashCode {
+  final _this = this as _RepeatedItem;
+  return Object.hash(runtimeType,_this.type,_this.value,_this.revision,_this.canonical);
+}
 
 @override
 String toString() {
-  return '_RepeatedItem(type: $type, value: $value, revision: $revision, canonical: $canonical)';
+  final _this = this as _RepeatedItem;
+  return '_RepeatedItem(type: ${_this.type}, value: ${_this.value}, revision: ${_this.revision}, canonical: ${_this.canonical})';
 }
 
 
@@ -63,7 +69,7 @@ class __$RepeatedItemCopyWithImpl<$Res>
 /// Create a copy of _RepeatedItem
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? value = null,Object? revision = null,Object? canonical = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(_RepeatedItem(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as TypeExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as DataValue,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
@@ -76,7 +82,7 @@ as BindingReference?,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -85,7 +91,7 @@ $TypeExpressionCopyWith<$Res> get type {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -240,7 +246,7 @@ return $default(_that.type,_that.value,_that.revision,_that.canonical);case _:
 
 class _RepeatedItemValue implements _RepeatedItem {
   const _RepeatedItemValue({required this.type, required this.value, required this.revision, required this.canonical});
-  
+
 
 @override final  TypeExpression type;
 @override final  DataValue value;
@@ -257,16 +263,18 @@ _$RepeatedItemValueCopyWith<_RepeatedItemValue> get copyWith => __$RepeatedItemV
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RepeatedItemValue&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.canonical, canonical) || other.canonical == canonical));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RepeatedItemValue&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.canonical, canonical) || other.canonical == canonical));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,value,revision,canonical);
+int get hashCode {
+    return Object.hash(runtimeType,type,value,revision,canonical);
+}
 
 @override
 String toString() {
-  return '_RepeatedItem(type: $type, value: $value, revision: $revision, canonical: $canonical)';
+    return '_RepeatedItem(type: $type, value: $value, revision: $revision, canonical: $canonical)';
 }
 
 
@@ -309,7 +317,7 @@ as BindingReference?,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -318,7 +326,7 @@ $TypeExpressionCopyWith<$Res> get type {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });

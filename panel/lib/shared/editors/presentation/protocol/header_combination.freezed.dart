@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'header_combination.dart';
@@ -9,12 +9,13 @@ part of 'header_combination.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ResolvedHeaderChain {
 
- PresentationHeader? get header; Set<(String, BindingReference?)> get suppressed;
+ PresentationHeader? get header; Set<(String, BindingReference?,)> get suppressed;
 /// Create a copy of ResolvedHeaderChain
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,21 @@ $ResolvedHeaderChainCopyWith<ResolvedHeaderChain> get copyWith => _$ResolvedHead
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedHeaderChain&&(identical(other.header, header) || other.header == header)&&const DeepCollectionEquality().equals(other.suppressed, suppressed));
+  final _this = this as ResolvedHeaderChain;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedHeaderChain&&(identical(other.header, _this.header) || other.header == _this.header)&&const DeepCollectionEquality().equals(other.suppressed, _this.suppressed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,header,const DeepCollectionEquality().hash(suppressed));
+int get hashCode {
+  final _this = this as ResolvedHeaderChain;
+  return Object.hash(runtimeType,_this.header,const DeepCollectionEquality().hash(_this.suppressed));
+}
 
 @override
 String toString() {
-  return 'ResolvedHeaderChain(header: $header, suppressed: $suppressed)';
+  final _this = this as ResolvedHeaderChain;
+  return 'ResolvedHeaderChain(header: ${_this.header}, suppressed: ${_this.suppressed})';
 }
 
 
@@ -45,7 +51,7 @@ abstract mixin class $ResolvedHeaderChainCopyWith<$Res>  {
   factory $ResolvedHeaderChainCopyWith(ResolvedHeaderChain value, $Res Function(ResolvedHeaderChain) _then) = _$ResolvedHeaderChainCopyWithImpl;
 @useResult
 $Res call({
- PresentationHeader? header, Set<(String, BindingReference?)> suppressed
+ PresentationHeader? header, Set<(String, BindingReference?,)> suppressed
 });
 
 
@@ -63,10 +69,10 @@ class _$ResolvedHeaderChainCopyWithImpl<$Res>
 /// Create a copy of ResolvedHeaderChain
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? header = freezed,Object? suppressed = null,}) {
-  return _then(_self.copyWith(
+  return _then(ResolvedHeaderChain(
 header: freezed == header ? _self.header : header // ignore: cast_nullable_to_non_nullable
 as PresentationHeader?,suppressed: null == suppressed ? _self.suppressed : suppressed // ignore: cast_nullable_to_non_nullable
-as Set<(String, BindingReference?)>,
+as Set<(String, BindingReference?,)>,
   ));
 }
 /// Create a copy of ResolvedHeaderChain
@@ -163,7 +169,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PresentationHeader? header,  Set<(String, BindingReference?)> suppressed)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PresentationHeader? header,  Set<(String, BindingReference?,)> suppressed)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ResolvedHeaderChain() when $default != null:
 return $default(_that.header,_that.suppressed);case _:
@@ -184,7 +190,7 @@ return $default(_that.header,_that.suppressed);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PresentationHeader? header,  Set<(String, BindingReference?)> suppressed)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PresentationHeader? header,  Set<(String, BindingReference?,)> suppressed)  $default,) {final _that = this;
 switch (_that) {
 case _ResolvedHeaderChain():
 return $default(_that.header,_that.suppressed);case _:
@@ -204,7 +210,7 @@ return $default(_that.header,_that.suppressed);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PresentationHeader? header,  Set<(String, BindingReference?)> suppressed)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PresentationHeader? header,  Set<(String, BindingReference?,)> suppressed)?  $default,) {final _that = this;
 switch (_that) {
 case _ResolvedHeaderChain() when $default != null:
 return $default(_that.header,_that.suppressed);case _:
@@ -219,12 +225,12 @@ return $default(_that.header,_that.suppressed);case _:
 
 
 class _ResolvedHeaderChain implements ResolvedHeaderChain {
-  const _ResolvedHeaderChain({required this.header, required final  Set<(String, BindingReference?)> suppressed}): _suppressed = suppressed;
-  
+  const _ResolvedHeaderChain({required this.header, required  Set<(String, BindingReference?,)> suppressed}): _suppressed = suppressed;
+
 
 @override final  PresentationHeader? header;
- final  Set<(String, BindingReference?)> _suppressed;
-@override Set<(String, BindingReference?)> get suppressed {
+ final  Set<(String, BindingReference?,)> _suppressed;
+@override Set<(String, BindingReference?,)> get suppressed {
   if (_suppressed is EqualUnmodifiableSetView) return _suppressed;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableSetView(_suppressed);
@@ -241,16 +247,18 @@ _$ResolvedHeaderChainCopyWith<_ResolvedHeaderChain> get copyWith => __$ResolvedH
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderChain&&(identical(other.header, header) || other.header == header)&&const DeepCollectionEquality().equals(other._suppressed, _suppressed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderChain&&(identical(other.header, header) || other.header == header)&&const DeepCollectionEquality().equals(other.suppressed, _suppressed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,header,const DeepCollectionEquality().hash(_suppressed));
+int get hashCode {
+    return Object.hash(runtimeType,header,const DeepCollectionEquality().hash(_suppressed));
+}
 
 @override
 String toString() {
-  return 'ResolvedHeaderChain(header: $header, suppressed: $suppressed)';
+    return 'ResolvedHeaderChain(header: $header, suppressed: $suppressed)';
 }
 
 
@@ -261,7 +269,7 @@ abstract mixin class _$ResolvedHeaderChainCopyWith<$Res> implements $ResolvedHea
   factory _$ResolvedHeaderChainCopyWith(_ResolvedHeaderChain value, $Res Function(_ResolvedHeaderChain) _then) = __$ResolvedHeaderChainCopyWithImpl;
 @override @useResult
 $Res call({
- PresentationHeader? header, Set<(String, BindingReference?)> suppressed
+ PresentationHeader? header, Set<(String, BindingReference?,)> suppressed
 });
 
 
@@ -282,7 +290,7 @@ class __$ResolvedHeaderChainCopyWithImpl<$Res>
   return _then(_ResolvedHeaderChain(
 header: freezed == header ? _self.header : header // ignore: cast_nullable_to_non_nullable
 as PresentationHeader?,suppressed: null == suppressed ? _self._suppressed : suppressed // ignore: cast_nullable_to_non_nullable
-as Set<(String, BindingReference?)>,
+as Set<(String, BindingReference?,)>,
   ));
 }
 

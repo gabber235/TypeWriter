@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'submission_result.dart';
@@ -9,6 +9,7 @@ part of 'submission_result.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SubmissionResult<T> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionResult<T>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionResult<T>);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubmissionResult<$T>()';
+    return 'SubmissionResult<$T>()';
 }
 
 
@@ -188,7 +189,7 @@ return uncertain(_that.message,_that.cause,_that.stackTrace);case _:
 
 class SubmissionConfirmed<T> implements SubmissionResult<T> {
   const SubmissionConfirmed(this.value);
-  
+
 
  final  T value;
 
@@ -202,16 +203,18 @@ $SubmissionConfirmedCopyWith<T, SubmissionConfirmed<T>> get copyWith => _$Submis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionConfirmed<T>&&const DeepCollectionEquality().equals(other.value, value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionConfirmed<T>&&const DeepCollectionEquality().equals(other.value, value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+}
 
 @override
 String toString() {
-  return 'SubmissionResult<$T>.confirmed(value: $value)';
+    return 'SubmissionResult<$T>.confirmed(value: $value)';
 }
 
 
@@ -254,7 +257,7 @@ as T,
 
 class SubmissionRejected<T> implements SubmissionResult<T> {
   const SubmissionRejected({required this.message, this.cause, this.response});
-  
+
 
  final  String message;
  final  Object? cause;
@@ -270,16 +273,18 @@ $SubmissionRejectedCopyWith<T, SubmissionRejected<T>> get copyWith => _$Submissi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionRejected<T>&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause)&&const DeepCollectionEquality().equals(other.response, response));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionRejected<T>&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause)&&const DeepCollectionEquality().equals(other.response, response));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause),const DeepCollectionEquality().hash(response));
+int get hashCode {
+    return Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause),const DeepCollectionEquality().hash(response));
+}
 
 @override
 String toString() {
-  return 'SubmissionResult<$T>.rejected(message: $message, cause: $cause, response: $response)';
+    return 'SubmissionResult<$T>.rejected(message: $message, cause: $cause, response: $response)';
 }
 
 
@@ -323,7 +328,7 @@ as T?,
 
 class SubmissionNotSubmitted<T> implements SubmissionResult<T> {
   const SubmissionNotSubmitted({required this.message, this.cause});
-  
+
 
  final  String message;
  final  Object? cause;
@@ -338,16 +343,18 @@ $SubmissionNotSubmittedCopyWith<T, SubmissionNotSubmitted<T>> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionNotSubmitted<T>&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionNotSubmitted<T>&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause));
+int get hashCode {
+    return Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause));
+}
 
 @override
 String toString() {
-  return 'SubmissionResult<$T>.notSubmitted(message: $message, cause: $cause)';
+    return 'SubmissionResult<$T>.notSubmitted(message: $message, cause: $cause)';
 }
 
 
@@ -390,7 +397,7 @@ as String,cause: freezed == cause ? _self.cause : cause ,
 
 class SubmissionUncertain<T> implements SubmissionResult<T> {
   const SubmissionUncertain({required this.message, required this.cause, required this.stackTrace});
-  
+
 
  final  String message;
  final  Object cause;
@@ -406,16 +413,18 @@ $SubmissionUncertainCopyWith<T, SubmissionUncertain<T>> get copyWith => _$Submis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionUncertain<T>&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmissionUncertain<T>&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause),stackTrace);
+int get hashCode {
+    return Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause),stackTrace);
+}
 
 @override
 String toString() {
-  return 'SubmissionResult<$T>.uncertain(message: $message, cause: $cause, stackTrace: $stackTrace)';
+    return 'SubmissionResult<$T>.uncertain(message: $message, cause: $cause, stackTrace: $stackTrace)';
 }
 
 

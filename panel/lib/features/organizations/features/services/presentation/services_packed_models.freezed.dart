@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'services_packed_models.dart';
@@ -9,6 +9,7 @@ part of 'services_packed_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ServicesPackedNodeCopyWith<ServicesPackedNode> get copyWith => _$ServicesPacked
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedNode&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.builder, builder) || other.builder == builder)&&(identical(other.priority, priority) || other.priority == priority));
+  final _this = this as ServicesPackedNode;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedNode&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height)&&(identical(other.builder, _this.builder) || other.builder == _this.builder)&&(identical(other.priority, _this.priority) || other.priority == _this.priority));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height,builder,priority);
+int get hashCode {
+  final _this = this as ServicesPackedNode;
+  return Object.hash(runtimeType,_this.id,_this.width,_this.height,_this.builder,_this.priority);
+}
 
 @override
 String toString() {
-  return 'ServicesPackedNode(id: $id, width: $width, height: $height, builder: $builder, priority: $priority)';
+  final _this = this as ServicesPackedNode;
+  return 'ServicesPackedNode(id: ${_this.id}, width: ${_this.width}, height: ${_this.height}, builder: ${_this.builder}, priority: ${_this.priority})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ServicesPackedNodeCopyWithImpl<$Res>
 /// Create a copy of ServicesPackedNode
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? width = null,Object? height = null,Object? builder = null,Object? priority = null,}) {
-  return _then(_self.copyWith(
+  return _then(ServicesPackedNode(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as GraphIdentifier,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -211,7 +217,7 @@ return $default(_that.id,_that.width,_that.height,_that.builder,_that.priority);
 
 class _ServicesPackedNode implements ServicesPackedNode {
   const _ServicesPackedNode({required this.id, required this.width, required this.height, required this.builder, this.priority = 0});
-  
+
 
 @override final  GraphIdentifier id;
 @override final  int width;
@@ -229,16 +235,18 @@ _$ServicesPackedNodeCopyWith<_ServicesPackedNode> get copyWith => __$ServicesPac
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedNode&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.builder, builder) || other.builder == builder)&&(identical(other.priority, priority) || other.priority == priority));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedNode&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.builder, builder) || other.builder == builder)&&(identical(other.priority, priority) || other.priority == priority));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height,builder,priority);
+int get hashCode {
+    return Object.hash(runtimeType,id,width,height,builder,priority);
+}
 
 @override
 String toString() {
-  return 'ServicesPackedNode(id: $id, width: $width, height: $height, builder: $builder, priority: $priority)';
+    return 'ServicesPackedNode(id: $id, width: $width, height: $height, builder: $builder, priority: $priority)';
 }
 
 
@@ -294,16 +302,21 @@ $ServicesPackedConnectionCopyWith<ServicesPackedConnection> get copyWith => _$Se
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedConnection&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.color, color) || other.color == color));
+  final _this = this as ServicesPackedConnection;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedConnection&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.target, _this.target) || other.target == _this.target)&&(identical(other.color, _this.color) || other.color == _this.color));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,source,target,color);
+int get hashCode {
+  final _this = this as ServicesPackedConnection;
+  return Object.hash(runtimeType,_this.id,_this.source,_this.target,_this.color);
+}
 
 @override
 String toString() {
-  return 'ServicesPackedConnection(id: $id, source: $source, target: $target, color: $color)';
+  final _this = this as ServicesPackedConnection;
+  return 'ServicesPackedConnection(id: ${_this.id}, source: ${_this.source}, target: ${_this.target}, color: ${_this.color})';
 }
 
 
@@ -332,7 +345,7 @@ class _$ServicesPackedConnectionCopyWithImpl<$Res>
 /// Create a copy of ServicesPackedConnection
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? source = null,Object? target = null,Object? color = null,}) {
-  return _then(_self.copyWith(
+  return _then(ServicesPackedConnection(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as GraphIdentifier,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
@@ -479,7 +492,7 @@ return $default(_that.id,_that.source,_that.target,_that.color);case _:
 
 class _ServicesPackedConnection implements ServicesPackedConnection {
   const _ServicesPackedConnection({required this.id, required this.source, required this.target, required this.color});
-  
+
 
 @override final  String id;
 @override final  GraphIdentifier source;
@@ -496,16 +509,18 @@ _$ServicesPackedConnectionCopyWith<_ServicesPackedConnection> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedConnection&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.color, color) || other.color == color));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedConnection&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.color, color) || other.color == color));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,source,target,color);
+int get hashCode {
+    return Object.hash(runtimeType,id,source,target,color);
+}
 
 @override
 String toString() {
-  return 'ServicesPackedConnection(id: $id, source: $source, target: $target, color: $color)';
+    return 'ServicesPackedConnection(id: $id, source: $source, target: $target, color: $color)';
 }
 
 
@@ -560,16 +575,21 @@ $ServicesPackedComponentPlacementCopyWith<ServicesPackedComponentPlacement> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedComponentPlacement&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.placements, placements));
+  final _this = this as ServicesPackedComponentPlacement;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedComponentPlacement&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height)&&const DeepCollectionEquality().equals(other.placements, _this.placements));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height,const DeepCollectionEquality().hash(placements));
+int get hashCode {
+  final _this = this as ServicesPackedComponentPlacement;
+  return Object.hash(runtimeType,_this.id,_this.width,_this.height,const DeepCollectionEquality().hash(_this.placements));
+}
 
 @override
 String toString() {
-  return 'ServicesPackedComponentPlacement(id: $id, width: $width, height: $height, placements: $placements)';
+  final _this = this as ServicesPackedComponentPlacement;
+  return 'ServicesPackedComponentPlacement(id: ${_this.id}, width: ${_this.width}, height: ${_this.height}, placements: ${_this.placements})';
 }
 
 
@@ -598,7 +618,7 @@ class _$ServicesPackedComponentPlacementCopyWithImpl<$Res>
 /// Create a copy of ServicesPackedComponentPlacement
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? width = null,Object? height = null,Object? placements = null,}) {
-  return _then(_self.copyWith(
+  return _then(ServicesPackedComponentPlacement(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -744,8 +764,8 @@ return $default(_that.id,_that.width,_that.height,_that.placements);case _:
 
 
 class _ServicesPackedComponentPlacement implements ServicesPackedComponentPlacement {
-  const _ServicesPackedComponentPlacement({required this.id, required this.width, required this.height, required final  Map<GraphIdentifier, ServicesPackedGridPlacement> placements}): _placements = placements;
-  
+  const _ServicesPackedComponentPlacement({required this.id, required this.width, required this.height, required  Map<GraphIdentifier, ServicesPackedGridPlacement> placements}): _placements = placements;
+
 
 @override final  String id;
 @override final  int width;
@@ -768,16 +788,18 @@ _$ServicesPackedComponentPlacementCopyWith<_ServicesPackedComponentPlacement> ge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedComponentPlacement&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other._placements, _placements));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedComponentPlacement&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&const DeepCollectionEquality().equals(other.placements, _placements));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height,const DeepCollectionEquality().hash(_placements));
+int get hashCode {
+    return Object.hash(runtimeType,id,width,height,const DeepCollectionEquality().hash(_placements));
+}
 
 @override
 String toString() {
-  return 'ServicesPackedComponentPlacement(id: $id, width: $width, height: $height, placements: $placements)';
+    return 'ServicesPackedComponentPlacement(id: $id, width: $width, height: $height, placements: $placements)';
 }
 
 
@@ -832,16 +854,21 @@ $ServicesPackedGridPlacementCopyWith<ServicesPackedGridPlacement> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedGridPlacement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+  final _this = this as ServicesPackedGridPlacement;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServicesPackedGridPlacement&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,x,y,width,height);
+int get hashCode {
+  final _this = this as ServicesPackedGridPlacement;
+  return Object.hash(runtimeType,_this.x,_this.y,_this.width,_this.height);
+}
 
 @override
 String toString() {
-  return 'ServicesPackedGridPlacement(x: $x, y: $y, width: $width, height: $height)';
+  final _this = this as ServicesPackedGridPlacement;
+  return 'ServicesPackedGridPlacement(x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, height: ${_this.height})';
 }
 
 
@@ -870,7 +897,7 @@ class _$ServicesPackedGridPlacementCopyWithImpl<$Res>
 /// Create a copy of ServicesPackedGridPlacement
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? x = null,Object? y = null,Object? width = null,Object? height = null,}) {
-  return _then(_self.copyWith(
+  return _then(ServicesPackedGridPlacement(
 x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
 as int,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
 as int,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
@@ -1017,7 +1044,7 @@ return $default(_that.x,_that.y,_that.width,_that.height);case _:
 
 class _ServicesPackedGridPlacement extends ServicesPackedGridPlacement {
   const _ServicesPackedGridPlacement({required this.x, required this.y, required this.width, required this.height}): super._();
-  
+
 
 @override final  int x;
 @override final  int y;
@@ -1034,16 +1061,18 @@ _$ServicesPackedGridPlacementCopyWith<_ServicesPackedGridPlacement> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedGridPlacement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServicesPackedGridPlacement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,x,y,width,height);
+int get hashCode {
+    return Object.hash(runtimeType,x,y,width,height);
+}
 
 @override
 String toString() {
-  return 'ServicesPackedGridPlacement(x: $x, y: $y, width: $width, height: $height)';
+    return 'ServicesPackedGridPlacement(x: $x, y: $y, width: $width, height: $height)';
 }
 
 

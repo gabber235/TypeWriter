@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'type_id.dart';
@@ -9,6 +9,7 @@ part of 'type_id.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeId);
 }
 
 
@@ -190,7 +191,7 @@ return qualified(_that.namespace,_that.name);case _:
 
 class OptionTypeId extends TypeId {
   const OptionTypeId(): super._();
-  
+
 
 
 
@@ -199,7 +200,7 @@ class OptionTypeId extends TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OptionTypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OptionTypeId);
 }
 
 
@@ -218,7 +219,7 @@ int get hashCode => runtimeType.hashCode;
 
 class SomeTypeId extends TypeId {
   const SomeTypeId(): super._();
-  
+
 
 
 
@@ -227,7 +228,7 @@ class SomeTypeId extends TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SomeTypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SomeTypeId);
 }
 
 
@@ -246,7 +247,7 @@ int get hashCode => runtimeType.hashCode;
 
 class NoneTypeId extends TypeId {
   const NoneTypeId(): super._();
-  
+
 
 
 
@@ -255,7 +256,7 @@ class NoneTypeId extends TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NoneTypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NoneTypeId);
 }
 
 
@@ -274,7 +275,7 @@ int get hashCode => runtimeType.hashCode;
 
 class DeclaredTypeId extends TypeId {
    DeclaredTypeId(this.uuid): assert(RegExp(r"^[0-9a-fA-F]{32}$").hasMatch(uuid), 'Declared type UUIDs must contain 32 hexadecimal characters.'),super._();
-  
+
 
  final  String uuid;
 
@@ -288,12 +289,14 @@ $DeclaredTypeIdCopyWith<DeclaredTypeId> get copyWith => _$DeclaredTypeIdCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeclaredTypeId&&(identical(other.uuid, uuid) || other.uuid == uuid));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DeclaredTypeId&&(identical(other.uuid, uuid) || other.uuid == uuid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uuid);
+int get hashCode {
+    return Object.hash(runtimeType,uuid);
+}
 
 
 
@@ -336,7 +339,7 @@ as String,
 
 class QualifiedTypeId extends TypeId {
   const QualifiedTypeId({required this.namespace, required this.name}): assert(namespace != "", 'Namespace must not be empty.'),assert(name != "", 'Name must not be empty.'),super._();
-  
+
 
  final  String namespace;
  final  String name;
@@ -351,12 +354,14 @@ $QualifiedTypeIdCopyWith<QualifiedTypeId> get copyWith => _$QualifiedTypeIdCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QualifiedTypeId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is QualifiedTypeId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+    return Object.hash(runtimeType,namespace,name);
+}
 
 
 
@@ -409,12 +414,16 @@ $ResolvedTypeRefCopyWith<ResolvedTypeRef> get copyWith => _$ResolvedTypeRefCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedTypeRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision)&&const DeepCollectionEquality().equals(other.arguments, arguments));
+  final _this = this as ResolvedTypeRef;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedTypeRef&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&const DeepCollectionEquality().equals(other.arguments, _this.arguments));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,revision,const DeepCollectionEquality().hash(arguments));
+int get hashCode {
+  final _this = this as ResolvedTypeRef;
+  return Object.hash(runtimeType,_this.id,_this.revision,const DeepCollectionEquality().hash(_this.arguments));
+}
 
 
 
@@ -443,7 +452,7 @@ class _$ResolvedTypeRefCopyWithImpl<$Res>
 /// Create a copy of ResolvedTypeRef
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? revision = null,Object? arguments = null,}) {
-  return _then(_self.copyWith(
+  return _then(ResolvedTypeRef(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as TypeId,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
 as int,arguments: null == arguments ? _self.arguments : arguments // ignore: cast_nullable_to_non_nullable
@@ -455,7 +464,7 @@ as List<TypeExpression>,
 @override
 @pragma('vm:prefer-inline')
 $TypeIdCopyWith<$Res> get id {
-  
+
   return $TypeIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -597,8 +606,8 @@ return $default(_that.id,_that.revision,_that.arguments);case _:
 
 
 class _ResolvedTypeRef extends ResolvedTypeRef {
-  const _ResolvedTypeRef({required this.id, required this.revision, final  List<TypeExpression> arguments = const []}): assert(revision > 0, 'Revision must be positive.'),_arguments = arguments,super._();
-  
+  const _ResolvedTypeRef({required this.id, required this.revision,  List<TypeExpression> arguments = const []}): assert(revision > 0, 'Revision must be positive.'),_arguments = arguments,super._();
+
 
 @override final  TypeId id;
 @override final  int revision;
@@ -620,12 +629,14 @@ _$ResolvedTypeRefCopyWith<_ResolvedTypeRef> get copyWith => __$ResolvedTypeRefCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedTypeRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision)&&const DeepCollectionEquality().equals(other._arguments, _arguments));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedTypeRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision)&&const DeepCollectionEquality().equals(other.arguments, _arguments));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,revision,const DeepCollectionEquality().hash(_arguments));
+int get hashCode {
+    return Object.hash(runtimeType,id,revision,const DeepCollectionEquality().hash(_arguments));
+}
 
 
 
@@ -667,7 +678,7 @@ as List<TypeExpression>,
 @override
 @pragma('vm:prefer-inline')
 $TypeIdCopyWith<$Res> get id {
-  
+
   return $TypeIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });

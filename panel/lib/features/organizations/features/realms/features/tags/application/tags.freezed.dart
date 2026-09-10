@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'tags.dart';
@@ -9,6 +9,7 @@ part of 'tags.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PlacementCopyWith<Placement> get copyWith => _$PlacementCopyWithImpl<Placement>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Placement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+  final _this = this as Placement;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Placement&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,x,y,width,height);
+int get hashCode {
+  final _this = this as Placement;
+  return Object.hash(runtimeType,_this.x,_this.y,_this.width,_this.height);
+}
 
 @override
 String toString() {
-  return 'Placement(x: $x, y: $y, width: $width, height: $height)';
+  final _this = this as Placement;
+  return 'Placement(x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, height: ${_this.height})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PlacementCopyWithImpl<$Res>
 /// Create a copy of Placement
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? x = null,Object? y = null,Object? width = null,Object? height = null,}) {
-  return _then(_self.copyWith(
+  return _then(Placement(
 x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
 as int,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
 as int,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
@@ -210,7 +216,7 @@ return $default(_that.x,_that.y,_that.width,_that.height);case _:
 
 class _Placement extends Placement {
   const _Placement({required this.x, required this.y, required this.width, required this.height}): super._();
-  
+
 
 @override final  int x;
 @override final  int y;
@@ -227,16 +233,18 @@ _$PlacementCopyWith<_Placement> get copyWith => __$PlacementCopyWithImpl<_Placem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Placement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Placement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,x,y,width,height);
+int get hashCode {
+    return Object.hash(runtimeType,x,y,width,height);
+}
 
 @override
 String toString() {
-  return 'Placement(x: $x, y: $y, width: $width, height: $height)';
+    return 'Placement(x: $x, y: $y, width: $width, height: $height)';
 }
 
 
@@ -291,16 +299,21 @@ $TagCopyWith<Tag> get copyWith => _$TagCopyWithImpl<Tag>(this as Tag, _$identity
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Tag&&(identical(other.tagId, tagId) || other.tagId == tagId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other.parentIds, parentIds)&&(identical(other.placement, placement) || other.placement == placement));
+  final _this = this as Tag;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Tag&&(identical(other.tagId, _this.tagId) || other.tagId == _this.tagId)&&(identical(other.authoringSequence, _this.authoringSequence) || other.authoringSequence == _this.authoringSequence)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.color, _this.color) || other.color == _this.color)&&const DeepCollectionEquality().equals(other.parentIds, _this.parentIds)&&(identical(other.placement, _this.placement) || other.placement == _this.placement));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tagId,authoringSequence,name,color,const DeepCollectionEquality().hash(parentIds),placement);
+int get hashCode {
+  final _this = this as Tag;
+  return Object.hash(runtimeType,_this.tagId,_this.authoringSequence,_this.name,_this.color,const DeepCollectionEquality().hash(_this.parentIds),_this.placement);
+}
 
 @override
 String toString() {
-  return 'Tag(tagId: $tagId, authoringSequence: $authoringSequence, name: $name, color: $color, parentIds: $parentIds, placement: $placement)';
+  final _this = this as Tag;
+  return 'Tag(tagId: ${_this.tagId}, authoringSequence: ${_this.authoringSequence}, name: ${_this.name}, color: ${_this.color}, parentIds: ${_this.parentIds}, placement: ${_this.placement})';
 }
 
 
@@ -329,7 +342,7 @@ class _$TagCopyWithImpl<$Res>
 /// Create a copy of Tag
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? tagId = null,Object? authoringSequence = null,Object? name = null,Object? color = null,Object? parentIds = null,Object? placement = null,}) {
-  return _then(_self.copyWith(
+  return _then(Tag(
 tagId: null == tagId ? _self.tagId : tagId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,authoringSequence: null == authoringSequence ? _self.authoringSequence : authoringSequence // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -344,7 +357,7 @@ as Placement,
 @override
 @pragma('vm:prefer-inline')
 $PlacementCopyWith<$Res> get placement {
-  
+
   return $PlacementCopyWith<$Res>(_self.placement, (value) {
     return _then(_self.copyWith(placement: value));
   });
@@ -486,8 +499,8 @@ return $default(_that.tagId,_that.authoringSequence,_that.name,_that.color,_that
 
 
 class _Tag extends Tag {
-  const _Tag({required this.tagId, required this.authoringSequence, required this.name, required this.color, required final  List<skir.RecordId> parentIds, required this.placement}): assert(name != "", 'Name must not be empty.'),_parentIds = parentIds,super._();
-  
+  const _Tag({required this.tagId, required this.authoringSequence, required this.name, required this.color, required  List<skir.RecordId> parentIds, required this.placement}): assert(name != "", 'Name must not be empty.'),_parentIds = parentIds,super._();
+
 
 @override final  skir.RecordId tagId;
 @override final  int authoringSequence;
@@ -512,16 +525,18 @@ _$TagCopyWith<_Tag> get copyWith => __$TagCopyWithImpl<_Tag>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Tag&&(identical(other.tagId, tagId) || other.tagId == tagId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other._parentIds, _parentIds)&&(identical(other.placement, placement) || other.placement == placement));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Tag&&(identical(other.tagId, tagId) || other.tagId == tagId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other.parentIds, _parentIds)&&(identical(other.placement, placement) || other.placement == placement));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tagId,authoringSequence,name,color,const DeepCollectionEquality().hash(_parentIds),placement);
+int get hashCode {
+    return Object.hash(runtimeType,tagId,authoringSequence,name,color,const DeepCollectionEquality().hash(_parentIds),placement);
+}
 
 @override
 String toString() {
-  return 'Tag(tagId: $tagId, authoringSequence: $authoringSequence, name: $name, color: $color, parentIds: $parentIds, placement: $placement)';
+    return 'Tag(tagId: $tagId, authoringSequence: $authoringSequence, name: $name, color: $color, parentIds: $parentIds, placement: $placement)';
 }
 
 
@@ -566,7 +581,7 @@ as Placement,
 @override
 @pragma('vm:prefer-inline')
 $PlacementCopyWith<$Res> get placement {
-  
+
   return $PlacementCopyWith<$Res>(_self.placement, (value) {
     return _then(_self.copyWith(placement: value));
   });

@@ -40,7 +40,7 @@ abstract class _$OrganizationRoles
   Stream<List<OrganizationRole>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<List<OrganizationRole>>, List<OrganizationRole>>;
@@ -55,6 +55,6 @@ abstract class _$OrganizationRoles
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

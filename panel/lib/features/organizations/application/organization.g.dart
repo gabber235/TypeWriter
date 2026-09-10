@@ -39,7 +39,7 @@ abstract class _$Organizations extends $StreamNotifier<List<OrganizationData>> {
   Stream<List<OrganizationData>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<List<OrganizationData>>, List<OrganizationData>>;
@@ -54,7 +54,7 @@ abstract class _$Organizations extends $StreamNotifier<List<OrganizationData>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -129,7 +129,7 @@ abstract class _$Organization extends $AsyncNotifier<OrganizationData?> {
   FutureOr<OrganizationData?> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<OrganizationData?>, OrganizationData?>;
     final element =
@@ -140,6 +140,6 @@ abstract class _$Organization extends $AsyncNotifier<OrganizationData?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

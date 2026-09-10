@@ -77,7 +77,7 @@ abstract class _$CurrentInteractionMode extends $Notifier<InteractionMode> {
   InteractionMode build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<InteractionMode, InteractionMode>;
     final element =
         ref.element
@@ -87,6 +87,6 @@ abstract class _$CurrentInteractionMode extends $Notifier<InteractionMode> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

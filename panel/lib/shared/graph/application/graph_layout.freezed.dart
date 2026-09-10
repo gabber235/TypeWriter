@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'graph_layout.dart';
@@ -9,12 +9,13 @@ part of 'graph_layout.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GraphInteractionPreview {
 
- Set<GraphIdentifier> get movingIds; (int, int) get moveDelta; GraphResizePreview? get resize;
+ Set<GraphIdentifier> get movingIds; (int, int,) get moveDelta; GraphResizePreview? get resize;
 /// Create a copy of GraphInteractionPreview
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,21 @@ $GraphInteractionPreviewCopyWith<GraphInteractionPreview> get copyWith => _$Grap
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphInteractionPreview&&const DeepCollectionEquality().equals(other.movingIds, movingIds)&&(identical(other.moveDelta, moveDelta) || other.moveDelta == moveDelta)&&(identical(other.resize, resize) || other.resize == resize));
+  final _this = this as GraphInteractionPreview;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphInteractionPreview&&const DeepCollectionEquality().equals(other.movingIds, _this.movingIds)&&(identical(other.moveDelta, _this.moveDelta) || other.moveDelta == _this.moveDelta)&&(identical(other.resize, _this.resize) || other.resize == _this.resize));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(movingIds),moveDelta,resize);
+int get hashCode {
+  final _this = this as GraphInteractionPreview;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.movingIds),_this.moveDelta,_this.resize);
+}
 
 @override
 String toString() {
-  return 'GraphInteractionPreview(movingIds: $movingIds, moveDelta: $moveDelta, resize: $resize)';
+  final _this = this as GraphInteractionPreview;
+  return 'GraphInteractionPreview(movingIds: ${_this.movingIds}, moveDelta: ${_this.moveDelta}, resize: ${_this.resize})';
 }
 
 
@@ -45,7 +51,7 @@ abstract mixin class $GraphInteractionPreviewCopyWith<$Res>  {
   factory $GraphInteractionPreviewCopyWith(GraphInteractionPreview value, $Res Function(GraphInteractionPreview) _then) = _$GraphInteractionPreviewCopyWithImpl;
 @useResult
 $Res call({
- Set<GraphIdentifier> movingIds, (int, int) moveDelta, GraphResizePreview? resize
+ Set<GraphIdentifier> movingIds, (int, int,) moveDelta, GraphResizePreview? resize
 });
 
 
@@ -63,10 +69,10 @@ class _$GraphInteractionPreviewCopyWithImpl<$Res>
 /// Create a copy of GraphInteractionPreview
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? movingIds = null,Object? moveDelta = null,Object? resize = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(GraphInteractionPreview(
 movingIds: null == movingIds ? _self.movingIds : movingIds // ignore: cast_nullable_to_non_nullable
 as Set<GraphIdentifier>,moveDelta: null == moveDelta ? _self.moveDelta : moveDelta // ignore: cast_nullable_to_non_nullable
-as (int, int),resize: freezed == resize ? _self.resize : resize // ignore: cast_nullable_to_non_nullable
+as (int, int,),resize: freezed == resize ? _self.resize : resize // ignore: cast_nullable_to_non_nullable
 as GraphResizePreview?,
   ));
 }
@@ -164,7 +170,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Set<GraphIdentifier> movingIds,  (int, int) moveDelta,  GraphResizePreview? resize)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Set<GraphIdentifier> movingIds,  (int, int,) moveDelta,  GraphResizePreview? resize)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GraphInteractionPreview() when $default != null:
 return $default(_that.movingIds,_that.moveDelta,_that.resize);case _:
@@ -185,7 +191,7 @@ return $default(_that.movingIds,_that.moveDelta,_that.resize);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Set<GraphIdentifier> movingIds,  (int, int) moveDelta,  GraphResizePreview? resize)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Set<GraphIdentifier> movingIds,  (int, int,) moveDelta,  GraphResizePreview? resize)  $default,) {final _that = this;
 switch (_that) {
 case _GraphInteractionPreview():
 return $default(_that.movingIds,_that.moveDelta,_that.resize);case _:
@@ -205,7 +211,7 @@ return $default(_that.movingIds,_that.moveDelta,_that.resize);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Set<GraphIdentifier> movingIds,  (int, int) moveDelta,  GraphResizePreview? resize)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Set<GraphIdentifier> movingIds,  (int, int,) moveDelta,  GraphResizePreview? resize)?  $default,) {final _that = this;
 switch (_that) {
 case _GraphInteractionPreview() when $default != null:
 return $default(_that.movingIds,_that.moveDelta,_that.resize);case _:
@@ -220,8 +226,8 @@ return $default(_that.movingIds,_that.moveDelta,_that.resize);case _:
 
 
 class _GraphInteractionPreview implements GraphInteractionPreview {
-  const _GraphInteractionPreview({final  Set<GraphIdentifier> movingIds = const <GraphIdentifier>{}, this.moveDelta = const (0, 0), this.resize}): _movingIds = movingIds;
-  
+  const _GraphInteractionPreview({ Set<GraphIdentifier> movingIds = const <GraphIdentifier>{}, this.moveDelta = const (0, 0), this.resize}): _movingIds = movingIds;
+
 
  final  Set<GraphIdentifier> _movingIds;
 @override@JsonKey() Set<GraphIdentifier> get movingIds {
@@ -230,7 +236,7 @@ class _GraphInteractionPreview implements GraphInteractionPreview {
   return EqualUnmodifiableSetView(_movingIds);
 }
 
-@override@JsonKey() final  (int, int) moveDelta;
+@override@JsonKey() final  (int, int,) moveDelta;
 @override final  GraphResizePreview? resize;
 
 /// Create a copy of GraphInteractionPreview
@@ -243,16 +249,18 @@ _$GraphInteractionPreviewCopyWith<_GraphInteractionPreview> get copyWith => __$G
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphInteractionPreview&&const DeepCollectionEquality().equals(other._movingIds, _movingIds)&&(identical(other.moveDelta, moveDelta) || other.moveDelta == moveDelta)&&(identical(other.resize, resize) || other.resize == resize));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphInteractionPreview&&const DeepCollectionEquality().equals(other.movingIds, _movingIds)&&(identical(other.moveDelta, moveDelta) || other.moveDelta == moveDelta)&&(identical(other.resize, resize) || other.resize == resize));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_movingIds),moveDelta,resize);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_movingIds),moveDelta,resize);
+}
 
 @override
 String toString() {
-  return 'GraphInteractionPreview(movingIds: $movingIds, moveDelta: $moveDelta, resize: $resize)';
+    return 'GraphInteractionPreview(movingIds: $movingIds, moveDelta: $moveDelta, resize: $resize)';
 }
 
 
@@ -263,7 +271,7 @@ abstract mixin class _$GraphInteractionPreviewCopyWith<$Res> implements $GraphIn
   factory _$GraphInteractionPreviewCopyWith(_GraphInteractionPreview value, $Res Function(_GraphInteractionPreview) _then) = __$GraphInteractionPreviewCopyWithImpl;
 @override @useResult
 $Res call({
- Set<GraphIdentifier> movingIds, (int, int) moveDelta, GraphResizePreview? resize
+ Set<GraphIdentifier> movingIds, (int, int,) moveDelta, GraphResizePreview? resize
 });
 
 
@@ -284,7 +292,7 @@ class __$GraphInteractionPreviewCopyWithImpl<$Res>
   return _then(_GraphInteractionPreview(
 movingIds: null == movingIds ? _self._movingIds : movingIds // ignore: cast_nullable_to_non_nullable
 as Set<GraphIdentifier>,moveDelta: null == moveDelta ? _self.moveDelta : moveDelta // ignore: cast_nullable_to_non_nullable
-as (int, int),resize: freezed == resize ? _self.resize : resize // ignore: cast_nullable_to_non_nullable
+as (int, int,),resize: freezed == resize ? _self.resize : resize // ignore: cast_nullable_to_non_nullable
 as GraphResizePreview?,
   ));
 }
@@ -318,16 +326,21 @@ $GraphResizePreviewCopyWith<GraphResizePreview> get copyWith => _$GraphResizePre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphResizePreview&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+  final _this = this as GraphResizePreview;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphResizePreview&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height);
+int get hashCode {
+  final _this = this as GraphResizePreview;
+  return Object.hash(runtimeType,_this.id,_this.width,_this.height);
+}
 
 @override
 String toString() {
-  return 'GraphResizePreview(id: $id, width: $width, height: $height)';
+  final _this = this as GraphResizePreview;
+  return 'GraphResizePreview(id: ${_this.id}, width: ${_this.width}, height: ${_this.height})';
 }
 
 
@@ -356,7 +369,7 @@ class _$GraphResizePreviewCopyWithImpl<$Res>
 /// Create a copy of GraphResizePreview
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? width = null,Object? height = null,}) {
-  return _then(_self.copyWith(
+  return _then(GraphResizePreview(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as GraphIdentifier,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -502,7 +515,7 @@ return $default(_that.id,_that.width,_that.height);case _:
 
 class _GraphResizePreview implements GraphResizePreview {
   const _GraphResizePreview({required this.id, required this.width, required this.height});
-  
+
 
 @override final  GraphIdentifier id;
 @override final  int width;
@@ -518,16 +531,18 @@ _$GraphResizePreviewCopyWith<_GraphResizePreview> get copyWith => __$GraphResize
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphResizePreview&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphResizePreview&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height);
+int get hashCode {
+    return Object.hash(runtimeType,id,width,height);
+}
 
 @override
 String toString() {
-  return 'GraphResizePreview(id: $id, width: $width, height: $height)';
+    return 'GraphResizePreview(id: $id, width: $width, height: $height)';
 }
 
 
@@ -581,16 +596,21 @@ $GraphPlacedElementCopyWith<GraphPlacedElement> get copyWith => _$GraphPlacedEle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphPlacedElement&&(identical(other.element, element) || other.element == element)&&(identical(other.bounds, bounds) || other.bounds == bounds));
+  final _this = this as GraphPlacedElement;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphPlacedElement&&(identical(other.element, _this.element) || other.element == _this.element)&&(identical(other.bounds, _this.bounds) || other.bounds == _this.bounds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,element,bounds);
+int get hashCode {
+  final _this = this as GraphPlacedElement;
+  return Object.hash(runtimeType,_this.element,_this.bounds);
+}
 
 @override
 String toString() {
-  return 'GraphPlacedElement(element: $element, bounds: $bounds)';
+  final _this = this as GraphPlacedElement;
+  return 'GraphPlacedElement(element: ${_this.element}, bounds: ${_this.bounds})';
 }
 
 
@@ -619,7 +639,7 @@ class _$GraphPlacedElementCopyWithImpl<$Res>
 /// Create a copy of GraphPlacedElement
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? element = null,Object? bounds = null,}) {
-  return _then(_self.copyWith(
+  return _then(GraphPlacedElement(
 element: null == element ? _self.element : element // ignore: cast_nullable_to_non_nullable
 as GraphElement,bounds: null == bounds ? _self.bounds : bounds // ignore: cast_nullable_to_non_nullable
 as Rect,
@@ -630,7 +650,7 @@ as Rect,
 @override
 @pragma('vm:prefer-inline')
 $GraphElementCopyWith<$Res> get element {
-  
+
   return $GraphElementCopyWith<$Res>(_self.element, (value) {
     return _then(_self.copyWith(element: value));
   });
@@ -773,7 +793,7 @@ return $default(_that.element,_that.bounds);case _:
 
 class _GraphPlacedElement extends GraphPlacedElement {
   const _GraphPlacedElement({required this.element, required this.bounds}): super._();
-  
+
 
 @override final  GraphElement element;
 @override final  Rect bounds;
@@ -788,16 +808,18 @@ _$GraphPlacedElementCopyWith<_GraphPlacedElement> get copyWith => __$GraphPlaced
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphPlacedElement&&(identical(other.element, element) || other.element == element)&&(identical(other.bounds, bounds) || other.bounds == bounds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphPlacedElement&&(identical(other.element, element) || other.element == element)&&(identical(other.bounds, bounds) || other.bounds == bounds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,element,bounds);
+int get hashCode {
+    return Object.hash(runtimeType,element,bounds);
+}
 
 @override
 String toString() {
-  return 'GraphPlacedElement(element: $element, bounds: $bounds)';
+    return 'GraphPlacedElement(element: $element, bounds: $bounds)';
 }
 
 
@@ -838,7 +860,7 @@ as Rect,
 @override
 @pragma('vm:prefer-inline')
 $GraphElementCopyWith<$Res> get element {
-  
+
   return $GraphElementCopyWith<$Res>(_self.element, (value) {
     return _then(_self.copyWith(element: value));
   });
@@ -859,16 +881,21 @@ $GraphPlacedEdgeCopyWith<GraphPlacedEdge> get copyWith => _$GraphPlacedEdgeCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphPlacedEdge&&(identical(other.edge, edge) || other.edge == edge)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.sourcePoint, sourcePoint) || other.sourcePoint == sourcePoint)&&(identical(other.targetPoint, targetPoint) || other.targetPoint == targetPoint));
+  final _this = this as GraphPlacedEdge;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphPlacedEdge&&(identical(other.edge, _this.edge) || other.edge == _this.edge)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.target, _this.target) || other.target == _this.target)&&(identical(other.sourcePoint, _this.sourcePoint) || other.sourcePoint == _this.sourcePoint)&&(identical(other.targetPoint, _this.targetPoint) || other.targetPoint == _this.targetPoint));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,edge,source,target,sourcePoint,targetPoint);
+int get hashCode {
+  final _this = this as GraphPlacedEdge;
+  return Object.hash(runtimeType,_this.edge,_this.source,_this.target,_this.sourcePoint,_this.targetPoint);
+}
 
 @override
 String toString() {
-  return 'GraphPlacedEdge(edge: $edge, source: $source, target: $target, sourcePoint: $sourcePoint, targetPoint: $targetPoint)';
+  final _this = this as GraphPlacedEdge;
+  return 'GraphPlacedEdge(edge: ${_this.edge}, source: ${_this.source}, target: ${_this.target}, sourcePoint: ${_this.sourcePoint}, targetPoint: ${_this.targetPoint})';
 }
 
 
@@ -897,7 +924,7 @@ class _$GraphPlacedEdgeCopyWithImpl<$Res>
 /// Create a copy of GraphPlacedEdge
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? edge = null,Object? source = null,Object? target = null,Object? sourcePoint = null,Object? targetPoint = null,}) {
-  return _then(_self.copyWith(
+  return _then(GraphPlacedEdge(
 edge: null == edge ? _self.edge : edge // ignore: cast_nullable_to_non_nullable
 as GraphEdge,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as GraphPlacedElement,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
@@ -911,7 +938,7 @@ as Offset,
 @override
 @pragma('vm:prefer-inline')
 $GraphEdgeCopyWith<$Res> get edge {
-  
+
   return $GraphEdgeCopyWith<$Res>(_self.edge, (value) {
     return _then(_self.copyWith(edge: value));
   });
@@ -920,7 +947,7 @@ $GraphEdgeCopyWith<$Res> get edge {
 @override
 @pragma('vm:prefer-inline')
 $GraphPlacedElementCopyWith<$Res> get source {
-  
+
   return $GraphPlacedElementCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -929,7 +956,7 @@ $GraphPlacedElementCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $GraphPlacedElementCopyWith<$Res> get target {
-  
+
   return $GraphPlacedElementCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -1072,7 +1099,7 @@ return $default(_that.edge,_that.source,_that.target,_that.sourcePoint,_that.tar
 
 class _GraphPlacedEdge implements GraphPlacedEdge {
   const _GraphPlacedEdge({required this.edge, required this.source, required this.target, required this.sourcePoint, required this.targetPoint});
-  
+
 
 @override final  GraphEdge edge;
 @override final  GraphPlacedElement source;
@@ -1090,16 +1117,18 @@ _$GraphPlacedEdgeCopyWith<_GraphPlacedEdge> get copyWith => __$GraphPlacedEdgeCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphPlacedEdge&&(identical(other.edge, edge) || other.edge == edge)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.sourcePoint, sourcePoint) || other.sourcePoint == sourcePoint)&&(identical(other.targetPoint, targetPoint) || other.targetPoint == targetPoint));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphPlacedEdge&&(identical(other.edge, edge) || other.edge == edge)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.sourcePoint, sourcePoint) || other.sourcePoint == sourcePoint)&&(identical(other.targetPoint, targetPoint) || other.targetPoint == targetPoint));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,edge,source,target,sourcePoint,targetPoint);
+int get hashCode {
+    return Object.hash(runtimeType,edge,source,target,sourcePoint,targetPoint);
+}
 
 @override
 String toString() {
-  return 'GraphPlacedEdge(edge: $edge, source: $source, target: $target, sourcePoint: $sourcePoint, targetPoint: $targetPoint)';
+    return 'GraphPlacedEdge(edge: $edge, source: $source, target: $target, sourcePoint: $sourcePoint, targetPoint: $targetPoint)';
 }
 
 
@@ -1143,7 +1172,7 @@ as Offset,
 @override
 @pragma('vm:prefer-inline')
 $GraphEdgeCopyWith<$Res> get edge {
-  
+
   return $GraphEdgeCopyWith<$Res>(_self.edge, (value) {
     return _then(_self.copyWith(edge: value));
   });
@@ -1152,7 +1181,7 @@ $GraphEdgeCopyWith<$Res> get edge {
 @override
 @pragma('vm:prefer-inline')
 $GraphPlacedElementCopyWith<$Res> get source {
-  
+
   return $GraphPlacedElementCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1161,7 +1190,7 @@ $GraphPlacedElementCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $GraphPlacedElementCopyWith<$Res> get target {
-  
+
   return $GraphPlacedElementCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });

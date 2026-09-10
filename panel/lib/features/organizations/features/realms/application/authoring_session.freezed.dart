@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'authoring_session.dart';
@@ -9,12 +9,13 @@ part of 'authoring_session.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthoringSessionState {
 
- int? get sequence; Map<skir.RecordId, wire.Book> get books; Map<skir.RecordId, wire.Tag> get tags; Map<skir.RecordId, wire.Page> get pages; Map<skir.RecordId, wire.PageDocument> get documents; bool get refreshing;
+ int? get sequence; Map<skir.RecordId, skir.Book> get books; Map<skir.RecordId, skir.Tag> get tags; Map<skir.RecordId, skir.Page> get pages; Map<skir.RecordId, skir.PageDocument> get documents; bool get refreshing;
 /// Create a copy of AuthoringSessionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,21 @@ $AuthoringSessionStateCopyWith<AuthoringSessionState> get copyWith => _$Authorin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthoringSessionState&&(identical(other.sequence, sequence) || other.sequence == sequence)&&const DeepCollectionEquality().equals(other.books, books)&&const DeepCollectionEquality().equals(other.tags, tags)&&const DeepCollectionEquality().equals(other.pages, pages)&&const DeepCollectionEquality().equals(other.documents, documents)&&(identical(other.refreshing, refreshing) || other.refreshing == refreshing));
+  final _this = this as AuthoringSessionState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthoringSessionState&&(identical(other.sequence, _this.sequence) || other.sequence == _this.sequence)&&const DeepCollectionEquality().equals(other.books, _this.books)&&const DeepCollectionEquality().equals(other.tags, _this.tags)&&const DeepCollectionEquality().equals(other.pages, _this.pages)&&const DeepCollectionEquality().equals(other.documents, _this.documents)&&(identical(other.refreshing, _this.refreshing) || other.refreshing == _this.refreshing));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sequence,const DeepCollectionEquality().hash(books),const DeepCollectionEquality().hash(tags),const DeepCollectionEquality().hash(pages),const DeepCollectionEquality().hash(documents),refreshing);
+int get hashCode {
+  final _this = this as AuthoringSessionState;
+  return Object.hash(runtimeType,_this.sequence,const DeepCollectionEquality().hash(_this.books),const DeepCollectionEquality().hash(_this.tags),const DeepCollectionEquality().hash(_this.pages),const DeepCollectionEquality().hash(_this.documents),_this.refreshing);
+}
 
 @override
 String toString() {
-  return 'AuthoringSessionState(sequence: $sequence, books: $books, tags: $tags, pages: $pages, documents: $documents, refreshing: $refreshing)';
+  final _this = this as AuthoringSessionState;
+  return 'AuthoringSessionState(sequence: ${_this.sequence}, books: ${_this.books}, tags: ${_this.tags}, pages: ${_this.pages}, documents: ${_this.documents}, refreshing: ${_this.refreshing})';
 }
 
 
@@ -45,7 +51,7 @@ abstract mixin class $AuthoringSessionStateCopyWith<$Res>  {
   factory $AuthoringSessionStateCopyWith(AuthoringSessionState value, $Res Function(AuthoringSessionState) _then) = _$AuthoringSessionStateCopyWithImpl;
 @useResult
 $Res call({
- int? sequence, Map<skir.RecordId, wire.Book> books, Map<skir.RecordId, wire.Tag> tags, Map<skir.RecordId, wire.Page> pages, Map<skir.RecordId, wire.PageDocument> documents, bool refreshing
+ int? sequence, Map<skir.RecordId, skir.Book> books, Map<skir.RecordId, skir.Tag> tags, Map<skir.RecordId, skir.Page> pages, Map<skir.RecordId, skir.PageDocument> documents, bool refreshing
 });
 
 
@@ -63,13 +69,13 @@ class _$AuthoringSessionStateCopyWithImpl<$Res>
 /// Create a copy of AuthoringSessionState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sequence = freezed,Object? books = null,Object? tags = null,Object? pages = null,Object? documents = null,Object? refreshing = null,}) {
-  return _then(_self.copyWith(
+  return _then(AuthoringSessionState(
 sequence: freezed == sequence ? _self.sequence : sequence // ignore: cast_nullable_to_non_nullable
 as int?,books: null == books ? _self.books : books // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.Book>,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.Tag>,pages: null == pages ? _self.pages : pages // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.Page>,documents: null == documents ? _self.documents : documents // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.PageDocument>,refreshing: null == refreshing ? _self.refreshing : refreshing // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.Book>,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.Tag>,pages: null == pages ? _self.pages : pages // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.Page>,documents: null == documents ? _self.documents : documents // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.PageDocument>,refreshing: null == refreshing ? _self.refreshing : refreshing // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -155,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? sequence,  Map<skir.RecordId, wire.Book> books,  Map<skir.RecordId, wire.Tag> tags,  Map<skir.RecordId, wire.Page> pages,  Map<skir.RecordId, wire.PageDocument> documents,  bool refreshing)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? sequence,  Map<skir.RecordId, skir.Book> books,  Map<skir.RecordId, skir.Tag> tags,  Map<skir.RecordId, skir.Page> pages,  Map<skir.RecordId, skir.PageDocument> documents,  bool refreshing)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthoringSessionState() when $default != null:
 return $default(_that.sequence,_that.books,_that.tags,_that.pages,_that.documents,_that.refreshing);case _:
@@ -176,7 +182,7 @@ return $default(_that.sequence,_that.books,_that.tags,_that.pages,_that.document
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? sequence,  Map<skir.RecordId, wire.Book> books,  Map<skir.RecordId, wire.Tag> tags,  Map<skir.RecordId, wire.Page> pages,  Map<skir.RecordId, wire.PageDocument> documents,  bool refreshing)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? sequence,  Map<skir.RecordId, skir.Book> books,  Map<skir.RecordId, skir.Tag> tags,  Map<skir.RecordId, skir.Page> pages,  Map<skir.RecordId, skir.PageDocument> documents,  bool refreshing)  $default,) {final _that = this;
 switch (_that) {
 case _AuthoringSessionState():
 return $default(_that.sequence,_that.books,_that.tags,_that.pages,_that.documents,_that.refreshing);case _:
@@ -196,7 +202,7 @@ return $default(_that.sequence,_that.books,_that.tags,_that.pages,_that.document
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? sequence,  Map<skir.RecordId, wire.Book> books,  Map<skir.RecordId, wire.Tag> tags,  Map<skir.RecordId, wire.Page> pages,  Map<skir.RecordId, wire.PageDocument> documents,  bool refreshing)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? sequence,  Map<skir.RecordId, skir.Book> books,  Map<skir.RecordId, skir.Tag> tags,  Map<skir.RecordId, skir.Page> pages,  Map<skir.RecordId, skir.PageDocument> documents,  bool refreshing)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthoringSessionState() when $default != null:
 return $default(_that.sequence,_that.books,_that.tags,_that.pages,_that.documents,_that.refreshing);case _:
@@ -211,33 +217,33 @@ return $default(_that.sequence,_that.books,_that.tags,_that.pages,_that.document
 
 
 class _AuthoringSessionState implements AuthoringSessionState {
-  const _AuthoringSessionState({this.sequence, final  Map<skir.RecordId, wire.Book> books = const {}, final  Map<skir.RecordId, wire.Tag> tags = const {}, final  Map<skir.RecordId, wire.Page> pages = const {}, final  Map<skir.RecordId, wire.PageDocument> documents = const {}, this.refreshing = false}): _books = books,_tags = tags,_pages = pages,_documents = documents;
-  
+  const _AuthoringSessionState({this.sequence,  Map<skir.RecordId, skir.Book> books = const {},  Map<skir.RecordId, skir.Tag> tags = const {},  Map<skir.RecordId, skir.Page> pages = const {},  Map<skir.RecordId, skir.PageDocument> documents = const {}, this.refreshing = false}): _books = books,_tags = tags,_pages = pages,_documents = documents;
+
 
 @override final  int? sequence;
- final  Map<skir.RecordId, wire.Book> _books;
-@override@JsonKey() Map<skir.RecordId, wire.Book> get books {
+ final  Map<skir.RecordId, skir.Book> _books;
+@override@JsonKey() Map<skir.RecordId, skir.Book> get books {
   if (_books is EqualUnmodifiableMapView) return _books;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_books);
 }
 
- final  Map<skir.RecordId, wire.Tag> _tags;
-@override@JsonKey() Map<skir.RecordId, wire.Tag> get tags {
+ final  Map<skir.RecordId, skir.Tag> _tags;
+@override@JsonKey() Map<skir.RecordId, skir.Tag> get tags {
   if (_tags is EqualUnmodifiableMapView) return _tags;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_tags);
 }
 
- final  Map<skir.RecordId, wire.Page> _pages;
-@override@JsonKey() Map<skir.RecordId, wire.Page> get pages {
+ final  Map<skir.RecordId, skir.Page> _pages;
+@override@JsonKey() Map<skir.RecordId, skir.Page> get pages {
   if (_pages is EqualUnmodifiableMapView) return _pages;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_pages);
 }
 
- final  Map<skir.RecordId, wire.PageDocument> _documents;
-@override@JsonKey() Map<skir.RecordId, wire.PageDocument> get documents {
+ final  Map<skir.RecordId, skir.PageDocument> _documents;
+@override@JsonKey() Map<skir.RecordId, skir.PageDocument> get documents {
   if (_documents is EqualUnmodifiableMapView) return _documents;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_documents);
@@ -255,16 +261,18 @@ _$AuthoringSessionStateCopyWith<_AuthoringSessionState> get copyWith => __$Autho
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthoringSessionState&&(identical(other.sequence, sequence) || other.sequence == sequence)&&const DeepCollectionEquality().equals(other._books, _books)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._pages, _pages)&&const DeepCollectionEquality().equals(other._documents, _documents)&&(identical(other.refreshing, refreshing) || other.refreshing == refreshing));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthoringSessionState&&(identical(other.sequence, sequence) || other.sequence == sequence)&&const DeepCollectionEquality().equals(other.books, _books)&&const DeepCollectionEquality().equals(other.tags, _tags)&&const DeepCollectionEquality().equals(other.pages, _pages)&&const DeepCollectionEquality().equals(other.documents, _documents)&&(identical(other.refreshing, refreshing) || other.refreshing == refreshing));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sequence,const DeepCollectionEquality().hash(_books),const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_pages),const DeepCollectionEquality().hash(_documents),refreshing);
+int get hashCode {
+    return Object.hash(runtimeType,sequence,const DeepCollectionEquality().hash(_books),const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_pages),const DeepCollectionEquality().hash(_documents),refreshing);
+}
 
 @override
 String toString() {
-  return 'AuthoringSessionState(sequence: $sequence, books: $books, tags: $tags, pages: $pages, documents: $documents, refreshing: $refreshing)';
+    return 'AuthoringSessionState(sequence: $sequence, books: $books, tags: $tags, pages: $pages, documents: $documents, refreshing: $refreshing)';
 }
 
 
@@ -275,7 +283,7 @@ abstract mixin class _$AuthoringSessionStateCopyWith<$Res> implements $Authoring
   factory _$AuthoringSessionStateCopyWith(_AuthoringSessionState value, $Res Function(_AuthoringSessionState) _then) = __$AuthoringSessionStateCopyWithImpl;
 @override @useResult
 $Res call({
- int? sequence, Map<skir.RecordId, wire.Book> books, Map<skir.RecordId, wire.Tag> tags, Map<skir.RecordId, wire.Page> pages, Map<skir.RecordId, wire.PageDocument> documents, bool refreshing
+ int? sequence, Map<skir.RecordId, skir.Book> books, Map<skir.RecordId, skir.Tag> tags, Map<skir.RecordId, skir.Page> pages, Map<skir.RecordId, skir.PageDocument> documents, bool refreshing
 });
 
 
@@ -296,10 +304,10 @@ class __$AuthoringSessionStateCopyWithImpl<$Res>
   return _then(_AuthoringSessionState(
 sequence: freezed == sequence ? _self.sequence : sequence // ignore: cast_nullable_to_non_nullable
 as int?,books: null == books ? _self._books : books // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.Book>,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.Tag>,pages: null == pages ? _self._pages : pages // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.Page>,documents: null == documents ? _self._documents : documents // ignore: cast_nullable_to_non_nullable
-as Map<skir.RecordId, wire.PageDocument>,refreshing: null == refreshing ? _self.refreshing : refreshing // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.Book>,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.Tag>,pages: null == pages ? _self._pages : pages // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.Page>,documents: null == documents ? _self._documents : documents // ignore: cast_nullable_to_non_nullable
+as Map<skir.RecordId, skir.PageDocument>,refreshing: null == refreshing ? _self.refreshing : refreshing // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -316,7 +324,7 @@ mixin _$AuthoringScope {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthoringScope);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthoringScope);
 }
 
 
@@ -325,7 +333,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return '_AuthoringScope()';
+    return '_AuthoringScope()';
 }
 
 
@@ -478,7 +486,7 @@ return page(_that.pageId);case _:
 
 class _LibraryScope extends _AuthoringScope {
   const _LibraryScope(): super._();
-  
+
 
 
 
@@ -487,7 +495,7 @@ class _LibraryScope extends _AuthoringScope {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LibraryScope);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LibraryScope);
 }
 
 
@@ -496,7 +504,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return '_AuthoringScope.library()';
+    return '_AuthoringScope.library()';
 }
 
 
@@ -510,7 +518,7 @@ String toString() {
 
 class _BookScope extends _AuthoringScope {
   const _BookScope(this.bookId): super._();
-  
+
 
  final  skir.RecordId bookId;
 
@@ -524,16 +532,18 @@ _$BookScopeCopyWith<_BookScope> get copyWith => __$BookScopeCopyWithImpl<_BookSc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookScope&&(identical(other.bookId, bookId) || other.bookId == bookId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookScope&&(identical(other.bookId, bookId) || other.bookId == bookId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookId);
+int get hashCode {
+    return Object.hash(runtimeType,bookId);
+}
 
 @override
 String toString() {
-  return '_AuthoringScope.book(bookId: $bookId)';
+    return '_AuthoringScope.book(bookId: $bookId)';
 }
 
 
@@ -576,7 +586,7 @@ as skir.RecordId,
 
 class _PageScope extends _AuthoringScope {
   const _PageScope(this.pageId): super._();
-  
+
 
  final  skir.RecordId pageId;
 
@@ -590,16 +600,18 @@ _$PageScopeCopyWith<_PageScope> get copyWith => __$PageScopeCopyWithImpl<_PageSc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageScope&&(identical(other.pageId, pageId) || other.pageId == pageId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageScope&&(identical(other.pageId, pageId) || other.pageId == pageId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pageId);
+int get hashCode {
+    return Object.hash(runtimeType,pageId);
+}
 
 @override
 String toString() {
-  return '_AuthoringScope.page(pageId: $pageId)';
+    return '_AuthoringScope.page(pageId: $pageId)';
 }
 
 

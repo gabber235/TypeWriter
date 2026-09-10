@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'element_definition.dart';
@@ -9,6 +9,7 @@ part of 'element_definition.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ElementDefinitionCopyWith<ElementDefinition> get copyWith => _$ElementDefinitio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ElementDefinition&&(identical(other.rootType, rootType) || other.rootType == rootType)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.deprecation, deprecation) || other.deprecation == deprecation));
+  final _this = this as ElementDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ElementDefinition&&(identical(other.rootType, _this.rootType) || other.rootType == _this.rootType)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.icon, _this.icon) || other.icon == _this.icon)&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.deprecation, _this.deprecation) || other.deprecation == _this.deprecation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rootType,name,description,icon,color,deprecation);
+int get hashCode {
+  final _this = this as ElementDefinition;
+  return Object.hash(runtimeType,_this.rootType,_this.name,_this.description,_this.icon,_this.color,_this.deprecation);
+}
 
 @override
 String toString() {
-  return 'ElementDefinition(rootType: $rootType, name: $name, description: $description, icon: $icon, color: $color, deprecation: $deprecation)';
+  final _this = this as ElementDefinition;
+  return 'ElementDefinition(rootType: ${_this.rootType}, name: ${_this.name}, description: ${_this.description}, icon: ${_this.icon}, color: ${_this.color}, deprecation: ${_this.deprecation})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ElementDefinitionCopyWithImpl<$Res>
 /// Create a copy of ElementDefinition
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? rootType = null,Object? name = null,Object? description = null,Object? icon = null,Object? color = null,Object? deprecation = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ElementDefinition(
 rootType: null == rootType ? _self.rootType : rootType // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -78,7 +84,7 @@ as ElementDeprecation?,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get rootType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.rootType, (value) {
     return _then(_self.copyWith(rootType: value));
   });
@@ -87,7 +93,7 @@ $ResolvedTypeRefCopyWith<$Res> get rootType {
 @override
 @pragma('vm:prefer-inline')
 $IconValueCopyWith<$Res> get icon {
-  
+
   return $IconValueCopyWith<$Res>(_self.icon, (value) {
     return _then(_self.copyWith(icon: value));
   });
@@ -242,7 +248,7 @@ return $default(_that.rootType,_that.name,_that.description,_that.icon,_that.col
 
 class _ElementDefinition implements ElementDefinition {
   const _ElementDefinition({required this.rootType, required this.name, required this.description, required this.icon, this.color = Colors.grey, this.deprecation}): assert(name != "", 'Name must not be empty.');
-  
+
 
 @override final  ResolvedTypeRef rootType;
 @override final  String name;
@@ -261,16 +267,18 @@ _$ElementDefinitionCopyWith<_ElementDefinition> get copyWith => __$ElementDefini
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ElementDefinition&&(identical(other.rootType, rootType) || other.rootType == rootType)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.deprecation, deprecation) || other.deprecation == deprecation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ElementDefinition&&(identical(other.rootType, rootType) || other.rootType == rootType)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.deprecation, deprecation) || other.deprecation == deprecation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rootType,name,description,icon,color,deprecation);
+int get hashCode {
+    return Object.hash(runtimeType,rootType,name,description,icon,color,deprecation);
+}
 
 @override
 String toString() {
-  return 'ElementDefinition(rootType: $rootType, name: $name, description: $description, icon: $icon, color: $color, deprecation: $deprecation)';
+    return 'ElementDefinition(rootType: $rootType, name: $name, description: $description, icon: $icon, color: $color, deprecation: $deprecation)';
 }
 
 
@@ -315,7 +323,7 @@ as ElementDeprecation?,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get rootType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.rootType, (value) {
     return _then(_self.copyWith(rootType: value));
   });
@@ -324,7 +332,7 @@ $ResolvedTypeRefCopyWith<$Res> get rootType {
 @override
 @pragma('vm:prefer-inline')
 $IconValueCopyWith<$Res> get icon {
-  
+
   return $IconValueCopyWith<$Res>(_self.icon, (value) {
     return _then(_self.copyWith(icon: value));
   });
@@ -357,16 +365,21 @@ $ElementDeprecationCopyWith<ElementDeprecation> get copyWith => _$ElementDepreca
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ElementDeprecation&&(identical(other.reason, reason) || other.reason == reason));
+  final _this = this as ElementDeprecation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ElementDeprecation&&(identical(other.reason, _this.reason) || other.reason == _this.reason));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason);
+int get hashCode {
+  final _this = this as ElementDeprecation;
+  return Object.hash(runtimeType,_this.reason);
+}
 
 @override
 String toString() {
-  return 'ElementDeprecation(reason: $reason)';
+  final _this = this as ElementDeprecation;
+  return 'ElementDeprecation(reason: ${_this.reason})';
 }
 
 
@@ -395,7 +408,7 @@ class _$ElementDeprecationCopyWithImpl<$Res>
 /// Create a copy of ElementDeprecation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? reason = null,}) {
-  return _then(_self.copyWith(
+  return _then(ElementDeprecation(
 reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -539,7 +552,7 @@ return $default(_that.reason);case _:
 
 class _ElementDeprecation implements ElementDeprecation {
   const _ElementDeprecation({this.reason = ""});
-  
+
 
 @override@JsonKey() final  String reason;
 
@@ -553,16 +566,18 @@ _$ElementDeprecationCopyWith<_ElementDeprecation> get copyWith => __$ElementDepr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ElementDeprecation&&(identical(other.reason, reason) || other.reason == reason));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ElementDeprecation&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reason);
+int get hashCode {
+    return Object.hash(runtimeType,reason);
+}
 
 @override
 String toString() {
-  return 'ElementDeprecation(reason: $reason)';
+    return 'ElementDeprecation(reason: $reason)';
 }
 
 

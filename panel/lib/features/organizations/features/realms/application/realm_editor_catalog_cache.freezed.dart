@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'realm_editor_catalog_cache.dart';
@@ -9,6 +9,7 @@ part of 'realm_editor_catalog_cache.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$RealmEditorCatalogState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'RealmEditorCatalogState()';
+    return 'RealmEditorCatalogState()';
 }
 
 
@@ -182,7 +183,7 @@ return unavailable(_that.diagnostics,_that.previous);case _:
 
 class RealmEditorCatalogLoading extends RealmEditorCatalogState {
   const RealmEditorCatalogLoading([this.previous]): super._();
-  
+
 
  final  RealmEditorCatalogSnapshot? previous;
 
@@ -196,16 +197,18 @@ $RealmEditorCatalogLoadingCopyWith<RealmEditorCatalogLoading> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogLoading&&(identical(other.previous, previous) || other.previous == previous));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogLoading&&(identical(other.previous, previous) || other.previous == previous));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,previous);
+int get hashCode {
+    return Object.hash(runtimeType,previous);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogState.loading(previous: $previous)';
+    return 'RealmEditorCatalogState.loading(previous: $previous)';
 }
 
 
@@ -260,7 +263,7 @@ $RealmEditorCatalogSnapshotCopyWith<$Res>? get previous {
 
 class RealmEditorCatalogReady extends RealmEditorCatalogState {
   const RealmEditorCatalogReady(this.value): super._();
-  
+
 
  final  RealmEditorCatalogSnapshot value;
 
@@ -274,16 +277,18 @@ $RealmEditorCatalogReadyCopyWith<RealmEditorCatalogReady> get copyWith => _$Real
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogReady&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogReady&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogState.ready(value: $value)';
+    return 'RealmEditorCatalogState.ready(value: $value)';
 }
 
 
@@ -323,7 +328,7 @@ as RealmEditorCatalogSnapshot,
 @override
 @pragma('vm:prefer-inline')
 $RealmEditorCatalogSnapshotCopyWith<$Res> get value {
-  
+
   return $RealmEditorCatalogSnapshotCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -334,8 +339,8 @@ $RealmEditorCatalogSnapshotCopyWith<$Res> get value {
 
 
 class RealmEditorCatalogUnavailable extends RealmEditorCatalogState {
-  const RealmEditorCatalogUnavailable(final  List<TypeDiagnostic> diagnostics, {this.previous}): _diagnostics = diagnostics,super._();
-  
+  const RealmEditorCatalogUnavailable( List<TypeDiagnostic> diagnostics, {this.previous}): _diagnostics = diagnostics,super._();
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -356,16 +361,18 @@ $RealmEditorCatalogUnavailableCopyWith<RealmEditorCatalogUnavailable> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogUnavailable&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics)&&(identical(other.previous, previous) || other.previous == previous));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogUnavailable&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics)&&(identical(other.previous, previous) || other.previous == previous));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics),previous);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics),previous);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogState.unavailable(diagnostics: $diagnostics, previous: $previous)';
+    return 'RealmEditorCatalogState.unavailable(diagnostics: $diagnostics, previous: $previous)';
 }
 
 

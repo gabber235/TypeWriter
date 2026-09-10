@@ -120,7 +120,7 @@ abstract class _$Entry extends $AsyncNotifier<EntryDefinition?> {
   FutureOr<EntryDefinition?> build(String entryId);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<EntryDefinition?>, EntryDefinition?>;
     final element =
@@ -131,6 +131,6 @@ abstract class _$Entry extends $AsyncNotifier<EntryDefinition?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

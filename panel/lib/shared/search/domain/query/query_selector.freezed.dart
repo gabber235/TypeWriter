@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'query_selector.dart';
@@ -9,6 +9,7 @@ part of 'query_selector.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$QuerySelectorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuerySelectorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is QuerySelectorValue);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'QuerySelectorValue()';
+    return 'QuerySelectorValue()';
 }
 
 
@@ -176,7 +177,7 @@ return enumValue(_that.possibleValues);case _:
 
 class FreeTextSelectorValue extends QuerySelectorValue {
   const FreeTextSelectorValue(): super._();
-  
+
 
 
 
@@ -185,7 +186,7 @@ class FreeTextSelectorValue extends QuerySelectorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeTextSelectorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeTextSelectorValue);
 }
 
 
@@ -194,7 +195,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'QuerySelectorValue.freeText()';
+    return 'QuerySelectorValue.freeText()';
 }
 
 
@@ -207,8 +208,8 @@ String toString() {
 
 
 class EnumSelectorValue extends QuerySelectorValue {
-  const EnumSelectorValue(final  List<String> possibleValues): _possibleValues = possibleValues,super._();
-  
+  const EnumSelectorValue( List<String> possibleValues): _possibleValues = possibleValues,super._();
+
 
  final  List<String> _possibleValues;
  List<String> get possibleValues {
@@ -228,16 +229,18 @@ $EnumSelectorValueCopyWith<EnumSelectorValue> get copyWith => _$EnumSelectorValu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumSelectorValue&&const DeepCollectionEquality().equals(other._possibleValues, _possibleValues));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumSelectorValue&&const DeepCollectionEquality().equals(other.possibleValues, _possibleValues));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_possibleValues));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_possibleValues));
+}
 
 @override
 String toString() {
-  return 'QuerySelectorValue.enumValue(possibleValues: $possibleValues)';
+    return 'QuerySelectorValue.enumValue(possibleValues: $possibleValues)';
 }
 
 

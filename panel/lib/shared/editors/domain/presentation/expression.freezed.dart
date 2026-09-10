@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'expression.dart';
@@ -9,6 +9,7 @@ part of 'expression.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $TypedExpressionCopyWith<TypedExpression> get copyWith => _$TypedExpressionCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedExpression&&(identical(other.resultType, resultType) || other.resultType == resultType)&&(identical(other.expression, expression) || other.expression == expression));
+  final _this = this as TypedExpression;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedExpression&&(identical(other.resultType, _this.resultType) || other.resultType == _this.resultType)&&(identical(other.expression, _this.expression) || other.expression == _this.expression));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,resultType,expression);
+int get hashCode {
+  final _this = this as TypedExpression;
+  return Object.hash(runtimeType,_this.resultType,_this.expression);
+}
 
 @override
 String toString() {
-  return 'TypedExpression(resultType: $resultType, expression: $expression)';
+  final _this = this as TypedExpression;
+  return 'TypedExpression(resultType: ${_this.resultType}, expression: ${_this.expression})';
 }
 
 
@@ -63,7 +69,7 @@ class _$TypedExpressionCopyWithImpl<$Res>
 /// Create a copy of TypedExpression
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? resultType = null,Object? expression = null,}) {
-  return _then(_self.copyWith(
+  return _then(TypedExpression(
 resultType: null == resultType ? _self.resultType : resultType // ignore: cast_nullable_to_non_nullable
 as TypeExpression,expression: null == expression ? _self.expression : expression // ignore: cast_nullable_to_non_nullable
 as Expression,
@@ -74,7 +80,7 @@ as Expression,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get resultType {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.resultType, (value) {
     return _then(_self.copyWith(resultType: value));
   });
@@ -83,7 +89,7 @@ $TypeExpressionCopyWith<$Res> get resultType {
 @override
 @pragma('vm:prefer-inline')
 $ExpressionCopyWith<$Res> get expression {
-  
+
   return $ExpressionCopyWith<$Res>(_self.expression, (value) {
     return _then(_self.copyWith(expression: value));
   });
@@ -226,7 +232,7 @@ return $default(_that.resultType,_that.expression);case _:
 
 class _TypedExpression implements TypedExpression {
   const _TypedExpression({required this.resultType, required this.expression});
-  
+
 
 @override final  TypeExpression resultType;
 @override final  Expression expression;
@@ -241,16 +247,18 @@ _$TypedExpressionCopyWith<_TypedExpression> get copyWith => __$TypedExpressionCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypedExpression&&(identical(other.resultType, resultType) || other.resultType == resultType)&&(identical(other.expression, expression) || other.expression == expression));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypedExpression&&(identical(other.resultType, resultType) || other.resultType == resultType)&&(identical(other.expression, expression) || other.expression == expression));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,resultType,expression);
+int get hashCode {
+    return Object.hash(runtimeType,resultType,expression);
+}
 
 @override
 String toString() {
-  return 'TypedExpression(resultType: $resultType, expression: $expression)';
+    return 'TypedExpression(resultType: $resultType, expression: $expression)';
 }
 
 
@@ -291,7 +299,7 @@ as Expression,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get resultType {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.resultType, (value) {
     return _then(_self.copyWith(resultType: value));
   });
@@ -300,7 +308,7 @@ $TypeExpressionCopyWith<$Res> get resultType {
 @override
 @pragma('vm:prefer-inline')
 $ExpressionCopyWith<$Res> get expression {
-  
+
   return $ExpressionCopyWith<$Res>(_self.expression, (value) {
     return _then(_self.copyWith(expression: value));
   });
@@ -316,7 +324,7 @@ mixin _$Expression {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Expression);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Expression);
 }
 
 
@@ -325,7 +333,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'Expression()';
+    return 'Expression()';
 }
 
 
@@ -616,7 +624,7 @@ return colorOperation(_that.operation,_that.color,_that.alpha);case _:
 
 class LiteralExpression implements Expression {
   const LiteralExpression(this.value);
-  
+
 
  final  DataValue value;
 
@@ -630,16 +638,18 @@ $LiteralExpressionCopyWith<LiteralExpression> get copyWith => _$LiteralExpressio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LiteralExpression&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LiteralExpression&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'Expression.literal(value: $value)';
+    return 'Expression.literal(value: $value)';
 }
 
 
@@ -679,7 +689,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -691,7 +701,7 @@ $DataValueCopyWith<$Res> get value {
 
 class BindingExpression implements Expression {
   const BindingExpression(this.binding);
-  
+
 
  final  BindingReference binding;
 
@@ -705,16 +715,18 @@ $BindingExpressionCopyWith<BindingExpression> get copyWith => _$BindingExpressio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingExpression&&(identical(other.binding, binding) || other.binding == binding));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingExpression&&(identical(other.binding, binding) || other.binding == binding));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,binding);
+int get hashCode {
+    return Object.hash(runtimeType,binding);
+}
 
 @override
 String toString() {
-  return 'Expression.binding(binding: $binding)';
+    return 'Expression.binding(binding: $binding)';
 }
 
 
@@ -754,7 +766,7 @@ as BindingReference,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get binding {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.binding, (value) {
     return _then(_self.copyWith(binding: value));
   });
@@ -766,7 +778,7 @@ $BindingReferenceCopyWith<$Res> get binding {
 
 class FieldAccessExpression implements Expression {
   const FieldAccessExpression({required this.target, required this.fieldName}): assert(fieldName != "", 'Field name must not be empty.');
-  
+
 
  final  TypedExpression target;
  final  String fieldName;
@@ -781,16 +793,18 @@ $FieldAccessExpressionCopyWith<FieldAccessExpression> get copyWith => _$FieldAcc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FieldAccessExpression&&(identical(other.target, target) || other.target == target)&&(identical(other.fieldName, fieldName) || other.fieldName == fieldName));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FieldAccessExpression&&(identical(other.target, target) || other.target == target)&&(identical(other.fieldName, fieldName) || other.fieldName == fieldName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,fieldName);
+int get hashCode {
+    return Object.hash(runtimeType,target,fieldName);
+}
 
 @override
 String toString() {
-  return 'Expression.fieldAccess(target: $target, fieldName: $fieldName)';
+    return 'Expression.fieldAccess(target: $target, fieldName: $fieldName)';
 }
 
 
@@ -831,7 +845,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get target {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -842,8 +856,8 @@ $TypedExpressionCopyWith<$Res> get target {
 
 
 class InterpolationExpression implements Expression {
-  const InterpolationExpression(final  List<InterpolationPart> parts): _parts = parts;
-  
+  const InterpolationExpression( List<InterpolationPart> parts): _parts = parts;
+
 
  final  List<InterpolationPart> _parts;
  List<InterpolationPart> get parts {
@@ -863,16 +877,18 @@ $InterpolationExpressionCopyWith<InterpolationExpression> get copyWith => _$Inte
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationExpression&&const DeepCollectionEquality().equals(other._parts, _parts));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationExpression&&const DeepCollectionEquality().equals(other.parts, _parts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_parts));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_parts));
+}
 
 @override
 String toString() {
-  return 'Expression.interpolation(parts: $parts)';
+    return 'Expression.interpolation(parts: $parts)';
 }
 
 
@@ -915,7 +931,7 @@ as List<InterpolationPart>,
 
 class ComparisonExpression implements Expression {
   const ComparisonExpression({required this.operator, required this.left, required this.right});
-  
+
 
  final  ComparisonOperator operator;
  final  TypedExpression left;
@@ -931,16 +947,18 @@ $ComparisonExpressionCopyWith<ComparisonExpression> get copyWith => _$Comparison
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ComparisonExpression&&(identical(other.operator, operator) || other.operator == operator)&&(identical(other.left, left) || other.left == left)&&(identical(other.right, right) || other.right == right));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ComparisonExpression&&(identical(other.operator, operator) || other.operator == operator)&&(identical(other.left, left) || other.left == left)&&(identical(other.right, right) || other.right == right));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operator,left,right);
+int get hashCode {
+    return Object.hash(runtimeType,operator,left,right);
+}
 
 @override
 String toString() {
-  return 'Expression.comparison(operator: $operator, left: $left, right: $right)';
+    return 'Expression.comparison(operator: $operator, left: $left, right: $right)';
 }
 
 
@@ -982,7 +1000,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get left {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.left, (value) {
     return _then(_self.copyWith(left: value));
   });
@@ -991,7 +1009,7 @@ $TypedExpressionCopyWith<$Res> get left {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get right {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.right, (value) {
     return _then(_self.copyWith(right: value));
   });
@@ -1002,8 +1020,8 @@ $TypedExpressionCopyWith<$Res> get right {
 
 
 class BooleanExpression implements Expression {
-  const BooleanExpression({required this.operator, required final  List<TypedExpression> operands}): _operands = operands;
-  
+  const BooleanExpression({required this.operator, required  List<TypedExpression> operands}): _operands = operands;
+
 
  final  BooleanOperator operator;
  final  List<TypedExpression> _operands;
@@ -1024,16 +1042,18 @@ $BooleanExpressionCopyWith<BooleanExpression> get copyWith => _$BooleanExpressio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BooleanExpression&&(identical(other.operator, operator) || other.operator == operator)&&const DeepCollectionEquality().equals(other._operands, _operands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BooleanExpression&&(identical(other.operator, operator) || other.operator == operator)&&const DeepCollectionEquality().equals(other.operands, _operands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operator,const DeepCollectionEquality().hash(_operands));
+int get hashCode {
+    return Object.hash(runtimeType,operator,const DeepCollectionEquality().hash(_operands));
+}
 
 @override
 String toString() {
-  return 'Expression.boolean(operator: $operator, operands: $operands)';
+    return 'Expression.boolean(operator: $operator, operands: $operands)';
 }
 
 
@@ -1076,8 +1096,8 @@ as List<TypedExpression>,
 
 
 class ArithmeticExpression implements Expression {
-  const ArithmeticExpression({required this.operator, required final  List<TypedExpression> operands}): _operands = operands;
-  
+  const ArithmeticExpression({required this.operator, required  List<TypedExpression> operands}): _operands = operands;
+
 
  final  ArithmeticOperator operator;
  final  List<TypedExpression> _operands;
@@ -1098,16 +1118,18 @@ $ArithmeticExpressionCopyWith<ArithmeticExpression> get copyWith => _$Arithmetic
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ArithmeticExpression&&(identical(other.operator, operator) || other.operator == operator)&&const DeepCollectionEquality().equals(other._operands, _operands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ArithmeticExpression&&(identical(other.operator, operator) || other.operator == operator)&&const DeepCollectionEquality().equals(other.operands, _operands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operator,const DeepCollectionEquality().hash(_operands));
+int get hashCode {
+    return Object.hash(runtimeType,operator,const DeepCollectionEquality().hash(_operands));
+}
 
 @override
 String toString() {
-  return 'Expression.arithmetic(operator: $operator, operands: $operands)';
+    return 'Expression.arithmetic(operator: $operator, operands: $operands)';
 }
 
 
@@ -1151,7 +1173,7 @@ as List<TypedExpression>,
 
 class ConditionalExpression implements Expression {
   const ConditionalExpression({required this.condition, required this.whenTrue, required this.whenFalse});
-  
+
 
  final  TypedExpression condition;
  final  TypedExpression whenTrue;
@@ -1167,16 +1189,18 @@ $ConditionalExpressionCopyWith<ConditionalExpression> get copyWith => _$Conditio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConditionalExpression&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.whenTrue, whenTrue) || other.whenTrue == whenTrue)&&(identical(other.whenFalse, whenFalse) || other.whenFalse == whenFalse));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConditionalExpression&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.whenTrue, whenTrue) || other.whenTrue == whenTrue)&&(identical(other.whenFalse, whenFalse) || other.whenFalse == whenFalse));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,condition,whenTrue,whenFalse);
+int get hashCode {
+    return Object.hash(runtimeType,condition,whenTrue,whenFalse);
+}
 
 @override
 String toString() {
-  return 'Expression.conditional(condition: $condition, whenTrue: $whenTrue, whenFalse: $whenFalse)';
+    return 'Expression.conditional(condition: $condition, whenTrue: $whenTrue, whenFalse: $whenFalse)';
 }
 
 
@@ -1218,7 +1242,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get condition {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.condition, (value) {
     return _then(_self.copyWith(condition: value));
   });
@@ -1227,7 +1251,7 @@ $TypedExpressionCopyWith<$Res> get condition {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get whenTrue {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.whenTrue, (value) {
     return _then(_self.copyWith(whenTrue: value));
   });
@@ -1236,7 +1260,7 @@ $TypedExpressionCopyWith<$Res> get whenTrue {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get whenFalse {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.whenFalse, (value) {
     return _then(_self.copyWith(whenFalse: value));
   });
@@ -1248,7 +1272,7 @@ $TypedExpressionCopyWith<$Res> get whenFalse {
 
 class CollectionMapExpression implements Expression {
   const CollectionMapExpression({required this.source, required this.itemBindingId, required this.transform});
-  
+
 
  final  TypedExpression source;
  final  BindingId itemBindingId;
@@ -1264,16 +1288,18 @@ $CollectionMapExpressionCopyWith<CollectionMapExpression> get copyWith => _$Coll
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionMapExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.transform, transform) || other.transform == transform));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionMapExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.transform, transform) || other.transform == transform));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,itemBindingId,transform);
+int get hashCode {
+    return Object.hash(runtimeType,source,itemBindingId,transform);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionMap(source: $source, itemBindingId: $itemBindingId, transform: $transform)';
+    return 'Expression.collectionMap(source: $source, itemBindingId: $itemBindingId, transform: $transform)';
 }
 
 
@@ -1315,7 +1341,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1324,7 +1350,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -1333,7 +1359,7 @@ $BindingIdCopyWith<$Res> get itemBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get transform {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.transform, (value) {
     return _then(_self.copyWith(transform: value));
   });
@@ -1345,7 +1371,7 @@ $TypedExpressionCopyWith<$Res> get transform {
 
 class CollectionFilterExpression implements Expression {
   const CollectionFilterExpression({required this.source, required this.itemBindingId, required this.predicate});
-  
+
 
  final  TypedExpression source;
  final  BindingId itemBindingId;
@@ -1361,16 +1387,18 @@ $CollectionFilterExpressionCopyWith<CollectionFilterExpression> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionFilterExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionFilterExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,itemBindingId,predicate);
+int get hashCode {
+    return Object.hash(runtimeType,source,itemBindingId,predicate);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionFilter(source: $source, itemBindingId: $itemBindingId, predicate: $predicate)';
+    return 'Expression.collectionFilter(source: $source, itemBindingId: $itemBindingId, predicate: $predicate)';
 }
 
 
@@ -1412,7 +1440,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1421,7 +1449,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -1430,7 +1458,7 @@ $BindingIdCopyWith<$Res> get itemBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get predicate {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.predicate, (value) {
     return _then(_self.copyWith(predicate: value));
   });
@@ -1442,7 +1470,7 @@ $TypedExpressionCopyWith<$Res> get predicate {
 
 class CollectionQuantifierExpression implements Expression {
   const CollectionQuantifierExpression({required this.source, required this.quantifier, required this.itemBindingId, required this.predicate});
-  
+
 
  final  TypedExpression source;
  final  CollectionQuantifier quantifier;
@@ -1459,16 +1487,18 @@ $CollectionQuantifierExpressionCopyWith<CollectionQuantifierExpression> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionQuantifierExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.quantifier, quantifier) || other.quantifier == quantifier)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionQuantifierExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.quantifier, quantifier) || other.quantifier == quantifier)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,quantifier,itemBindingId,predicate);
+int get hashCode {
+    return Object.hash(runtimeType,source,quantifier,itemBindingId,predicate);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionQuantifier(source: $source, quantifier: $quantifier, itemBindingId: $itemBindingId, predicate: $predicate)';
+    return 'Expression.collectionQuantifier(source: $source, quantifier: $quantifier, itemBindingId: $itemBindingId, predicate: $predicate)';
 }
 
 
@@ -1511,7 +1541,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1520,7 +1550,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -1529,7 +1559,7 @@ $BindingIdCopyWith<$Res> get itemBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get predicate {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.predicate, (value) {
     return _then(_self.copyWith(predicate: value));
   });
@@ -1541,7 +1571,7 @@ $TypedExpressionCopyWith<$Res> get predicate {
 
 class CollectionFindExpression implements Expression {
   const CollectionFindExpression({required this.source, required this.selection, required this.itemBindingId, required this.predicate});
-  
+
 
  final  TypedExpression source;
  final  CollectionSelection selection;
@@ -1558,16 +1588,18 @@ $CollectionFindExpressionCopyWith<CollectionFindExpression> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionFindExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionFindExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.selection, selection) || other.selection == selection)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,selection,itemBindingId,predicate);
+int get hashCode {
+    return Object.hash(runtimeType,source,selection,itemBindingId,predicate);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionFind(source: $source, selection: $selection, itemBindingId: $itemBindingId, predicate: $predicate)';
+    return 'Expression.collectionFind(source: $source, selection: $selection, itemBindingId: $itemBindingId, predicate: $predicate)';
 }
 
 
@@ -1610,7 +1642,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1619,7 +1651,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -1628,7 +1660,7 @@ $BindingIdCopyWith<$Res> get itemBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get predicate {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.predicate, (value) {
     return _then(_self.copyWith(predicate: value));
   });
@@ -1640,7 +1672,7 @@ $TypedExpressionCopyWith<$Res> get predicate {
 
 class CollectionCountExpression implements Expression {
   const CollectionCountExpression({required this.source, required this.itemBindingId, required this.predicate});
-  
+
 
  final  TypedExpression source;
  final  BindingId itemBindingId;
@@ -1656,16 +1688,18 @@ $CollectionCountExpressionCopyWith<CollectionCountExpression> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionCountExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionCountExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.predicate, predicate) || other.predicate == predicate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,itemBindingId,predicate);
+int get hashCode {
+    return Object.hash(runtimeType,source,itemBindingId,predicate);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionCount(source: $source, itemBindingId: $itemBindingId, predicate: $predicate)';
+    return 'Expression.collectionCount(source: $source, itemBindingId: $itemBindingId, predicate: $predicate)';
 }
 
 
@@ -1707,7 +1741,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1716,7 +1750,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -1725,7 +1759,7 @@ $BindingIdCopyWith<$Res> get itemBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get predicate {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.predicate, (value) {
     return _then(_self.copyWith(predicate: value));
   });
@@ -1737,7 +1771,7 @@ $TypedExpressionCopyWith<$Res> get predicate {
 
 class CollectionDistinctExpression implements Expression {
   const CollectionDistinctExpression({required this.source, this.key, this.itemBindingId});
-  
+
 
  final  TypedExpression source;
  final  TypedExpression? key;
@@ -1753,16 +1787,18 @@ $CollectionDistinctExpressionCopyWith<CollectionDistinctExpression> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionDistinctExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.key, key) || other.key == key)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionDistinctExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.key, key) || other.key == key)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,key,itemBindingId);
+int get hashCode {
+    return Object.hash(runtimeType,source,key,itemBindingId);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionDistinct(source: $source, key: $key, itemBindingId: $itemBindingId)';
+    return 'Expression.collectionDistinct(source: $source, key: $key, itemBindingId: $itemBindingId)';
 }
 
 
@@ -1804,7 +1840,7 @@ as BindingId?,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1840,7 +1876,7 @@ $BindingIdCopyWith<$Res>? get itemBindingId {
 
 class CollectionSortExpression implements Expression {
   const CollectionSortExpression({required this.source, required this.key, required this.itemBindingId, required this.direction, this.comparator});
-  
+
 
  final  TypedExpression source;
  final  TypedExpression key;
@@ -1858,16 +1894,18 @@ $CollectionSortExpressionCopyWith<CollectionSortExpression> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionSortExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.key, key) || other.key == key)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.direction, direction) || other.direction == direction)&&(identical(other.comparator, comparator) || other.comparator == comparator));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionSortExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.key, key) || other.key == key)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.direction, direction) || other.direction == direction)&&(identical(other.comparator, comparator) || other.comparator == comparator));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,key,itemBindingId,direction,comparator);
+int get hashCode {
+    return Object.hash(runtimeType,source,key,itemBindingId,direction,comparator);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionSort(source: $source, key: $key, itemBindingId: $itemBindingId, direction: $direction, comparator: $comparator)';
+    return 'Expression.collectionSort(source: $source, key: $key, itemBindingId: $itemBindingId, direction: $direction, comparator: $comparator)';
 }
 
 
@@ -1911,7 +1949,7 @@ as CollectionComparator?,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1920,7 +1958,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get key {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });
@@ -1929,7 +1967,7 @@ $TypedExpressionCopyWith<$Res> get key {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -1953,7 +1991,7 @@ $CollectionComparatorCopyWith<$Res>? get comparator {
 
 class CollectionGroupExpression implements Expression {
   const CollectionGroupExpression({required this.source, required this.key, required this.itemBindingId, this.value});
-  
+
 
  final  TypedExpression source;
  final  TypedExpression key;
@@ -1970,16 +2008,18 @@ $CollectionGroupExpressionCopyWith<CollectionGroupExpression> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionGroupExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.key, key) || other.key == key)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionGroupExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.key, key) || other.key == key)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,key,itemBindingId,value);
+int get hashCode {
+    return Object.hash(runtimeType,source,key,itemBindingId,value);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionGroup(source: $source, key: $key, itemBindingId: $itemBindingId, value: $value)';
+    return 'Expression.collectionGroup(source: $source, key: $key, itemBindingId: $itemBindingId, value: $value)';
 }
 
 
@@ -2022,7 +2062,7 @@ as TypedExpression?,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2031,7 +2071,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get key {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });
@@ -2040,7 +2080,7 @@ $TypedExpressionCopyWith<$Res> get key {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -2064,7 +2104,7 @@ $TypedExpressionCopyWith<$Res>? get value {
 
 class CollectionReduceExpression implements Expression {
   const CollectionReduceExpression({required this.source, required this.accumulatorBindingId, required this.itemBindingId, required this.reduction});
-  
+
 
  final  TypedExpression source;
  final  BindingId accumulatorBindingId;
@@ -2081,16 +2121,18 @@ $CollectionReduceExpressionCopyWith<CollectionReduceExpression> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionReduceExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.accumulatorBindingId, accumulatorBindingId) || other.accumulatorBindingId == accumulatorBindingId)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.reduction, reduction) || other.reduction == reduction));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionReduceExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.accumulatorBindingId, accumulatorBindingId) || other.accumulatorBindingId == accumulatorBindingId)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.reduction, reduction) || other.reduction == reduction));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,accumulatorBindingId,itemBindingId,reduction);
+int get hashCode {
+    return Object.hash(runtimeType,source,accumulatorBindingId,itemBindingId,reduction);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionReduce(source: $source, accumulatorBindingId: $accumulatorBindingId, itemBindingId: $itemBindingId, reduction: $reduction)';
+    return 'Expression.collectionReduce(source: $source, accumulatorBindingId: $accumulatorBindingId, itemBindingId: $itemBindingId, reduction: $reduction)';
 }
 
 
@@ -2133,7 +2175,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2142,7 +2184,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get accumulatorBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.accumulatorBindingId, (value) {
     return _then(_self.copyWith(accumulatorBindingId: value));
   });
@@ -2151,7 +2193,7 @@ $BindingIdCopyWith<$Res> get accumulatorBindingId {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -2160,7 +2202,7 @@ $BindingIdCopyWith<$Res> get itemBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get reduction {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.reduction, (value) {
     return _then(_self.copyWith(reduction: value));
   });
@@ -2172,7 +2214,7 @@ $TypedExpressionCopyWith<$Res> get reduction {
 
 class CollectionFoldExpression implements Expression {
   const CollectionFoldExpression({required this.source, required this.initial, required this.accumulatorBindingId, required this.itemBindingId, required this.reduction});
-  
+
 
  final  TypedExpression source;
  final  TypedExpression initial;
@@ -2190,16 +2232,18 @@ $CollectionFoldExpressionCopyWith<CollectionFoldExpression> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionFoldExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.initial, initial) || other.initial == initial)&&(identical(other.accumulatorBindingId, accumulatorBindingId) || other.accumulatorBindingId == accumulatorBindingId)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.reduction, reduction) || other.reduction == reduction));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionFoldExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.initial, initial) || other.initial == initial)&&(identical(other.accumulatorBindingId, accumulatorBindingId) || other.accumulatorBindingId == accumulatorBindingId)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.reduction, reduction) || other.reduction == reduction));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,initial,accumulatorBindingId,itemBindingId,reduction);
+int get hashCode {
+    return Object.hash(runtimeType,source,initial,accumulatorBindingId,itemBindingId,reduction);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionFold(source: $source, initial: $initial, accumulatorBindingId: $accumulatorBindingId, itemBindingId: $itemBindingId, reduction: $reduction)';
+    return 'Expression.collectionFold(source: $source, initial: $initial, accumulatorBindingId: $accumulatorBindingId, itemBindingId: $itemBindingId, reduction: $reduction)';
 }
 
 
@@ -2243,7 +2287,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2252,7 +2296,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get initial {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.initial, (value) {
     return _then(_self.copyWith(initial: value));
   });
@@ -2261,7 +2305,7 @@ $TypedExpressionCopyWith<$Res> get initial {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get accumulatorBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.accumulatorBindingId, (value) {
     return _then(_self.copyWith(accumulatorBindingId: value));
   });
@@ -2270,7 +2314,7 @@ $BindingIdCopyWith<$Res> get accumulatorBindingId {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get itemBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.itemBindingId, (value) {
     return _then(_self.copyWith(itemBindingId: value));
   });
@@ -2279,7 +2323,7 @@ $BindingIdCopyWith<$Res> get itemBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get reduction {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.reduction, (value) {
     return _then(_self.copyWith(reduction: value));
   });
@@ -2291,7 +2335,7 @@ $TypedExpressionCopyWith<$Res> get reduction {
 
 class CollectionTransformExpression implements Expression {
   const CollectionTransformExpression({required this.source, required this.operation, this.transform, this.itemBindingId, this.count});
-  
+
 
  final  TypedExpression source;
  final  CollectionTransformOperation operation;
@@ -2309,16 +2353,18 @@ $CollectionTransformExpressionCopyWith<CollectionTransformExpression> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionTransformExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.operation, operation) || other.operation == operation)&&(identical(other.transform, transform) || other.transform == transform)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.count, count) || other.count == count));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionTransformExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.operation, operation) || other.operation == operation)&&(identical(other.transform, transform) || other.transform == transform)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.count, count) || other.count == count));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,operation,transform,itemBindingId,count);
+int get hashCode {
+    return Object.hash(runtimeType,source,operation,transform,itemBindingId,count);
+}
 
 @override
 String toString() {
-  return 'Expression.collectionTransform(source: $source, operation: $operation, transform: $transform, itemBindingId: $itemBindingId, count: $count)';
+    return 'Expression.collectionTransform(source: $source, operation: $operation, transform: $transform, itemBindingId: $itemBindingId, count: $count)';
 }
 
 
@@ -2362,7 +2408,7 @@ as TypedExpression?,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2410,7 +2456,7 @@ $TypedExpressionCopyWith<$Res>? get count {
 
 class IsTypeExpression implements Expression {
   const IsTypeExpression({required this.source, required this.type});
-  
+
 
  final  TypedExpression source;
  final  TypeExpression type;
@@ -2425,16 +2471,18 @@ $IsTypeExpressionCopyWith<IsTypeExpression> get copyWith => _$IsTypeExpressionCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IsTypeExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IsTypeExpression&&(identical(other.source, source) || other.source == source)&&(identical(other.type, type) || other.type == type));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,type);
+int get hashCode {
+    return Object.hash(runtimeType,source,type);
+}
 
 @override
 String toString() {
-  return 'Expression.isType(source: $source, type: $type)';
+    return 'Expression.isType(source: $source, type: $type)';
 }
 
 
@@ -2475,7 +2523,7 @@ as TypeExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2484,7 +2532,7 @@ $TypedExpressionCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -2496,7 +2544,7 @@ $TypeExpressionCopyWith<$Res> get type {
 
 class ConversionExpression implements Expression {
   const ConversionExpression({required this.conversionId, required this.input});
-  
+
 
  final  ConversionId conversionId;
  final  TypedExpression input;
@@ -2511,16 +2559,18 @@ $ConversionExpressionCopyWith<ConversionExpression> get copyWith => _$Conversion
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionExpression&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId)&&(identical(other.input, input) || other.input == input));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionExpression&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId)&&(identical(other.input, input) || other.input == input));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,conversionId,input);
+int get hashCode {
+    return Object.hash(runtimeType,conversionId,input);
+}
 
 @override
 String toString() {
-  return 'Expression.conversion(conversionId: $conversionId, input: $input)';
+    return 'Expression.conversion(conversionId: $conversionId, input: $input)';
 }
 
 
@@ -2561,7 +2611,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $ConversionIdCopyWith<$Res> get conversionId {
-  
+
   return $ConversionIdCopyWith<$Res>(_self.conversionId, (value) {
     return _then(_self.copyWith(conversionId: value));
   });
@@ -2570,7 +2620,7 @@ $ConversionIdCopyWith<$Res> get conversionId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get input {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.input, (value) {
     return _then(_self.copyWith(input: value));
   });
@@ -2581,8 +2631,8 @@ $TypedExpressionCopyWith<$Res> get input {
 
 
 class StringOperationExpression implements Expression {
-  const StringOperationExpression({required this.operation, required final  List<TypedExpression> operands}): _operands = operands;
-  
+  const StringOperationExpression({required this.operation, required  List<TypedExpression> operands}): _operands = operands;
+
 
  final  StringOperation operation;
  final  List<TypedExpression> _operands;
@@ -2603,16 +2653,18 @@ $StringOperationExpressionCopyWith<StringOperationExpression> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StringOperationExpression&&(identical(other.operation, operation) || other.operation == operation)&&const DeepCollectionEquality().equals(other._operands, _operands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StringOperationExpression&&(identical(other.operation, operation) || other.operation == operation)&&const DeepCollectionEquality().equals(other.operands, _operands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operation,const DeepCollectionEquality().hash(_operands));
+int get hashCode {
+    return Object.hash(runtimeType,operation,const DeepCollectionEquality().hash(_operands));
+}
 
 @override
 String toString() {
-  return 'Expression.stringOperation(operation: $operation, operands: $operands)';
+    return 'Expression.stringOperation(operation: $operation, operands: $operands)';
 }
 
 
@@ -2655,8 +2707,8 @@ as List<TypedExpression>,
 
 
 class CollectionOperationExpression implements Expression {
-  const CollectionOperationExpression({required this.operation, required final  List<TypedExpression> operands}): _operands = operands;
-  
+  const CollectionOperationExpression({required this.operation, required  List<TypedExpression> operands}): _operands = operands;
+
 
  final  CollectionOperation operation;
  final  List<TypedExpression> _operands;
@@ -2677,16 +2729,18 @@ $CollectionOperationExpressionCopyWith<CollectionOperationExpression> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionOperationExpression&&(identical(other.operation, operation) || other.operation == operation)&&const DeepCollectionEquality().equals(other._operands, _operands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionOperationExpression&&(identical(other.operation, operation) || other.operation == operation)&&const DeepCollectionEquality().equals(other.operands, _operands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operation,const DeepCollectionEquality().hash(_operands));
+int get hashCode {
+    return Object.hash(runtimeType,operation,const DeepCollectionEquality().hash(_operands));
+}
 
 @override
 String toString() {
-  return 'Expression.collectionOperation(operation: $operation, operands: $operands)';
+    return 'Expression.collectionOperation(operation: $operation, operands: $operands)';
 }
 
 
@@ -2730,7 +2784,7 @@ as List<TypedExpression>,
 
 class RegexExpression implements Expression {
   const RegexExpression({required this.operation, required this.source, required this.pattern, this.group, this.replacement});
-  
+
 
  final  RegexOperation operation;
  final  TypedExpression source;
@@ -2748,16 +2802,18 @@ $RegexExpressionCopyWith<RegexExpression> get copyWith => _$RegexExpressionCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegexExpression&&(identical(other.operation, operation) || other.operation == operation)&&(identical(other.source, source) || other.source == source)&&(identical(other.pattern, pattern) || other.pattern == pattern)&&(identical(other.group, group) || other.group == group)&&(identical(other.replacement, replacement) || other.replacement == replacement));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RegexExpression&&(identical(other.operation, operation) || other.operation == operation)&&(identical(other.source, source) || other.source == source)&&(identical(other.pattern, pattern) || other.pattern == pattern)&&(identical(other.group, group) || other.group == group)&&(identical(other.replacement, replacement) || other.replacement == replacement));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operation,source,pattern,group,replacement);
+int get hashCode {
+    return Object.hash(runtimeType,operation,source,pattern,group,replacement);
+}
 
 @override
 String toString() {
-  return 'Expression.regex(operation: $operation, source: $source, pattern: $pattern, group: $group, replacement: $replacement)';
+    return 'Expression.regex(operation: $operation, source: $source, pattern: $pattern, group: $group, replacement: $replacement)';
 }
 
 
@@ -2801,7 +2857,7 @@ as String?,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get source {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2812,8 +2868,8 @@ $TypedExpressionCopyWith<$Res> get source {
 
 
 class CoalesceExpression implements Expression {
-  const CoalesceExpression(final  List<TypedExpression> operands): _operands = operands;
-  
+  const CoalesceExpression( List<TypedExpression> operands): _operands = operands;
+
 
  final  List<TypedExpression> _operands;
  List<TypedExpression> get operands {
@@ -2833,16 +2889,18 @@ $CoalesceExpressionCopyWith<CoalesceExpression> get copyWith => _$CoalesceExpres
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoalesceExpression&&const DeepCollectionEquality().equals(other._operands, _operands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CoalesceExpression&&const DeepCollectionEquality().equals(other.operands, _operands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_operands));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_operands));
+}
 
 @override
 String toString() {
-  return 'Expression.coalesce(operands: $operands)';
+    return 'Expression.coalesce(operands: $operands)';
 }
 
 
@@ -2885,7 +2943,7 @@ as List<TypedExpression>,
 
 class ColorOperationExpression implements Expression {
   const ColorOperationExpression({required this.operation, required this.color, required this.alpha});
-  
+
 
  final  ColorOperation operation;
  final  TypedExpression color;
@@ -2901,16 +2959,18 @@ $ColorOperationExpressionCopyWith<ColorOperationExpression> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ColorOperationExpression&&(identical(other.operation, operation) || other.operation == operation)&&(identical(other.color, color) || other.color == color)&&(identical(other.alpha, alpha) || other.alpha == alpha));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ColorOperationExpression&&(identical(other.operation, operation) || other.operation == operation)&&(identical(other.color, color) || other.color == color)&&(identical(other.alpha, alpha) || other.alpha == alpha));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operation,color,alpha);
+int get hashCode {
+    return Object.hash(runtimeType,operation,color,alpha);
+}
 
 @override
 String toString() {
-  return 'Expression.colorOperation(operation: $operation, color: $color, alpha: $alpha)';
+    return 'Expression.colorOperation(operation: $operation, color: $color, alpha: $alpha)';
 }
 
 
@@ -2952,7 +3012,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get color {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.color, (value) {
     return _then(_self.copyWith(color: value));
   });
@@ -2961,7 +3021,7 @@ $TypedExpressionCopyWith<$Res> get color {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get alpha {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.alpha, (value) {
     return _then(_self.copyWith(alpha: value));
   });
@@ -2982,16 +3042,21 @@ $CollectionComparatorCopyWith<CollectionComparator> get copyWith => _$Collection
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionComparator&&(identical(other.leftBindingId, leftBindingId) || other.leftBindingId == leftBindingId)&&(identical(other.rightBindingId, rightBindingId) || other.rightBindingId == rightBindingId)&&(identical(other.comparison, comparison) || other.comparison == comparison));
+  final _this = this as CollectionComparator;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionComparator&&(identical(other.leftBindingId, _this.leftBindingId) || other.leftBindingId == _this.leftBindingId)&&(identical(other.rightBindingId, _this.rightBindingId) || other.rightBindingId == _this.rightBindingId)&&(identical(other.comparison, _this.comparison) || other.comparison == _this.comparison));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,leftBindingId,rightBindingId,comparison);
+int get hashCode {
+  final _this = this as CollectionComparator;
+  return Object.hash(runtimeType,_this.leftBindingId,_this.rightBindingId,_this.comparison);
+}
 
 @override
 String toString() {
-  return 'CollectionComparator(leftBindingId: $leftBindingId, rightBindingId: $rightBindingId, comparison: $comparison)';
+  final _this = this as CollectionComparator;
+  return 'CollectionComparator(leftBindingId: ${_this.leftBindingId}, rightBindingId: ${_this.rightBindingId}, comparison: ${_this.comparison})';
 }
 
 
@@ -3020,7 +3085,7 @@ class _$CollectionComparatorCopyWithImpl<$Res>
 /// Create a copy of CollectionComparator
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? leftBindingId = null,Object? rightBindingId = null,Object? comparison = null,}) {
-  return _then(_self.copyWith(
+  return _then(CollectionComparator(
 leftBindingId: null == leftBindingId ? _self.leftBindingId : leftBindingId // ignore: cast_nullable_to_non_nullable
 as BindingId,rightBindingId: null == rightBindingId ? _self.rightBindingId : rightBindingId // ignore: cast_nullable_to_non_nullable
 as BindingId,comparison: null == comparison ? _self.comparison : comparison // ignore: cast_nullable_to_non_nullable
@@ -3032,7 +3097,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get leftBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.leftBindingId, (value) {
     return _then(_self.copyWith(leftBindingId: value));
   });
@@ -3041,7 +3106,7 @@ $BindingIdCopyWith<$Res> get leftBindingId {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get rightBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.rightBindingId, (value) {
     return _then(_self.copyWith(rightBindingId: value));
   });
@@ -3050,7 +3115,7 @@ $BindingIdCopyWith<$Res> get rightBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get comparison {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.comparison, (value) {
     return _then(_self.copyWith(comparison: value));
   });
@@ -3193,7 +3258,7 @@ return $default(_that.leftBindingId,_that.rightBindingId,_that.comparison);case 
 
 class _CollectionComparator implements CollectionComparator {
   const _CollectionComparator({required this.leftBindingId, required this.rightBindingId, required this.comparison});
-  
+
 
 @override final  BindingId leftBindingId;
 @override final  BindingId rightBindingId;
@@ -3209,16 +3274,18 @@ _$CollectionComparatorCopyWith<_CollectionComparator> get copyWith => __$Collect
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectionComparator&&(identical(other.leftBindingId, leftBindingId) || other.leftBindingId == leftBindingId)&&(identical(other.rightBindingId, rightBindingId) || other.rightBindingId == rightBindingId)&&(identical(other.comparison, comparison) || other.comparison == comparison));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectionComparator&&(identical(other.leftBindingId, leftBindingId) || other.leftBindingId == leftBindingId)&&(identical(other.rightBindingId, rightBindingId) || other.rightBindingId == rightBindingId)&&(identical(other.comparison, comparison) || other.comparison == comparison));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,leftBindingId,rightBindingId,comparison);
+int get hashCode {
+    return Object.hash(runtimeType,leftBindingId,rightBindingId,comparison);
+}
 
 @override
 String toString() {
-  return 'CollectionComparator(leftBindingId: $leftBindingId, rightBindingId: $rightBindingId, comparison: $comparison)';
+    return 'CollectionComparator(leftBindingId: $leftBindingId, rightBindingId: $rightBindingId, comparison: $comparison)';
 }
 
 
@@ -3260,7 +3327,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get leftBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.leftBindingId, (value) {
     return _then(_self.copyWith(leftBindingId: value));
   });
@@ -3269,7 +3336,7 @@ $BindingIdCopyWith<$Res> get leftBindingId {
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get rightBindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.rightBindingId, (value) {
     return _then(_self.copyWith(rightBindingId: value));
   });
@@ -3278,7 +3345,7 @@ $BindingIdCopyWith<$Res> get rightBindingId {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get comparison {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.comparison, (value) {
     return _then(_self.copyWith(comparison: value));
   });
@@ -3294,16 +3361,21 @@ mixin _$InterpolationPart {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationPart&&const DeepCollectionEquality().equals(other.value, value));
+  final _this = this as InterpolationPart;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationPart&&const DeepCollectionEquality().equals(other.value, _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+int get hashCode {
+  final _this = this as InterpolationPart;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.value));
+}
 
 @override
 String toString() {
-  return 'InterpolationPart(value: $value)';
+  final _this = this as InterpolationPart;
+  return 'InterpolationPart(value: ${_this.value})';
 }
 
 
@@ -3450,7 +3522,7 @@ return value(_that.value);case _:
 
 class InterpolationText implements InterpolationPart {
   const InterpolationText(this.value);
-  
+
 
 @override final  String value;
 
@@ -3464,16 +3536,18 @@ $InterpolationTextCopyWith<InterpolationText> get copyWith => _$InterpolationTex
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationText&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationText&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'InterpolationPart.text(value: $value)';
+    return 'InterpolationPart.text(value: $value)';
 }
 
 
@@ -3516,7 +3590,7 @@ as String,
 
 class InterpolationValue implements InterpolationPart {
   const InterpolationValue(this.value);
-  
+
 
 @override final  TypedExpression value;
 
@@ -3530,16 +3604,18 @@ $InterpolationValueCopyWith<InterpolationValue> get copyWith => _$InterpolationV
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InterpolationValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'InterpolationPart.value(value: $value)';
+    return 'InterpolationPart.value(value: $value)';
 }
 
 
@@ -3579,7 +3655,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get value {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -3600,16 +3676,21 @@ $ExpressionBudgetCopyWith<ExpressionBudget> get copyWith => _$ExpressionBudgetCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExpressionBudget&&(identical(other.maximumDepth, maximumDepth) || other.maximumDepth == maximumDepth)&&(identical(other.maximumNodes, maximumNodes) || other.maximumNodes == maximumNodes)&&(identical(other.maximumEvaluations, maximumEvaluations) || other.maximumEvaluations == maximumEvaluations));
+  final _this = this as ExpressionBudget;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExpressionBudget&&(identical(other.maximumDepth, _this.maximumDepth) || other.maximumDepth == _this.maximumDepth)&&(identical(other.maximumNodes, _this.maximumNodes) || other.maximumNodes == _this.maximumNodes)&&(identical(other.maximumEvaluations, _this.maximumEvaluations) || other.maximumEvaluations == _this.maximumEvaluations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,maximumDepth,maximumNodes,maximumEvaluations);
+int get hashCode {
+  final _this = this as ExpressionBudget;
+  return Object.hash(runtimeType,_this.maximumDepth,_this.maximumNodes,_this.maximumEvaluations);
+}
 
 @override
 String toString() {
-  return 'ExpressionBudget(maximumDepth: $maximumDepth, maximumNodes: $maximumNodes, maximumEvaluations: $maximumEvaluations)';
+  final _this = this as ExpressionBudget;
+  return 'ExpressionBudget(maximumDepth: ${_this.maximumDepth}, maximumNodes: ${_this.maximumNodes}, maximumEvaluations: ${_this.maximumEvaluations})';
 }
 
 
@@ -3638,7 +3719,7 @@ class _$ExpressionBudgetCopyWithImpl<$Res>
 /// Create a copy of ExpressionBudget
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? maximumDepth = null,Object? maximumNodes = null,Object? maximumEvaluations = null,}) {
-  return _then(_self.copyWith(
+  return _then(ExpressionBudget(
 maximumDepth: null == maximumDepth ? _self.maximumDepth : maximumDepth // ignore: cast_nullable_to_non_nullable
 as int,maximumNodes: null == maximumNodes ? _self.maximumNodes : maximumNodes // ignore: cast_nullable_to_non_nullable
 as int,maximumEvaluations: null == maximumEvaluations ? _self.maximumEvaluations : maximumEvaluations // ignore: cast_nullable_to_non_nullable
@@ -3784,7 +3865,7 @@ return $default(_that.maximumDepth,_that.maximumNodes,_that.maximumEvaluations);
 
 class _ExpressionBudget implements ExpressionBudget {
   const _ExpressionBudget({this.maximumDepth = 32, this.maximumNodes = 512, this.maximumEvaluations = 4096}): assert(maximumDepth > 0, 'Maximum depth must be positive.'),assert(maximumNodes > 0, 'Maximum node count must be positive.'),assert(maximumEvaluations > 0, 'Maximum evaluations must be positive.');
-  
+
 
 @override@JsonKey() final  int maximumDepth;
 @override@JsonKey() final  int maximumNodes;
@@ -3800,16 +3881,18 @@ _$ExpressionBudgetCopyWith<_ExpressionBudget> get copyWith => __$ExpressionBudge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExpressionBudget&&(identical(other.maximumDepth, maximumDepth) || other.maximumDepth == maximumDepth)&&(identical(other.maximumNodes, maximumNodes) || other.maximumNodes == maximumNodes)&&(identical(other.maximumEvaluations, maximumEvaluations) || other.maximumEvaluations == maximumEvaluations));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExpressionBudget&&(identical(other.maximumDepth, maximumDepth) || other.maximumDepth == maximumDepth)&&(identical(other.maximumNodes, maximumNodes) || other.maximumNodes == maximumNodes)&&(identical(other.maximumEvaluations, maximumEvaluations) || other.maximumEvaluations == maximumEvaluations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,maximumDepth,maximumNodes,maximumEvaluations);
+int get hashCode {
+    return Object.hash(runtimeType,maximumDepth,maximumNodes,maximumEvaluations);
+}
 
 @override
 String toString() {
-  return 'ExpressionBudget(maximumDepth: $maximumDepth, maximumNodes: $maximumNodes, maximumEvaluations: $maximumEvaluations)';
+    return 'ExpressionBudget(maximumDepth: $maximumDepth, maximumNodes: $maximumNodes, maximumEvaluations: $maximumEvaluations)';
 }
 
 

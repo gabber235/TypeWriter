@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'conversion_rule.dart';
@@ -9,6 +9,7 @@ part of 'conversion_rule.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$ConversionRule {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionRule);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionRule);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConversionRule()';
+    return 'ConversionRule()';
 }
 
 
@@ -254,7 +255,7 @@ return compositionIds(_that.steps);case _:
 
 class InputConversionRule implements ConversionRule {
   const InputConversionRule();
-  
+
 
 
 
@@ -263,7 +264,7 @@ class InputConversionRule implements ConversionRule {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InputConversionRule);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InputConversionRule);
 }
 
 
@@ -272,7 +273,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConversionRule.input()';
+    return 'ConversionRule.input()';
 }
 
 
@@ -286,7 +287,7 @@ String toString() {
 
 class InheritanceUpcastRule implements ConversionRule {
   const InheritanceUpcastRule();
-  
+
 
 
 
@@ -295,7 +296,7 @@ class InheritanceUpcastRule implements ConversionRule {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InheritanceUpcastRule);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InheritanceUpcastRule);
 }
 
 
@@ -304,7 +305,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConversionRule.inheritanceUpcast()';
+    return 'ConversionRule.inheritanceUpcast()';
 }
 
 
@@ -318,7 +319,7 @@ String toString() {
 
 class ValidatedDowncastRule implements ConversionRule {
   const ValidatedDowncastRule();
-  
+
 
 
 
@@ -327,7 +328,7 @@ class ValidatedDowncastRule implements ConversionRule {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ValidatedDowncastRule);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ValidatedDowncastRule);
 }
 
 
@@ -336,7 +337,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConversionRule.validatedDowncast()';
+    return 'ConversionRule.validatedDowncast()';
 }
 
 
@@ -350,7 +351,7 @@ String toString() {
 
 class ScalarConversionRule implements ConversionRule {
   const ScalarConversionRule(this.conversion);
-  
+
 
  final  ScalarConversion conversion;
 
@@ -364,16 +365,18 @@ $ScalarConversionRuleCopyWith<ScalarConversionRule> get copyWith => _$ScalarConv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScalarConversionRule&&(identical(other.conversion, conversion) || other.conversion == conversion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ScalarConversionRule&&(identical(other.conversion, conversion) || other.conversion == conversion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,conversion);
+int get hashCode {
+    return Object.hash(runtimeType,conversion);
+}
 
 @override
 String toString() {
-  return 'ConversionRule.scalar(conversion: $conversion)';
+    return 'ConversionRule.scalar(conversion: $conversion)';
 }
 
 
@@ -416,7 +419,7 @@ as ScalarConversion,
 
 class FieldConversionRule implements ConversionRule {
   const FieldConversionRule({required this.name, required this.rule}): assert(name != "", 'Field name must not be empty.');
-  
+
 
  final  String name;
  final  ConversionRule rule;
@@ -431,16 +434,18 @@ $FieldConversionRuleCopyWith<FieldConversionRule> get copyWith => _$FieldConvers
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FieldConversionRule&&(identical(other.name, name) || other.name == name)&&(identical(other.rule, rule) || other.rule == rule));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FieldConversionRule&&(identical(other.name, name) || other.name == name)&&(identical(other.rule, rule) || other.rule == rule));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,rule);
+int get hashCode {
+    return Object.hash(runtimeType,name,rule);
+}
 
 @override
 String toString() {
-  return 'ConversionRule.field(name: $name, rule: $rule)';
+    return 'ConversionRule.field(name: $name, rule: $rule)';
 }
 
 
@@ -481,7 +486,7 @@ as ConversionRule,
 @override
 @pragma('vm:prefer-inline')
 $ConversionRuleCopyWith<$Res> get rule {
-  
+
   return $ConversionRuleCopyWith<$Res>(_self.rule, (value) {
     return _then(_self.copyWith(rule: value));
   });
@@ -492,8 +497,8 @@ $ConversionRuleCopyWith<$Res> get rule {
 
 
 class RecordConversionRule implements ConversionRule {
-  const RecordConversionRule(final  Map<String, ConversionRule> fields): _fields = fields;
-  
+  const RecordConversionRule( Map<String, ConversionRule> fields): _fields = fields;
+
 
  final  Map<String, ConversionRule> _fields;
  Map<String, ConversionRule> get fields {
@@ -513,16 +518,18 @@ $RecordConversionRuleCopyWith<RecordConversionRule> get copyWith => _$RecordConv
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordConversionRule&&const DeepCollectionEquality().equals(other._fields, _fields));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordConversionRule&&const DeepCollectionEquality().equals(other.fields, _fields));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+}
 
 @override
 String toString() {
-  return 'ConversionRule.record(fields: $fields)';
+    return 'ConversionRule.record(fields: $fields)';
 }
 
 
@@ -565,7 +572,7 @@ as Map<String, ConversionRule>,
 
 class ListConversionRule implements ConversionRule {
   const ListConversionRule(this.element);
-  
+
 
  final  ConversionRule element;
 
@@ -579,16 +586,18 @@ $ListConversionRuleCopyWith<ListConversionRule> get copyWith => _$ListConversion
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ListConversionRule&&(identical(other.element, element) || other.element == element));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ListConversionRule&&(identical(other.element, element) || other.element == element));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,element);
+int get hashCode {
+    return Object.hash(runtimeType,element);
+}
 
 @override
 String toString() {
-  return 'ConversionRule.list(element: $element)';
+    return 'ConversionRule.list(element: $element)';
 }
 
 
@@ -628,7 +637,7 @@ as ConversionRule,
 @override
 @pragma('vm:prefer-inline')
 $ConversionRuleCopyWith<$Res> get element {
-  
+
   return $ConversionRuleCopyWith<$Res>(_self.element, (value) {
     return _then(_self.copyWith(element: value));
   });
@@ -639,8 +648,8 @@ $ConversionRuleCopyWith<$Res> get element {
 
 
 class PolymorphicConversionRule implements ConversionRule {
-  const PolymorphicConversionRule(final  List<ConversionPolymorphicCase> cases): _cases = cases;
-  
+  const PolymorphicConversionRule( List<ConversionPolymorphicCase> cases): _cases = cases;
+
 
  final  List<ConversionPolymorphicCase> _cases;
  List<ConversionPolymorphicCase> get cases {
@@ -660,16 +669,18 @@ $PolymorphicConversionRuleCopyWith<PolymorphicConversionRule> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicConversionRule&&const DeepCollectionEquality().equals(other._cases, _cases));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicConversionRule&&const DeepCollectionEquality().equals(other.cases, _cases));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cases));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_cases));
+}
 
 @override
 String toString() {
-  return 'ConversionRule.polymorphic(cases: $cases)';
+    return 'ConversionRule.polymorphic(cases: $cases)';
 }
 
 
@@ -711,8 +722,8 @@ as List<ConversionPolymorphicCase>,
 
 
 class ComposedConversionRule implements ConversionRule {
-  const ComposedConversionRule(final  List<ConversionRule> rules): _rules = rules;
-  
+  const ComposedConversionRule( List<ConversionRule> rules): _rules = rules;
+
 
  final  List<ConversionRule> _rules;
  List<ConversionRule> get rules {
@@ -732,16 +743,18 @@ $ComposedConversionRuleCopyWith<ComposedConversionRule> get copyWith => _$Compos
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ComposedConversionRule&&const DeepCollectionEquality().equals(other._rules, _rules));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ComposedConversionRule&&const DeepCollectionEquality().equals(other.rules, _rules));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_rules));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_rules));
+}
 
 @override
 String toString() {
-  return 'ConversionRule.compose(rules: $rules)';
+    return 'ConversionRule.compose(rules: $rules)';
 }
 
 
@@ -784,7 +797,7 @@ as List<ConversionRule>,
 
 class RealmConversionRule implements ConversionRule {
   const RealmConversionRule();
-  
+
 
 
 
@@ -793,7 +806,7 @@ class RealmConversionRule implements ConversionRule {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmConversionRule);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmConversionRule);
 }
 
 
@@ -802,7 +815,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConversionRule.realm()';
+    return 'ConversionRule.realm()';
 }
 
 
@@ -815,8 +828,8 @@ String toString() {
 
 
 class RecordProjectionConversionRule implements ConversionRule {
-  const RecordProjectionConversionRule(final  List<ConversionProjectionField> fields): _fields = fields;
-  
+  const RecordProjectionConversionRule( List<ConversionProjectionField> fields): _fields = fields;
+
 
  final  List<ConversionProjectionField> _fields;
  List<ConversionProjectionField> get fields {
@@ -836,16 +849,18 @@ $RecordProjectionConversionRuleCopyWith<RecordProjectionConversionRule> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordProjectionConversionRule&&const DeepCollectionEquality().equals(other._fields, _fields));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordProjectionConversionRule&&const DeepCollectionEquality().equals(other.fields, _fields));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+}
 
 @override
 String toString() {
-  return 'ConversionRule.recordProjection(fields: $fields)';
+    return 'ConversionRule.recordProjection(fields: $fields)';
 }
 
 
@@ -887,8 +902,8 @@ as List<ConversionProjectionField>,
 
 
 class RecordConstructionConversionRule implements ConversionRule {
-  const RecordConstructionConversionRule(final  List<ConversionConstructionField> fields): _fields = fields;
-  
+  const RecordConstructionConversionRule( List<ConversionConstructionField> fields): _fields = fields;
+
 
  final  List<ConversionConstructionField> _fields;
  List<ConversionConstructionField> get fields {
@@ -908,16 +923,18 @@ $RecordConstructionConversionRuleCopyWith<RecordConstructionConversionRule> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordConstructionConversionRule&&const DeepCollectionEquality().equals(other._fields, _fields));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordConstructionConversionRule&&const DeepCollectionEquality().equals(other.fields, _fields));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+}
 
 @override
 String toString() {
-  return 'ConversionRule.recordConstruction(fields: $fields)';
+    return 'ConversionRule.recordConstruction(fields: $fields)';
 }
 
 
@@ -960,7 +977,7 @@ as List<ConversionConstructionField>,
 
 class CollectionMappingConversionRule implements ConversionRule {
   const CollectionMappingConversionRule(this.elementConversionId);
-  
+
 
  final  ConversionId elementConversionId;
 
@@ -974,16 +991,18 @@ $CollectionMappingConversionRuleCopyWith<CollectionMappingConversionRule> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionMappingConversionRule&&(identical(other.elementConversionId, elementConversionId) || other.elementConversionId == elementConversionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionMappingConversionRule&&(identical(other.elementConversionId, elementConversionId) || other.elementConversionId == elementConversionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,elementConversionId);
+int get hashCode {
+    return Object.hash(runtimeType,elementConversionId);
+}
 
 @override
 String toString() {
-  return 'ConversionRule.collectionMapping(elementConversionId: $elementConversionId)';
+    return 'ConversionRule.collectionMapping(elementConversionId: $elementConversionId)';
 }
 
 
@@ -1023,7 +1042,7 @@ as ConversionId,
 @override
 @pragma('vm:prefer-inline')
 $ConversionIdCopyWith<$Res> get elementConversionId {
-  
+
   return $ConversionIdCopyWith<$Res>(_self.elementConversionId, (value) {
     return _then(_self.copyWith(elementConversionId: value));
   });
@@ -1034,8 +1053,8 @@ $ConversionIdCopyWith<$Res> get elementConversionId {
 
 
 class PolymorphicMatchingConversionRule implements ConversionRule {
-  const PolymorphicMatchingConversionRule(final  List<ConversionPolymorphicMatch> cases): _cases = cases;
-  
+  const PolymorphicMatchingConversionRule( List<ConversionPolymorphicMatch> cases): _cases = cases;
+
 
  final  List<ConversionPolymorphicMatch> _cases;
  List<ConversionPolymorphicMatch> get cases {
@@ -1055,16 +1074,18 @@ $PolymorphicMatchingConversionRuleCopyWith<PolymorphicMatchingConversionRule> ge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicMatchingConversionRule&&const DeepCollectionEquality().equals(other._cases, _cases));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicMatchingConversionRule&&const DeepCollectionEquality().equals(other.cases, _cases));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cases));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_cases));
+}
 
 @override
 String toString() {
-  return 'ConversionRule.polymorphicMatching(cases: $cases)';
+    return 'ConversionRule.polymorphicMatching(cases: $cases)';
 }
 
 
@@ -1106,8 +1127,8 @@ as List<ConversionPolymorphicMatch>,
 
 
 class ConversionCompositionIdsRule implements ConversionRule {
-  const ConversionCompositionIdsRule(final  List<ConversionId> steps): _steps = steps;
-  
+  const ConversionCompositionIdsRule( List<ConversionId> steps): _steps = steps;
+
 
  final  List<ConversionId> _steps;
  List<ConversionId> get steps {
@@ -1127,16 +1148,18 @@ $ConversionCompositionIdsRuleCopyWith<ConversionCompositionIdsRule> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionCompositionIdsRule&&const DeepCollectionEquality().equals(other._steps, _steps));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionCompositionIdsRule&&const DeepCollectionEquality().equals(other.steps, _steps));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_steps));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_steps));
+}
 
 @override
 String toString() {
-  return 'ConversionRule.compositionIds(steps: $steps)';
+    return 'ConversionRule.compositionIds(steps: $steps)';
 }
 
 
@@ -1188,16 +1211,21 @@ $ConversionPolymorphicCaseCopyWith<ConversionPolymorphicCase> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionPolymorphicCase&&(identical(other.sourceType, sourceType) || other.sourceType == sourceType)&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.rule, rule) || other.rule == rule));
+  final _this = this as ConversionPolymorphicCase;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionPolymorphicCase&&(identical(other.sourceType, _this.sourceType) || other.sourceType == _this.sourceType)&&(identical(other.targetType, _this.targetType) || other.targetType == _this.targetType)&&(identical(other.rule, _this.rule) || other.rule == _this.rule));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceType,targetType,rule);
+int get hashCode {
+  final _this = this as ConversionPolymorphicCase;
+  return Object.hash(runtimeType,_this.sourceType,_this.targetType,_this.rule);
+}
 
 @override
 String toString() {
-  return 'ConversionPolymorphicCase(sourceType: $sourceType, targetType: $targetType, rule: $rule)';
+  final _this = this as ConversionPolymorphicCase;
+  return 'ConversionPolymorphicCase(sourceType: ${_this.sourceType}, targetType: ${_this.targetType}, rule: ${_this.rule})';
 }
 
 
@@ -1226,7 +1254,7 @@ class _$ConversionPolymorphicCaseCopyWithImpl<$Res>
 /// Create a copy of ConversionPolymorphicCase
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sourceType = null,Object? targetType = null,Object? rule = null,}) {
-  return _then(_self.copyWith(
+  return _then(ConversionPolymorphicCase(
 sourceType: null == sourceType ? _self.sourceType : sourceType // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,targetType: null == targetType ? _self.targetType : targetType // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,rule: null == rule ? _self.rule : rule // ignore: cast_nullable_to_non_nullable
@@ -1238,7 +1266,7 @@ as ConversionRule,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get sourceType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.sourceType, (value) {
     return _then(_self.copyWith(sourceType: value));
   });
@@ -1247,7 +1275,7 @@ $ResolvedTypeRefCopyWith<$Res> get sourceType {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get targetType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.targetType, (value) {
     return _then(_self.copyWith(targetType: value));
   });
@@ -1256,7 +1284,7 @@ $ResolvedTypeRefCopyWith<$Res> get targetType {
 @override
 @pragma('vm:prefer-inline')
 $ConversionRuleCopyWith<$Res> get rule {
-  
+
   return $ConversionRuleCopyWith<$Res>(_self.rule, (value) {
     return _then(_self.copyWith(rule: value));
   });
@@ -1399,7 +1427,7 @@ return $default(_that.sourceType,_that.targetType,_that.rule);case _:
 
 class _ConversionPolymorphicCase implements ConversionPolymorphicCase {
   const _ConversionPolymorphicCase({required this.sourceType, required this.targetType, required this.rule});
-  
+
 
 @override final  ResolvedTypeRef sourceType;
 @override final  ResolvedTypeRef targetType;
@@ -1415,16 +1443,18 @@ _$ConversionPolymorphicCaseCopyWith<_ConversionPolymorphicCase> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPolymorphicCase&&(identical(other.sourceType, sourceType) || other.sourceType == sourceType)&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.rule, rule) || other.rule == rule));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPolymorphicCase&&(identical(other.sourceType, sourceType) || other.sourceType == sourceType)&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.rule, rule) || other.rule == rule));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceType,targetType,rule);
+int get hashCode {
+    return Object.hash(runtimeType,sourceType,targetType,rule);
+}
 
 @override
 String toString() {
-  return 'ConversionPolymorphicCase(sourceType: $sourceType, targetType: $targetType, rule: $rule)';
+    return 'ConversionPolymorphicCase(sourceType: $sourceType, targetType: $targetType, rule: $rule)';
 }
 
 
@@ -1466,7 +1496,7 @@ as ConversionRule,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get sourceType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.sourceType, (value) {
     return _then(_self.copyWith(sourceType: value));
   });
@@ -1475,7 +1505,7 @@ $ResolvedTypeRefCopyWith<$Res> get sourceType {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get targetType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.targetType, (value) {
     return _then(_self.copyWith(targetType: value));
   });
@@ -1484,7 +1514,7 @@ $ResolvedTypeRefCopyWith<$Res> get targetType {
 @override
 @pragma('vm:prefer-inline')
 $ConversionRuleCopyWith<$Res> get rule {
-  
+
   return $ConversionRuleCopyWith<$Res>(_self.rule, (value) {
     return _then(_self.copyWith(rule: value));
   });
@@ -1505,16 +1535,21 @@ $ConversionProjectionFieldCopyWith<ConversionProjectionField> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionProjectionField&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
+  final _this = this as ConversionProjectionField;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionProjectionField&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.target, _this.target) || other.target == _this.target)&&(identical(other.conversionId, _this.conversionId) || other.conversionId == _this.conversionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,target,conversionId);
+int get hashCode {
+  final _this = this as ConversionProjectionField;
+  return Object.hash(runtimeType,_this.source,_this.target,_this.conversionId);
+}
 
 @override
 String toString() {
-  return 'ConversionProjectionField(source: $source, target: $target, conversionId: $conversionId)';
+  final _this = this as ConversionProjectionField;
+  return 'ConversionProjectionField(source: ${_this.source}, target: ${_this.target}, conversionId: ${_this.conversionId})';
 }
 
 
@@ -1543,7 +1578,7 @@ class _$ConversionProjectionFieldCopyWithImpl<$Res>
 /// Create a copy of ConversionProjectionField
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? target = null,Object? conversionId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ConversionProjectionField(
 source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as DataPath,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
 as DataPath,conversionId: freezed == conversionId ? _self.conversionId : conversionId // ignore: cast_nullable_to_non_nullable
@@ -1555,7 +1590,7 @@ as ConversionId?,
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get source {
-  
+
   return $DataPathCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1564,7 +1599,7 @@ $DataPathCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get target {
-  
+
   return $DataPathCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -1719,7 +1754,7 @@ return $default(_that.source,_that.target,_that.conversionId);case _:
 
 class _ConversionProjectionField implements ConversionProjectionField {
   const _ConversionProjectionField({required this.source, required this.target, this.conversionId});
-  
+
 
 @override final  DataPath source;
 @override final  DataPath target;
@@ -1735,16 +1770,18 @@ _$ConversionProjectionFieldCopyWith<_ConversionProjectionField> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionProjectionField&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionProjectionField&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,target,conversionId);
+int get hashCode {
+    return Object.hash(runtimeType,source,target,conversionId);
+}
 
 @override
 String toString() {
-  return 'ConversionProjectionField(source: $source, target: $target, conversionId: $conversionId)';
+    return 'ConversionProjectionField(source: $source, target: $target, conversionId: $conversionId)';
 }
 
 
@@ -1786,7 +1823,7 @@ as ConversionId?,
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get source {
-  
+
   return $DataPathCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1795,7 +1832,7 @@ $DataPathCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get target {
-  
+
   return $DataPathCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -1828,16 +1865,21 @@ $ConversionConstructionFieldCopyWith<ConversionConstructionField> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionConstructionField&&(identical(other.targetField, targetField) || other.targetField == targetField)&&(identical(other.source, source) || other.source == source)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
+  final _this = this as ConversionConstructionField;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionConstructionField&&(identical(other.targetField, _this.targetField) || other.targetField == _this.targetField)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.conversionId, _this.conversionId) || other.conversionId == _this.conversionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,targetField,source,conversionId);
+int get hashCode {
+  final _this = this as ConversionConstructionField;
+  return Object.hash(runtimeType,_this.targetField,_this.source,_this.conversionId);
+}
 
 @override
 String toString() {
-  return 'ConversionConstructionField(targetField: $targetField, source: $source, conversionId: $conversionId)';
+  final _this = this as ConversionConstructionField;
+  return 'ConversionConstructionField(targetField: ${_this.targetField}, source: ${_this.source}, conversionId: ${_this.conversionId})';
 }
 
 
@@ -1866,7 +1908,7 @@ class _$ConversionConstructionFieldCopyWithImpl<$Res>
 /// Create a copy of ConversionConstructionField
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? targetField = null,Object? source = null,Object? conversionId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ConversionConstructionField(
 targetField: null == targetField ? _self.targetField : targetField // ignore: cast_nullable_to_non_nullable
 as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as DataPath,conversionId: freezed == conversionId ? _self.conversionId : conversionId // ignore: cast_nullable_to_non_nullable
@@ -1878,7 +1920,7 @@ as ConversionId?,
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get source {
-  
+
   return $DataPathCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2033,7 +2075,7 @@ return $default(_that.targetField,_that.source,_that.conversionId);case _:
 
 class _ConversionConstructionField implements ConversionConstructionField {
   const _ConversionConstructionField({required this.targetField, required this.source, this.conversionId});
-  
+
 
 @override final  String targetField;
 @override final  DataPath source;
@@ -2049,16 +2091,18 @@ _$ConversionConstructionFieldCopyWith<_ConversionConstructionField> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionConstructionField&&(identical(other.targetField, targetField) || other.targetField == targetField)&&(identical(other.source, source) || other.source == source)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionConstructionField&&(identical(other.targetField, targetField) || other.targetField == targetField)&&(identical(other.source, source) || other.source == source)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,targetField,source,conversionId);
+int get hashCode {
+    return Object.hash(runtimeType,targetField,source,conversionId);
+}
 
 @override
 String toString() {
-  return 'ConversionConstructionField(targetField: $targetField, source: $source, conversionId: $conversionId)';
+    return 'ConversionConstructionField(targetField: $targetField, source: $source, conversionId: $conversionId)';
 }
 
 
@@ -2100,7 +2144,7 @@ as ConversionId?,
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get source {
-  
+
   return $DataPathCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -2133,16 +2177,21 @@ $ConversionPolymorphicMatchCopyWith<ConversionPolymorphicMatch> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionPolymorphicMatch&&(identical(other.sourceType, sourceType) || other.sourceType == sourceType)&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
+  final _this = this as ConversionPolymorphicMatch;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionPolymorphicMatch&&(identical(other.sourceType, _this.sourceType) || other.sourceType == _this.sourceType)&&(identical(other.targetType, _this.targetType) || other.targetType == _this.targetType)&&(identical(other.conversionId, _this.conversionId) || other.conversionId == _this.conversionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceType,targetType,conversionId);
+int get hashCode {
+  final _this = this as ConversionPolymorphicMatch;
+  return Object.hash(runtimeType,_this.sourceType,_this.targetType,_this.conversionId);
+}
 
 @override
 String toString() {
-  return 'ConversionPolymorphicMatch(sourceType: $sourceType, targetType: $targetType, conversionId: $conversionId)';
+  final _this = this as ConversionPolymorphicMatch;
+  return 'ConversionPolymorphicMatch(sourceType: ${_this.sourceType}, targetType: ${_this.targetType}, conversionId: ${_this.conversionId})';
 }
 
 
@@ -2171,7 +2220,7 @@ class _$ConversionPolymorphicMatchCopyWithImpl<$Res>
 /// Create a copy of ConversionPolymorphicMatch
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sourceType = null,Object? targetType = null,Object? conversionId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ConversionPolymorphicMatch(
 sourceType: null == sourceType ? _self.sourceType : sourceType // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,targetType: null == targetType ? _self.targetType : targetType // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,conversionId: freezed == conversionId ? _self.conversionId : conversionId // ignore: cast_nullable_to_non_nullable
@@ -2183,7 +2232,7 @@ as ConversionId?,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get sourceType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.sourceType, (value) {
     return _then(_self.copyWith(sourceType: value));
   });
@@ -2192,7 +2241,7 @@ $ResolvedTypeRefCopyWith<$Res> get sourceType {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get targetType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.targetType, (value) {
     return _then(_self.copyWith(targetType: value));
   });
@@ -2347,7 +2396,7 @@ return $default(_that.sourceType,_that.targetType,_that.conversionId);case _:
 
 class _ConversionPolymorphicMatch implements ConversionPolymorphicMatch {
   const _ConversionPolymorphicMatch({required this.sourceType, required this.targetType, this.conversionId});
-  
+
 
 @override final  ResolvedTypeRef sourceType;
 @override final  ResolvedTypeRef targetType;
@@ -2363,16 +2412,18 @@ _$ConversionPolymorphicMatchCopyWith<_ConversionPolymorphicMatch> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPolymorphicMatch&&(identical(other.sourceType, sourceType) || other.sourceType == sourceType)&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionPolymorphicMatch&&(identical(other.sourceType, sourceType) || other.sourceType == sourceType)&&(identical(other.targetType, targetType) || other.targetType == targetType)&&(identical(other.conversionId, conversionId) || other.conversionId == conversionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceType,targetType,conversionId);
+int get hashCode {
+    return Object.hash(runtimeType,sourceType,targetType,conversionId);
+}
 
 @override
 String toString() {
-  return 'ConversionPolymorphicMatch(sourceType: $sourceType, targetType: $targetType, conversionId: $conversionId)';
+    return 'ConversionPolymorphicMatch(sourceType: $sourceType, targetType: $targetType, conversionId: $conversionId)';
 }
 
 
@@ -2414,7 +2465,7 @@ as ConversionId?,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get sourceType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.sourceType, (value) {
     return _then(_self.copyWith(sourceType: value));
   });
@@ -2423,7 +2474,7 @@ $ResolvedTypeRefCopyWith<$Res> get sourceType {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get targetType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.targetType, (value) {
     return _then(_self.copyWith(targetType: value));
   });

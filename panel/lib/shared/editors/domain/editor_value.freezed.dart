@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'editor_value.dart';
@@ -9,6 +9,7 @@ part of 'editor_value.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$EditorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorValue);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorValue()';
+    return 'EditorValue()';
 }
 
 
@@ -188,7 +189,7 @@ return ready(_that.value);case _:
 
 class LoadingEditorValue extends EditorValue {
   const LoadingEditorValue(): super._();
-  
+
 
 
 
@@ -197,7 +198,7 @@ class LoadingEditorValue extends EditorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingEditorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingEditorValue);
 }
 
 
@@ -206,7 +207,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorValue.loading()';
+    return 'EditorValue.loading()';
 }
 
 
@@ -220,7 +221,7 @@ String toString() {
 
 class MixedEditorValue extends EditorValue {
   const MixedEditorValue(): super._();
-  
+
 
 
 
@@ -229,7 +230,7 @@ class MixedEditorValue extends EditorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MixedEditorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MixedEditorValue);
 }
 
 
@@ -238,7 +239,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorValue.mixed()';
+    return 'EditorValue.mixed()';
 }
 
 
@@ -251,8 +252,8 @@ String toString() {
 
 
 class InvalidEditorValue extends EditorValue {
-  const InvalidEditorValue(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
-  
+  const InvalidEditorValue( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -272,16 +273,18 @@ $InvalidEditorValueCopyWith<InvalidEditorValue> get copyWith => _$InvalidEditorV
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorValue&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorValue&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'EditorValue.invalid(diagnostics: $diagnostics)';
+    return 'EditorValue.invalid(diagnostics: $diagnostics)';
 }
 
 
@@ -324,7 +327,7 @@ as List<TypeDiagnostic>,
 
 class ReadyEditorValue extends EditorValue {
   const ReadyEditorValue(this.value): super._();
-  
+
 
  final  DataValue value;
 
@@ -338,16 +341,18 @@ $ReadyEditorValueCopyWith<ReadyEditorValue> get copyWith => _$ReadyEditorValueCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReadyEditorValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReadyEditorValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'EditorValue.ready(value: $value)';
+    return 'EditorValue.ready(value: $value)';
 }
 
 
@@ -387,7 +392,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -403,7 +408,7 @@ mixin _$EditorMutationResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorMutationResult);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorMutationResult);
 }
 
 
@@ -412,7 +417,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorMutationResult()';
+    return 'EditorMutationResult()';
 }
 
 
@@ -565,7 +570,7 @@ return invalid(_that.diagnostics);case _:
 
 class AppliedEditorMutation extends EditorMutationResult {
   const AppliedEditorMutation(this.value): super._();
-  
+
 
  final  DataValue value;
 
@@ -579,16 +584,18 @@ $AppliedEditorMutationCopyWith<AppliedEditorMutation> get copyWith => _$AppliedE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppliedEditorMutation&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppliedEditorMutation&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'EditorMutationResult.applied(value: $value)';
+    return 'EditorMutationResult.applied(value: $value)';
 }
 
 
@@ -628,7 +635,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -640,7 +647,7 @@ $DataValueCopyWith<$Res> get value {
 
 class ConflictingEditorMutation extends EditorMutationResult {
   const ConflictingEditorMutation(): super._();
-  
+
 
 
 
@@ -649,7 +656,7 @@ class ConflictingEditorMutation extends EditorMutationResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictingEditorMutation);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictingEditorMutation);
 }
 
 
@@ -658,7 +665,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorMutationResult.conflict()';
+    return 'EditorMutationResult.conflict()';
 }
 
 
@@ -671,8 +678,8 @@ String toString() {
 
 
 class InvalidEditorMutation extends EditorMutationResult {
-  const InvalidEditorMutation(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
-  
+  const InvalidEditorMutation( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -692,16 +699,18 @@ $InvalidEditorMutationCopyWith<InvalidEditorMutation> get copyWith => _$InvalidE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorMutation&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorMutation&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'EditorMutationResult.invalid(diagnostics: $diagnostics)';
+    return 'EditorMutationResult.invalid(diagnostics: $diagnostics)';
 }
 
 

@@ -49,7 +49,7 @@ abstract class _$TestSelectableData
   Map<String, RecordValue> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<Map<String, RecordValue>, Map<String, RecordValue>>;
     final element =
@@ -60,7 +60,7 @@ abstract class _$TestSelectableData
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

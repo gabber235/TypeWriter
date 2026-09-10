@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'type_expression.dart';
@@ -9,6 +9,7 @@ part of 'type_expression.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$TypeExpression {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeExpression);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeExpression);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeExpression()';
+    return 'TypeExpression()';
 }
 
 
@@ -260,7 +261,7 @@ return parameter(_that.name);case _:
 
 class AnyType extends TypeExpression {
   const AnyType(): super._();
-  
+
 
 
 
@@ -269,7 +270,7 @@ class AnyType extends TypeExpression {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AnyType);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AnyType);
 }
 
 
@@ -278,7 +279,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeExpression.any()';
+    return 'TypeExpression.any()';
 }
 
 
@@ -292,7 +293,7 @@ String toString() {
 
 class UnitType extends TypeExpression {
   const UnitType(): super._();
-  
+
 
 
 
@@ -301,7 +302,7 @@ class UnitType extends TypeExpression {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnitType);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UnitType);
 }
 
 
@@ -310,7 +311,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeExpression.unit()';
+    return 'TypeExpression.unit()';
 }
 
 
@@ -324,7 +325,7 @@ String toString() {
 
 class BooleanType extends TypeExpression {
   const BooleanType(): super._();
-  
+
 
 
 
@@ -333,7 +334,7 @@ class BooleanType extends TypeExpression {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BooleanType);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BooleanType);
 }
 
 
@@ -342,7 +343,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeExpression.boolean()';
+    return 'TypeExpression.boolean()';
 }
 
 
@@ -355,8 +356,8 @@ String toString() {
 
 
 class StringType extends TypeExpression {
-  const StringType({this.minimumLength, this.maximumLength, final  List<String> patterns = const []}): _patterns = patterns,super._();
-  
+  const StringType({this.minimumLength, this.maximumLength,  List<String> patterns = const []}): _patterns = patterns,super._();
+
 
  final  int? minimumLength;
  final  int? maximumLength;
@@ -378,16 +379,18 @@ $StringTypeCopyWith<StringType> get copyWith => _$StringTypeCopyWithImpl<StringT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StringType&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength)&&const DeepCollectionEquality().equals(other._patterns, _patterns));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StringType&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength)&&const DeepCollectionEquality().equals(other.patterns, _patterns));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minimumLength,maximumLength,const DeepCollectionEquality().hash(_patterns));
+int get hashCode {
+    return Object.hash(runtimeType,minimumLength,maximumLength,const DeepCollectionEquality().hash(_patterns));
+}
 
 @override
 String toString() {
-  return 'TypeExpression.string(minimumLength: $minimumLength, maximumLength: $maximumLength, patterns: $patterns)';
+    return 'TypeExpression.string(minimumLength: $minimumLength, maximumLength: $maximumLength, patterns: $patterns)';
 }
 
 
@@ -432,7 +435,7 @@ as List<String>,
 
 class BytesType extends TypeExpression {
   const BytesType({this.minimumLength, this.maximumLength}): super._();
-  
+
 
  final  int? minimumLength;
  final  int? maximumLength;
@@ -447,16 +450,18 @@ $BytesTypeCopyWith<BytesType> get copyWith => _$BytesTypeCopyWithImpl<BytesType>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BytesType&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BytesType&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minimumLength,maximumLength);
+int get hashCode {
+    return Object.hash(runtimeType,minimumLength,maximumLength);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.bytes(minimumLength: $minimumLength, maximumLength: $maximumLength)';
+    return 'TypeExpression.bytes(minimumLength: $minimumLength, maximumLength: $maximumLength)';
 }
 
 
@@ -500,7 +505,7 @@ as int?,
 
 class IntegerType extends TypeExpression {
   const IntegerType({required this.width, this.minimum, this.maximum}): super._();
-  
+
 
  final  IntegerWidth width;
  final  BigInt? minimum;
@@ -516,16 +521,18 @@ $IntegerTypeCopyWith<IntegerType> get copyWith => _$IntegerTypeCopyWithImpl<Inte
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IntegerType&&(identical(other.width, width) || other.width == width)&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IntegerType&&(identical(other.width, width) || other.width == width)&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,width,minimum,maximum);
+int get hashCode {
+    return Object.hash(runtimeType,width,minimum,maximum);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.integer(width: $width, minimum: $minimum, maximum: $maximum)';
+    return 'TypeExpression.integer(width: $width, minimum: $minimum, maximum: $maximum)';
 }
 
 
@@ -570,7 +577,7 @@ as BigInt?,
 
 class FloatType extends TypeExpression {
   const FloatType({required this.width, this.minimum, this.maximum}): super._();
-  
+
 
  final  FloatWidth width;
  final  double? minimum;
@@ -586,16 +593,18 @@ $FloatTypeCopyWith<FloatType> get copyWith => _$FloatTypeCopyWithImpl<FloatType>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FloatType&&(identical(other.width, width) || other.width == width)&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FloatType&&(identical(other.width, width) || other.width == width)&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,width,minimum,maximum);
+int get hashCode {
+    return Object.hash(runtimeType,width,minimum,maximum);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.float(width: $width, minimum: $minimum, maximum: $maximum)';
+    return 'TypeExpression.float(width: $width, minimum: $minimum, maximum: $maximum)';
 }
 
 
@@ -640,7 +649,7 @@ as double?,
 
 class DecimalType extends TypeExpression {
   const DecimalType({this.minimum, this.maximum, this.scale}): super._();
-  
+
 
  final  String? minimum;
  final  String? maximum;
@@ -656,16 +665,18 @@ $DecimalTypeCopyWith<DecimalType> get copyWith => _$DecimalTypeCopyWithImpl<Deci
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DecimalType&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.scale, scale) || other.scale == scale));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DecimalType&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.scale, scale) || other.scale == scale));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minimum,maximum,scale);
+int get hashCode {
+    return Object.hash(runtimeType,minimum,maximum,scale);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.decimal(minimum: $minimum, maximum: $maximum, scale: $scale)';
+    return 'TypeExpression.decimal(minimum: $minimum, maximum: $maximum, scale: $scale)';
 }
 
 
@@ -710,7 +721,7 @@ as int?,
 
 class TimestampType extends TypeExpression {
   const TimestampType({this.minimum, this.maximum}): super._();
-  
+
 
  final  DateTime? minimum;
  final  DateTime? maximum;
@@ -725,16 +736,18 @@ $TimestampTypeCopyWith<TimestampType> get copyWith => _$TimestampTypeCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimestampType&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TimestampType&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minimum,maximum);
+int get hashCode {
+    return Object.hash(runtimeType,minimum,maximum);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.timestamp(minimum: $minimum, maximum: $maximum)';
+    return 'TypeExpression.timestamp(minimum: $minimum, maximum: $maximum)';
 }
 
 
@@ -778,7 +791,7 @@ as DateTime?,
 
 class DurationType extends TypeExpression {
   const DurationType({this.minimum, this.maximum}): super._();
-  
+
 
  final  Duration? minimum;
  final  Duration? maximum;
@@ -793,16 +806,18 @@ $DurationTypeCopyWith<DurationType> get copyWith => _$DurationTypeCopyWithImpl<D
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DurationType&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DurationType&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minimum,maximum);
+int get hashCode {
+    return Object.hash(runtimeType,minimum,maximum);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.duration(minimum: $minimum, maximum: $maximum)';
+    return 'TypeExpression.duration(minimum: $minimum, maximum: $maximum)';
 }
 
 
@@ -845,8 +860,8 @@ as Duration?,
 
 
 class EnumType extends TypeExpression {
-  const EnumType({required this.valueType, required final  List<DataValue> values}): _values = values,super._();
-  
+  const EnumType({required this.valueType, required  List<DataValue> values}): _values = values,super._();
+
 
  final  TypeExpression valueType;
  final  List<DataValue> _values;
@@ -867,16 +882,18 @@ $EnumTypeCopyWith<EnumType> get copyWith => _$EnumTypeCopyWithImpl<EnumType>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumType&&(identical(other.valueType, valueType) || other.valueType == valueType)&&const DeepCollectionEquality().equals(other._values, _values));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumType&&(identical(other.valueType, valueType) || other.valueType == valueType)&&const DeepCollectionEquality().equals(other.values, _values));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,valueType,const DeepCollectionEquality().hash(_values));
+int get hashCode {
+    return Object.hash(runtimeType,valueType,const DeepCollectionEquality().hash(_values));
+}
 
 @override
 String toString() {
-  return 'TypeExpression.enumeration(valueType: $valueType, values: $values)';
+    return 'TypeExpression.enumeration(valueType: $valueType, values: $values)';
 }
 
 
@@ -917,7 +934,7 @@ as List<DataValue>,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get valueType {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.valueType, (value) {
     return _then(_self.copyWith(valueType: value));
   });
@@ -929,7 +946,7 @@ $TypeExpressionCopyWith<$Res> get valueType {
 
 class ListType extends TypeExpression {
   const ListType({required this.element, this.minimumLength, this.maximumLength, this.unique = false}): super._();
-  
+
 
  final  TypeExpression element;
  final  int? minimumLength;
@@ -946,16 +963,18 @@ $ListTypeCopyWith<ListType> get copyWith => _$ListTypeCopyWithImpl<ListType>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ListType&&(identical(other.element, element) || other.element == element)&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength)&&(identical(other.unique, unique) || other.unique == unique));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ListType&&(identical(other.element, element) || other.element == element)&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength)&&(identical(other.unique, unique) || other.unique == unique));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,element,minimumLength,maximumLength,unique);
+int get hashCode {
+    return Object.hash(runtimeType,element,minimumLength,maximumLength,unique);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.list(element: $element, minimumLength: $minimumLength, maximumLength: $maximumLength, unique: $unique)';
+    return 'TypeExpression.list(element: $element, minimumLength: $minimumLength, maximumLength: $maximumLength, unique: $unique)';
 }
 
 
@@ -998,7 +1017,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get element {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.element, (value) {
     return _then(_self.copyWith(element: value));
   });
@@ -1010,7 +1029,7 @@ $TypeExpressionCopyWith<$Res> get element {
 
 class MapType extends TypeExpression {
   const MapType({required this.key, required this.value, this.minimumLength, this.maximumLength}): super._();
-  
+
 
  final  TypeExpression key;
  final  TypeExpression value;
@@ -1027,16 +1046,18 @@ $MapTypeCopyWith<MapType> get copyWith => _$MapTypeCopyWithImpl<MapType>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapType&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value)&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MapType&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value)&&(identical(other.minimumLength, minimumLength) || other.minimumLength == minimumLength)&&(identical(other.maximumLength, maximumLength) || other.maximumLength == maximumLength));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,value,minimumLength,maximumLength);
+int get hashCode {
+    return Object.hash(runtimeType,key,value,minimumLength,maximumLength);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.map(key: $key, value: $value, minimumLength: $minimumLength, maximumLength: $maximumLength)';
+    return 'TypeExpression.map(key: $key, value: $value, minimumLength: $minimumLength, maximumLength: $maximumLength)';
 }
 
 
@@ -1079,7 +1100,7 @@ as int?,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get key {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });
@@ -1088,7 +1109,7 @@ $TypeExpressionCopyWith<$Res> get key {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get value {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -1099,8 +1120,8 @@ $TypeExpressionCopyWith<$Res> get value {
 
 
 class RecordType extends TypeExpression {
-  const RecordType({required final  Map<String, TypeField> fields, this.closed = true}): _fields = fields,super._();
-  
+  const RecordType({required  Map<String, TypeField> fields, this.closed = true}): _fields = fields,super._();
+
 
  final  Map<String, TypeField> _fields;
  Map<String, TypeField> get fields {
@@ -1121,16 +1142,18 @@ $RecordTypeCopyWith<RecordType> get copyWith => _$RecordTypeCopyWithImpl<RecordT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordType&&const DeepCollectionEquality().equals(other._fields, _fields)&&(identical(other.closed, closed) || other.closed == closed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordType&&const DeepCollectionEquality().equals(other.fields, _fields)&&(identical(other.closed, closed) || other.closed == closed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields),closed);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields),closed);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.record(fields: $fields, closed: $closed)';
+    return 'TypeExpression.record(fields: $fields, closed: $closed)';
 }
 
 
@@ -1174,7 +1197,7 @@ as bool,
 
 class NamedType extends TypeExpression {
   const NamedType(this.reference): super._();
-  
+
 
  final  ResolvedTypeRef reference;
 
@@ -1188,16 +1211,18 @@ $NamedTypeCopyWith<NamedType> get copyWith => _$NamedTypeCopyWithImpl<NamedType>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NamedType&&(identical(other.reference, reference) || other.reference == reference));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NamedType&&(identical(other.reference, reference) || other.reference == reference));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reference);
+int get hashCode {
+    return Object.hash(runtimeType,reference);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.named(reference: $reference)';
+    return 'TypeExpression.named(reference: $reference)';
 }
 
 
@@ -1237,7 +1262,7 @@ as ResolvedTypeRef,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get reference {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.reference, (value) {
     return _then(_self.copyWith(reference: value));
   });
@@ -1249,7 +1274,7 @@ $ResolvedTypeRefCopyWith<$Res> get reference {
 
 class ParameterType extends TypeExpression {
   const ParameterType(this.name): assert(name != "", 'Parameter name must not be empty.'),super._();
-  
+
 
  final  String name;
 
@@ -1263,16 +1288,18 @@ $ParameterTypeCopyWith<ParameterType> get copyWith => _$ParameterTypeCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ParameterType&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ParameterType&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name);
+int get hashCode {
+    return Object.hash(runtimeType,name);
+}
 
 @override
 String toString() {
-  return 'TypeExpression.parameter(name: $name)';
+    return 'TypeExpression.parameter(name: $name)';
 }
 
 
@@ -1324,16 +1351,21 @@ $TypeFieldCopyWith<TypeField> get copyWith => _$TypeFieldCopyWithImpl<TypeField>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeField&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.initialValue, initialValue) || other.initialValue == initialValue));
+  final _this = this as TypeField;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeField&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.initialValue, _this.initialValue) || other.initialValue == _this.initialValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,type,initialValue);
+int get hashCode {
+  final _this = this as TypeField;
+  return Object.hash(runtimeType,_this.name,_this.type,_this.initialValue);
+}
 
 @override
 String toString() {
-  return 'TypeField(name: $name, type: $type, initialValue: $initialValue)';
+  final _this = this as TypeField;
+  return 'TypeField(name: ${_this.name}, type: ${_this.type}, initialValue: ${_this.initialValue})';
 }
 
 
@@ -1362,7 +1394,7 @@ class _$TypeFieldCopyWithImpl<$Res>
 /// Create a copy of TypeField
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? type = null,Object? initialValue = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TypeField(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as TypeExpression,initialValue: freezed == initialValue ? _self.initialValue : initialValue // ignore: cast_nullable_to_non_nullable
@@ -1374,7 +1406,7 @@ as DataValue?,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -1529,7 +1561,7 @@ return $default(_that.name,_that.type,_that.initialValue);case _:
 
 class _TypeField implements TypeField {
   const _TypeField({required this.name, required this.type, this.initialValue});
-  
+
 
 @override final  String name;
 @override final  TypeExpression type;
@@ -1545,16 +1577,18 @@ _$TypeFieldCopyWith<_TypeField> get copyWith => __$TypeFieldCopyWithImpl<_TypeFi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeField&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.initialValue, initialValue) || other.initialValue == initialValue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeField&&(identical(other.name, name) || other.name == name)&&(identical(other.type, type) || other.type == type)&&(identical(other.initialValue, initialValue) || other.initialValue == initialValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,type,initialValue);
+int get hashCode {
+    return Object.hash(runtimeType,name,type,initialValue);
+}
 
 @override
 String toString() {
-  return 'TypeField(name: $name, type: $type, initialValue: $initialValue)';
+    return 'TypeField(name: $name, type: $type, initialValue: $initialValue)';
 }
 
 
@@ -1596,7 +1630,7 @@ as DataValue?,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });

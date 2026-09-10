@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'action_shortcuts.dart';
@@ -9,12 +9,13 @@ part of 'action_shortcuts.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ActionShortcut implements DiagnosticableTreeMixin {
 
- String get id; String get label; String get description; int get priority; Widget? get icon; ActionInvoke? get onInvoke; bool get show; bool get registerShortcut; GlobalKey? get owner;
+ String get id; String get label; String get description; int get priority; Widget? get icon; ActionInvoke? get onInvoke; bool get show; bool get registerShortcut; GlobalKey<State<StatefulWidget>>? get owner;
 /// Create a copy of ActionShortcut
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -24,23 +25,29 @@ $ActionShortcutCopyWith<ActionShortcut> get copyWith => _$ActionShortcutCopyWith
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as ActionShortcut;
   properties
     ..add(DiagnosticsProperty('type', 'ActionShortcut'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('label', label))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('priority', priority))..add(DiagnosticsProperty('icon', icon))..add(DiagnosticsProperty('onInvoke', onInvoke))..add(DiagnosticsProperty('show', show))..add(DiagnosticsProperty('registerShortcut', registerShortcut))..add(DiagnosticsProperty('owner', owner));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('label', _this.label))..add(DiagnosticsProperty('description', _this.description))..add(DiagnosticsProperty('priority', _this.priority))..add(DiagnosticsProperty('icon', _this.icon))..add(DiagnosticsProperty('onInvoke', _this.onInvoke))..add(DiagnosticsProperty('show', _this.show))..add(DiagnosticsProperty('registerShortcut', _this.registerShortcut))..add(DiagnosticsProperty('owner', _this.owner));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActionShortcut&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.onInvoke, onInvoke) || other.onInvoke == onInvoke)&&(identical(other.show, show) || other.show == show)&&(identical(other.registerShortcut, registerShortcut) || other.registerShortcut == registerShortcut)&&(identical(other.owner, owner) || other.owner == owner));
+  final _this = this as ActionShortcut;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActionShortcut&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.priority, _this.priority) || other.priority == _this.priority)&&(identical(other.icon, _this.icon) || other.icon == _this.icon)&&(identical(other.onInvoke, _this.onInvoke) || other.onInvoke == _this.onInvoke)&&(identical(other.show, _this.show) || other.show == _this.show)&&(identical(other.registerShortcut, _this.registerShortcut) || other.registerShortcut == _this.registerShortcut)&&(identical(other.owner, _this.owner) || other.owner == _this.owner));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,description,priority,icon,onInvoke,show,registerShortcut,owner);
+int get hashCode {
+  final _this = this as ActionShortcut;
+  return Object.hash(runtimeType,_this.id,_this.label,_this.description,_this.priority,_this.icon,_this.onInvoke,_this.show,_this.registerShortcut,_this.owner);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ActionShortcut(id: $id, label: $label, description: $description, priority: $priority, icon: $icon, onInvoke: $onInvoke, show: $show, registerShortcut: $registerShortcut, owner: $owner)';
+  final _this = this as ActionShortcut;
+  return 'ActionShortcut(id: ${_this.id}, label: ${_this.label}, description: ${_this.description}, priority: ${_this.priority}, icon: ${_this.icon}, onInvoke: ${_this.onInvoke}, show: ${_this.show}, registerShortcut: ${_this.registerShortcut}, owner: ${_this.owner})';
 }
 
 
@@ -51,7 +58,7 @@ abstract mixin class $ActionShortcutCopyWith<$Res>  {
   factory $ActionShortcutCopyWith(ActionShortcut value, $Res Function(ActionShortcut) _then) = _$ActionShortcutCopyWithImpl;
 @useResult
 $Res call({
- String id, String label, String description, int priority, Widget? icon, FutureOr<void> Function(WidgetRef)? onInvoke, bool show, bool registerShortcut, GlobalKey<State<StatefulWidget>>? owner
+ String id, String label, String description, int priority, Widget? icon, FutureOr<void> Function(WidgetRef ref)? onInvoke, bool show, bool registerShortcut, GlobalKey<State<StatefulWidget>>? owner
 });
 
 
@@ -76,7 +83,7 @@ as String,description: null == description ? _self.description : description // 
 as String,priority: null == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
 as int,icon: freezed == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as Widget?,onInvoke: freezed == onInvoke ? _self.onInvoke : onInvoke // ignore: cast_nullable_to_non_nullable
-as FutureOr<void> Function(WidgetRef)?,show: null == show ? _self.show : show // ignore: cast_nullable_to_non_nullable
+as FutureOr<void> Function(WidgetRef ref)?,show: null == show ? _self.show : show // ignore: cast_nullable_to_non_nullable
 as bool,registerShortcut: null == registerShortcut ? _self.registerShortcut : registerShortcut // ignore: cast_nullable_to_non_nullable
 as bool,owner: freezed == owner ? _self.owner : owner // ignore: cast_nullable_to_non_nullable
 as GlobalKey<State<StatefulWidget>>?,
@@ -167,7 +174,7 @@ return intent(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String label,  String description,  List<ShortcutActivator> activators,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey? owner)?  $default,{TResult Function( String id,  String label,  String description,  Type intent,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey? owner)?  intent,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String label,  String description,  List<ShortcutActivator> activators,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey<State<StatefulWidget>>? owner)?  $default,{TResult Function( String id,  String label,  String description,  Type intent,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey<State<StatefulWidget>>? owner)?  intent,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ActivatorActionShortcut() when $default != null:
 return $default(_that.id,_that.label,_that.description,_that.activators,_that.priority,_that.icon,_that.onInvoke,_that.show,_that.registerShortcut,_that.owner);case IntentActionShortcut() when intent != null:
@@ -189,7 +196,7 @@ return intent(_that.id,_that.label,_that.description,_that.intent,_that.priority
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String label,  String description,  List<ShortcutActivator> activators,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey? owner)  $default,{required TResult Function( String id,  String label,  String description,  Type intent,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey? owner)  intent,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String label,  String description,  List<ShortcutActivator> activators,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey<State<StatefulWidget>>? owner)  $default,{required TResult Function( String id,  String label,  String description,  Type intent,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey<State<StatefulWidget>>? owner)  intent,}) {final _that = this;
 switch (_that) {
 case ActivatorActionShortcut():
 return $default(_that.id,_that.label,_that.description,_that.activators,_that.priority,_that.icon,_that.onInvoke,_that.show,_that.registerShortcut,_that.owner);case IntentActionShortcut():
@@ -210,7 +217,7 @@ return intent(_that.id,_that.label,_that.description,_that.intent,_that.priority
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String label,  String description,  List<ShortcutActivator> activators,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey? owner)?  $default,{TResult? Function( String id,  String label,  String description,  Type intent,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey? owner)?  intent,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String label,  String description,  List<ShortcutActivator> activators,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey<State<StatefulWidget>>? owner)?  $default,{TResult? Function( String id,  String label,  String description,  Type intent,  int priority,  Widget? icon,  ActionInvoke? onInvoke,  bool show,  bool registerShortcut,  GlobalKey<State<StatefulWidget>>? owner)?  intent,}) {final _that = this;
 switch (_that) {
 case ActivatorActionShortcut() when $default != null:
 return $default(_that.id,_that.label,_that.description,_that.activators,_that.priority,_that.icon,_that.onInvoke,_that.show,_that.registerShortcut,_that.owner);case IntentActionShortcut() when intent != null:
@@ -226,8 +233,8 @@ return intent(_that.id,_that.label,_that.description,_that.intent,_that.priority
 
 
 class ActivatorActionShortcut extends ActionShortcut with DiagnosticableTreeMixin {
-  const ActivatorActionShortcut({required this.id, required this.label, required this.description, required final  List<ShortcutActivator> activators, required this.priority, this.icon, this.onInvoke, this.show = true, this.registerShortcut = true, this.owner}): assert(id != "", 'ID must not be empty.'),_activators = activators,super._();
-  
+  const ActivatorActionShortcut({required this.id, required this.label, required this.description, required  List<ShortcutActivator> activators, required this.priority, this.icon, this.onInvoke, this.show = true, this.registerShortcut = true, this.owner}): assert(id != "", 'ID must not be empty.'),_activators = activators,super._();
+
 
 @override final  String id;
 @override final  String label;
@@ -244,7 +251,7 @@ class ActivatorActionShortcut extends ActionShortcut with DiagnosticableTreeMixi
 @override final  ActionInvoke? onInvoke;
 @override@JsonKey() final  bool show;
 @override@JsonKey() final  bool registerShortcut;
-@override final  GlobalKey? owner;
+@override final  GlobalKey<State<StatefulWidget>>? owner;
 
 /// Create a copy of ActionShortcut
 /// with the given fields replaced by the non-null parameter values.
@@ -255,23 +262,25 @@ $ActivatorActionShortcutCopyWith<ActivatorActionShortcut> get copyWith => _$Acti
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'ActionShortcut'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('label', label))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('activators', activators))..add(DiagnosticsProperty('priority', priority))..add(DiagnosticsProperty('icon', icon))..add(DiagnosticsProperty('onInvoke', onInvoke))..add(DiagnosticsProperty('show', show))..add(DiagnosticsProperty('registerShortcut', registerShortcut))..add(DiagnosticsProperty('owner', owner));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivatorActionShortcut&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._activators, _activators)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.onInvoke, onInvoke) || other.onInvoke == onInvoke)&&(identical(other.show, show) || other.show == show)&&(identical(other.registerShortcut, registerShortcut) || other.registerShortcut == registerShortcut)&&(identical(other.owner, owner) || other.owner == owner));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivatorActionShortcut&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.activators, _activators)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.onInvoke, onInvoke) || other.onInvoke == onInvoke)&&(identical(other.show, show) || other.show == show)&&(identical(other.registerShortcut, registerShortcut) || other.registerShortcut == registerShortcut)&&(identical(other.owner, owner) || other.owner == owner));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,description,const DeepCollectionEquality().hash(_activators),priority,icon,onInvoke,show,registerShortcut,owner);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,description,const DeepCollectionEquality().hash(_activators),priority,icon,onInvoke,show,registerShortcut,owner);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ActionShortcut(id: $id, label: $label, description: $description, activators: $activators, priority: $priority, icon: $icon, onInvoke: $onInvoke, show: $show, registerShortcut: $registerShortcut, owner: $owner)';
+    return 'ActionShortcut(id: $id, label: $label, description: $description, activators: $activators, priority: $priority, icon: $icon, onInvoke: $onInvoke, show: $show, registerShortcut: $registerShortcut, owner: $owner)';
 }
 
 
@@ -282,7 +291,7 @@ abstract mixin class $ActivatorActionShortcutCopyWith<$Res> implements $ActionSh
   factory $ActivatorActionShortcutCopyWith(ActivatorActionShortcut value, $Res Function(ActivatorActionShortcut) _then) = _$ActivatorActionShortcutCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String label, String description, List<ShortcutActivator> activators, int priority, Widget? icon, ActionInvoke? onInvoke, bool show, bool registerShortcut, GlobalKey? owner
+ String id, String label, String description, List<ShortcutActivator> activators, int priority, Widget? icon, ActionInvoke? onInvoke, bool show, bool registerShortcut, GlobalKey<State<StatefulWidget>>? owner
 });
 
 
@@ -311,7 +320,7 @@ as Widget?,onInvoke: freezed == onInvoke ? _self.onInvoke : onInvoke // ignore: 
 as ActionInvoke?,show: null == show ? _self.show : show // ignore: cast_nullable_to_non_nullable
 as bool,registerShortcut: null == registerShortcut ? _self.registerShortcut : registerShortcut // ignore: cast_nullable_to_non_nullable
 as bool,owner: freezed == owner ? _self.owner : owner // ignore: cast_nullable_to_non_nullable
-as GlobalKey?,
+as GlobalKey<State<StatefulWidget>>?,
   ));
 }
 
@@ -323,7 +332,7 @@ as GlobalKey?,
 
 class IntentActionShortcut extends ActionShortcut with DiagnosticableTreeMixin {
   const IntentActionShortcut({required this.id, required this.label, required this.description, required this.intent, required this.priority, this.icon, this.onInvoke, this.show = true, this.registerShortcut = true, this.owner}): assert(id != "", 'ID must not be empty.'),super._();
-  
+
 
 @override final  String id;
 @override final  String label;
@@ -334,7 +343,7 @@ class IntentActionShortcut extends ActionShortcut with DiagnosticableTreeMixin {
 @override final  ActionInvoke? onInvoke;
 @override@JsonKey() final  bool show;
 @override@JsonKey() final  bool registerShortcut;
-@override final  GlobalKey? owner;
+@override final  GlobalKey<State<StatefulWidget>>? owner;
 
 /// Create a copy of ActionShortcut
 /// with the given fields replaced by the non-null parameter values.
@@ -345,23 +354,25 @@ $IntentActionShortcutCopyWith<IntentActionShortcut> get copyWith => _$IntentActi
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'ActionShortcut.intent'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('label', label))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('intent', intent))..add(DiagnosticsProperty('priority', priority))..add(DiagnosticsProperty('icon', icon))..add(DiagnosticsProperty('onInvoke', onInvoke))..add(DiagnosticsProperty('show', show))..add(DiagnosticsProperty('registerShortcut', registerShortcut))..add(DiagnosticsProperty('owner', owner));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IntentActionShortcut&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&(identical(other.intent, intent) || other.intent == intent)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.onInvoke, onInvoke) || other.onInvoke == onInvoke)&&(identical(other.show, show) || other.show == show)&&(identical(other.registerShortcut, registerShortcut) || other.registerShortcut == registerShortcut)&&(identical(other.owner, owner) || other.owner == owner));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IntentActionShortcut&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&(identical(other.intent, intent) || other.intent == intent)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.onInvoke, onInvoke) || other.onInvoke == onInvoke)&&(identical(other.show, show) || other.show == show)&&(identical(other.registerShortcut, registerShortcut) || other.registerShortcut == registerShortcut)&&(identical(other.owner, owner) || other.owner == owner));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,description,intent,priority,icon,onInvoke,show,registerShortcut,owner);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,description,intent,priority,icon,onInvoke,show,registerShortcut,owner);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'ActionShortcut.intent(id: $id, label: $label, description: $description, intent: $intent, priority: $priority, icon: $icon, onInvoke: $onInvoke, show: $show, registerShortcut: $registerShortcut, owner: $owner)';
+    return 'ActionShortcut.intent(id: $id, label: $label, description: $description, intent: $intent, priority: $priority, icon: $icon, onInvoke: $onInvoke, show: $show, registerShortcut: $registerShortcut, owner: $owner)';
 }
 
 
@@ -372,7 +383,7 @@ abstract mixin class $IntentActionShortcutCopyWith<$Res> implements $ActionShort
   factory $IntentActionShortcutCopyWith(IntentActionShortcut value, $Res Function(IntentActionShortcut) _then) = _$IntentActionShortcutCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String label, String description, Type intent, int priority, Widget? icon, ActionInvoke? onInvoke, bool show, bool registerShortcut, GlobalKey? owner
+ String id, String label, String description, Type intent, int priority, Widget? icon, ActionInvoke? onInvoke, bool show, bool registerShortcut, GlobalKey<State<StatefulWidget>>? owner
 });
 
 
@@ -401,7 +412,7 @@ as Widget?,onInvoke: freezed == onInvoke ? _self.onInvoke : onInvoke // ignore: 
 as ActionInvoke?,show: null == show ? _self.show : show // ignore: cast_nullable_to_non_nullable
 as bool,registerShortcut: null == registerShortcut ? _self.registerShortcut : registerShortcut // ignore: cast_nullable_to_non_nullable
 as bool,owner: freezed == owner ? _self.owner : owner // ignore: cast_nullable_to_non_nullable
-as GlobalKey?,
+as GlobalKey<State<StatefulWidget>>?,
   ));
 }
 

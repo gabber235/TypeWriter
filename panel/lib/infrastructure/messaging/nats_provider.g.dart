@@ -175,7 +175,7 @@ abstract class _$Nats extends $Notifier<NatsClient> {
   NatsClient build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<NatsClient, NatsClient>;
     final element =
         ref.element
@@ -185,7 +185,7 @@ abstract class _$Nats extends $Notifier<NatsClient> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -227,7 +227,7 @@ abstract class _$NatsLifecycle extends $Notifier<NatsConnectionState> {
   NatsConnectionState build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<NatsConnectionState, NatsConnectionState>;
     final element =
         ref.element
@@ -237,6 +237,6 @@ abstract class _$NatsLifecycle extends $Notifier<NatsConnectionState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

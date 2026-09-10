@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'presentation_model.dart';
@@ -9,6 +9,7 @@ part of 'presentation_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$PresentationInput {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationInput);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationInput);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationInput()';
+    return 'PresentationInput()';
 }
 
 
@@ -176,7 +177,7 @@ return edit(_that.owner,_that.path);case _:
 
 class PresentationValueInput implements PresentationInput {
   const PresentationValueInput({required this.type, required this.value});
-  
+
 
  final  TypeExpression type;
  final  EditorValue value;
@@ -191,16 +192,18 @@ $PresentationValueInputCopyWith<PresentationValueInput> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationValueInput&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationValueInput&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,value);
+int get hashCode {
+    return Object.hash(runtimeType,type,value);
+}
 
 @override
 String toString() {
-  return 'PresentationInput.value(type: $type, value: $value)';
+    return 'PresentationInput.value(type: $type, value: $value)';
 }
 
 
@@ -241,7 +244,7 @@ as EditorValue,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -250,7 +253,7 @@ $TypeExpressionCopyWith<$Res> get type {
 @override
 @pragma('vm:prefer-inline')
 $EditorValueCopyWith<$Res> get value {
-  
+
   return $EditorValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -262,7 +265,7 @@ $EditorValueCopyWith<$Res> get value {
 
 class PresentationEditInput implements PresentationInput {
   const PresentationEditInput(this.owner, {this.path = DataPath.root});
-  
+
 
  final  EditOwner owner;
 @JsonKey() final  DataPath path;
@@ -277,16 +280,18 @@ $PresentationEditInputCopyWith<PresentationEditInput> get copyWith => _$Presenta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationEditInput&&(identical(other.owner, owner) || other.owner == owner)&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationEditInput&&(identical(other.owner, owner) || other.owner == owner)&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,owner,path);
+int get hashCode {
+    return Object.hash(runtimeType,owner,path);
+}
 
 @override
 String toString() {
-  return 'PresentationInput.edit(owner: $owner, path: $path)';
+    return 'PresentationInput.edit(owner: $owner, path: $path)';
 }
 
 
@@ -327,7 +332,7 @@ as DataPath,
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get path {
-  
+
   return $DataPathCopyWith<$Res>(_self.path, (value) {
     return _then(_self.copyWith(path: value));
   });
@@ -348,16 +353,21 @@ $PresentationModelCopyWith<PresentationModel> get copyWith => _$PresentationMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationModel&&(identical(other.catalog, catalog) || other.catalog == catalog)&&const DeepCollectionEquality().equals(other.inputs, inputs)&&(identical(other.root, root) || other.root == root)&&const DeepCollectionEquality().equals(other.ownerLabels, ownerLabels)&&const DeepCollectionEquality().equals(other.presentations, presentations)&&const DeepCollectionEquality().equals(other.collections, collections)&&const DeepCollectionEquality().equals(other.diagnostics, diagnostics));
+  final _this = this as PresentationModel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationModel&&(identical(other.catalog, _this.catalog) || other.catalog == _this.catalog)&&const DeepCollectionEquality().equals(other.inputs, _this.inputs)&&(identical(other.root, _this.root) || other.root == _this.root)&&const DeepCollectionEquality().equals(other.ownerLabels, _this.ownerLabels)&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&const DeepCollectionEquality().equals(other.collections, _this.collections)&&const DeepCollectionEquality().equals(other.diagnostics, _this.diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,catalog,const DeepCollectionEquality().hash(inputs),root,const DeepCollectionEquality().hash(ownerLabels),const DeepCollectionEquality().hash(presentations),const DeepCollectionEquality().hash(collections),const DeepCollectionEquality().hash(diagnostics));
+int get hashCode {
+  final _this = this as PresentationModel;
+  return Object.hash(runtimeType,_this.catalog,const DeepCollectionEquality().hash(_this.inputs),_this.root,const DeepCollectionEquality().hash(_this.ownerLabels),const DeepCollectionEquality().hash(_this.presentations),const DeepCollectionEquality().hash(_this.collections),const DeepCollectionEquality().hash(_this.diagnostics));
+}
 
 @override
 String toString() {
-  return 'PresentationModel(catalog: $catalog, inputs: $inputs, root: $root, ownerLabels: $ownerLabels, presentations: $presentations, collections: $collections, diagnostics: $diagnostics)';
+  final _this = this as PresentationModel;
+  return 'PresentationModel(catalog: ${_this.catalog}, inputs: ${_this.inputs}, root: ${_this.root}, ownerLabels: ${_this.ownerLabels}, presentations: ${_this.presentations}, collections: ${_this.collections}, diagnostics: ${_this.diagnostics})';
 }
 
 
@@ -386,7 +396,7 @@ class _$PresentationModelCopyWithImpl<$Res>
 /// Create a copy of PresentationModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? catalog = null,Object? inputs = null,Object? root = null,Object? ownerLabels = null,Object? presentations = null,Object? collections = null,Object? diagnostics = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationModel(
 catalog: null == catalog ? _self.catalog : catalog // ignore: cast_nullable_to_non_nullable
 as TypeCatalog,inputs: null == inputs ? _self.inputs : inputs // ignore: cast_nullable_to_non_nullable
 as Map<BindingId, PresentationInput>,root: null == root ? _self.root : root // ignore: cast_nullable_to_non_nullable
@@ -402,7 +412,7 @@ as List<TypeDiagnostic>,
 @override
 @pragma('vm:prefer-inline')
 $TypeCatalogCopyWith<$Res> get catalog {
-  
+
   return $TypeCatalogCopyWith<$Res>(_self.catalog, (value) {
     return _then(_self.copyWith(catalog: value));
   });
@@ -411,7 +421,7 @@ $TypeCatalogCopyWith<$Res> get catalog {
 @override
 @pragma('vm:prefer-inline')
 $PresentationNodeCopyWith<$Res> get root {
-  
+
   return $PresentationNodeCopyWith<$Res>(_self.root, (value) {
     return _then(_self.copyWith(root: value));
   });
@@ -553,8 +563,8 @@ return $default(_that.catalog,_that.inputs,_that.root,_that.ownerLabels,_that.pr
 
 
 class _PresentationModel extends PresentationModel {
-  const _PresentationModel({required this.catalog, required final  Map<BindingId, PresentationInput> inputs, required this.root, final  Map<EditOwner, String> ownerLabels = const {}, final  List<PresentationDefinition> presentations = const [], final  List<PresentationCollectionSource> collections = const [], final  List<TypeDiagnostic> diagnostics = const []}): _inputs = inputs,_ownerLabels = ownerLabels,_presentations = presentations,_collections = collections,_diagnostics = diagnostics,super._();
-  
+  const _PresentationModel({required this.catalog, required  Map<BindingId, PresentationInput> inputs, required this.root,  Map<EditOwner, String> ownerLabels = const {},  List<PresentationDefinition> presentations = const [],  List<PresentationCollectionSource> collections = const [],  List<TypeDiagnostic> diagnostics = const []}): _inputs = inputs,_ownerLabels = ownerLabels,_presentations = presentations,_collections = collections,_diagnostics = diagnostics,super._();
+
 
 @override final  TypeCatalog catalog;
  final  Map<BindingId, PresentationInput> _inputs;
@@ -604,16 +614,18 @@ _$PresentationModelCopyWith<_PresentationModel> get copyWith => __$PresentationM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationModel&&(identical(other.catalog, catalog) || other.catalog == catalog)&&const DeepCollectionEquality().equals(other._inputs, _inputs)&&(identical(other.root, root) || other.root == root)&&const DeepCollectionEquality().equals(other._ownerLabels, _ownerLabels)&&const DeepCollectionEquality().equals(other._presentations, _presentations)&&const DeepCollectionEquality().equals(other._collections, _collections)&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationModel&&(identical(other.catalog, catalog) || other.catalog == catalog)&&const DeepCollectionEquality().equals(other.inputs, _inputs)&&(identical(other.root, root) || other.root == root)&&const DeepCollectionEquality().equals(other.ownerLabels, _ownerLabels)&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&const DeepCollectionEquality().equals(other.collections, _collections)&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,catalog,const DeepCollectionEquality().hash(_inputs),root,const DeepCollectionEquality().hash(_ownerLabels),const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_collections),const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,catalog,const DeepCollectionEquality().hash(_inputs),root,const DeepCollectionEquality().hash(_ownerLabels),const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_collections),const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'PresentationModel(catalog: $catalog, inputs: $inputs, root: $root, ownerLabels: $ownerLabels, presentations: $presentations, collections: $collections, diagnostics: $diagnostics)';
+    return 'PresentationModel(catalog: $catalog, inputs: $inputs, root: $root, ownerLabels: $ownerLabels, presentations: $presentations, collections: $collections, diagnostics: $diagnostics)';
 }
 
 
@@ -659,7 +671,7 @@ as List<TypeDiagnostic>,
 @override
 @pragma('vm:prefer-inline')
 $TypeCatalogCopyWith<$Res> get catalog {
-  
+
   return $TypeCatalogCopyWith<$Res>(_self.catalog, (value) {
     return _then(_self.copyWith(catalog: value));
   });
@@ -668,7 +680,7 @@ $TypeCatalogCopyWith<$Res> get catalog {
 @override
 @pragma('vm:prefer-inline')
 $PresentationNodeCopyWith<$Res> get root {
-  
+
   return $PresentationNodeCopyWith<$Res>(_self.root, (value) {
     return _then(_self.copyWith(root: value));
   });

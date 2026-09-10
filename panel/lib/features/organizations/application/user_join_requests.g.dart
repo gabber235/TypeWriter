@@ -40,7 +40,7 @@ abstract class _$UserJoinRequests
   Stream<List<UserJoinRequest>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<List<UserJoinRequest>>, List<UserJoinRequest>>;
@@ -55,6 +55,6 @@ abstract class _$UserJoinRequests
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'page_elements.dart';
@@ -9,6 +9,7 @@ part of 'page_elements.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$PageElement {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElement);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElement);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PageElement()';
+    return 'PageElement()';
 }
 
 
@@ -182,7 +183,7 @@ return cue(_that.cue);case _:
 
 class PageElementEntry implements PageElement {
   const PageElementEntry({required this.entry});
-  
+
 
  final  PageEntry entry;
 
@@ -196,16 +197,18 @@ $PageElementEntryCopyWith<PageElementEntry> get copyWith => _$PageElementEntryCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementEntry&&(identical(other.entry, entry) || other.entry == entry));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementEntry&&(identical(other.entry, entry) || other.entry == entry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,entry);
+int get hashCode {
+    return Object.hash(runtimeType,entry);
+}
 
 @override
 String toString() {
-  return 'PageElement.entry(entry: $entry)';
+    return 'PageElement.entry(entry: $entry)';
 }
 
 
@@ -245,7 +248,7 @@ as PageEntry,
 @override
 @pragma('vm:prefer-inline')
 $PageEntryCopyWith<$Res> get entry {
-  
+
   return $PageEntryCopyWith<$Res>(_self.entry, (value) {
     return _then(_self.copyWith(entry: value));
   });
@@ -257,7 +260,7 @@ $PageEntryCopyWith<$Res> get entry {
 
 class PageElementCue implements PageElement {
   const PageElementCue({required this.cue});
-  
+
 
  final  Cue cue;
 
@@ -271,16 +274,18 @@ $PageElementCueCopyWith<PageElementCue> get copyWith => _$PageElementCueCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementCue&&(identical(other.cue, cue) || other.cue == cue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementCue&&(identical(other.cue, cue) || other.cue == cue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cue);
+int get hashCode {
+    return Object.hash(runtimeType,cue);
+}
 
 @override
 String toString() {
-  return 'PageElement.cue(cue: $cue)';
+    return 'PageElement.cue(cue: $cue)';
 }
 
 
@@ -320,7 +325,7 @@ as Cue,
 @override
 @pragma('vm:prefer-inline')
 $CueCopyWith<$Res> get cue {
-  
+
   return $CueCopyWith<$Res>(_self.cue, (value) {
     return _then(_self.copyWith(cue: value));
   });
@@ -344,16 +349,21 @@ $ElementLinkCopyWith<ElementLink> get copyWith => _$ElementLinkCopyWithImpl<Elem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ElementLink&&(identical(other.linkId, linkId) || other.linkId == linkId)&&(identical(other.otherId, otherId) || other.otherId == otherId)&&(identical(other.path, path) || other.path == path));
+  final _this = this as ElementLink;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ElementLink&&(identical(other.linkId, _this.linkId) || other.linkId == _this.linkId)&&(identical(other.otherId, _this.otherId) || other.otherId == _this.otherId)&&(identical(other.path, _this.path) || other.path == _this.path));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,linkId,otherId,path);
+int get hashCode {
+  final _this = this as ElementLink;
+  return Object.hash(runtimeType,_this.linkId,_this.otherId,_this.path);
+}
 
 @override
 String toString() {
-  return 'ElementLink(linkId: $linkId, otherId: $otherId, path: $path)';
+  final _this = this as ElementLink;
+  return 'ElementLink(linkId: ${_this.linkId}, otherId: ${_this.otherId}, path: ${_this.path})';
 }
 
 
@@ -382,7 +392,7 @@ class _$ElementLinkCopyWithImpl<$Res>
 /// Create a copy of ElementLink
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? linkId = null,Object? otherId = null,Object? path = null,}) {
-  return _then(_self.copyWith(
+  return _then(ElementLink(
 linkId: null == linkId ? _self.linkId : linkId // ignore: cast_nullable_to_non_nullable
 as String,otherId: null == otherId ? _self.otherId : otherId // ignore: cast_nullable_to_non_nullable
 as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
@@ -547,16 +557,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ElementLink&&(identical(other.linkId, linkId) || other.linkId == linkId)&&(identical(other.otherId, otherId) || other.otherId == otherId)&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ElementLink&&(identical(other.linkId, linkId) || other.linkId == linkId)&&(identical(other.otherId, otherId) || other.otherId == otherId)&&(identical(other.path, path) || other.path == path));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,linkId,otherId,path);
+int get hashCode {
+    return Object.hash(runtimeType,linkId,otherId,path);
+}
 
 @override
 String toString() {
-  return 'ElementLink(linkId: $linkId, otherId: $otherId, path: $path)';
+    return 'ElementLink(linkId: $linkId, otherId: $otherId, path: $path)';
 }
 
 

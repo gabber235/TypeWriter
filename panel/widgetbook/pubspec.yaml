@@ -4,7 +4,7 @@ publish_to: "none"
 version: 0.0.0+1
 
 environment:
-  sdk: ">=3.11.0 <4.0.0"
+  sdk: ">=3.13.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -15,7 +15,7 @@ dependencies:
     path: ../
   typewriter_testkit:
     path: ../testkit
-  hooks_riverpod: 3.3.1
+  hooks_riverpod: 3.4.3
   flutter_animate:
   faker:
   flutter_hooks:
@@ -23,8 +23,8 @@ dependencies:
   pub_semver:
 
 dependency_overrides:
-  riverpod: 3.2.1
-  riverpod_annotation: 4.0.2
+  riverpod: 3.4.3
+  riverpod_annotation: 4.0.7
 
 dev_dependencies:
   flutter_test:

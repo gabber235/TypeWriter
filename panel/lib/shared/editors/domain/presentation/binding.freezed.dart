@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'binding.dart';
@@ -9,6 +9,7 @@ part of 'binding.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $BindingIdCopyWith<BindingId> get copyWith => _$BindingIdCopyWithImpl<BindingId>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingId&&(identical(other.value, value) || other.value == value));
+  final _this = this as BindingId;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingId&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+  final _this = this as BindingId;
+  return Object.hash(runtimeType,_this.value);
+}
 
 @override
 String toString() {
-  return 'BindingId(value: $value)';
+  final _this = this as BindingId;
+  return 'BindingId(value: ${_this.value})';
 }
 
 
@@ -63,8 +69,8 @@ class _$BindingIdCopyWithImpl<$Res>
 /// Create a copy of BindingId
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
-  return _then(_self.copyWith(
-value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+  return _then(BindingId(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -207,7 +213,7 @@ return $default(_that.value);case _:
 
 class _BindingId implements BindingId {
   const _BindingId(this.value): assert(value >= 0, 'Binding ID must not be negative.');
-  
+
 
 @override final  int value;
 
@@ -221,16 +227,18 @@ _$BindingIdCopyWith<_BindingId> get copyWith => __$BindingIdCopyWithImpl<_Bindin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingId&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingId&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'BindingId(value: $value)';
+    return 'BindingId(value: $value)';
 }
 
 
@@ -282,16 +290,21 @@ $BindingReferenceCopyWith<BindingReference> get copyWith => _$BindingReferenceCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingReference&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.path, path) || other.path == path));
+  final _this = this as BindingReference;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingReference&&(identical(other.bindingId, _this.bindingId) || other.bindingId == _this.bindingId)&&(identical(other.path, _this.path) || other.path == _this.path));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindingId,path);
+int get hashCode {
+  final _this = this as BindingReference;
+  return Object.hash(runtimeType,_this.bindingId,_this.path);
+}
 
 @override
 String toString() {
-  return 'BindingReference(bindingId: $bindingId, path: $path)';
+  final _this = this as BindingReference;
+  return 'BindingReference(bindingId: ${_this.bindingId}, path: ${_this.path})';
 }
 
 
@@ -320,7 +333,7 @@ class _$BindingReferenceCopyWithImpl<$Res>
 /// Create a copy of BindingReference
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bindingId = null,Object? path = null,}) {
-  return _then(_self.copyWith(
+  return _then(BindingReference(
 bindingId: null == bindingId ? _self.bindingId : bindingId // ignore: cast_nullable_to_non_nullable
 as BindingId,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as DataPath,
@@ -331,7 +344,7 @@ as DataPath,
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get bindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.bindingId, (value) {
     return _then(_self.copyWith(bindingId: value));
   });
@@ -340,7 +353,7 @@ $BindingIdCopyWith<$Res> get bindingId {
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get path {
-  
+
   return $DataPathCopyWith<$Res>(_self.path, (value) {
     return _then(_self.copyWith(path: value));
   });
@@ -483,7 +496,7 @@ return $default(_that.bindingId,_that.path);case _:
 
 class _BindingReference extends BindingReference {
   const _BindingReference({required this.bindingId, this.path = DataPath.root}): super._();
-  
+
 
 @override final  BindingId bindingId;
 @override@JsonKey() final  DataPath path;
@@ -498,16 +511,18 @@ _$BindingReferenceCopyWith<_BindingReference> get copyWith => __$BindingReferenc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingReference&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingReference&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindingId,path);
+int get hashCode {
+    return Object.hash(runtimeType,bindingId,path);
+}
 
 @override
 String toString() {
-  return 'BindingReference(bindingId: $bindingId, path: $path)';
+    return 'BindingReference(bindingId: $bindingId, path: $path)';
 }
 
 
@@ -548,7 +563,7 @@ as DataPath,
 @override
 @pragma('vm:prefer-inline')
 $BindingIdCopyWith<$Res> get bindingId {
-  
+
   return $BindingIdCopyWith<$Res>(_self.bindingId, (value) {
     return _then(_self.copyWith(bindingId: value));
   });
@@ -557,7 +572,7 @@ $BindingIdCopyWith<$Res> get bindingId {
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get path {
-  
+
   return $DataPathCopyWith<$Res>(_self.path, (value) {
     return _then(_self.copyWith(path: value));
   });
@@ -578,16 +593,21 @@ $BindingSnapshotCopyWith<BindingSnapshot> get copyWith => _$BindingSnapshotCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingSnapshot&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.writable, writable) || other.writable == writable));
+  final _this = this as BindingSnapshot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingSnapshot&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.writable, _this.writable) || other.writable == _this.writable));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,value,revision,writable);
+int get hashCode {
+  final _this = this as BindingSnapshot;
+  return Object.hash(runtimeType,_this.type,_this.value,_this.revision,_this.writable);
+}
 
 @override
 String toString() {
-  return 'BindingSnapshot(type: $type, value: $value, revision: $revision, writable: $writable)';
+  final _this = this as BindingSnapshot;
+  return 'BindingSnapshot(type: ${_this.type}, value: ${_this.value}, revision: ${_this.revision}, writable: ${_this.writable})';
 }
 
 
@@ -616,7 +636,7 @@ class _$BindingSnapshotCopyWithImpl<$Res>
 /// Create a copy of BindingSnapshot
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? value = null,Object? revision = null,Object? writable = null,}) {
-  return _then(_self.copyWith(
+  return _then(BindingSnapshot(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as TypeExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as DataValue,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
@@ -629,7 +649,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -638,7 +658,7 @@ $TypeExpressionCopyWith<$Res> get type {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -781,7 +801,7 @@ return $default(_that.type,_that.value,_that.revision,_that.writable);case _:
 
 class _BindingSnapshot extends BindingSnapshot {
   const _BindingSnapshot({required this.type, required this.value, required this.revision, this.writable = true}): assert(revision >= 0, 'Binding revision must not be negative.'),super._();
-  
+
 
 @override final  TypeExpression type;
 @override final  DataValue value;
@@ -798,16 +818,18 @@ _$BindingSnapshotCopyWith<_BindingSnapshot> get copyWith => __$BindingSnapshotCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingSnapshot&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.writable, writable) || other.writable == writable));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingSnapshot&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.writable, writable) || other.writable == writable));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,value,revision,writable);
+int get hashCode {
+    return Object.hash(runtimeType,type,value,revision,writable);
+}
 
 @override
 String toString() {
-  return 'BindingSnapshot(type: $type, value: $value, revision: $revision, writable: $writable)';
+    return 'BindingSnapshot(type: $type, value: $value, revision: $revision, writable: $writable)';
 }
 
 
@@ -850,7 +872,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -859,7 +881,7 @@ $TypeExpressionCopyWith<$Res> get type {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -880,16 +902,21 @@ $ResolvedBindingCopyWith<ResolvedBinding> get copyWith => _$ResolvedBindingCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedBinding&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.writable, writable) || other.writable == writable));
+  final _this = this as ResolvedBinding;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedBinding&&(identical(other.reference, _this.reference) || other.reference == _this.reference)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.writable, _this.writable) || other.writable == _this.writable));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reference,type,value,revision,writable);
+int get hashCode {
+  final _this = this as ResolvedBinding;
+  return Object.hash(runtimeType,_this.reference,_this.type,_this.value,_this.revision,_this.writable);
+}
 
 @override
 String toString() {
-  return 'ResolvedBinding(reference: $reference, type: $type, value: $value, revision: $revision, writable: $writable)';
+  final _this = this as ResolvedBinding;
+  return 'ResolvedBinding(reference: ${_this.reference}, type: ${_this.type}, value: ${_this.value}, revision: ${_this.revision}, writable: ${_this.writable})';
 }
 
 
@@ -918,7 +945,7 @@ class _$ResolvedBindingCopyWithImpl<$Res>
 /// Create a copy of ResolvedBinding
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? reference = null,Object? type = null,Object? value = null,Object? revision = null,Object? writable = null,}) {
-  return _then(_self.copyWith(
+  return _then(ResolvedBinding(
 reference: null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
 as BindingReference,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as TypeExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -932,7 +959,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get reference {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.reference, (value) {
     return _then(_self.copyWith(reference: value));
   });
@@ -941,7 +968,7 @@ $BindingReferenceCopyWith<$Res> get reference {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -950,7 +977,7 @@ $TypeExpressionCopyWith<$Res> get type {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -1093,7 +1120,7 @@ return $default(_that.reference,_that.type,_that.value,_that.revision,_that.writ
 
 class _ResolvedBinding implements ResolvedBinding {
   const _ResolvedBinding({required this.reference, required this.type, required this.value, required this.revision, required this.writable});
-  
+
 
 @override final  BindingReference reference;
 @override final  TypeExpression type;
@@ -1111,16 +1138,18 @@ _$ResolvedBindingCopyWith<_ResolvedBinding> get copyWith => __$ResolvedBindingCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedBinding&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.writable, writable) || other.writable == writable));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedBinding&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.writable, writable) || other.writable == writable));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reference,type,value,revision,writable);
+int get hashCode {
+    return Object.hash(runtimeType,reference,type,value,revision,writable);
+}
 
 @override
 String toString() {
-  return 'ResolvedBinding(reference: $reference, type: $type, value: $value, revision: $revision, writable: $writable)';
+    return 'ResolvedBinding(reference: $reference, type: $type, value: $value, revision: $revision, writable: $writable)';
 }
 
 
@@ -1164,7 +1193,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get reference {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.reference, (value) {
     return _then(_self.copyWith(reference: value));
   });
@@ -1173,7 +1202,7 @@ $BindingReferenceCopyWith<$Res> get reference {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get type {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
     return _then(_self.copyWith(type: value));
   });
@@ -1182,7 +1211,7 @@ $TypeExpressionCopyWith<$Res> get type {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -1203,16 +1232,21 @@ $BindingEnvironmentCopyWith<BindingEnvironment> get copyWith => _$BindingEnviron
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingEnvironment&&const DeepCollectionEquality().equals(other.bindings, bindings));
+  final _this = this as BindingEnvironment;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingEnvironment&&const DeepCollectionEquality().equals(other.bindings, _this.bindings));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(bindings));
+int get hashCode {
+  final _this = this as BindingEnvironment;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.bindings));
+}
 
 @override
 String toString() {
-  return 'BindingEnvironment(bindings: $bindings)';
+  final _this = this as BindingEnvironment;
+  return 'BindingEnvironment(bindings: ${_this.bindings})';
 }
 
 
@@ -1241,8 +1275,8 @@ class _$BindingEnvironmentCopyWithImpl<$Res>
 /// Create a copy of BindingEnvironment
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bindings = null,}) {
-  return _then(_self.copyWith(
-bindings: null == bindings ? _self.bindings : bindings // ignore: cast_nullable_to_non_nullable
+  return _then(BindingEnvironment(
+null == bindings ? _self.bindings : bindings // ignore: cast_nullable_to_non_nullable
 as Map<BindingId, BindingSnapshot>,
   ));
 }
@@ -1384,8 +1418,8 @@ return $default(_that.bindings);case _:
 
 
 class _BindingEnvironment extends BindingEnvironment {
-  const _BindingEnvironment(final  Map<BindingId, BindingSnapshot> bindings): _bindings = bindings,super._();
-  
+  const _BindingEnvironment( Map<BindingId, BindingSnapshot> bindings): _bindings = bindings,super._();
+
 
  final  Map<BindingId, BindingSnapshot> _bindings;
 @override Map<BindingId, BindingSnapshot> get bindings {
@@ -1405,16 +1439,18 @@ _$BindingEnvironmentCopyWith<_BindingEnvironment> get copyWith => __$BindingEnvi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingEnvironment&&const DeepCollectionEquality().equals(other._bindings, _bindings));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingEnvironment&&const DeepCollectionEquality().equals(other.bindings, _bindings));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_bindings));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_bindings));
+}
 
 @override
 String toString() {
-  return 'BindingEnvironment(bindings: $bindings)';
+    return 'BindingEnvironment(bindings: $bindings)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'expression_evaluator.dart';
@@ -9,6 +9,7 @@ part of 'expression_evaluator.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ExpressionContextCopyWith<ExpressionContext> get copyWith => _$ExpressionContex
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExpressionContext&&(identical(other.bindings, bindings) || other.bindings == bindings)&&const DeepCollectionEquality().equals(other.conversions, conversions));
+  final _this = this as ExpressionContext;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExpressionContext&&(identical(other.bindings, _this.bindings) || other.bindings == _this.bindings)&&const DeepCollectionEquality().equals(other.conversions, _this.conversions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindings,const DeepCollectionEquality().hash(conversions));
+int get hashCode {
+  final _this = this as ExpressionContext;
+  return Object.hash(runtimeType,_this.bindings,const DeepCollectionEquality().hash(_this.conversions));
+}
 
 @override
 String toString() {
-  return 'ExpressionContext(bindings: $bindings, conversions: $conversions)';
+  final _this = this as ExpressionContext;
+  return 'ExpressionContext(bindings: ${_this.bindings}, conversions: ${_this.conversions})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ExpressionContextCopyWithImpl<$Res>
 /// Create a copy of ExpressionContext
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bindings = null,Object? conversions = null,}) {
-  return _then(_self.copyWith(
+  return _then(ExpressionContext(
 bindings: null == bindings ? _self.bindings : bindings // ignore: cast_nullable_to_non_nullable
 as BindingEnvironment,conversions: null == conversions ? _self.conversions : conversions // ignore: cast_nullable_to_non_nullable
 as Map<ConversionId, ConversionDefinition>,
@@ -74,7 +80,7 @@ as Map<ConversionId, ConversionDefinition>,
 @override
 @pragma('vm:prefer-inline')
 $BindingEnvironmentCopyWith<$Res> get bindings {
-  
+
   return $BindingEnvironmentCopyWith<$Res>(_self.bindings, (value) {
     return _then(_self.copyWith(bindings: value));
   });
@@ -216,8 +222,8 @@ return $default(_that.bindings,_that.conversions);case _:
 
 
 class _ExpressionContext extends ExpressionContext {
-  const _ExpressionContext({required this.bindings, final  Map<ConversionId, ConversionDefinition> conversions = const {}}): _conversions = conversions,super._();
-  
+  const _ExpressionContext({required this.bindings,  Map<ConversionId, ConversionDefinition> conversions = const {}}): _conversions = conversions,super._();
+
 
 @override final  BindingEnvironment bindings;
  final  Map<ConversionId, ConversionDefinition> _conversions;
@@ -238,16 +244,18 @@ _$ExpressionContextCopyWith<_ExpressionContext> get copyWith => __$ExpressionCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExpressionContext&&(identical(other.bindings, bindings) || other.bindings == bindings)&&const DeepCollectionEquality().equals(other._conversions, _conversions));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExpressionContext&&(identical(other.bindings, bindings) || other.bindings == bindings)&&const DeepCollectionEquality().equals(other.conversions, _conversions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindings,const DeepCollectionEquality().hash(_conversions));
+int get hashCode {
+    return Object.hash(runtimeType,bindings,const DeepCollectionEquality().hash(_conversions));
+}
 
 @override
 String toString() {
-  return 'ExpressionContext(bindings: $bindings, conversions: $conversions)';
+    return 'ExpressionContext(bindings: $bindings, conversions: $conversions)';
 }
 
 
@@ -288,7 +296,7 @@ as Map<ConversionId, ConversionDefinition>,
 @override
 @pragma('vm:prefer-inline')
 $BindingEnvironmentCopyWith<$Res> get bindings {
-  
+
   return $BindingEnvironmentCopyWith<$Res>(_self.bindings, (value) {
     return _then(_self.copyWith(bindings: value));
   });

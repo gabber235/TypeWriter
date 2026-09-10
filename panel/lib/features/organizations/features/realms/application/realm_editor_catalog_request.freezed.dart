@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'realm_editor_catalog_request.dart';
@@ -9,6 +9,7 @@ part of 'realm_editor_catalog_request.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RealmEditorSubtypeQueryCopyWith<RealmEditorSubtypeQuery> get copyWith => _$Real
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorSubtypeQuery&&(identical(other.id, id) || other.id == id)&&(identical(other.target, target) || other.target == target));
+  final _this = this as RealmEditorSubtypeQuery;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorSubtypeQuery&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.target, _this.target) || other.target == _this.target));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,target);
+int get hashCode {
+  final _this = this as RealmEditorSubtypeQuery;
+  return Object.hash(runtimeType,_this.id,_this.target);
+}
 
 @override
 String toString() {
-  return 'RealmEditorSubtypeQuery(id: $id, target: $target)';
+  final _this = this as RealmEditorSubtypeQuery;
+  return 'RealmEditorSubtypeQuery(id: ${_this.id}, target: ${_this.target})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RealmEditorSubtypeQueryCopyWithImpl<$Res>
 /// Create a copy of RealmEditorSubtypeQuery
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? target = null,}) {
-  return _then(_self.copyWith(
+  return _then(RealmEditorSubtypeQuery(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,
@@ -74,7 +80,7 @@ as ResolvedTypeRef,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get target {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -217,7 +223,7 @@ return $default(_that.id,_that.target);case _:
 
 class _RealmEditorSubtypeQuery implements RealmEditorSubtypeQuery {
   const _RealmEditorSubtypeQuery({required this.id, required this.target}): assert(id != "", 'Query ID must not be empty.');
-  
+
 
 @override final  String id;
 @override final  ResolvedTypeRef target;
@@ -232,16 +238,18 @@ _$RealmEditorSubtypeQueryCopyWith<_RealmEditorSubtypeQuery> get copyWith => __$R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorSubtypeQuery&&(identical(other.id, id) || other.id == id)&&(identical(other.target, target) || other.target == target));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorSubtypeQuery&&(identical(other.id, id) || other.id == id)&&(identical(other.target, target) || other.target == target));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,target);
+int get hashCode {
+    return Object.hash(runtimeType,id,target);
+}
 
 @override
 String toString() {
-  return 'RealmEditorSubtypeQuery(id: $id, target: $target)';
+    return 'RealmEditorSubtypeQuery(id: $id, target: $target)';
 }
 
 
@@ -282,7 +290,7 @@ as ResolvedTypeRef,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get target {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -303,16 +311,21 @@ $RealmEditorCatalogRequestCopyWith<RealmEditorCatalogRequest> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogRequest&&const DeepCollectionEquality().equals(other.types, types)&&const DeepCollectionEquality().equals(other.presentations, presentations)&&const DeepCollectionEquality().equals(other.subtypeQueries, subtypeQueries));
+  final _this = this as RealmEditorCatalogRequest;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogRequest&&const DeepCollectionEquality().equals(other.types, _this.types)&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&const DeepCollectionEquality().equals(other.subtypeQueries, _this.subtypeQueries));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(types),const DeepCollectionEquality().hash(presentations),const DeepCollectionEquality().hash(subtypeQueries));
+int get hashCode {
+  final _this = this as RealmEditorCatalogRequest;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.types),const DeepCollectionEquality().hash(_this.presentations),const DeepCollectionEquality().hash(_this.subtypeQueries));
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogRequest(types: $types, presentations: $presentations, subtypeQueries: $subtypeQueries)';
+  final _this = this as RealmEditorCatalogRequest;
+  return 'RealmEditorCatalogRequest(types: ${_this.types}, presentations: ${_this.presentations}, subtypeQueries: ${_this.subtypeQueries})';
 }
 
 
@@ -341,7 +354,7 @@ class _$RealmEditorCatalogRequestCopyWithImpl<$Res>
 /// Create a copy of RealmEditorCatalogRequest
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? types = null,Object? presentations = null,Object? subtypeQueries = null,}) {
-  return _then(_self.copyWith(
+  return _then(RealmEditorCatalogRequest(
 types: null == types ? _self.types : types // ignore: cast_nullable_to_non_nullable
 as Set<ResolvedTypeRef>,presentations: null == presentations ? _self.presentations : presentations // ignore: cast_nullable_to_non_nullable
 as Set<PresentationId>,subtypeQueries: null == subtypeQueries ? _self.subtypeQueries : subtypeQueries // ignore: cast_nullable_to_non_nullable
@@ -486,8 +499,8 @@ return $default(_that.types,_that.presentations,_that.subtypeQueries);case _:
 
 
 class _RealmEditorCatalogRequest extends RealmEditorCatalogRequest {
-  const _RealmEditorCatalogRequest({final  Set<ResolvedTypeRef> types = const {}, final  Set<PresentationId> presentations = const {}, final  Set<RealmEditorSubtypeQuery> subtypeQueries = const {}}): _types = types,_presentations = presentations,_subtypeQueries = subtypeQueries,super._();
-  
+  const _RealmEditorCatalogRequest({ Set<ResolvedTypeRef> types = const {},  Set<PresentationId> presentations = const {},  Set<RealmEditorSubtypeQuery> subtypeQueries = const {}}): _types = types,_presentations = presentations,_subtypeQueries = subtypeQueries,super._();
+
 
  final  Set<ResolvedTypeRef> _types;
 @override@JsonKey() Set<ResolvedTypeRef> get types {
@@ -521,16 +534,18 @@ _$RealmEditorCatalogRequestCopyWith<_RealmEditorCatalogRequest> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorCatalogRequest&&const DeepCollectionEquality().equals(other._types, _types)&&const DeepCollectionEquality().equals(other._presentations, _presentations)&&const DeepCollectionEquality().equals(other._subtypeQueries, _subtypeQueries));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorCatalogRequest&&const DeepCollectionEquality().equals(other.types, _types)&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&const DeepCollectionEquality().equals(other.subtypeQueries, _subtypeQueries));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_types),const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_subtypeQueries));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_types),const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_subtypeQueries));
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogRequest(types: $types, presentations: $presentations, subtypeQueries: $subtypeQueries)';
+    return 'RealmEditorCatalogRequest(types: $types, presentations: $presentations, subtypeQueries: $subtypeQueries)';
 }
 
 
@@ -584,16 +599,21 @@ $RealmEditorSubtypeResultCopyWith<RealmEditorSubtypeResult> get copyWith => _$Re
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorSubtypeResult&&(identical(other.queryId, queryId) || other.queryId == queryId)&&const DeepCollectionEquality().equals(other.matches, matches));
+  final _this = this as RealmEditorSubtypeResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorSubtypeResult&&(identical(other.queryId, _this.queryId) || other.queryId == _this.queryId)&&const DeepCollectionEquality().equals(other.matches, _this.matches));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,queryId,const DeepCollectionEquality().hash(matches));
+int get hashCode {
+  final _this = this as RealmEditorSubtypeResult;
+  return Object.hash(runtimeType,_this.queryId,const DeepCollectionEquality().hash(_this.matches));
+}
 
 @override
 String toString() {
-  return 'RealmEditorSubtypeResult(queryId: $queryId, matches: $matches)';
+  final _this = this as RealmEditorSubtypeResult;
+  return 'RealmEditorSubtypeResult(queryId: ${_this.queryId}, matches: ${_this.matches})';
 }
 
 
@@ -622,7 +642,7 @@ class _$RealmEditorSubtypeResultCopyWithImpl<$Res>
 /// Create a copy of RealmEditorSubtypeResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? queryId = null,Object? matches = null,}) {
-  return _then(_self.copyWith(
+  return _then(RealmEditorSubtypeResult(
 queryId: null == queryId ? _self.queryId : queryId // ignore: cast_nullable_to_non_nullable
 as String,matches: null == matches ? _self.matches : matches // ignore: cast_nullable_to_non_nullable
 as List<ResolvedTypeRef>,
@@ -766,8 +786,8 @@ return $default(_that.queryId,_that.matches);case _:
 
 
 class _RealmEditorSubtypeResult implements RealmEditorSubtypeResult {
-  const _RealmEditorSubtypeResult({required this.queryId, required final  List<ResolvedTypeRef> matches}): assert(queryId != "", 'Query ID must not be empty.'),_matches = matches;
-  
+  const _RealmEditorSubtypeResult({required this.queryId, required  List<ResolvedTypeRef> matches}): assert(queryId != "", 'Query ID must not be empty.'),_matches = matches;
+
 
 @override final  String queryId;
  final  List<ResolvedTypeRef> _matches;
@@ -788,16 +808,18 @@ _$RealmEditorSubtypeResultCopyWith<_RealmEditorSubtypeResult> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorSubtypeResult&&(identical(other.queryId, queryId) || other.queryId == queryId)&&const DeepCollectionEquality().equals(other._matches, _matches));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorSubtypeResult&&(identical(other.queryId, queryId) || other.queryId == queryId)&&const DeepCollectionEquality().equals(other.matches, _matches));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,queryId,const DeepCollectionEquality().hash(_matches));
+int get hashCode {
+    return Object.hash(runtimeType,queryId,const DeepCollectionEquality().hash(_matches));
+}
 
 @override
 String toString() {
-  return 'RealmEditorSubtypeResult(queryId: $queryId, matches: $matches)';
+    return 'RealmEditorSubtypeResult(queryId: $queryId, matches: $matches)';
 }
 
 

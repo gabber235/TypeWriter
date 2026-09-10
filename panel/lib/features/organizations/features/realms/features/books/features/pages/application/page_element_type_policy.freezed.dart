@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'page_element_type_policy.dart';
@@ -9,6 +9,7 @@ part of 'page_element_type_policy.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$PageElementTypesState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PageElementTypesState()';
+    return 'PageElementTypesState()';
 }
 
 
@@ -182,7 +183,7 @@ return unavailable(_that.diagnostics);case _:
 
 class PageElementTypesLoading implements PageElementTypesState {
   const PageElementTypesLoading();
-  
+
 
 
 
@@ -191,7 +192,7 @@ class PageElementTypesLoading implements PageElementTypesState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesLoading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesLoading);
 }
 
 
@@ -200,7 +201,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PageElementTypesState.loading()';
+    return 'PageElementTypesState.loading()';
 }
 
 
@@ -213,8 +214,8 @@ String toString() {
 
 
 class PageElementTypesReady implements PageElementTypesState {
-  const PageElementTypesReady(final  Set<ResolvedTypeRef> types): _types = types;
-  
+  const PageElementTypesReady( Set<ResolvedTypeRef> types): _types = types;
+
 
  final  Set<ResolvedTypeRef> _types;
  Set<ResolvedTypeRef> get types {
@@ -234,16 +235,18 @@ $PageElementTypesReadyCopyWith<PageElementTypesReady> get copyWith => _$PageElem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesReady&&const DeepCollectionEquality().equals(other._types, _types));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesReady&&const DeepCollectionEquality().equals(other.types, _types));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_types));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_types));
+}
 
 @override
 String toString() {
-  return 'PageElementTypesState.ready(types: $types)';
+    return 'PageElementTypesState.ready(types: $types)';
 }
 
 
@@ -285,8 +288,8 @@ as Set<ResolvedTypeRef>,
 
 
 class PageElementTypesUnavailable implements PageElementTypesState {
-  const PageElementTypesUnavailable(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
-  
+  const PageElementTypesUnavailable( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -306,16 +309,18 @@ $PageElementTypesUnavailableCopyWith<PageElementTypesUnavailable> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesUnavailable&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageElementTypesUnavailable&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'PageElementTypesState.unavailable(diagnostics: $diagnostics)';
+    return 'PageElementTypesState.unavailable(diagnostics: $diagnostics)';
 }
 
 

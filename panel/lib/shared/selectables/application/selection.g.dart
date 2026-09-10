@@ -47,7 +47,7 @@ abstract class _$Selection extends $Notifier<List<SelectableIdentifier>> {
   List<SelectableIdentifier> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<List<SelectableIdentifier>, List<SelectableIdentifier>>;
@@ -62,7 +62,7 @@ abstract class _$Selection extends $Notifier<List<SelectableIdentifier>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -230,7 +230,7 @@ abstract class _$Selected
   AsyncValue<List<Selectable<SelectableIdentifier>>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
@@ -248,6 +248,6 @@ abstract class _$Selected
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

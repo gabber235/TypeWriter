@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'books.dart';
@@ -9,6 +9,7 @@ part of 'books.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $BookCopyWith<Book> get copyWith => _$BookCopyWithImpl<Book>(this as Book, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Book&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.title, title) || other.title == title)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other.tagIds, tagIds));
+  final _this = this as Book;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Book&&(identical(other.bookId, _this.bookId) || other.bookId == _this.bookId)&&(identical(other.authoringSequence, _this.authoringSequence) || other.authoringSequence == _this.authoringSequence)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.icon, _this.icon) || other.icon == _this.icon)&&(identical(other.color, _this.color) || other.color == _this.color)&&const DeepCollectionEquality().equals(other.tagIds, _this.tagIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookId,authoringSequence,title,icon,color,const DeepCollectionEquality().hash(tagIds));
+int get hashCode {
+  final _this = this as Book;
+  return Object.hash(runtimeType,_this.bookId,_this.authoringSequence,_this.title,_this.icon,_this.color,const DeepCollectionEquality().hash(_this.tagIds));
+}
 
 @override
 String toString() {
-  return 'Book(bookId: $bookId, authoringSequence: $authoringSequence, title: $title, icon: $icon, color: $color, tagIds: $tagIds)';
+  final _this = this as Book;
+  return 'Book(bookId: ${_this.bookId}, authoringSequence: ${_this.authoringSequence}, title: ${_this.title}, icon: ${_this.icon}, color: ${_this.color}, tagIds: ${_this.tagIds})';
 }
 
 
@@ -63,7 +69,7 @@ class _$BookCopyWithImpl<$Res>
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bookId = null,Object? authoringSequence = null,Object? title = null,Object? icon = null,Object? color = null,Object? tagIds = null,}) {
-  return _then(_self.copyWith(
+  return _then(Book(
 bookId: null == bookId ? _self.bookId : bookId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,authoringSequence: null == authoringSequence ? _self.authoringSequence : authoringSequence // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -211,8 +217,8 @@ return $default(_that.bookId,_that.authoringSequence,_that.title,_that.icon,_tha
 
 
 class _Book extends Book {
-  const _Book({required this.bookId, required this.authoringSequence, required this.title, required this.icon, required this.color, required final  List<skir.RecordId> tagIds}): assert(title != "", 'Title must not be empty.'),assert(icon != "", 'Icon must not be empty.'),_tagIds = tagIds,super._();
-  
+  const _Book({required this.bookId, required this.authoringSequence, required this.title, required this.icon, required this.color, required  List<skir.RecordId> tagIds}): assert(title != "", 'Title must not be empty.'),assert(icon != "", 'Icon must not be empty.'),_tagIds = tagIds,super._();
+
 
 @override final  skir.RecordId bookId;
 @override final  int authoringSequence;
@@ -237,16 +243,18 @@ _$BookCopyWith<_Book> get copyWith => __$BookCopyWithImpl<_Book>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Book&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.title, title) || other.title == title)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other._tagIds, _tagIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Book&&(identical(other.bookId, bookId) || other.bookId == bookId)&&(identical(other.authoringSequence, authoringSequence) || other.authoringSequence == authoringSequence)&&(identical(other.title, title) || other.title == title)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other.tagIds, _tagIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookId,authoringSequence,title,icon,color,const DeepCollectionEquality().hash(_tagIds));
+int get hashCode {
+    return Object.hash(runtimeType,bookId,authoringSequence,title,icon,color,const DeepCollectionEquality().hash(_tagIds));
+}
 
 @override
 String toString() {
-  return 'Book(bookId: $bookId, authoringSequence: $authoringSequence, title: $title, icon: $icon, color: $color, tagIds: $tagIds)';
+    return 'Book(bookId: $bookId, authoringSequence: $authoringSequence, title: $title, icon: $icon, color: $color, tagIds: $tagIds)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'editor_path_states.dart';
@@ -9,6 +9,7 @@ part of 'editor_path_states.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $EditorPathRecordCopyWith<EditorPathRecord> get copyWith => _$EditorPathRecordCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorPathRecord&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.gate, gate) || other.gate == gate));
+  final _this = this as EditorPathRecord;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorPathRecord&&(identical(other.progress, _this.progress) || other.progress == _this.progress)&&(identical(other.gate, _this.gate) || other.gate == _this.gate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,progress,gate);
+int get hashCode {
+  final _this = this as EditorPathRecord;
+  return Object.hash(runtimeType,_this.progress,_this.gate);
+}
 
 @override
 String toString() {
-  return 'EditorPathRecord(progress: $progress, gate: $gate)';
+  final _this = this as EditorPathRecord;
+  return 'EditorPathRecord(progress: ${_this.progress}, gate: ${_this.gate})';
 }
 
 
@@ -63,7 +69,7 @@ class _$EditorPathRecordCopyWithImpl<$Res>
 /// Create a copy of EditorPathRecord
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? progress = freezed,Object? gate = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(EditorPathRecord(
 progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
 as EditorPathProgress?,gate: freezed == gate ? _self.gate : gate // ignore: cast_nullable_to_non_nullable
 as EditorInteractionSession?,
@@ -220,7 +226,7 @@ return $default(_that.progress,_that.gate);case _:
 
 class _EditorPathRecord extends EditorPathRecord {
   const _EditorPathRecord({this.progress, this.gate}): super._();
-  
+
 
 @override final  EditorPathProgress? progress;
 @override final  EditorInteractionSession? gate;
@@ -235,16 +241,18 @@ _$EditorPathRecordCopyWith<_EditorPathRecord> get copyWith => __$EditorPathRecor
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditorPathRecord&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.gate, gate) || other.gate == gate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditorPathRecord&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.gate, gate) || other.gate == gate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,progress,gate);
+int get hashCode {
+    return Object.hash(runtimeType,progress,gate);
+}
 
 @override
 String toString() {
-  return 'EditorPathRecord(progress: $progress, gate: $gate)';
+    return 'EditorPathRecord(progress: $progress, gate: $gate)';
 }
 
 
@@ -304,7 +312,7 @@ mixin _$EditorPathProgress {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorPathProgress);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorPathProgress);
 }
 
 
@@ -313,7 +321,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorPathProgress()';
+    return 'EditorPathProgress()';
 }
 
 
@@ -484,7 +492,7 @@ return settled(_that.phase);case _:
 
 class PendingPathProgress implements EditorPathProgress {
   const PendingPathProgress();
-  
+
 
 
 
@@ -493,7 +501,7 @@ class PendingPathProgress implements EditorPathProgress {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PendingPathProgress);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PendingPathProgress);
 }
 
 
@@ -502,7 +510,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorPathProgress.pending()';
+    return 'EditorPathProgress.pending()';
 }
 
 
@@ -516,7 +524,7 @@ String toString() {
 
 class SavingPathProgress implements EditorPathProgress {
   const SavingPathProgress();
-  
+
 
 
 
@@ -525,7 +533,7 @@ class SavingPathProgress implements EditorPathProgress {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SavingPathProgress);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SavingPathProgress);
 }
 
 
@@ -534,7 +542,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorPathProgress.saving()';
+    return 'EditorPathProgress.saving()';
 }
 
 
@@ -547,8 +555,8 @@ String toString() {
 
 
 class FailedPathProgress implements EditorPathProgress {
-  const FailedPathProgress(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
-  
+  const FailedPathProgress( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -568,16 +576,18 @@ $FailedPathProgressCopyWith<FailedPathProgress> get copyWith => _$FailedPathProg
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FailedPathProgress&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FailedPathProgress&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'EditorPathProgress.failed(diagnostics: $diagnostics)';
+    return 'EditorPathProgress.failed(diagnostics: $diagnostics)';
 }
 
 
@@ -620,7 +630,7 @@ as List<TypeDiagnostic>,
 
 class ContendedPathProgress implements EditorPathProgress {
   const ContendedPathProgress();
-  
+
 
 
 
@@ -629,7 +639,7 @@ class ContendedPathProgress implements EditorPathProgress {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContendedPathProgress);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ContendedPathProgress);
 }
 
 
@@ -638,7 +648,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorPathProgress.contended()';
+    return 'EditorPathProgress.contended()';
 }
 
 
@@ -652,7 +662,7 @@ String toString() {
 
 class ConflictedPathProgress implements EditorPathProgress {
   const ConflictedPathProgress(this.conflict);
-  
+
 
  final  EditorPathConflict conflict;
 
@@ -666,16 +676,18 @@ $ConflictedPathProgressCopyWith<ConflictedPathProgress> get copyWith => _$Confli
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictedPathProgress&&(identical(other.conflict, conflict) || other.conflict == conflict));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictedPathProgress&&(identical(other.conflict, conflict) || other.conflict == conflict));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,conflict);
+int get hashCode {
+    return Object.hash(runtimeType,conflict);
+}
 
 @override
 String toString() {
-  return 'EditorPathProgress.conflicted(conflict: $conflict)';
+    return 'EditorPathProgress.conflicted(conflict: $conflict)';
 }
 
 
@@ -718,7 +730,7 @@ as EditorPathConflict,
 
 class SettledPathProgress implements EditorPathProgress {
   const SettledPathProgress(this.phase): assert(phase == EditorSavePhase.saved, 'A settled path has been saved.');
-  
+
 
  final  EditorSavePhase phase;
 
@@ -732,16 +744,18 @@ $SettledPathProgressCopyWith<SettledPathProgress> get copyWith => _$SettledPathP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettledPathProgress&&(identical(other.phase, phase) || other.phase == phase));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SettledPathProgress&&(identical(other.phase, phase) || other.phase == phase));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,phase);
+int get hashCode {
+    return Object.hash(runtimeType,phase);
+}
 
 @override
 String toString() {
-  return 'EditorPathProgress.settled(phase: $phase)';
+    return 'EditorPathProgress.settled(phase: $phase)';
 }
 
 

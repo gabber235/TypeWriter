@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'data_path.dart';
@@ -9,6 +9,7 @@ part of 'data_path.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,12 +26,16 @@ $DataPathCopyWith<DataPath> get copyWith => _$DataPathCopyWithImpl<DataPath>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DataPath&&const DeepCollectionEquality().equals(other.segments, segments));
+  final _this = this as DataPath;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DataPath&&const DeepCollectionEquality().equals(other.segments, _this.segments));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(segments));
+int get hashCode {
+  final _this = this as DataPath;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.segments));
+}
 
 
 
@@ -59,8 +64,8 @@ class _$DataPathCopyWithImpl<$Res>
 /// Create a copy of DataPath
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? segments = null,}) {
-  return _then(_self.copyWith(
-segments: null == segments ? _self.segments : segments // ignore: cast_nullable_to_non_nullable
+  return _then(DataPath(
+null == segments ? _self.segments : segments // ignore: cast_nullable_to_non_nullable
 as List<DataPathSegment>,
   ));
 }
@@ -202,8 +207,8 @@ return $default(_that.segments);case _:
 
 
 class _DataPath extends DataPath {
-  const _DataPath(final  List<DataPathSegment> segments): _segments = segments,super._();
-  
+  const _DataPath( List<DataPathSegment> segments): _segments = segments,super._();
+
 
  final  List<DataPathSegment> _segments;
 @override List<DataPathSegment> get segments {
@@ -223,12 +228,14 @@ _$DataPathCopyWith<_DataPath> get copyWith => __$DataPathCopyWithImpl<_DataPath>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DataPath&&const DeepCollectionEquality().equals(other._segments, _segments));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DataPath&&const DeepCollectionEquality().equals(other.segments, _segments));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_segments));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_segments));
+}
 
 
 
@@ -275,7 +282,7 @@ mixin _$DataPathSegment {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DataPathSegment);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DataPathSegment);
 }
 
 
@@ -433,7 +440,7 @@ return mapKey(_that.key);case _:
 
 class FieldPathSegment extends DataPathSegment {
   const FieldPathSegment(this.name): assert(name != "", 'Field name must not be empty.'),super._();
-  
+
 
  final  String name;
 
@@ -447,12 +454,14 @@ $FieldPathSegmentCopyWith<FieldPathSegment> get copyWith => _$FieldPathSegmentCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FieldPathSegment&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FieldPathSegment&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name);
+int get hashCode {
+    return Object.hash(runtimeType,name);
+}
 
 
 
@@ -495,7 +504,7 @@ as String,
 
 class IndexPathSegment extends DataPathSegment {
   const IndexPathSegment(this.index): assert(index >= 0, 'List index must not be negative.'),super._();
-  
+
 
  final  int index;
 
@@ -509,12 +518,14 @@ $IndexPathSegmentCopyWith<IndexPathSegment> get copyWith => _$IndexPathSegmentCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IndexPathSegment&&(identical(other.index, index) || other.index == index));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IndexPathSegment&&(identical(other.index, index) || other.index == index));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,index);
+int get hashCode {
+    return Object.hash(runtimeType,index);
+}
 
 
 
@@ -557,7 +568,7 @@ as int,
 
 class MapKeyPathSegment extends DataPathSegment {
   const MapKeyPathSegment(this.key): super._();
-  
+
 
  final  DataValue key;
 
@@ -571,12 +582,14 @@ $MapKeyPathSegmentCopyWith<MapKeyPathSegment> get copyWith => _$MapKeyPathSegmen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapKeyPathSegment&&(identical(other.key, key) || other.key == key));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MapKeyPathSegment&&(identical(other.key, key) || other.key == key));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key);
+int get hashCode {
+    return Object.hash(runtimeType,key);
+}
 
 
 
@@ -616,7 +629,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get key {
-  
+
   return $DataValueCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });

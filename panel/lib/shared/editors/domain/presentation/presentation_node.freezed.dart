@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'presentation_node.dart';
@@ -9,6 +9,7 @@ part of 'presentation_node.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PresentationNodeCopyWith<PresentationNode> get copyWith => _$PresentationNodeCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationNode&&(identical(other.id, id) || other.id == id)&&(identical(other.element, element) || other.element == element)&&(identical(other.properties, properties) || other.properties == properties)&&(identical(other.header, header) || other.header == header));
+  final _this = this as PresentationNode;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationNode&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.element, _this.element) || other.element == _this.element)&&(identical(other.properties, _this.properties) || other.properties == _this.properties)&&(identical(other.header, _this.header) || other.header == _this.header));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,element,properties,header);
+int get hashCode {
+  final _this = this as PresentationNode;
+  return Object.hash(runtimeType,_this.id,_this.element,_this.properties,_this.header);
+}
 
 @override
 String toString() {
-  return 'PresentationNode(id: $id, element: $element, properties: $properties, header: $header)';
+  final _this = this as PresentationNode;
+  return 'PresentationNode(id: ${_this.id}, element: ${_this.element}, properties: ${_this.properties}, header: ${_this.header})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PresentationNodeCopyWithImpl<$Res>
 /// Create a copy of PresentationNode
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? element = null,Object? properties = null,Object? header = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationNode(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,element: null == element ? _self.element : element // ignore: cast_nullable_to_non_nullable
 as PresentationElement,properties: null == properties ? _self.properties : properties // ignore: cast_nullable_to_non_nullable
@@ -76,7 +82,7 @@ as PresentationHeader?,
 @override
 @pragma('vm:prefer-inline')
 $PresentationElementCopyWith<$Res> get element {
-  
+
   return $PresentationElementCopyWith<$Res>(_self.element, (value) {
     return _then(_self.copyWith(element: value));
   });
@@ -85,7 +91,7 @@ $PresentationElementCopyWith<$Res> get element {
 @override
 @pragma('vm:prefer-inline')
 $PresentationPropertiesCopyWith<$Res> get properties {
-  
+
   return $PresentationPropertiesCopyWith<$Res>(_self.properties, (value) {
     return _then(_self.copyWith(properties: value));
   });
@@ -240,7 +246,7 @@ return $default(_that.id,_that.element,_that.properties,_that.header);case _:
 
 class _PresentationNode implements PresentationNode {
   const _PresentationNode({required this.id, required this.element, this.properties = const PresentationProperties(), this.header}): assert(id != "", 'Presentation node ID must not be empty.');
-  
+
 
 @override final  String id;
 @override final  PresentationElement element;
@@ -257,16 +263,18 @@ _$PresentationNodeCopyWith<_PresentationNode> get copyWith => __$PresentationNod
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationNode&&(identical(other.id, id) || other.id == id)&&(identical(other.element, element) || other.element == element)&&(identical(other.properties, properties) || other.properties == properties)&&(identical(other.header, header) || other.header == header));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationNode&&(identical(other.id, id) || other.id == id)&&(identical(other.element, element) || other.element == element)&&(identical(other.properties, properties) || other.properties == properties)&&(identical(other.header, header) || other.header == header));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,element,properties,header);
+int get hashCode {
+    return Object.hash(runtimeType,id,element,properties,header);
+}
 
 @override
 String toString() {
-  return 'PresentationNode(id: $id, element: $element, properties: $properties, header: $header)';
+    return 'PresentationNode(id: $id, element: $element, properties: $properties, header: $header)';
 }
 
 
@@ -309,7 +317,7 @@ as PresentationHeader?,
 @override
 @pragma('vm:prefer-inline')
 $PresentationElementCopyWith<$Res> get element {
-  
+
   return $PresentationElementCopyWith<$Res>(_self.element, (value) {
     return _then(_self.copyWith(element: value));
   });
@@ -318,7 +326,7 @@ $PresentationElementCopyWith<$Res> get element {
 @override
 @pragma('vm:prefer-inline')
 $PresentationPropertiesCopyWith<$Res> get properties {
-  
+
   return $PresentationPropertiesCopyWith<$Res>(_self.properties, (value) {
     return _then(_self.copyWith(properties: value));
   });
@@ -351,16 +359,21 @@ $PresentationPropertiesCopyWith<PresentationProperties> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationProperties&&(identical(other.enabledIf, enabledIf) || other.enabledIf == enabledIf)&&(identical(other.readOnly, readOnly) || other.readOnly == readOnly));
+  final _this = this as PresentationProperties;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationProperties&&(identical(other.enabledIf, _this.enabledIf) || other.enabledIf == _this.enabledIf)&&(identical(other.readOnly, _this.readOnly) || other.readOnly == _this.readOnly));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,enabledIf,readOnly);
+int get hashCode {
+  final _this = this as PresentationProperties;
+  return Object.hash(runtimeType,_this.enabledIf,_this.readOnly);
+}
 
 @override
 String toString() {
-  return 'PresentationProperties(enabledIf: $enabledIf, readOnly: $readOnly)';
+  final _this = this as PresentationProperties;
+  return 'PresentationProperties(enabledIf: ${_this.enabledIf}, readOnly: ${_this.readOnly})';
 }
 
 
@@ -389,7 +402,7 @@ class _$PresentationPropertiesCopyWithImpl<$Res>
 /// Create a copy of PresentationProperties
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? enabledIf = freezed,Object? readOnly = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationProperties(
 enabledIf: freezed == enabledIf ? _self.enabledIf : enabledIf // ignore: cast_nullable_to_non_nullable
 as TypedExpression?,readOnly: null == readOnly ? _self.readOnly : readOnly // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -546,7 +559,7 @@ return $default(_that.enabledIf,_that.readOnly);case _:
 
 class _PresentationProperties implements PresentationProperties {
   const _PresentationProperties({this.enabledIf, this.readOnly = false});
-  
+
 
 @override final  TypedExpression? enabledIf;
 @override@JsonKey() final  bool readOnly;
@@ -561,16 +574,18 @@ _$PresentationPropertiesCopyWith<_PresentationProperties> get copyWith => __$Pre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationProperties&&(identical(other.enabledIf, enabledIf) || other.enabledIf == enabledIf)&&(identical(other.readOnly, readOnly) || other.readOnly == readOnly));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationProperties&&(identical(other.enabledIf, enabledIf) || other.enabledIf == enabledIf)&&(identical(other.readOnly, readOnly) || other.readOnly == readOnly));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,enabledIf,readOnly);
+int get hashCode {
+    return Object.hash(runtimeType,enabledIf,readOnly);
+}
 
 @override
 String toString() {
-  return 'PresentationProperties(enabledIf: $enabledIf, readOnly: $readOnly)';
+    return 'PresentationProperties(enabledIf: $enabledIf, readOnly: $readOnly)';
 }
 
 

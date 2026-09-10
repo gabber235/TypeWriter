@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'organization_presence.dart';
@@ -9,6 +9,7 @@ part of 'organization_presence.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PresenceSessionKeyCopyWith<PresenceSessionKey> get copyWith => _$PresenceSessio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresenceSessionKey&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  final _this = this as PresenceSessionKey;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresenceSessionKey&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,sessionId);
+int get hashCode {
+  final _this = this as PresenceSessionKey;
+  return Object.hash(runtimeType,_this.userId,_this.sessionId);
+}
 
 @override
 String toString() {
-  return 'PresenceSessionKey(userId: $userId, sessionId: $sessionId)';
+  final _this = this as PresenceSessionKey;
+  return 'PresenceSessionKey(userId: ${_this.userId}, sessionId: ${_this.sessionId})';
 }
 
 
@@ -63,9 +69,9 @@ class _$PresenceSessionKeyCopyWithImpl<$Res>
 /// Create a copy of PresenceSessionKey
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? sessionId = null,}) {
-  return _then(_self.copyWith(
-userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
+  return _then(PresenceSessionKey(
+null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -208,7 +214,7 @@ return $default(_that.userId,_that.sessionId);case _:
 
 class _PresenceSessionKey implements PresenceSessionKey {
   const _PresenceSessionKey(this.userId, this.sessionId);
-  
+
 
 @override final  String userId;
 @override final  String sessionId;
@@ -223,16 +229,18 @@ _$PresenceSessionKeyCopyWith<_PresenceSessionKey> get copyWith => __$PresenceSes
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresenceSessionKey&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresenceSessionKey&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,sessionId);
+int get hashCode {
+    return Object.hash(runtimeType,userId,sessionId);
+}
 
 @override
 String toString() {
-  return 'PresenceSessionKey(userId: $userId, sessionId: $sessionId)';
+    return 'PresenceSessionKey(userId: $userId, sessionId: $sessionId)';
 }
 
 
@@ -285,16 +293,21 @@ $ActivePanelPresenceCopyWith<ActivePanelPresence> get copyWith => _$ActivePanelP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivePanelPresence&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.presence, presence) || other.presence == presence)&&(identical(other.observedAt, observedAt) || other.observedAt == observedAt));
+  final _this = this as ActivePanelPresence;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivePanelPresence&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.presence, _this.presence) || other.presence == _this.presence)&&(identical(other.observedAt, _this.observedAt) || other.observedAt == _this.observedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,presence,observedAt);
+int get hashCode {
+  final _this = this as ActivePanelPresence;
+  return Object.hash(runtimeType,_this.userId,_this.presence,_this.observedAt);
+}
 
 @override
 String toString() {
-  return 'ActivePanelPresence(userId: $userId, presence: $presence, observedAt: $observedAt)';
+  final _this = this as ActivePanelPresence;
+  return 'ActivePanelPresence(userId: ${_this.userId}, presence: ${_this.presence}, observedAt: ${_this.observedAt})';
 }
 
 
@@ -323,7 +336,7 @@ class _$ActivePanelPresenceCopyWithImpl<$Res>
 /// Create a copy of ActivePanelPresence
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? presence = null,Object? observedAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(ActivePanelPresence(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,presence: null == presence ? _self.presence : presence // ignore: cast_nullable_to_non_nullable
 as wire.PanelPresence,observedAt: null == observedAt ? _self.observedAt : observedAt // ignore: cast_nullable_to_non_nullable
@@ -469,7 +482,7 @@ return $default(_that.userId,_that.presence,_that.observedAt);case _:
 
 class _ActivePanelPresence implements ActivePanelPresence {
   const _ActivePanelPresence({required this.userId, required this.presence, required this.observedAt});
-  
+
 
 @override final  String userId;
 @override final  wire.PanelPresence presence;
@@ -485,16 +498,18 @@ _$ActivePanelPresenceCopyWith<_ActivePanelPresence> get copyWith => __$ActivePan
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ActivePanelPresence&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.presence, presence) || other.presence == presence)&&(identical(other.observedAt, observedAt) || other.observedAt == observedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ActivePanelPresence&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.presence, presence) || other.presence == presence)&&(identical(other.observedAt, observedAt) || other.observedAt == observedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,presence,observedAt);
+int get hashCode {
+    return Object.hash(runtimeType,userId,presence,observedAt);
+}
 
 @override
 String toString() {
-  return 'ActivePanelPresence(userId: $userId, presence: $presence, observedAt: $observedAt)';
+    return 'ActivePanelPresence(userId: $userId, presence: $presence, observedAt: $observedAt)';
 }
 
 

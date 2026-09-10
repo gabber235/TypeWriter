@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'realm_editor_catalog.dart';
@@ -9,6 +9,7 @@ part of 'realm_editor_catalog.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RealmEditorCatalogRouteCopyWith<RealmEditorCatalogRoute> get copyWith => _$Real
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogRoute&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.realmId, realmId) || other.realmId == realmId));
+  final _this = this as RealmEditorCatalogRoute;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogRoute&&(identical(other.organizationId, _this.organizationId) || other.organizationId == _this.organizationId)&&(identical(other.realmId, _this.realmId) || other.realmId == _this.realmId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizationId,realmId);
+int get hashCode {
+  final _this = this as RealmEditorCatalogRoute;
+  return Object.hash(runtimeType,_this.organizationId,_this.realmId);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogRoute(organizationId: $organizationId, realmId: $realmId)';
+  final _this = this as RealmEditorCatalogRoute;
+  return 'RealmEditorCatalogRoute(organizationId: ${_this.organizationId}, realmId: ${_this.realmId})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RealmEditorCatalogRouteCopyWithImpl<$Res>
 /// Create a copy of RealmEditorCatalogRoute
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? organizationId = null,Object? realmId = null,}) {
-  return _then(_self.copyWith(
+  return _then(RealmEditorCatalogRoute(
 organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,realmId: null == realmId ? _self.realmId : realmId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,
@@ -208,7 +214,7 @@ return $default(_that.organizationId,_that.realmId);case _:
 
 class _RealmEditorCatalogRoute extends RealmEditorCatalogRoute {
   const _RealmEditorCatalogRoute({required this.organizationId, required this.realmId}): super._();
-  
+
 
 @override final  skir.RecordId organizationId;
 @override final  skir.RecordId realmId;
@@ -223,16 +229,18 @@ _$RealmEditorCatalogRouteCopyWith<_RealmEditorCatalogRoute> get copyWith => __$R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorCatalogRoute&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.realmId, realmId) || other.realmId == realmId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorCatalogRoute&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.realmId, realmId) || other.realmId == realmId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizationId,realmId);
+int get hashCode {
+    return Object.hash(runtimeType,organizationId,realmId);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogRoute(organizationId: $organizationId, realmId: $realmId)';
+    return 'RealmEditorCatalogRoute(organizationId: $organizationId, realmId: $realmId)';
 }
 
 
@@ -285,16 +293,21 @@ $RealmEditorCatalogSnapshotCopyWith<RealmEditorCatalogSnapshot> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogSnapshot&&(identical(other.catalog, catalog) || other.catalog == catalog)&&(identical(other.generation, generation) || other.generation == generation)&&const DeepCollectionEquality().equals(other.presentations, presentations)&&const DeepCollectionEquality().equals(other.conversions, conversions)&&const DeepCollectionEquality().equals(other.capabilities, capabilities)&&const DeepCollectionEquality().equals(other.subtypeResults, subtypeResults)&&const DeepCollectionEquality().equals(other.diagnostics, diagnostics)&&const DeepCollectionEquality().equals(other.elements, elements)&&(identical(other.pageCatalog, pageCatalog) || other.pageCatalog == pageCatalog));
+  final _this = this as RealmEditorCatalogSnapshot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogSnapshot&&(identical(other.catalog, _this.catalog) || other.catalog == _this.catalog)&&(identical(other.generation, _this.generation) || other.generation == _this.generation)&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&const DeepCollectionEquality().equals(other.conversions, _this.conversions)&&const DeepCollectionEquality().equals(other.capabilities, _this.capabilities)&&const DeepCollectionEquality().equals(other.subtypeResults, _this.subtypeResults)&&const DeepCollectionEquality().equals(other.diagnostics, _this.diagnostics)&&const DeepCollectionEquality().equals(other.elements, _this.elements)&&(identical(other.pageCatalog, _this.pageCatalog) || other.pageCatalog == _this.pageCatalog));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,catalog,generation,const DeepCollectionEquality().hash(presentations),const DeepCollectionEquality().hash(conversions),const DeepCollectionEquality().hash(capabilities),const DeepCollectionEquality().hash(subtypeResults),const DeepCollectionEquality().hash(diagnostics),const DeepCollectionEquality().hash(elements),pageCatalog);
+int get hashCode {
+  final _this = this as RealmEditorCatalogSnapshot;
+  return Object.hash(runtimeType,_this.catalog,_this.generation,const DeepCollectionEquality().hash(_this.presentations),const DeepCollectionEquality().hash(_this.conversions),const DeepCollectionEquality().hash(_this.capabilities),const DeepCollectionEquality().hash(_this.subtypeResults),const DeepCollectionEquality().hash(_this.diagnostics),const DeepCollectionEquality().hash(_this.elements),_this.pageCatalog);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogSnapshot(catalog: $catalog, generation: $generation, presentations: $presentations, conversions: $conversions, capabilities: $capabilities, subtypeResults: $subtypeResults, diagnostics: $diagnostics, elements: $elements, pageCatalog: $pageCatalog)';
+  final _this = this as RealmEditorCatalogSnapshot;
+  return 'RealmEditorCatalogSnapshot(catalog: ${_this.catalog}, generation: ${_this.generation}, presentations: ${_this.presentations}, conversions: ${_this.conversions}, capabilities: ${_this.capabilities}, subtypeResults: ${_this.subtypeResults}, diagnostics: ${_this.diagnostics}, elements: ${_this.elements}, pageCatalog: ${_this.pageCatalog})';
 }
 
 
@@ -323,7 +336,7 @@ class _$RealmEditorCatalogSnapshotCopyWithImpl<$Res>
 /// Create a copy of RealmEditorCatalogSnapshot
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? catalog = null,Object? generation = null,Object? presentations = null,Object? conversions = null,Object? capabilities = null,Object? subtypeResults = null,Object? diagnostics = null,Object? elements = null,Object? pageCatalog = null,}) {
-  return _then(_self.copyWith(
+  return _then(RealmEditorCatalogSnapshot(
 catalog: null == catalog ? _self.catalog : catalog // ignore: cast_nullable_to_non_nullable
 as TypeCatalog,generation: null == generation ? _self.generation : generation // ignore: cast_nullable_to_non_nullable
 as CatalogGeneration,presentations: null == presentations ? _self.presentations : presentations // ignore: cast_nullable_to_non_nullable
@@ -341,7 +354,7 @@ as RealmPageCatalog,
 @override
 @pragma('vm:prefer-inline')
 $TypeCatalogCopyWith<$Res> get catalog {
-  
+
   return $TypeCatalogCopyWith<$Res>(_self.catalog, (value) {
     return _then(_self.copyWith(catalog: value));
   });
@@ -350,7 +363,7 @@ $TypeCatalogCopyWith<$Res> get catalog {
 @override
 @pragma('vm:prefer-inline')
 $CatalogGenerationCopyWith<$Res> get generation {
-  
+
   return $CatalogGenerationCopyWith<$Res>(_self.generation, (value) {
     return _then(_self.copyWith(generation: value));
   });
@@ -359,7 +372,7 @@ $CatalogGenerationCopyWith<$Res> get generation {
 @override
 @pragma('vm:prefer-inline')
 $RealmPageCatalogCopyWith<$Res> get pageCatalog {
-  
+
   return $RealmPageCatalogCopyWith<$Res>(_self.pageCatalog, (value) {
     return _then(_self.copyWith(pageCatalog: value));
   });
@@ -501,8 +514,8 @@ return $default(_that.catalog,_that.generation,_that.presentations,_that.convers
 
 
 class _RealmEditorCatalogSnapshot implements RealmEditorCatalogSnapshot {
-  const _RealmEditorCatalogSnapshot({required this.catalog, required this.generation, final  Map<PresentationId, PresentationDefinition> presentations = const {}, final  Map<ConversionId, ConversionDefinition> conversions = const {}, final  Map<CapabilityId, CapabilityDefinition> capabilities = const {}, final  Map<String, RealmEditorSubtypeResult> subtypeResults = const {}, final  List<TypeDiagnostic> diagnostics = const [], final  Map<String, RealmElementCatalogEntry> elements = const {}, this.pageCatalog = const RealmPageCatalog()}): _presentations = presentations,_conversions = conversions,_capabilities = capabilities,_subtypeResults = subtypeResults,_diagnostics = diagnostics,_elements = elements;
-  
+  const _RealmEditorCatalogSnapshot({required this.catalog, required this.generation,  Map<PresentationId, PresentationDefinition> presentations = const {},  Map<ConversionId, ConversionDefinition> conversions = const {},  Map<CapabilityId, CapabilityDefinition> capabilities = const {},  Map<String, RealmEditorSubtypeResult> subtypeResults = const {},  List<TypeDiagnostic> diagnostics = const [],  Map<String, RealmElementCatalogEntry> elements = const {}, this.pageCatalog = const RealmPageCatalog()}): _presentations = presentations,_conversions = conversions,_capabilities = capabilities,_subtypeResults = subtypeResults,_diagnostics = diagnostics,_elements = elements;
+
 
 @override final  TypeCatalog catalog;
 @override final  CatalogGeneration generation;
@@ -560,16 +573,18 @@ _$RealmEditorCatalogSnapshotCopyWith<_RealmEditorCatalogSnapshot> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorCatalogSnapshot&&(identical(other.catalog, catalog) || other.catalog == catalog)&&(identical(other.generation, generation) || other.generation == generation)&&const DeepCollectionEquality().equals(other._presentations, _presentations)&&const DeepCollectionEquality().equals(other._conversions, _conversions)&&const DeepCollectionEquality().equals(other._capabilities, _capabilities)&&const DeepCollectionEquality().equals(other._subtypeResults, _subtypeResults)&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics)&&const DeepCollectionEquality().equals(other._elements, _elements)&&(identical(other.pageCatalog, pageCatalog) || other.pageCatalog == pageCatalog));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmEditorCatalogSnapshot&&(identical(other.catalog, catalog) || other.catalog == catalog)&&(identical(other.generation, generation) || other.generation == generation)&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&const DeepCollectionEquality().equals(other.conversions, _conversions)&&const DeepCollectionEquality().equals(other.capabilities, _capabilities)&&const DeepCollectionEquality().equals(other.subtypeResults, _subtypeResults)&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics)&&const DeepCollectionEquality().equals(other.elements, _elements)&&(identical(other.pageCatalog, pageCatalog) || other.pageCatalog == pageCatalog));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,catalog,generation,const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_conversions),const DeepCollectionEquality().hash(_capabilities),const DeepCollectionEquality().hash(_subtypeResults),const DeepCollectionEquality().hash(_diagnostics),const DeepCollectionEquality().hash(_elements),pageCatalog);
+int get hashCode {
+    return Object.hash(runtimeType,catalog,generation,const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_conversions),const DeepCollectionEquality().hash(_capabilities),const DeepCollectionEquality().hash(_subtypeResults),const DeepCollectionEquality().hash(_diagnostics),const DeepCollectionEquality().hash(_elements),pageCatalog);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogSnapshot(catalog: $catalog, generation: $generation, presentations: $presentations, conversions: $conversions, capabilities: $capabilities, subtypeResults: $subtypeResults, diagnostics: $diagnostics, elements: $elements, pageCatalog: $pageCatalog)';
+    return 'RealmEditorCatalogSnapshot(catalog: $catalog, generation: $generation, presentations: $presentations, conversions: $conversions, capabilities: $capabilities, subtypeResults: $subtypeResults, diagnostics: $diagnostics, elements: $elements, pageCatalog: $pageCatalog)';
 }
 
 
@@ -617,7 +632,7 @@ as RealmPageCatalog,
 @override
 @pragma('vm:prefer-inline')
 $TypeCatalogCopyWith<$Res> get catalog {
-  
+
   return $TypeCatalogCopyWith<$Res>(_self.catalog, (value) {
     return _then(_self.copyWith(catalog: value));
   });
@@ -626,7 +641,7 @@ $TypeCatalogCopyWith<$Res> get catalog {
 @override
 @pragma('vm:prefer-inline')
 $CatalogGenerationCopyWith<$Res> get generation {
-  
+
   return $CatalogGenerationCopyWith<$Res>(_self.generation, (value) {
     return _then(_self.copyWith(generation: value));
   });
@@ -635,7 +650,7 @@ $CatalogGenerationCopyWith<$Res> get generation {
 @override
 @pragma('vm:prefer-inline')
 $RealmPageCatalogCopyWith<$Res> get pageCatalog {
-  
+
   return $RealmPageCatalogCopyWith<$Res>(_self.pageCatalog, (value) {
     return _then(_self.copyWith(pageCatalog: value));
   });
@@ -651,7 +666,7 @@ mixin _$RealmEditorCatalogFetchResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogFetchResult);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogFetchResult);
 }
 
 
@@ -660,7 +675,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'RealmEditorCatalogFetchResult()';
+    return 'RealmEditorCatalogFetchResult()';
 }
 
 
@@ -813,7 +828,7 @@ return unavailable(_that.diagnostics);case _:
 
 class RealmEditorCatalogFetched implements RealmEditorCatalogFetchResult {
   const RealmEditorCatalogFetched(this.snapshot);
-  
+
 
  final  RealmEditorCatalogSnapshot snapshot;
 
@@ -827,16 +842,18 @@ $RealmEditorCatalogFetchedCopyWith<RealmEditorCatalogFetched> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogFetched&&(identical(other.snapshot, snapshot) || other.snapshot == snapshot));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogFetched&&(identical(other.snapshot, snapshot) || other.snapshot == snapshot));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,snapshot);
+int get hashCode {
+    return Object.hash(runtimeType,snapshot);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogFetchResult.fetched(snapshot: $snapshot)';
+    return 'RealmEditorCatalogFetchResult.fetched(snapshot: $snapshot)';
 }
 
 
@@ -876,7 +893,7 @@ as RealmEditorCatalogSnapshot,
 @override
 @pragma('vm:prefer-inline')
 $RealmEditorCatalogSnapshotCopyWith<$Res> get snapshot {
-  
+
   return $RealmEditorCatalogSnapshotCopyWith<$Res>(_self.snapshot, (value) {
     return _then(_self.copyWith(snapshot: value));
   });
@@ -888,7 +905,7 @@ $RealmEditorCatalogSnapshotCopyWith<$Res> get snapshot {
 
 class RealmEditorCatalogGenerationMismatch implements RealmEditorCatalogFetchResult {
   const RealmEditorCatalogGenerationMismatch(this.currentGeneration);
-  
+
 
  final  CatalogGeneration currentGeneration;
 
@@ -902,16 +919,18 @@ $RealmEditorCatalogGenerationMismatchCopyWith<RealmEditorCatalogGenerationMismat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogGenerationMismatch&&(identical(other.currentGeneration, currentGeneration) || other.currentGeneration == currentGeneration));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogGenerationMismatch&&(identical(other.currentGeneration, currentGeneration) || other.currentGeneration == currentGeneration));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currentGeneration);
+int get hashCode {
+    return Object.hash(runtimeType,currentGeneration);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogFetchResult.generationMismatch(currentGeneration: $currentGeneration)';
+    return 'RealmEditorCatalogFetchResult.generationMismatch(currentGeneration: $currentGeneration)';
 }
 
 
@@ -951,7 +970,7 @@ as CatalogGeneration,
 @override
 @pragma('vm:prefer-inline')
 $CatalogGenerationCopyWith<$Res> get currentGeneration {
-  
+
   return $CatalogGenerationCopyWith<$Res>(_self.currentGeneration, (value) {
     return _then(_self.copyWith(currentGeneration: value));
   });
@@ -962,8 +981,8 @@ $CatalogGenerationCopyWith<$Res> get currentGeneration {
 
 
 class RealmEditorCatalogFetchUnavailable implements RealmEditorCatalogFetchResult {
-  const RealmEditorCatalogFetchUnavailable(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
-  
+  const RealmEditorCatalogFetchUnavailable( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -983,16 +1002,18 @@ $RealmEditorCatalogFetchUnavailableCopyWith<RealmEditorCatalogFetchUnavailable> 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogFetchUnavailable&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogFetchUnavailable&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogFetchResult.unavailable(diagnostics: $diagnostics)';
+    return 'RealmEditorCatalogFetchResult.unavailable(diagnostics: $diagnostics)';
 }
 
 
@@ -1039,7 +1060,7 @@ mixin _$RealmEditorCatalogWatchEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogWatchEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogWatchEvent);
 }
 
 
@@ -1048,7 +1069,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'RealmEditorCatalogWatchEvent()';
+    return 'RealmEditorCatalogWatchEvent()';
 }
 
 
@@ -1195,7 +1216,7 @@ return unavailable(_that.diagnostics);case _:
 
 class RealmEditorCatalogInvalidated implements RealmEditorCatalogWatchEvent {
   const RealmEditorCatalogInvalidated(this.generation);
-  
+
 
  final  CatalogGeneration generation;
 
@@ -1209,16 +1230,18 @@ $RealmEditorCatalogInvalidatedCopyWith<RealmEditorCatalogInvalidated> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogInvalidated&&(identical(other.generation, generation) || other.generation == generation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogInvalidated&&(identical(other.generation, generation) || other.generation == generation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,generation);
+int get hashCode {
+    return Object.hash(runtimeType,generation);
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogWatchEvent.invalidated(generation: $generation)';
+    return 'RealmEditorCatalogWatchEvent.invalidated(generation: $generation)';
 }
 
 
@@ -1258,7 +1281,7 @@ as CatalogGeneration,
 @override
 @pragma('vm:prefer-inline')
 $CatalogGenerationCopyWith<$Res> get generation {
-  
+
   return $CatalogGenerationCopyWith<$Res>(_self.generation, (value) {
     return _then(_self.copyWith(generation: value));
   });
@@ -1269,8 +1292,8 @@ $CatalogGenerationCopyWith<$Res> get generation {
 
 
 class RealmEditorCatalogWatchUnavailable implements RealmEditorCatalogWatchEvent {
-  const RealmEditorCatalogWatchUnavailable(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
-  
+  const RealmEditorCatalogWatchUnavailable( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -1290,16 +1313,18 @@ $RealmEditorCatalogWatchUnavailableCopyWith<RealmEditorCatalogWatchUnavailable> 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogWatchUnavailable&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorCatalogWatchUnavailable&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'RealmEditorCatalogWatchEvent.unavailable(diagnostics: $diagnostics)';
+    return 'RealmEditorCatalogWatchEvent.unavailable(diagnostics: $diagnostics)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'secret_field_state.dart';
@@ -9,6 +9,7 @@ part of 'secret_field_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SecretFieldState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SecretFieldState()';
+    return 'SecretFieldState()';
 }
 
 
@@ -194,7 +195,7 @@ return error(_that.message);case _:
 
 class SecretFieldIdle implements SecretFieldState {
   const SecretFieldIdle();
-  
+
 
 
 
@@ -203,7 +204,7 @@ class SecretFieldIdle implements SecretFieldState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldIdle);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldIdle);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SecretFieldState.idle()';
+    return 'SecretFieldState.idle()';
 }
 
 
@@ -226,7 +227,7 @@ String toString() {
 
 class SecretFieldLoading implements SecretFieldState {
   const SecretFieldLoading();
-  
+
 
 
 
@@ -235,7 +236,7 @@ class SecretFieldLoading implements SecretFieldState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldLoading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldLoading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SecretFieldState.loading()';
+    return 'SecretFieldState.loading()';
 }
 
 
@@ -258,7 +259,7 @@ String toString() {
 
 class SecretFieldRevealed implements SecretFieldState {
   const SecretFieldRevealed({required this.value, this.expiresAt});
-  
+
 
  final  String value;
  final  DateTime? expiresAt;
@@ -273,16 +274,18 @@ $SecretFieldRevealedCopyWith<SecretFieldRevealed> get copyWith => _$SecretFieldR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldRevealed&&(identical(other.value, value) || other.value == value)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldRevealed&&(identical(other.value, value) || other.value == value)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value,expiresAt);
+int get hashCode {
+    return Object.hash(runtimeType,value,expiresAt);
+}
 
 @override
 String toString() {
-  return 'SecretFieldState.revealed(value: $value, expiresAt: $expiresAt)';
+    return 'SecretFieldState.revealed(value: $value, expiresAt: $expiresAt)';
 }
 
 
@@ -326,7 +329,7 @@ as DateTime?,
 
 class SecretFieldExpired implements SecretFieldState {
   const SecretFieldExpired({required this.value});
-  
+
 
  final  String value;
 
@@ -340,16 +343,18 @@ $SecretFieldExpiredCopyWith<SecretFieldExpired> get copyWith => _$SecretFieldExp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldExpired&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldExpired&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'SecretFieldState.expired(value: $value)';
+    return 'SecretFieldState.expired(value: $value)';
 }
 
 
@@ -392,7 +397,7 @@ as String,
 
 class SecretFieldError implements SecretFieldState {
   const SecretFieldError({required this.message});
-  
+
 
  final  String message;
 
@@ -406,16 +411,18 @@ $SecretFieldErrorCopyWith<SecretFieldError> get copyWith => _$SecretFieldErrorCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldError&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecretFieldError&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'SecretFieldState.error(message: $message)';
+    return 'SecretFieldState.error(message: $message)';
 }
 
 

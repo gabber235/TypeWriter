@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'color_library.dart';
@@ -9,6 +9,7 @@ part of 'color_library.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ColorLibraryStateCopyWith<ColorLibraryState> get copyWith => _$ColorLibraryStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ColorLibraryState&&const DeepCollectionEquality().equals(other.recent, recent)&&const DeepCollectionEquality().equals(other.favorites, favorites)&&(identical(other.format, format) || other.format == format));
+  final _this = this as ColorLibraryState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ColorLibraryState&&const DeepCollectionEquality().equals(other.recent, _this.recent)&&const DeepCollectionEquality().equals(other.favorites, _this.favorites)&&(identical(other.format, _this.format) || other.format == _this.format));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(recent),const DeepCollectionEquality().hash(favorites),format);
+int get hashCode {
+  final _this = this as ColorLibraryState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.recent),const DeepCollectionEquality().hash(_this.favorites),_this.format);
+}
 
 @override
 String toString() {
-  return 'ColorLibraryState(recent: $recent, favorites: $favorites, format: $format)';
+  final _this = this as ColorLibraryState;
+  return 'ColorLibraryState(recent: ${_this.recent}, favorites: ${_this.favorites}, format: ${_this.format})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ColorLibraryStateCopyWithImpl<$Res>
 /// Create a copy of ColorLibraryState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? recent = null,Object? favorites = null,Object? format = null,}) {
-  return _then(_self.copyWith(
+  return _then(ColorLibraryState(
 recent: null == recent ? _self.recent : recent // ignore: cast_nullable_to_non_nullable
 as List<int>,favorites: null == favorites ? _self.favorites : favorites // ignore: cast_nullable_to_non_nullable
 as List<int>,format: null == format ? _self.format : format // ignore: cast_nullable_to_non_nullable
@@ -208,8 +214,8 @@ return $default(_that.recent,_that.favorites,_that.format);case _:
 
 
 class _ColorLibraryState implements ColorLibraryState {
-  const _ColorLibraryState({final  List<int> recent = const [], final  List<int> favorites = const [], this.format = ColorFieldFormat.hex}): _recent = recent,_favorites = favorites;
-  
+  const _ColorLibraryState({ List<int> recent = const [],  List<int> favorites = const [], this.format = ColorFieldFormat.hex}): _recent = recent,_favorites = favorites;
+
 
  final  List<int> _recent;
 @override@JsonKey() List<int> get recent {
@@ -237,16 +243,18 @@ _$ColorLibraryStateCopyWith<_ColorLibraryState> get copyWith => __$ColorLibraryS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ColorLibraryState&&const DeepCollectionEquality().equals(other._recent, _recent)&&const DeepCollectionEquality().equals(other._favorites, _favorites)&&(identical(other.format, format) || other.format == format));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ColorLibraryState&&const DeepCollectionEquality().equals(other.recent, _recent)&&const DeepCollectionEquality().equals(other.favorites, _favorites)&&(identical(other.format, format) || other.format == format));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_recent),const DeepCollectionEquality().hash(_favorites),format);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_recent),const DeepCollectionEquality().hash(_favorites),format);
+}
 
 @override
 String toString() {
-  return 'ColorLibraryState(recent: $recent, favorites: $favorites, format: $format)';
+    return 'ColorLibraryState(recent: $recent, favorites: $favorites, format: $format)';
 }
 
 

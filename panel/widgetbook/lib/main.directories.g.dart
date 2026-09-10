@@ -10,6 +10,7 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'package:widgetbook/widgetbook.dart' as _widgetbook;
 import 'package:widgetbook_workspace/stories/app/design_system/color_swatch.stories.dart'
     as _widgetbook_workspace_stories_app_design_system_color_swatch_stories;
@@ -359,8 +360,7 @@ final directories = <_widgetbook.WidgetbookNode>[
                                                         name: 'result_item',
                                                         children: [
                                                           _widgetbook.WidgetbookComponent(
-                                                            name:
-                                                                'BookSearchResultItem',
+                                                            name: 'BookSearchResultItem',
                                                             useCases: [
                                                               _widgetbook.WidgetbookUseCase(
                                                                 name: 'Default',
@@ -371,8 +371,7 @@ final directories = <_widgetbook.WidgetbookNode>[
                                                             ],
                                                           ),
                                                           _widgetbook.WidgetbookComponent(
-                                                            name:
-                                                                'ElementDefinitionSearchResultItem',
+                                                            name: 'ElementDefinitionSearchResultItem',
                                                             useCases: [
                                                               _widgetbook.WidgetbookUseCase(
                                                                 name: 'Default',
@@ -383,8 +382,7 @@ final directories = <_widgetbook.WidgetbookNode>[
                                                             ],
                                                           ),
                                                           _widgetbook.WidgetbookComponent(
-                                                            name:
-                                                                'EntrySearchResultItem',
+                                                            name: 'EntrySearchResultItem',
                                                             useCases: [
                                                               _widgetbook.WidgetbookUseCase(
                                                                 name: 'Default',
@@ -395,8 +393,7 @@ final directories = <_widgetbook.WidgetbookNode>[
                                                             ],
                                                           ),
                                                           _widgetbook.WidgetbookComponent(
-                                                            name:
-                                                                'PageSearchResultItem',
+                                                            name: 'PageSearchResultItem',
                                                             useCases: [
                                                               _widgetbook.WidgetbookUseCase(
                                                                 name: 'Default',
@@ -407,8 +404,7 @@ final directories = <_widgetbook.WidgetbookNode>[
                                                             ],
                                                           ),
                                                           _widgetbook.WidgetbookComponent(
-                                                            name:
-                                                                'SearchResultCard',
+                                                            name: 'SearchResultCard',
                                                             useCases: [
                                                               _widgetbook.WidgetbookUseCase(
                                                                 name: 'Catalog',
@@ -419,8 +415,7 @@ final directories = <_widgetbook.WidgetbookNode>[
                                                             ],
                                                           ),
                                                           _widgetbook.WidgetbookComponent(
-                                                            name:
-                                                                'TagSearchResultItem',
+                                                            name: 'TagSearchResultItem',
                                                             useCases: [
                                                               _widgetbook.WidgetbookUseCase(
                                                                 name: 'Default',
@@ -474,15 +469,13 @@ final directories = <_widgetbook.WidgetbookNode>[
                                                             .entryNodeDefinitionUseCase,
                                                   ),
                                                   _widgetbook.WidgetbookUseCase(
-                                                    name:
-                                                        'Deprecated Definition Entry',
+                                                    name: 'Deprecated Definition Entry',
                                                     builder:
                                                         _widgetbook_workspace_stories_features_organizations_features_realms_features_books_features_pages_features_editor_presentation_entry_stories
                                                             .entryNodeDeprecatedDefinitionUseCase,
                                                   ),
                                                   _widgetbook.WidgetbookUseCase(
-                                                    name:
-                                                        'Missing Element Definition',
+                                                    name: 'Missing Element Definition',
                                                     builder:
                                                         _widgetbook_workspace_stories_features_organizations_features_realms_features_books_features_pages_features_editor_presentation_entry_stories
                                                             .entryNodeMissingElementDefinitionUseCase,

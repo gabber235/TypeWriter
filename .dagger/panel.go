@@ -4,9 +4,9 @@ import (
 	"dagger/typewriter/internal/dagger"
 )
 
-const panelFlutterVersion = "3.44.7"
+const panelFlutterVersion = "3.47.2"
 
-const panelGeneratorCacheVersion = "flutter-3.44.7-lock-v2"
+const panelGeneratorCacheVersion = "flutter-3.47.2-lock-v2"
 
 var defaultWorkspaceOpts = dagger.WorkspaceDirectoryOpts{
 	Exclude:   []string{".git", "target", "node_modules", "build", "dist"},

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'graph_commit.dart';
@@ -9,6 +9,7 @@ part of 'graph_commit.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $GraphMoveCommitPayloadCopyWith<GraphMoveCommitPayload> get copyWith => _$GraphM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphMoveCommitPayload&&(identical(other.id, id) || other.id == id)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y));
+  final _this = this as GraphMoveCommitPayload;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphMoveCommitPayload&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,x,y);
+int get hashCode {
+  final _this = this as GraphMoveCommitPayload;
+  return Object.hash(runtimeType,_this.id,_this.x,_this.y);
+}
 
 @override
 String toString() {
-  return 'GraphMoveCommitPayload(id: $id, x: $x, y: $y)';
+  final _this = this as GraphMoveCommitPayload;
+  return 'GraphMoveCommitPayload(id: ${_this.id}, x: ${_this.x}, y: ${_this.y})';
 }
 
 
@@ -63,7 +69,7 @@ class _$GraphMoveCommitPayloadCopyWithImpl<$Res>
 /// Create a copy of GraphMoveCommitPayload
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? x = null,Object? y = null,}) {
-  return _then(_self.copyWith(
+  return _then(GraphMoveCommitPayload(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as GraphIdentifier,x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
 as int,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
@@ -209,7 +215,7 @@ return $default(_that.id,_that.x,_that.y);case _:
 
 class _GraphMoveCommitPayload implements GraphMoveCommitPayload {
   const _GraphMoveCommitPayload({required this.id, required this.x, required this.y});
-  
+
 
 @override final  GraphIdentifier id;
 @override final  int x;
@@ -225,16 +231,18 @@ _$GraphMoveCommitPayloadCopyWith<_GraphMoveCommitPayload> get copyWith => __$Gra
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphMoveCommitPayload&&(identical(other.id, id) || other.id == id)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphMoveCommitPayload&&(identical(other.id, id) || other.id == id)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,x,y);
+int get hashCode {
+    return Object.hash(runtimeType,id,x,y);
+}
 
 @override
 String toString() {
-  return 'GraphMoveCommitPayload(id: $id, x: $x, y: $y)';
+    return 'GraphMoveCommitPayload(id: $id, x: $x, y: $y)';
 }
 
 
@@ -288,16 +296,21 @@ $GraphResizeCommitPayloadCopyWith<GraphResizeCommitPayload> get copyWith => _$Gr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphResizeCommitPayload&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+  final _this = this as GraphResizeCommitPayload;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GraphResizeCommitPayload&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height);
+int get hashCode {
+  final _this = this as GraphResizeCommitPayload;
+  return Object.hash(runtimeType,_this.id,_this.width,_this.height);
+}
 
 @override
 String toString() {
-  return 'GraphResizeCommitPayload(id: $id, width: $width, height: $height)';
+  final _this = this as GraphResizeCommitPayload;
+  return 'GraphResizeCommitPayload(id: ${_this.id}, width: ${_this.width}, height: ${_this.height})';
 }
 
 
@@ -326,7 +339,7 @@ class _$GraphResizeCommitPayloadCopyWithImpl<$Res>
 /// Create a copy of GraphResizeCommitPayload
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? width = null,Object? height = null,}) {
-  return _then(_self.copyWith(
+  return _then(GraphResizeCommitPayload(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as GraphIdentifier,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
@@ -472,7 +485,7 @@ return $default(_that.id,_that.width,_that.height);case _:
 
 class _GraphResizeCommitPayload implements GraphResizeCommitPayload {
   const _GraphResizeCommitPayload({required this.id, required this.width, required this.height});
-  
+
 
 @override final  GraphIdentifier id;
 @override final  int width;
@@ -488,16 +501,18 @@ _$GraphResizeCommitPayloadCopyWith<_GraphResizeCommitPayload> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphResizeCommitPayload&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GraphResizeCommitPayload&&(identical(other.id, id) || other.id == id)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,width,height);
+int get hashCode {
+    return Object.hash(runtimeType,id,width,height);
+}
 
 @override
 String toString() {
-  return 'GraphResizeCommitPayload(id: $id, width: $width, height: $height)';
+    return 'GraphResizeCommitPayload(id: $id, width: $width, height: $height)';
 }
 
 

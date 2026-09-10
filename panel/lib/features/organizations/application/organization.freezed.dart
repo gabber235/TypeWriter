@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'organization.dart';
@@ -9,6 +9,7 @@ part of 'organization.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -24,23 +25,29 @@ $OrganizationDataCopyWith<OrganizationData> get copyWith => _$OrganizationDataCo
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as OrganizationData;
   properties
     ..add(DiagnosticsProperty('type', 'OrganizationData'))
-    ..add(DiagnosticsProperty('organizationId', organizationId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('logoUrl', logoUrl));
+    ..add(DiagnosticsProperty('organizationId', _this.organizationId))..add(DiagnosticsProperty('name', _this.name))..add(DiagnosticsProperty('logoUrl', _this.logoUrl));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationData&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+  final _this = this as OrganizationData;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationData&&(identical(other.organizationId, _this.organizationId) || other.organizationId == _this.organizationId)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.logoUrl, _this.logoUrl) || other.logoUrl == _this.logoUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizationId,name,logoUrl);
+int get hashCode {
+  final _this = this as OrganizationData;
+  return Object.hash(runtimeType,_this.organizationId,_this.name,_this.logoUrl);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'OrganizationData(organizationId: $organizationId, name: $name, logoUrl: $logoUrl)';
+  final _this = this as OrganizationData;
+  return 'OrganizationData(organizationId: ${_this.organizationId}, name: ${_this.name}, logoUrl: ${_this.logoUrl})';
 }
 
 
@@ -69,7 +76,7 @@ class _$OrganizationDataCopyWithImpl<$Res>
 /// Create a copy of OrganizationData
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? organizationId = null,Object? name = null,Object? logoUrl = null,}) {
-  return _then(_self.copyWith(
+  return _then(OrganizationData(
 organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,logoUrl: null == logoUrl ? _self.logoUrl : logoUrl // ignore: cast_nullable_to_non_nullable
@@ -215,7 +222,7 @@ return $default(_that.organizationId,_that.name,_that.logoUrl);case _:
 
 class _OrganizationData extends OrganizationData with DiagnosticableTreeMixin {
   const _OrganizationData({required this.organizationId, required this.name, required this.logoUrl}): assert(name != "", 'Name must not be empty.'),super._();
-  
+
 
 @override final  skir.RecordId organizationId;
 @override final  String name;
@@ -230,23 +237,25 @@ _$OrganizationDataCopyWith<_OrganizationData> get copyWith => __$OrganizationDat
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'OrganizationData'))
     ..add(DiagnosticsProperty('organizationId', organizationId))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('logoUrl', logoUrl));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationData&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationData&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,organizationId,name,logoUrl);
+int get hashCode {
+    return Object.hash(runtimeType,organizationId,name,logoUrl);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'OrganizationData(organizationId: $organizationId, name: $name, logoUrl: $logoUrl)';
+    return 'OrganizationData(organizationId: $organizationId, name: $name, logoUrl: $logoUrl)';
 }
 
 

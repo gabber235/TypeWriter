@@ -85,7 +85,7 @@ abstract class _$OrganizationServices extends $StreamNotifier<List<Service>> {
   Stream<List<Service>> build(skir.RecordId organizationId);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<Service>>, List<Service>>;
     final element =
         ref.element
@@ -95,7 +95,7 @@ abstract class _$OrganizationServices extends $StreamNotifier<List<Service>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -199,7 +199,7 @@ abstract class _$Services extends $StreamNotifier<List<Service>> {
   Stream<List<Service>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<Service>>, List<Service>>;
     final element =
         ref.element
@@ -209,7 +209,7 @@ abstract class _$Services extends $StreamNotifier<List<Service>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -342,7 +342,7 @@ abstract class _$OrganizationTopologyController
   Stream<OrganizationTopology> build(skir.RecordId organizationId);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<OrganizationTopology>, OrganizationTopology>;
@@ -357,7 +357,7 @@ abstract class _$OrganizationTopologyController
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 

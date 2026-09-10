@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'local_work.dart';
@@ -9,6 +9,7 @@ part of 'local_work.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -24,23 +25,29 @@ $EditorResourceKeyCopyWith<EditorResourceKey> get copyWith => _$EditorResourceKe
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as EditorResourceKey;
   properties
     ..add(DiagnosticsProperty('type', 'EditorResourceKey'))
-    ..add(DiagnosticsProperty('scope', scope))..add(DiagnosticsProperty('identity', identity));
+    ..add(DiagnosticsProperty('scope', _this.scope))..add(DiagnosticsProperty('identity', _this.identity));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorResourceKey&&const DeepCollectionEquality().equals(other.scope, scope)&&const DeepCollectionEquality().equals(other.identity, identity));
+  final _this = this as EditorResourceKey;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorResourceKey&&const DeepCollectionEquality().equals(other.scope, _this.scope)&&const DeepCollectionEquality().equals(other.identity, _this.identity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(scope),const DeepCollectionEquality().hash(identity));
+int get hashCode {
+  final _this = this as EditorResourceKey;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.scope),const DeepCollectionEquality().hash(_this.identity));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EditorResourceKey(scope: $scope, identity: $identity)';
+  final _this = this as EditorResourceKey;
+  return 'EditorResourceKey(scope: ${_this.scope}, identity: ${_this.identity})';
 }
 
 
@@ -69,7 +76,7 @@ class _$EditorResourceKeyCopyWithImpl<$Res>
 /// Create a copy of EditorResourceKey
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? scope = freezed,Object? identity = null,}) {
-  return _then(_self.copyWith(
+  return _then(EditorResourceKey(
 scope: freezed == scope ? _self.scope : scope ,identity: null == identity ? _self.identity : identity ,
   ));
 }
@@ -212,7 +219,7 @@ return $default(_that.scope,_that.identity);case _:
 
 class _EditorResourceKey with DiagnosticableTreeMixin implements EditorResourceKey {
   const _EditorResourceKey({required this.scope, required this.identity});
-  
+
 
 @override final  Object? scope;
 @override final  Object identity;
@@ -226,23 +233,25 @@ _$EditorResourceKeyCopyWith<_EditorResourceKey> get copyWith => __$EditorResourc
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'EditorResourceKey'))
     ..add(DiagnosticsProperty('scope', scope))..add(DiagnosticsProperty('identity', identity));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditorResourceKey&&const DeepCollectionEquality().equals(other.scope, scope)&&const DeepCollectionEquality().equals(other.identity, identity));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditorResourceKey&&const DeepCollectionEquality().equals(other.scope, scope)&&const DeepCollectionEquality().equals(other.identity, identity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(scope),const DeepCollectionEquality().hash(identity));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(scope),const DeepCollectionEquality().hash(identity));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EditorResourceKey(scope: $scope, identity: $identity)';
+    return 'EditorResourceKey(scope: $scope, identity: $identity)';
 }
 
 
