@@ -473,7 +473,7 @@ void main() {
       expect(harness.placement.x, 8);
       expect(harness.projectedPlacement.x, 4);
       final draft = harness.container
-          .read(localWorkProvider)
+          .read(localWorkControllerProvider)
           .resources
           .values
           .single

@@ -13,6 +13,566 @@ part of 'local_work.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
+mixin _$LocalWorkScope implements DiagnosticableTreeMixin {
+
+ String? get userId; skir.RecordId? get organizationId;
+/// Create a copy of LocalWorkScope
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LocalWorkScopeCopyWith<LocalWorkScope> get copyWith => _$LocalWorkScopeCopyWithImpl<LocalWorkScope>(this as LocalWorkScope, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as LocalWorkScope;
+  properties
+    ..add(DiagnosticsProperty('type', 'LocalWorkScope'))
+    ..add(DiagnosticsProperty('userId', _this.userId))..add(DiagnosticsProperty('organizationId', _this.organizationId));
+}
+
+@override
+bool operator ==(Object other) {
+  final _this = this as LocalWorkScope;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalWorkScope&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.organizationId, _this.organizationId) || other.organizationId == _this.organizationId));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as LocalWorkScope;
+  return Object.hash(runtimeType,_this.userId,_this.organizationId);
+}
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  final _this = this as LocalWorkScope;
+  return 'LocalWorkScope(userId: ${_this.userId}, organizationId: ${_this.organizationId})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LocalWorkScopeCopyWith<$Res>  {
+  factory $LocalWorkScopeCopyWith(LocalWorkScope value, $Res Function(LocalWorkScope) _then) = _$LocalWorkScopeCopyWithImpl;
+@useResult
+$Res call({
+ String? userId, skir.RecordId? organizationId
+});
+
+
+
+
+}
+/// @nodoc
+class _$LocalWorkScopeCopyWithImpl<$Res>
+    implements $LocalWorkScopeCopyWith<$Res> {
+  _$LocalWorkScopeCopyWithImpl(this._self, this._then);
+
+  final LocalWorkScope _self;
+  final $Res Function(LocalWorkScope) _then;
+
+/// Create a copy of LocalWorkScope
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? organizationId = freezed,}) {
+  return _then(LocalWorkScope(
+userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as skir.RecordId?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [LocalWorkScope].
+extension LocalWorkScopePatterns on LocalWorkScope {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LocalWorkScope value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _LocalWorkScope() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LocalWorkScope value)  $default,){
+final _that = this;
+switch (_that) {
+case _LocalWorkScope():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LocalWorkScope value)?  $default,){
+final _that = this;
+switch (_that) {
+case _LocalWorkScope() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userId,  skir.RecordId? organizationId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _LocalWorkScope() when $default != null:
+return $default(_that.userId,_that.organizationId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userId,  skir.RecordId? organizationId)  $default,) {final _that = this;
+switch (_that) {
+case _LocalWorkScope():
+return $default(_that.userId,_that.organizationId);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userId,  skir.RecordId? organizationId)?  $default,) {final _that = this;
+switch (_that) {
+case _LocalWorkScope() when $default != null:
+return $default(_that.userId,_that.organizationId);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _LocalWorkScope with DiagnosticableTreeMixin implements LocalWorkScope {
+  const _LocalWorkScope({required this.userId, required this.organizationId});
+
+
+@override final  String? userId;
+@override final  skir.RecordId? organizationId;
+
+/// Create a copy of LocalWorkScope
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LocalWorkScopeCopyWith<_LocalWorkScope> get copyWith => __$LocalWorkScopeCopyWithImpl<_LocalWorkScope>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+    ..add(DiagnosticsProperty('type', 'LocalWorkScope'))
+    ..add(DiagnosticsProperty('userId', userId))..add(DiagnosticsProperty('organizationId', organizationId));
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LocalWorkScope&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,userId,organizationId);
+}
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+    return 'LocalWorkScope(userId: $userId, organizationId: $organizationId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LocalWorkScopeCopyWith<$Res> implements $LocalWorkScopeCopyWith<$Res> {
+  factory _$LocalWorkScopeCopyWith(_LocalWorkScope value, $Res Function(_LocalWorkScope) _then) = __$LocalWorkScopeCopyWithImpl;
+@override @useResult
+$Res call({
+ String? userId, skir.RecordId? organizationId
+});
+
+
+
+
+}
+/// @nodoc
+class __$LocalWorkScopeCopyWithImpl<$Res>
+    implements _$LocalWorkScopeCopyWith<$Res> {
+  __$LocalWorkScopeCopyWithImpl(this._self, this._then);
+
+  final _LocalWorkScope _self;
+  final $Res Function(_LocalWorkScope) _then;
+
+/// Create a copy of LocalWorkScope
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? organizationId = freezed,}) {
+  return _then(_LocalWorkScope(
+userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,organizationId: freezed == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as skir.RecordId?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$EditorResourceScope implements DiagnosticableTreeMixin {
+
+ skir.RecordId get organizationId; skir.RecordId? get realmId;
+/// Create a copy of EditorResourceScope
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EditorResourceScopeCopyWith<EditorResourceScope> get copyWith => _$EditorResourceScopeCopyWithImpl<EditorResourceScope>(this as EditorResourceScope, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as EditorResourceScope;
+  properties
+    ..add(DiagnosticsProperty('type', 'EditorResourceScope'))
+    ..add(DiagnosticsProperty('organizationId', _this.organizationId))..add(DiagnosticsProperty('realmId', _this.realmId));
+}
+
+@override
+bool operator ==(Object other) {
+  final _this = this as EditorResourceScope;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorResourceScope&&(identical(other.organizationId, _this.organizationId) || other.organizationId == _this.organizationId)&&(identical(other.realmId, _this.realmId) || other.realmId == _this.realmId));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as EditorResourceScope;
+  return Object.hash(runtimeType,_this.organizationId,_this.realmId);
+}
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  final _this = this as EditorResourceScope;
+  return 'EditorResourceScope(organizationId: ${_this.organizationId}, realmId: ${_this.realmId})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $EditorResourceScopeCopyWith<$Res>  {
+  factory $EditorResourceScopeCopyWith(EditorResourceScope value, $Res Function(EditorResourceScope) _then) = _$EditorResourceScopeCopyWithImpl;
+@useResult
+$Res call({
+ skir.RecordId organizationId, skir.RecordId? realmId
+});
+
+
+
+
+}
+/// @nodoc
+class _$EditorResourceScopeCopyWithImpl<$Res>
+    implements $EditorResourceScopeCopyWith<$Res> {
+  _$EditorResourceScopeCopyWithImpl(this._self, this._then);
+
+  final EditorResourceScope _self;
+  final $Res Function(EditorResourceScope) _then;
+
+/// Create a copy of EditorResourceScope
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? organizationId = null,Object? realmId = freezed,}) {
+  return _then(EditorResourceScope(
+organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as skir.RecordId,realmId: freezed == realmId ? _self.realmId : realmId // ignore: cast_nullable_to_non_nullable
+as skir.RecordId?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [EditorResourceScope].
+extension EditorResourceScopePatterns on EditorResourceScope {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _EditorResourceScope value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _EditorResourceScope() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _EditorResourceScope value)  $default,){
+final _that = this;
+switch (_that) {
+case _EditorResourceScope():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _EditorResourceScope value)?  $default,){
+final _that = this;
+switch (_that) {
+case _EditorResourceScope() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( skir.RecordId organizationId,  skir.RecordId? realmId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _EditorResourceScope() when $default != null:
+return $default(_that.organizationId,_that.realmId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( skir.RecordId organizationId,  skir.RecordId? realmId)  $default,) {final _that = this;
+switch (_that) {
+case _EditorResourceScope():
+return $default(_that.organizationId,_that.realmId);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( skir.RecordId organizationId,  skir.RecordId? realmId)?  $default,) {final _that = this;
+switch (_that) {
+case _EditorResourceScope() when $default != null:
+return $default(_that.organizationId,_that.realmId);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _EditorResourceScope with DiagnosticableTreeMixin implements EditorResourceScope {
+  const _EditorResourceScope({required this.organizationId, this.realmId});
+
+
+@override final  skir.RecordId organizationId;
+@override final  skir.RecordId? realmId;
+
+/// Create a copy of EditorResourceScope
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EditorResourceScopeCopyWith<_EditorResourceScope> get copyWith => __$EditorResourceScopeCopyWithImpl<_EditorResourceScope>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+    ..add(DiagnosticsProperty('type', 'EditorResourceScope'))
+    ..add(DiagnosticsProperty('organizationId', organizationId))..add(DiagnosticsProperty('realmId', realmId));
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditorResourceScope&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.realmId, realmId) || other.realmId == realmId));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,organizationId,realmId);
+}
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+    return 'EditorResourceScope(organizationId: $organizationId, realmId: $realmId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$EditorResourceScopeCopyWith<$Res> implements $EditorResourceScopeCopyWith<$Res> {
+  factory _$EditorResourceScopeCopyWith(_EditorResourceScope value, $Res Function(_EditorResourceScope) _then) = __$EditorResourceScopeCopyWithImpl;
+@override @useResult
+$Res call({
+ skir.RecordId organizationId, skir.RecordId? realmId
+});
+
+
+
+
+}
+/// @nodoc
+class __$EditorResourceScopeCopyWithImpl<$Res>
+    implements _$EditorResourceScopeCopyWith<$Res> {
+  __$EditorResourceScopeCopyWithImpl(this._self, this._then);
+
+  final _EditorResourceScope _self;
+  final $Res Function(_EditorResourceScope) _then;
+
+/// Create a copy of EditorResourceScope
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? organizationId = null,Object? realmId = freezed,}) {
+  return _then(_EditorResourceScope(
+organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
+as skir.RecordId,realmId: freezed == realmId ? _self.realmId : realmId // ignore: cast_nullable_to_non_nullable
+as skir.RecordId?,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$EditorResourceKey implements DiagnosticableTreeMixin {
 
  Object? get scope; Object get identity;

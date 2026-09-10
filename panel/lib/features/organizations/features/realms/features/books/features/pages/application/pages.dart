@@ -132,13 +132,18 @@ AsyncValue<List<Page>> projectedBookPages(
   if (organizationId == null || realmId == null) {
     return AsyncData(canonical.requireValue);
   }
-  final local = ref.watch(localEditorValuesProvider);
+  final local = ref.watch(
+    localWorkProvider.select((state) => state.editorValues),
+  );
   final query = search.trim().toLowerCase();
   return AsyncData([
     for (final page in canonical.requireValue)
       if (page.projected(
             local[EditorResourceKey(
-              scope: (organizationId, realmId),
+              scope: EditorResourceScope(
+                organizationId: organizationId,
+                realmId: realmId,
+              ),
               identity: page.pageId,
             )],
           )
@@ -166,11 +171,14 @@ AsyncValue<Page> projectedPage(Ref ref, skir.RecordId pageId) {
     );
   }
   final key = EditorResourceKey(
-    scope: (organizationId, realmId),
+    scope: EditorResourceScope(
+      organizationId: organizationId,
+      realmId: realmId,
+    ),
     identity: pageId,
   );
   final local = ref.watch(
-    localEditorValuesProvider.select((value) => value[key]),
+    localWorkProvider.select((state) => state.editorValues[key]),
   );
   return AsyncData(canonical.requireValue.projected(local));
 }

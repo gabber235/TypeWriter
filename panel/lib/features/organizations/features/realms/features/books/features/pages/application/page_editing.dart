@@ -39,7 +39,7 @@ extension PageEditingRef on WidgetRef {
     final session = readAuthoringSession().notifier;
     return PageEditing(
       session,
-      read(localWorkProvider),
+      read(localWorkControllerProvider),
       read(resourceRepositoriesProvider)
           .authoring(session.organizationId, session.realmId),
     );
@@ -51,7 +51,7 @@ final class PageEditing {
   PageEditing(this.session, this.workspace, this.repository);
   final AuthoringResourceRepository repository;
   final AuthoringSession session;
-  final LocalWork workspace;
+  final LocalWorkCommands workspace;
 
   Future<TypedMutationResult> edit(
     Map<skir.RecordId, Map<DataPath, DataValue>> changes,

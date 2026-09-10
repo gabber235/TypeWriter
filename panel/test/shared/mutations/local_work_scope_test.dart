@@ -13,6 +13,41 @@ skir.RecordId _id(String table, String key) =>
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test("controller remains valid when authentication becomes ready", () async {
+    final user = Completer<String?>();
+    final organization = _id("organization", "first");
+    final container = ProviderContainer.test(
+      overrides: [
+        userIdProvider.overrideWith((ref) => user.future),
+        organizationIdProvider.overrideWith((ref) => organization),
+      ],
+    );
+    final controller = container.read(localWorkControllerProvider);
+
+    user.complete("user");
+    await container.read(userIdProvider.future);
+    await container.pump();
+
+    expect(container.read(localWorkControllerProvider), same(controller));
+    expect(
+      () => controller.editor(
+        fakeEditorTarget(
+          targetId: "resource",
+          label: "Resource",
+          scope: EditorResourceScope(organizationId: organization),
+          document: const EditorDocument(
+            rootType: StringType(),
+            typeCatalog: TypeCatalog([]),
+            confirmedValue: StringValue("Original"),
+            revision: 1,
+          ),
+          commit: (_) async => throw StateError("No save expected"),
+        ),
+      ),
+      returnsNormally,
+    );
+  });
+
   late ProviderContainer container;
   late skir.RecordId organization;
   late skir.RecordId realm;
@@ -39,11 +74,14 @@ void main() {
   test(
     "realm navigation retains drafts and organization navigation drops them",
     () async {
-      final workspace = container.read(localWorkProvider);
+      final workspace = container.read(localWorkControllerProvider);
       final target = fakeEditorTarget(
         targetId: "resource",
         label: "Draft",
-        scope: (organization, realm),
+        scope: EditorResourceScope(
+          organizationId: organization,
+          realmId: realm,
+        ),
         document: const EditorDocument(
           rootType: StringType(),
           typeCatalog: TypeCatalog([]),
@@ -59,16 +97,17 @@ void main() {
       realm = _id("realm", "second");
       container.invalidate(realmIdProvider);
       await container.pump();
-      expect(container.read(localWorkProvider), same(workspace));
+      expect(container.read(localWorkControllerProvider), same(workspace));
       expect(
         source.value(DataPath.root).valueOrNull,
         const StringValue("Draft"),
       );
 
       await switchOrganization();
-      final next = container.read(localWorkProvider);
-      expect(next, isNot(same(workspace)));
-      expect(next.resources, isEmpty);
+      final next = container.read(localWorkControllerProvider);
+      expect(next, same(workspace));
+      final nextState = container.read(localWorkProvider);
+      expect(nextState.resources, isEmpty);
       expect(workspace.resources, isEmpty);
       expect(await source.flush(), isA<MutationUnavailable>());
     },
@@ -77,7 +116,7 @@ void main() {
   test(
     "switching forgets a sent request and ignores its late response",
     () async {
-      final workspace = container.read(localWorkProvider);
+      final workspace = container.read(localWorkControllerProvider);
       final response = Completer<SubmissionResult<String>>();
       final sent = Completer<void>();
       var integrations = 0;
@@ -112,7 +151,7 @@ void main() {
   test(
     "switching forgets uncertain requests and disables their replay",
     () async {
-      final workspace = container.read(localWorkProvider);
+      final workspace = container.read(localWorkControllerProvider);
       final submission = workspace.start(
         PreparedCommit<String>(
           id: "uncertain",

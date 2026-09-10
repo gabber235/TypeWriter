@@ -18,7 +18,9 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
     DataPath path,
     DataValue value,
   ) async {
-    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(localWorkControllerProvider),
+    );
     try {
       final result = await owners.editor(_target(elementId)).applyChanges({
         elementValuePath.followedBy(path): value,

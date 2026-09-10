@@ -25,7 +25,7 @@ Widget bookPageUseCase(BuildContext context) {
       ...pageIdProviderOverrides(pageId: "example-page-id"),
       ...bookIdProviderOverrides(bookId: "example-book-id"),
       ...booksProviderOverrides(state: pagesState),
-      ...servicesProviderOverrides(state: DisplayState.manyItems),
+      ...canonicalServicesProviderOverrides(state: DisplayState.manyItems),
       ...realmProviderOverrides(),
       ...organizationProviderOverrides(),
       ...organizationsProviderOverrides(state: DisplayState.manyItems),

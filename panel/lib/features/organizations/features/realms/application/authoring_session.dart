@@ -112,7 +112,7 @@ class AuthoringSession extends _$AuthoringSession
   }) async {
     final commit = prepare(operations, batchId: batchId);
     try {
-      return await ref.read(localWorkProvider).execute(commit);
+      return await ref.read(localWorkControllerProvider).execute(commit);
     } on Object {
       _scheduleRefresh();
       rethrow;
@@ -144,10 +144,13 @@ class AuthoringSession extends _$AuthoringSession
   }
 }
 
-typedef AuthoringSessionAccess = ({
-  AuthoringSession notifier,
-  AuthoringSessionState state,
-});
+@freezed
+abstract class AuthoringSessionAccess with _$AuthoringSessionAccess {
+  const factory AuthoringSessionAccess({
+    required AuthoringSession notifier,
+    required AuthoringSessionState state,
+  }) = _AuthoringSessionAccess;
+}
 
 extension AuthoringSessionRef on Ref {
   AuthoringSessionAccess readAuthoringSession() {
@@ -156,7 +159,10 @@ extension AuthoringSessionRef on Ref {
     if (organizationId == null) throw ApiException.noOrganization();
     if (realmId == null) throw ApiException.badRequest("No realm selected");
     final provider = authoringSessionProvider(organizationId, realmId);
-    return (notifier: read(provider.notifier), state: read(provider));
+    return AuthoringSessionAccess(
+      notifier: read(provider.notifier),
+      state: read(provider),
+    );
   }
 }
 
@@ -167,7 +173,10 @@ extension AuthoringSessionWidgetRef on WidgetRef {
     if (organizationId == null) throw ApiException.noOrganization();
     if (realmId == null) throw ApiException.badRequest("No realm selected");
     final provider = authoringSessionProvider(organizationId, realmId);
-    return (notifier: read(provider.notifier), state: read(provider));
+    return AuthoringSessionAccess(
+      notifier: read(provider.notifier),
+      state: read(provider),
+    );
   }
 }
 

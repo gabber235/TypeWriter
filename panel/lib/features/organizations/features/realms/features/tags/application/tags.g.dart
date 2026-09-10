@@ -33,7 +33,7 @@ final class CanonicalTagsProvider
   CanonicalTags create() => CanonicalTags();
 }
 
-String _$canonicalTagsHash() => r'118356ef65862ec8a4291f190557a40455c5e274';
+String _$canonicalTagsHash() => r'f6fac3c85172623d3495af842319ac6d01a0f0d9';
 
 abstract class _$CanonicalTags extends $AsyncNotifier<List<Tag>> {
   FutureOr<List<Tag>> build();
@@ -167,7 +167,7 @@ final class ProjectedTagsProvider
   }
 }
 
-String _$projectedTagsHash() => r'1531191214aed7c7862902e6d68e2c86cdc351bb';
+String _$projectedTagsHash() => r'e025a4a4a186a9194d8b0bf3661cbe47813a147a';
 
 @ProviderFor(projectedTag)
 final projectedTagProvider = ProjectedTagFamily._();
@@ -231,7 +231,7 @@ final class ProjectedTagProvider
   }
 }
 
-String _$projectedTagHash() => r'9540eb233699ba41db9da3f762e4e1ae346cfb41';
+String _$projectedTagHash() => r'ca2bfc58e82b7ac33d57319167c3f17d3d6ac200';
 
 final class ProjectedTagFamily extends $Family
     with $FunctionalFamilyOverride<AsyncValue<Tag?>, skir.RecordId> {

@@ -9,10 +9,10 @@ void _testEditorAvailability() {
         const StringValue("Initial"),
         mutation: const EditorMutationResult.applied(StringValue("Draft")),
       );
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       final container = ProviderContainer.test(
-        overrides: [localWorkProvider.overrideWithValue(workspace)],
+        overrides: [localWorkControllerProvider.overrideWithValue(workspace)],
       );
       container.read(selectionProvider.notifier).select(identifier);
       final session = container.read(_sourceProvider);

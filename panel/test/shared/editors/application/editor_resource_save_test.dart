@@ -1,4 +1,5 @@
 import "dart:async";
+
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
@@ -21,20 +22,18 @@ EditorSnapshot _snapshot({String title = "Original", int revision = 1}) =>
       ),
     );
 TransactionalEditorSource _draft(
-  LocalWork workspace,
+  LocalWorkSession workspace,
   EditableResource resource,
 ) {
-  final source =
-      workspace.editor(
-            ResourceEditorTarget(
-              targetId: resource.key.identity,
-              label: "Resource",
-              resource: resource,
-              snapshot: _snapshot(),
-              commitPolicy: EditorCommitPolicy.applyResource,
-            ),
-          )
-          as TransactionalEditorSource;
+  final source = workspace.editor(
+    ResourceEditorTarget(
+      targetId: resource.key.identity,
+      label: "Resource",
+      resource: resource,
+      snapshot: _snapshot(),
+      commitPolicy: EditorCommitPolicy.applyResource,
+    ),
+  ) as TransactionalEditorSource;
   workspace.retain(resource.key);
   source.update(_title, const StringValue("Draft"));
   return source;
@@ -44,7 +43,7 @@ void main() {
   test(
     "detached save waits for its reservation before reading and capturing",
     () async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       var reads = 0;
       final resource = FakeEditableResource(
@@ -78,7 +77,7 @@ void main() {
   );
 
   test("refresh conflicts preserve the draft and prevent sending", () async {
-    final workspace = LocalWork();
+    final workspace = LocalWorkSession();
     addTearDown(workspace.dispose);
     var sends = 0;
     final resource = FakeEditableResource(
@@ -100,7 +99,7 @@ void main() {
   test(
     "refresh failure releases the reservation and retains a retryable draft",
     () async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       var reads = 0;
       final resource = FakeEditableResource(
@@ -123,7 +122,7 @@ void main() {
   );
 
   test("confirmed deletion blocks submission", () async {
-    final workspace = LocalWork();
+    final workspace = LocalWorkSession();
     addTearDown(workspace.dispose);
     final resource = FakeEditableResource(
       key: _key,
@@ -139,7 +138,7 @@ void main() {
   });
 
   test("workspace disposal during refresh prevents submission", () async {
-    final workspace = LocalWork();
+    final workspace = LocalWorkSession();
     final ready = Completer<EditorSnapshot?>();
     final started = Completer<void>();
     final resource = FakeEditableResource(
@@ -163,7 +162,7 @@ void main() {
   test(
     "uncertain delivery retains the reservation and replays without refresh",
     () async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       final resource = _UncertainResource();
       final source = _draft(workspace, resource);
@@ -188,7 +187,7 @@ void main() {
   );
 
   test("concurrent flushes share one refresh and submission", () async {
-    final workspace = LocalWork();
+    final workspace = LocalWorkSession();
     addTearDown(workspace.dispose);
     final ready = Completer<EditorSnapshot?>();
     var reads = 0;

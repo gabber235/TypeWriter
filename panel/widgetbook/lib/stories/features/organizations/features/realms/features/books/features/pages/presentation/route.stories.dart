@@ -98,7 +98,7 @@ Widget pagePageStory({
       ...pageIdProviderOverrides(pageId: "example-page-id"),
       ...bookIdProviderOverrides(bookId: "example-book-id"),
       ...booksProviderOverrides(state: pagesState),
-      ...servicesProviderOverrides(state: servicesState),
+      ...canonicalServicesProviderOverrides(state: servicesState),
       realmIdProvider.overrideWith(
         (ref) => recordId("realm_instance:example-realm-id"),
       ),

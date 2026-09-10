@@ -252,7 +252,7 @@ final class ProjectedBookPagesProvider
 }
 
 String _$projectedBookPagesHash() =>
-    r'e783e7224092655bb1ff1dc05dc6c0e71c496481';
+    r'd8d9337bba88b6e02b21cdf141e448b15d10a2f7';
 
 final class ProjectedBookPagesFamily extends $Family
     with
@@ -338,7 +338,7 @@ final class ProjectedPageProvider
   }
 }
 
-String _$projectedPageHash() => r'b7c91a2bbb75173a9dc8960c651ab22891ea329f';
+String _$projectedPageHash() => r'da4bb88cb18e4588af6f6e3a70a235e70aa227f1';
 
 final class ProjectedPageFamily extends $Family
     with $FunctionalFamilyOverride<AsyncValue<Page>, skir.RecordId> {

@@ -1,4 +1,5 @@
 import "dart:async";
+
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
@@ -8,7 +9,7 @@ part "resource_repositories.g.dart";
 
 @Riverpod(keepAlive: true)
 ResourceRepositories resourceRepositories(Ref ref) {
-  ref.watch(localWorkProvider);
+  ref.watch(localWorkScopeProvider);
   final repositories = ResourceRepositories(
     SkirMutationClient(
       () => ref.read(natsProvider),

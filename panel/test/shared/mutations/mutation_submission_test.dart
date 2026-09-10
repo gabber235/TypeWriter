@@ -55,7 +55,7 @@ void main() {
   );
 
   test("a new attempt replaces only the same resource rejection", () async {
-    final journal = LocalWork();
+    final journal = LocalWorkSession();
     addTearDown(journal.dispose);
     MutationSubmission<int> attempt(String id, String scope) =>
         MutationSubmission<int>(

@@ -44,12 +44,17 @@ AsyncValue<List<Book>> projectedBooks(Ref ref) {
   if (organizationId == null || realmId == null) {
     return AsyncData(canonical.requireValue);
   }
-  final local = ref.watch(localEditorValuesProvider);
+  final local = ref.watch(
+    localWorkProvider.select((state) => state.editorValues),
+  );
   return AsyncData([
     for (final book in canonical.requireValue)
       book.projected(
         local[EditorResourceKey(
-          scope: (organizationId, realmId),
+          scope: EditorResourceScope(
+            organizationId: organizationId,
+            realmId: realmId,
+          ),
           identity: book.bookId,
         )],
       ),
@@ -64,11 +69,14 @@ AsyncValue<Book?> projectedBook(Ref ref, skir.RecordId bookId) {
   final realmId = ref.watch(realmIdProvider);
   if (organizationId == null || realmId == null) return canonical;
   final key = EditorResourceKey(
-    scope: (organizationId, realmId),
+    scope: EditorResourceScope(
+      organizationId: organizationId,
+      realmId: realmId,
+    ),
     identity: bookId,
   );
   final local = ref.watch(
-    localEditorValuesProvider.select((value) => value[key]),
+    localWorkProvider.select((state) => state.editorValues[key]),
   );
   return AsyncData(canonical.requireValue?.projected(local));
 }

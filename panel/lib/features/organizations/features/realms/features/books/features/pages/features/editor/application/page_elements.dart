@@ -205,12 +205,17 @@ AsyncValue<List<PageElement>> projectedPageElements(
     pageElementsProvider(organizationId, realmId, pageId),
   );
   if (canonical.mapUnready<List<PageElement>>() case final value?) return value;
-  final local = ref.watch(localEditorValuesProvider);
+  final local = ref.watch(
+    localWorkProvider.select((state) => state.editorValues),
+  );
   return AsyncData([
     for (final element in canonical.requireValue)
       element.projected(
         local[EditorResourceKey(
-          scope: (organizationId, realmId),
+          scope: EditorResourceScope(
+            organizationId: organizationId,
+            realmId: realmId,
+          ),
           identity: recordId("element:${element.id}"),
         )],
       ),
@@ -230,11 +235,14 @@ AsyncValue<PageElement?> projectedPageElement(
   );
   if (canonical.mapUnready<PageElement?>() case final value?) return value;
   final key = EditorResourceKey(
-    scope: (organizationId, realmId),
+    scope: EditorResourceScope(
+      organizationId: organizationId,
+      realmId: realmId,
+    ),
     identity: recordId("element:$elementId"),
   );
   final local = ref.watch(
-    localEditorValuesProvider.select((value) => value[key]),
+    localWorkProvider.select((state) => state.editorValues[key]),
   );
   final element = canonical.requireValue
       .where((value) => value.id == elementId)

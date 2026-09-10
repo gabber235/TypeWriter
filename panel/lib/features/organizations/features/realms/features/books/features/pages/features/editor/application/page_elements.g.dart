@@ -479,7 +479,7 @@ final class ProjectedPageElementsProvider
 }
 
 String _$projectedPageElementsHash() =>
-    r'a1d2f80b2239d6ed942aa1c594a9a34a9d3a2c6c';
+    r'f3d73ca63433918d39f579bbd6ae0b34389642a3';
 
 final class ProjectedPageElementsFamily extends $Family
     with
@@ -580,7 +580,7 @@ final class ProjectedPageElementProvider
 }
 
 String _$projectedPageElementHash() =>
-    r'1289b040fe783a27abec443292f4d4ac6909f4dd';
+    r'4ea99393d3fa0c49926007b0570f7a53a97e102c';
 
 final class ProjectedPageElementFamily extends $Family
     with

@@ -67,7 +67,9 @@ class CanonicalTags extends _$CanonicalTags {
         expected ??
         state.requireValue.firstWhere((value) => value.tagId == tag.tagId);
     final commands = ref.readAuthoringSession().notifier;
-    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(localWorkControllerProvider),
+    );
     try {
       final owner = owners.editor(
         TagSelectable(
@@ -136,7 +138,9 @@ AsyncValue<List<Tag>> projectedTags(Ref ref) {
   final canonicalTags = ref.watch(canonicalTagsProvider);
   if (canonicalTags.mapUnready<List<Tag>>() case final value?) return value;
 
-  final local = ref.watch(localEditorValuesProvider);
+  final local = ref.watch(
+    localWorkProvider.select((state) => state.editorValues),
+  );
   final organizationId = ref.watch(organizationIdProvider);
   final realmId = ref.watch(realmIdProvider);
   if (organizationId == null || realmId == null) {
@@ -146,7 +150,10 @@ AsyncValue<List<Tag>> projectedTags(Ref ref) {
     for (final tag in canonicalTags.requireValue)
       tag.projected(
         local[EditorResourceKey(
-          scope: (organizationId, realmId),
+          scope: EditorResourceScope(
+            organizationId: organizationId,
+            realmId: realmId,
+          ),
           identity: tag.tagId,
         )],
       ),
@@ -161,11 +168,14 @@ AsyncValue<Tag?> projectedTag(Ref ref, skir.RecordId tagId) {
   final realmId = ref.watch(realmIdProvider);
   if (organizationId == null || realmId == null) return canonical;
   final key = EditorResourceKey(
-    scope: (organizationId, realmId),
+    scope: EditorResourceScope(
+      organizationId: organizationId,
+      realmId: realmId,
+    ),
     identity: tagId,
   );
   final local = ref.watch(
-    localEditorValuesProvider.select((value) => value[key]),
+    localWorkProvider.select((state) => state.editorValues[key]),
   );
   return AsyncData(canonical.requireValue?.projected(local));
 }

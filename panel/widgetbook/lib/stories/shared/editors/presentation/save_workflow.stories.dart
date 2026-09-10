@@ -23,7 +23,7 @@ class _SaveWorkflowStory extends StatefulWidget {
 }
 
 class _SaveWorkflowStoryState extends State<_SaveWorkflowStory> {
-  final workspace = LocalWork();
+  final workspace = LocalWorkSession();
   late final EditorOwnerRegistry registry;
   late final EditorSource source;
   bool uncertain = false;
@@ -48,7 +48,7 @@ class _SaveWorkflowStoryState extends State<_SaveWorkflowStory> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: const Text("Services"),
-      actions: [MutationActivityView(workspace: workspace)],
+      actions: [LocalWorkSessionActivityView(controller: workspace)],
     ),
     body: Center(
       child: SizedBox(

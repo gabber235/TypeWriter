@@ -6,7 +6,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 void main() {
   test("queued capture waits for confirmed state integration", () async {
-    final work = LocalWork();
+    final work = LocalWorkSession();
     addTearDown(work.dispose);
     final integrated = Completer<void>();
     var revision = 0;
@@ -51,7 +51,7 @@ void main() {
   test(
     "integration failure preserves acceptance and retries only integration",
     () async {
-      final work = LocalWork();
+      final work = LocalWorkSession();
       addTearDown(work.dispose);
       final previousHandler = FlutterError.onError;
       FlutterError.onError = (_) {};
@@ -94,7 +94,7 @@ void main() {
   test(
     "uncertain work retains its reservation while disjoint work proceeds",
     () async {
-      final work = LocalWork();
+      final work = LocalWorkSession();
       addTearDown(work.dispose);
       var attempts = 0;
       final uncertain = work.start(

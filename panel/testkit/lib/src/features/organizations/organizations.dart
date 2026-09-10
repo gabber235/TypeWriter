@@ -62,12 +62,13 @@ List<Override> organizationsProviderOverrides({
 
 List<Override> organizationProviderOverrides() => [
   organizationProvider.overrideWith(() => OrganizationProviderMock()),
-  organizationIdProvider.overrideWith(
-    (ref) => ref
-        .watch(organizationProvider)
-        .whenData((value) => value?.organizationId)
-        .value,
-  ),
+  organizationIdProvider.overrideWith((ref) {
+    final organization = ref.watch(organizationProvider);
+    if (organization.mapUnready<skir.RecordId?>() case final value?) {
+      return value.value;
+    }
+    return organization.requireValue?.organizationId;
+  }),
 ];
 
 // ============================================================================

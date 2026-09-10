@@ -29,7 +29,7 @@ Widget libraryPageStory({
       ),
       ...booksProviderOverrides(state: displayState),
       ...tagsProviderOverrides(state: tagsState),
-      ...servicesProviderOverrides(state: DisplayState.manyItems),
+      ...canonicalServicesProviderOverrides(state: DisplayState.manyItems),
       realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
       selectedRealmProvider.overrideWith((ref) async => null),
       ...organizationProviderOverrides(),

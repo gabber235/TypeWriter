@@ -47,7 +47,7 @@ final class TransactionalEditorSource extends ChangeNotifier
   final EditorCommitter? _commit;
   EditableResource? _resource;
   EditableResource? get resource => _resource;
-  final LocalWork? workspace;
+  final LocalWorkSession? workspace;
   EditorSnapshot? _snapshot;
   final EditorMutationValidator? _validate;
   final List<TypeDiagnostic> Function(DataValue)? _validateDraft;

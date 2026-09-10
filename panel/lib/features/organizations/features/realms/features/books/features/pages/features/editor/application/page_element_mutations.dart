@@ -43,7 +43,9 @@ mixin _PageElementMutations
   ) async {
     state.ensureReady();
     if (changed.isEmpty) return;
-    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(localWorkControllerProvider),
+    );
     final changes = <TransactionalEditorSource, Map<DataPath, DataValue>>{};
     try {
       for (final (id, first, second) in changed) {

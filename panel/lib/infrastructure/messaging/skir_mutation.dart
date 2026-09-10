@@ -48,7 +48,7 @@ extension RefSkirMutation on Ref {
     String? submissionId,
     Set<Object> resources = const {},
     SubmissionReplay replay = SubmissionReplay.unsupported,
-  }) => read(localWorkProvider).execute(
+  }) => read(localWorkControllerProvider).execute(
     prepareSkir(
       subject,
       requestBytes,

@@ -24,7 +24,7 @@ bool hasInspectableSelection(Ref ref) {
 
 @riverpod
 InspectionSession inspectionSession(Ref ref) {
-  ref.watch(localWorkProvider);
+  ref.watch(localWorkScopeProvider);
   final session = InspectionSession(ref);
   ref.onDispose(session.dispose);
   return session;

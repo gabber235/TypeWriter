@@ -5,6 +5,7 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
+
 import "../../support/test_utils.dart";
 
 void main() {
@@ -12,7 +13,7 @@ void main() {
     "return action follows current selection without replacing review fallback",
     (tester) async {
       final container = ProviderContainer.test();
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
 
       addTearDown(workspace.dispose);
 
@@ -53,7 +54,9 @@ void main() {
 
       await tester.pumpTestApp(
         child: Scaffold(
-          appBar: AppBar(actions: [MutationActivityView(workspace: workspace)]),
+          appBar: AppBar(
+            actions: [LocalWorkSessionActivityView(controller: workspace)],
+          ),
         ),
       );
 

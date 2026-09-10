@@ -2,11 +2,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 /// Retains resource editors across presentation refreshes and disposes unused owners.
 final class EditorOwnerRegistry {
-  EditorOwnerRegistry({LocalWork? workspace})
-    : workspace = workspace ?? LocalWork(),
+  EditorOwnerRegistry({LocalWorkCommands? workspace})
+    : workspace = workspace ?? LocalWorkSession(),
       _ownsWorkspace = workspace == null;
 
-  final LocalWork workspace;
+  final LocalWorkCommands workspace;
   final bool _ownsWorkspace;
   EditorDestination Function(Object identity)? destinationFor;
   final Set<EditorResourceKey> _retained = {};
@@ -89,7 +89,7 @@ final class EditorOwnerRegistry {
 
   void dispose() {
     if (_ownsWorkspace) {
-      workspace.dispose();
+      (workspace as LocalWorkSession).dispose();
       return;
     }
     for (final key in _retained) {

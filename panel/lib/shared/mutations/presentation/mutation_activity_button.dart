@@ -11,13 +11,20 @@ class MutationActivityButton extends ConsumerWidget {
   const MutationActivityButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      MutationActivityView(workspace: ref.watch(localWorkProvider));
+  Widget build(BuildContext context, WidgetRef ref) => MutationActivityView(
+    state: ref.watch(localWorkProvider),
+    controller: ref.read(localWorkControllerProvider),
+  );
 }
 
 class MutationActivityView extends StatelessWidget {
-  const MutationActivityView({required this.workspace, super.key});
-  final LocalWork workspace;
+  const MutationActivityView({
+    required this.state,
+    required this.controller,
+    super.key,
+  });
+  final LocalWorkState state;
+  final LocalWorkCommands controller;
 
   Future<void> _showMobileActivity(BuildContext context) =>
       showModalBottomSheet<void>(
@@ -38,7 +45,8 @@ class MutationActivityView extends StatelessWidget {
                 ),
               ),
               child: _ActivityDetails(
-                workspace: workspace,
+                state: state,
+                controller: controller,
                 onClose: () => Navigator.pop(context),
               ),
             ),
@@ -47,68 +55,80 @@ class MutationActivityView extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => ListenableBuilder(
-    listenable: workspace,
-    builder: (context, _) {
-      final drafts = workspace.resources.values
-          .where((entry) => entry.source.hasWork)
-          .toList();
-      final phase = MutationActivityPhase.resolve(
-        workspace.submissions,
-        drafts,
-      );
-      final label = phase.label(drafts.length);
-      final color = phase.color(context);
-      final icon = phase.isSaving
-          ? SizedBox.square(
-              dimension: 16,
-              child: CircularProgressIndicator(strokeWidth: 2, color: color),
-            )
-          : Icon(phase.icon, size: 18);
-      return AnchoredPopup(
-        targetAnchor: Alignment.bottomRight,
-        popupAnchor: Alignment.topRight,
-        offset: Offset(0, context.spacing.space2),
-        maxHeight: math.min(MediaQuery.sizeOf(context).height * .75, 580),
-        popupBuilder: (context, close) => SizedBox(
-          width: double.infinity,
-          child: _ActivityDetails(workspace: workspace, onClose: close),
+  Widget build(BuildContext context) {
+    final drafts = state.resources.values.toList();
+    final phase = MutationActivityPhase.resolve(state.submissions, drafts);
+    final label = phase.label(drafts.length);
+    final color = phase.color(context);
+    final icon = phase.isSaving
+        ? SizedBox.square(
+            dimension: 16,
+            child: CircularProgressIndicator(strokeWidth: 2, color: color),
+          )
+        : Icon(phase.icon, size: 18);
+    return AnchoredPopup(
+      targetAnchor: Alignment.bottomRight,
+      popupAnchor: Alignment.topRight,
+      offset: Offset(0, context.spacing.space2),
+      maxHeight: math.min(MediaQuery.sizeOf(context).height * .75, 580),
+      popupBuilder: (context, close) => SizedBox(
+        width: double.infinity,
+        child: _ActivityDetails(
+          state: state,
+          controller: controller,
+          onClose: close,
         ),
-        builder: (context, show) => ElasticSwitcher(
-          child: phase == MutationActivityPhase.idle
-              ? null
-              : Padding(
-                  key: const ValueKey("activity"),
-                  padding: context.isMobile
-                      ? EdgeInsets.symmetric(horizontal: context.spacing.space2)
-                      : EdgeInsets.zero,
-                  child: Semantics(
-                    liveRegion: true,
-                    label: label,
-                    child: context.isMobile
-                        ? IconButton(
-                            tooltip: label,
-                            style: IconButton.styleFrom(
-                              foregroundColor: color,
-                              backgroundColor: color.withValues(alpha: .12),
-                            ),
-                            onPressed: () => _showMobileActivity(context),
-                            icon: icon,
-                          )
-                        : TextButton.icon(
-                            style: TextButton.styleFrom(
-                              foregroundColor: color,
-                              backgroundColor: color.withValues(alpha: .12),
-                            ),
-                            onPressed: show,
-                            icon: icon,
-                            label: Text(label),
+      ),
+      builder: (context, show) => ElasticSwitcher(
+        child: phase == MutationActivityPhase.idle
+            ? null
+            : Padding(
+                key: const ValueKey("activity"),
+                padding: context.isMobile
+                    ? EdgeInsets.symmetric(horizontal: context.spacing.space2)
+                    : EdgeInsets.zero,
+                child: Semantics(
+                  liveRegion: true,
+                  label: label,
+                  child: context.isMobile
+                      ? IconButton(
+                          tooltip: label,
+                          style: IconButton.styleFrom(
+                            foregroundColor: color,
+                            backgroundColor: color.withValues(alpha: .12),
                           ),
-                  ),
+                          onPressed: () => _showMobileActivity(context),
+                          icon: icon,
+                        )
+                      : TextButton.icon(
+                          style: TextButton.styleFrom(
+                            foregroundColor: color,
+                            backgroundColor: color.withValues(alpha: .12),
+                          ),
+                          onPressed: show,
+                          icon: icon,
+                          label: Text(label),
+                        ),
                 ),
-        ),
-      );
-    },
+              ),
+      ),
+    );
+  }
+}
+
+class LocalWorkSessionActivityView extends StatelessWidget {
+  const LocalWorkSessionActivityView({required this.controller, super.key});
+
+  final LocalWorkSession controller;
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder<LocalWorkState>(
+    initialData: controller.state,
+    stream: controller.changes,
+    builder: (context, snapshot) => MutationActivityView(
+      state: snapshot.requireData,
+      controller: controller,
+    ),
   );
 }
 

@@ -1,5 +1,4 @@
 import "package:flutter_test/flutter_test.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
 
@@ -33,32 +32,21 @@ ResourceEditorTarget _target() => fakeEditorTarget(
 );
 
 void main() {
-  test("projects only edited paths and tracks resource removal", () async {
-    final workspace = LocalWork();
+  test("projects only edited paths and tracks resource removal", () {
+    final workspace = LocalWorkSession();
     addTearDown(workspace.dispose);
-    final container = ProviderContainer.test(
-      overrides: [localWorkProvider.overrideWithValue(workspace)],
-    );
-    final subscription = container.listen(
-      localEditorValuesProvider,
-      (_, _) {},
-      fireImmediately: true,
-    );
-    addTearDown(subscription.close);
 
-    expect(container.read(localEditorValuesProvider), isEmpty);
+    expect(workspace.state.editorValues, isEmpty);
 
     final source = workspace.editor(_target())..update(_name, "Draft".asValue);
-    await container.pump();
 
-    final local = container.read(localEditorValuesProvider)[_key];
+    final local = workspace.state.editorValues[_key];
     expect(local, isNotNull);
     expect(local!.editedPaths, {_name});
     expect(local.projectOnto(_value("Remote", 2)), _value("Draft", 2));
 
     source.discardDraft();
-    await container.pump();
-    expect(container.read(localEditorValuesProvider), isEmpty);
+    expect(workspace.state.editorValues, isEmpty);
   });
 
   test("different resources retain structural identity", () {

@@ -16,12 +16,10 @@ enum MutationActivityPhase {
   bool get isSaving => this == saving || this == savingWithAttention;
 
   static MutationActivityPhase resolve(
-    Iterable<MutationSubmission<Object?>> submissions,
-    Iterable<EditorResource> drafts,
+    Iterable<LocalWorkSubmissionState> submissions,
+    Iterable<LocalWorkResourceState> drafts,
   ) {
-    final phases = drafts
-        .map((entry) => entry.source.saveState(DataPath.root).phase)
-        .toSet();
+    final phases = drafts.map((entry) => entry.savePhase).toSet();
     final saving =
         submissions.any((entry) => entry.sending) ||
         phases.contains(EditorSavePhase.saving);
@@ -29,9 +27,9 @@ enum MutationActivityPhase {
         submissions.any(
           (entry) =>
               !entry.sending &&
-              entry.result != null &&
-              (entry.result is! SubmissionConfirmed ||
-                  entry.integrationError != null),
+              entry.result != LocalWorkSubmissionResult.ready &&
+              (entry.result != LocalWorkSubmissionResult.confirmed ||
+                  entry.integrationFailed),
         ) ||
         phases.any(
           {
@@ -45,13 +43,17 @@ enum MutationActivityPhase {
     if (attention) return saving ? savingWithAttention : needsAttention;
 
     if (saving) return MutationActivityPhase.saving;
-    if (drafts.any((entry) => entry.source.draftDiagnostics.isNotEmpty)) {
+    if (drafts.any((entry) => entry.hasDiagnostics)) {
       return needsInput;
     }
 
     if (drafts.isNotEmpty) return MutationActivityPhase.drafts;
 
-    if (submissions.any((entry) => entry.result == null)) return pending;
+    if (submissions.any(
+      (entry) => entry.result == LocalWorkSubmissionResult.ready,
+    )) {
+      return pending;
+    }
     return submissions.isEmpty ? idle : saved;
   }
 }

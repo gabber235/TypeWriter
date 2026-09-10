@@ -115,7 +115,7 @@ void main() {
   test(
     "session workspace retains drafts and isolates resource scope",
     () async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       ResourceEditorTarget target(String scope) => fakeEditorTarget(
         scope: scope,

@@ -41,7 +41,7 @@ void main() {
   test(
     "replacement preserves drafts and uses current validation and commit",
     () async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       var oldSends = 0;
       var newSends = 0;
@@ -93,7 +93,7 @@ void main() {
   );
 
   test("replacement does not retarget a running submission", () async {
-    final workspace = LocalWork();
+    final workspace = LocalWorkSession();
     addTearDown(workspace.dispose);
     final response = Completer<TypedMutationResult>();
     final sent = Completer<EditorCommit>();
@@ -131,7 +131,7 @@ void main() {
   test(
     "replacement keeps uncertain replay bound to its original operation",
     () async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       var replays = 0;
       var newSends = 0;
@@ -169,7 +169,7 @@ void main() {
   );
 
   test("commit policy cannot change for an existing resource", () {
-    final workspace = LocalWork();
+    final workspace = LocalWorkSession();
     addTearDown(workspace.dispose);
     Future<TypedMutationResult> commit(EditorCommit commit) async =>
         MutationSuccess(revision: 2, value: commit.rootValue);

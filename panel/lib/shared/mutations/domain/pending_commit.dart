@@ -9,7 +9,7 @@ final class PendingCommit<T> {
 
   /// Keeps T bound when heterogeneous transactions are collected together.
   MutationSubmission<T> start(
-    LocalWork workspace,
+    LocalWorkSession workspace,
     MutationReservation reservation,
   ) {
     PreparedCommit<T>? captured;

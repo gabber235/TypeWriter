@@ -64,20 +64,18 @@ final class _BatchResource implements EditableResource {
 }
 
 TransactionalEditorSource _source(
-  LocalWork workspace,
+  LocalWorkSession workspace,
   _BatchResource resource,
 ) {
-  final source =
-      workspace.editor(
-            ResourceEditorTarget(
-              targetId: resource.key.identity,
-              label: "Resource",
-              resource: resource,
-              snapshot: _snapshot(),
-              commitPolicy: EditorCommitPolicy.applyResource,
-            ),
-          )
-          as TransactionalEditorSource;
+  final source = workspace.editor(
+    ResourceEditorTarget(
+      targetId: resource.key.identity,
+      label: "Resource",
+      resource: resource,
+      snapshot: _snapshot(),
+      commitPolicy: EditorCommitPolicy.applyResource,
+    ),
+  ) as TransactionalEditorSource;
   workspace.retain(resource.key);
   return source;
 }
@@ -87,7 +85,7 @@ void main() {
     test(
       "retrying one member preserves the complete batch after ${failRefresh ? "refresh failure" : "rejection"}",
       () async {
-        final workspace = LocalWork();
+        final workspace = LocalWorkSession();
         addTearDown(workspace.dispose);
         final requests = <List<_Operation>>[];
         var reject = !failRefresh;
@@ -144,7 +142,7 @@ void main() {
   test(
     "one uncertain batch replays the same request and settles every member",
     () async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       addTearDown(workspace.dispose);
       final requests = <List<_Operation>>[];
       final combiner = MutationCombiner<_Operation, List<_Operation>>(

@@ -6,7 +6,9 @@ import "package:typewriter_panel/typewriter_panel.dart";
 /// Composes selections while retaining drafts by resource identity.
 final class InspectionSession extends ChangeNotifier {
   InspectionSession(this.ref)
-    : owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider)) {
+    : owners = EditorOwnerRegistry(
+        workspace: ref.read(localWorkControllerProvider),
+      ) {
     ref.listen(inspectedSelectionProvider, (_, next) {
       if (next.asError?.error case SelectableNotFoundException(:final id)) {
         owners.deleted(id);

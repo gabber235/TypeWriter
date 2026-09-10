@@ -122,7 +122,7 @@ void main() {
         ),
       ],
     );
-    final workspace = LocalWork();
+    final workspace = LocalWorkSession();
     final provider = authoringSessionProvider(_organization, _realm);
     final subscription = container.listen(provider, (_, _) {});
     final result =

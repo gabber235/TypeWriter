@@ -65,7 +65,9 @@ class CanonicalBooks extends _$CanonicalBooks {
         expected ??
         state.requireValue.firstWhere((value) => value.bookId == book.bookId);
     final commands = ref.readAuthoringSession().notifier;
-    final owners = EditorOwnerRegistry(workspace: ref.read(localWorkProvider));
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(localWorkControllerProvider),
+    );
     try {
       final owner = owners.editor(
         BookSelection(

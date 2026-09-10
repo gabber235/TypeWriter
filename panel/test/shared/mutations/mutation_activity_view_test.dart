@@ -1,9 +1,10 @@
-import "dart:async";
 import "dart:ui" show PointerDeviceKind;
+
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+
 import "../../support/test_utils.dart";
 
 void main() {
@@ -28,7 +29,7 @@ void main() {
   testWidgets(
     "successful feedback expires after ten seconds and later saves appear again",
     (tester) async {
-      final workspace = LocalWork();
+      final workspace = LocalWorkSession();
       final journal = workspace;
 
       addTearDown(workspace.dispose);
@@ -42,7 +43,9 @@ void main() {
 
       await tester.pumpTestApp(
         child: Scaffold(
-          appBar: AppBar(actions: [MutationActivityView(workspace: workspace)]),
+          appBar: AppBar(
+            actions: [LocalWorkSessionActivityView(controller: workspace)],
+          ),
         ),
       );
 
@@ -73,9 +76,9 @@ void main() {
       await tester.tap(find.text("Saved"));
       await tester.pumpAndSettle();
       expect(find.text("Save activity"), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
+      await tester.pump();
       expect(journal.submissions, hasLength(1));
-      await tester.pump(const Duration(seconds: 5));
+      await tester.pump(savedFeedbackDuration);
 
       await tester.pumpAndSettle();
       expect(journal.submissions, isEmpty);
@@ -107,7 +110,7 @@ void main() {
         await tester.binding.setSurfaceSize(Size(mobile ? 390 : 1280, 800));
         addTearDown(() => tester.binding.setSurfaceSize(null));
 
-        final workspace = LocalWork();
+        final workspace = LocalWorkSession();
         final journal = workspace;
 
         addTearDown(workspace.dispose);
@@ -123,7 +126,7 @@ void main() {
         await tester.pumpTestApp(
           child: Scaffold(
             appBar: AppBar(
-              actions: [MutationActivityView(workspace: workspace)],
+              actions: [LocalWorkSessionActivityView(controller: workspace)],
             ),
           ),
         );
@@ -184,30 +187,37 @@ void main() {
   testWidgets(
     "attention outranks drafts and stays visible while other work saves",
     (tester) async {
-      final failed = MutationSubmission<void>(
+      const failed = LocalWorkSubmissionState(
         id: 1,
         label: "Failed",
-        send: () async => const SubmissionResult.rejected(message: "Rejected"),
+        sending: false,
+        canReplay: false,
+        integrationFailed: false,
+        result: LocalWorkSubmissionResult.rejected,
+        message: "Rejected",
       );
-      final response = Completer<SubmissionResult<void>>();
-      final saving = MutationSubmission<void>(
+      const saving = LocalWorkSubmissionState(
         id: 2,
         label: "Saving",
-        send: () => response.future,
+        sending: true,
+        canReplay: false,
+        integrationFailed: false,
+        result: LocalWorkSubmissionResult.ready,
       );
-      addTearDown(failed.dispose);
-      addTearDown(saving.dispose);
-      await failed.run();
-
-      final operation = saving.run();
       expect(
         MutationActivityPhase.resolve([failed, saving], const []),
         MutationActivityPhase.savingWithAttention,
       );
-      response.complete(const SubmissionResult.confirmed(null));
-      await operation;
+      const completed = LocalWorkSubmissionState(
+        id: 2,
+        label: "Saving",
+        sending: false,
+        canReplay: false,
+        integrationFailed: false,
+        result: LocalWorkSubmissionResult.confirmed,
+      );
       expect(
-        MutationActivityPhase.resolve([failed, saving], const []),
+        MutationActivityPhase.resolve([failed, completed], const []),
         MutationActivityPhase.needsAttention,
       );
     },
@@ -216,7 +226,7 @@ void main() {
   testWidgets(
     "already confirmed submissions expire but uncertain outcomes do not",
     (tester) async {
-      final journal = LocalWork();
+      final journal = LocalWorkSession();
 
       final confirmed = MutationSubmission<void>(
         id: 1,

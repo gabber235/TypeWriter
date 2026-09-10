@@ -33,7 +33,7 @@ final class CanonicalBooksProvider
   CanonicalBooks create() => CanonicalBooks();
 }
 
-String _$canonicalBooksHash() => r'91e314c11adee72d4f3bbfbd3882cee240fe065c';
+String _$canonicalBooksHash() => r'ecd67e58d94e05f8f6310619f537dd5ec1d83385';
 
 abstract class _$CanonicalBooks extends $AsyncNotifier<List<Book>> {
   FutureOr<List<Book>> build();
@@ -291,7 +291,7 @@ final class ProjectedBooksProvider
   }
 }
 
-String _$projectedBooksHash() => r'966cf92c52a0237d002b56578cba179cab62265d';
+String _$projectedBooksHash() => r'e54b3aacde4ddc90b0a34b08879e9bf735e80152';
 
 @ProviderFor(projectedBook)
 final projectedBookProvider = ProjectedBookFamily._();
@@ -356,7 +356,7 @@ final class ProjectedBookProvider
   }
 }
 
-String _$projectedBookHash() => r'24270735077a8ea1c6272c41ac6872fcd53e9b1f';
+String _$projectedBookHash() => r'a9305728db6040d2333f7f9b751fbea6584ddf01';
 
 final class ProjectedBookFamily extends $Family
     with $FunctionalFamilyOverride<AsyncValue<Book?>, skir.RecordId> {

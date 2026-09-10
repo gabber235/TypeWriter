@@ -8,7 +8,10 @@ abstract class AuthoringEditorResource implements EditableResource {
   wire.AuthoringSnapshotScope get scope;
   @override
   EditorResourceKey get key => EditorResourceKey(
-    scope: (repository.organization, repository.realm),
+    scope: EditorResourceScope(
+      organizationId: repository.organization,
+      realmId: repository.realm,
+    ),
     identity: id,
   );
   @override
