@@ -293,14 +293,13 @@ class _Fixture {
 
   List<Override> get overrides => [
     organizationIdProvider.overrideWith((ref) => recordId("organization:test")),
-    organizationTopologyControllerProvider(
-      recordId("organization:test"),
-    ).overrideWith(() => _FixtureScopedTopology(topology)),
-    servicesProvider.overrideWith(() => _FixtureServices(services)),
+    organizationTopologyControllerProvider(recordId("organization:test"))
+        .overrideWith(() => _FixtureScopedTopology(topology)),
+    canonicalServicesProvider.overrideWith(() => _FixtureServices(services)),
   ];
 }
 
-class _FixtureServices extends Services {
+class _FixtureServices extends CanonicalServices {
   _FixtureServices(this.services);
 
   final List<Service> services;

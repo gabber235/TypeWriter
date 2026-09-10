@@ -15,7 +15,7 @@ final class ServiceEditorResource implements EditableResource {
   final skir.RecordId serviceId;
   @override
   EditorResourceKey get key => EditorResourceKey(
-    scope: (repository.organization, null),
+    scope: EditorResourceScope(organizationId: repository.organization),
     identity: serviceId,
   );
   @override

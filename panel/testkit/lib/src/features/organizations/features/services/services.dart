@@ -47,7 +47,7 @@ Service generateRandomService({
   );
 }
 
-class ServicesMock extends OrganizationServices {
+class ServicesMock extends CanonicalOrganizationServices {
   ServicesMock({required this.displayState});
   final DisplayState displayState;
 
@@ -103,10 +103,10 @@ class ServicesMock extends OrganizationServices {
   }
 }
 
-List<Override> servicesProviderOverrides({
+List<Override> canonicalServicesProviderOverrides({
   DisplayState state = DisplayState.loading,
 }) => [
-  organizationServicesProvider.overrideWith2(
+  canonicalOrganizationServicesProvider.overrideWith2(
     (_) => ServicesMock(displayState: state),
   ),
 ];

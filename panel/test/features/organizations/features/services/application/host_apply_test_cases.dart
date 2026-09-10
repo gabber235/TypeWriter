@@ -114,7 +114,7 @@ void _testHostApply() {
     final harness = await _Harness.create(organization: () => organization);
     addTearDown(harness.dispose);
     await harness.container.read(userIdProvider.future);
-    final workspace = harness.container.read(localWorkProvider);
+    final workspace = harness.container.read(localWorkControllerProvider);
     final view = EditorOwnerRegistry(workspace: workspace);
 
     final owner =
@@ -144,7 +144,10 @@ void _testHostApply() {
         ),
       ),
     );
-    expect(harness.container.read(localWorkProvider), isNot(same(workspace)));
+    expect(
+      harness.container.read(localWorkControllerProvider),
+      same(workspace),
+    );
     expect(workspace.resources, isEmpty);
     expect(await owner.flush(), isA<MutationUnavailable>());
     expect(

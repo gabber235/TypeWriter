@@ -27,7 +27,7 @@ class RegistrationTokenInput extends HookConsumerWidget {
         return;
       }
       error.value = null;
-      await ref.read(servicesProvider.notifier).bindService(token);
+      await ref.read(canonicalServicesProvider.notifier).bindService(token);
       controller.clear();
     }
 

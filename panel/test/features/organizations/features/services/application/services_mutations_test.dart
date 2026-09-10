@@ -20,7 +20,7 @@ Service _service({String name = "Original", int revision = 1}) => Service(
   createdAt: DateTime.utc(2025),
 );
 
-class _SeededServices extends OrganizationServices {
+class _SeededServices extends CanonicalOrganizationServices {
   _SeededServices(this.services);
   final List<Service> services;
 
@@ -48,9 +48,8 @@ class _Harness {
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
-        organizationServicesProvider(
-          _organizationId,
-        ).overrideWith(() => notifier = _SeededServices([_service()])),
+        canonicalOrganizationServicesProvider(_organizationId)
+            .overrideWith(() => notifier = _SeededServices([_service()])),
       ],
     );
   }
@@ -62,8 +61,11 @@ class _Harness {
   ProviderSubscription<AsyncValue<List<Service>>>? subscription;
 
   Future<void> ready() async {
-    subscription = container.listen(servicesProvider, (previous, next) {});
-    await container.read(servicesProvider.future);
+    subscription = container.listen(
+      canonicalServicesProvider,
+      (previous, next) {},
+    );
+    await container.read(canonicalServicesProvider.future);
   }
 
   void respond(String subject, Uint8List Function(Uint8List data) handler) =>
@@ -104,7 +106,7 @@ void main() {
       });
 
       await harness.container
-          .read(servicesProvider.notifier)
+          .read(canonicalServicesProvider.notifier)
           .bindService("registration token");
 
       expect(harness.nats.requests.single.subject, _bindSubject);
@@ -121,7 +123,7 @@ void main() {
 
       await expectLater(
         harness.container
-            .read(servicesProvider.notifier)
+            .read(canonicalServicesProvider.notifier)
             .bindService("invalid"),
         throwsA(_apiException(400)),
       );
@@ -145,7 +147,7 @@ void main() {
         });
 
         final result = await harness.container
-            .read(servicesProvider.notifier)
+            .read(canonicalServicesProvider.notifier)
             .updateService(updated);
 
         expect(harness.nats.requests.single.subject, _updateSubject);
@@ -153,7 +155,7 @@ void main() {
         expect(request!.expectedRevision, updated.revision);
         expect(request!.name, "Updated");
         expect(result, isA<MutationSuccess>());
-        expect(harness.container.read(servicesProvider).requireValue, [
+        expect(harness.container.read(canonicalServicesProvider).requireValue, [
           canonical,
         ]);
       },
@@ -174,12 +176,14 @@ void main() {
         });
 
         final result = await harness.container
-            .read(servicesProvider.notifier)
+            .read(canonicalServicesProvider.notifier)
             .updateService(_service(name: "Requested"));
 
         expect(result, isA<MutationSuccess>());
         expect((result as MutationSuccess).revision, newest.revision);
-        expect(harness.container.read(servicesProvider).requireValue, [newest]);
+        expect(harness.container.read(canonicalServicesProvider).requireValue, [
+          newest,
+        ]);
       },
     );
 
@@ -194,11 +198,11 @@ void main() {
         );
 
         final result = await harness.container
-            .read(servicesProvider.notifier)
+            .read(canonicalServicesProvider.notifier)
             .updateService(_service(name: "Updated"));
 
         expect(result, isA<MutationUnavailable>());
-        expect(harness.container.read(servicesProvider).requireValue, [
+        expect(harness.container.read(canonicalServicesProvider).requireValue, [
           _service(),
         ]);
       },
@@ -216,12 +220,15 @@ void main() {
         });
 
         await harness.container
-            .read(servicesProvider.notifier)
+            .read(canonicalServicesProvider.notifier)
             .deleteService(_service().serviceId);
 
         expect(harness.nats.requests.single.subject, _unbindSubject);
         expect(request!.serviceId, "service1");
-        expect(harness.container.read(servicesProvider).requireValue, isEmpty);
+        expect(
+          harness.container.read(canonicalServicesProvider).requireValue,
+          isEmpty,
+        );
       },
     );
 
@@ -235,11 +242,11 @@ void main() {
 
       await expectLater(
         harness.container
-            .read(servicesProvider.notifier)
+            .read(canonicalServicesProvider.notifier)
             .deleteService(_service().serviceId),
         throwsA(_apiException(404)),
       );
-      expect(harness.container.read(servicesProvider).requireValue, [
+      expect(harness.container.read(canonicalServicesProvider).requireValue, [
         _service(),
       ]);
     });
@@ -254,7 +261,9 @@ void main() {
         );
         addTearDown(harness.dispose);
         await harness.ready();
-        final notifier = harness.container.read(servicesProvider.notifier);
+        final notifier = harness.container.read(
+          canonicalServicesProvider.notifier,
+        );
 
         final operation = switch (mutation) {
           "bind" => notifier.bindService("token"),

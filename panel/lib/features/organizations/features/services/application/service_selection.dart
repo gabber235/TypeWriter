@@ -40,18 +40,22 @@ class ServiceIdentifier extends SelectableIdentifier {
       return AsyncError(ApiException.noOrganization(), StackTrace.current);
     }
     final repository = ref.watch(
-      organizationServicesProvider(organization).notifier,
+      canonicalOrganizationServicesProvider(organization).notifier,
     );
-    final serviceAsync = ref.watch(serviceProvider(serviceId));
-    if (serviceAsync.mapUnready<Selectable>() case final value?) return value;
-    final service = serviceAsync.requireValue;
+    final canonicalState = ref.watch(canonicalServiceProvider(serviceId));
+    if (canonicalState.mapUnready<Selectable>() case final value?) return value;
+    final canonical = canonicalState.requireValue;
+    if (canonical == null) throw SelectableNotFoundException(this);
+    final projectedState = ref.watch(projectedServiceProvider(serviceId));
+    if (projectedState.mapUnready<Selectable>() case final value?) return value;
+    final service = projectedState.requireValue;
     if (service == null) throw SelectableNotFoundException(this);
 
     return AsyncData(
       ServiceSelectable(
         editTarget: serviceIdentityTarget(
           id: this,
-          service: service,
+          service: canonical,
 
           repository: ref
               .watch(resourceRepositoriesProvider)
@@ -60,6 +64,7 @@ class ServiceIdentifier extends SelectableIdentifier {
         onUnbind: () => repository.deleteService(serviceId),
         id: this,
         service: service,
+        canonicalService: canonical,
         connected: connections[serviceId] ?? false,
       ),
     );
@@ -83,17 +88,19 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
     required this.onUnbind,
     required this.id,
     required this.service,
+    required this.canonicalService,
     required this.connected,
   });
 
   @override
   final ServiceIdentifier id;
   final Service service;
+  final Service canonicalService;
   final bool connected;
   final EditorTarget editTarget;
   final Future<void> Function() onUnbind;
 
-  RecordValue get _data => service.observationValue(connected);
+  RecordValue get _data => canonicalService.observationValue(connected);
 
   @override
   String get name => service.displayName;
@@ -143,8 +150,6 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
 }
 
 extension ServiceInspectorValue on Service {
-  RecordValue get identityValue => RecordValue({"name": name.asValue});
-
   RecordValue observationValue(bool connected) => RecordValue({
     "version": role.version.asValue,
     "state": (connected ? "Connected" : "Offline").asValue,

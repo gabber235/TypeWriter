@@ -9,7 +9,7 @@ class ServicesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final servicesAsync = ref.watch(servicesProvider);
+    final servicesAsync = ref.watch(projectedServicesProvider);
     final topologyAsync = ref.watch(organizationTopologyStreamProvider);
 
     return Pane(
@@ -28,8 +28,7 @@ class ServicesPage extends ConsumerWidget {
           children: [
             const PageHeading(
               title: "Services",
-              subtext:
-                  "Connect services, then inspect every host and runtime from one workspace.",
+              subtext: "Connect services, then inspect every host and runtime from one workspace.",
             ),
             Padding(
               padding: EdgeInsets.all(context.spacing.space4),

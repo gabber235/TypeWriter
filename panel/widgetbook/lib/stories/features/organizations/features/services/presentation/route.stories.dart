@@ -18,7 +18,7 @@ Widget servicesPageStory() {
       organizationTopologyControllerProvider.overrideWith2(
         (_) => _StoryTopology(scenario.topology),
       ),
-      organizationServicesProvider.overrideWith2(
+      canonicalOrganizationServicesProvider.overrideWith2(
         (_) => _StoryServices(scenario.services),
       ),
       ...organizationProviderOverrides(),
@@ -30,7 +30,7 @@ Widget servicesPageStory() {
   );
 }
 
-class _StoryServices extends OrganizationServices {
+class _StoryServices extends CanonicalOrganizationServices {
   _StoryServices(this.services);
 
   final List<Service> services;

@@ -18,7 +18,7 @@ class ServiceHostIdentifier extends SelectableIdentifier {
   @override
   AsyncValue<Selectable> create(Ref ref) {
     final topologyState = ref.watch(organizationTopologyStreamProvider);
-    final servicesState = ref.watch(servicesProvider);
+    final servicesState = ref.watch(canonicalServicesProvider);
     final connections = ref.watch(serviceConnectionsProvider);
     final organization = ref.watch(organizationIdProvider);
     if (topologyState.mapUnready<Selectable>() case final state?) return state;
@@ -27,7 +27,6 @@ class ServiceHostIdentifier extends SelectableIdentifier {
     if (organization == null) {
       return AsyncError(ApiException.noOrganization(), StackTrace.current);
     }
-
     final topology = topologyState.requireValue;
     final host = topology.hosts.firstWhereOrNull(
       (candidate) => candidate.hostId == hostId,
@@ -35,15 +34,24 @@ class ServiceHostIdentifier extends SelectableIdentifier {
     if (host == null) {
       return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
-    final service = servicesState.requireValue.firstWhereOrNull(
+    final projectedServiceState = ref.watch(
+      projectedServiceProvider(host.serviceId),
+    );
+    if (projectedServiceState.mapUnready<Selectable>() case final state?) {
+      return state;
+    }
+    final canonicalService = servicesState.requireValue.firstWhereOrNull(
       (service) => service.serviceId == host.serviceId,
     );
+    final service = projectedServiceState.requireValue;
     final repository = ref
         .watch(resourceRepositoriesProvider)
         .services(organization);
-    final serviceCommands = service == null
+    final serviceCommands = canonicalService == null
         ? null
-        : ref.watch(organizationServicesProvider(organization).notifier);
+        : ref.watch(
+            canonicalOrganizationServicesProvider(organization).notifier,
+          );
 
     return AsyncData(
       _ServiceHostSelectable(
@@ -59,14 +67,14 @@ class ServiceHostIdentifier extends SelectableIdentifier {
           snapshot: HostEditorSnapshot(host, topology),
           commitPolicy: EditorCommitPolicy.applyResource,
         ),
-        onUnbind: service == null
+        onUnbind: canonicalService == null
             ? null
-            : () => serviceCommands!.deleteService(service.serviceId),
-        serviceIdentityTarget: service == null
+            : () => serviceCommands!.deleteService(canonicalService.serviceId),
+        serviceIdentityTarget: service == null || canonicalService == null
             ? null
             : serviceIdentityTarget(
                 id: ServiceIdentifier(service.serviceId),
-                service: service,
+                service: canonicalService,
                 repository: repository,
               ),
       ),
@@ -182,7 +190,7 @@ AsyncValue<Selectable> _topologySelectable(
   create,
 ) {
   final topology = ref.watch(organizationTopologyStreamProvider);
-  final services = ref.watch(servicesProvider);
+  final services = ref.watch(canonicalServicesProvider);
   final connections = ref.watch(serviceConnectionsProvider);
   if (topology case AsyncError(:final error, :final stackTrace)) {
     return AsyncError(error, stackTrace);

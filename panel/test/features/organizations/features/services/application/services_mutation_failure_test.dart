@@ -18,7 +18,7 @@ Service _service({String name = "Original", int revision = 1}) => Service(
   createdAt: DateTime.utc(2025),
 );
 
-class _SeededServices extends OrganizationServices {
+class _SeededServices extends CanonicalOrganizationServices {
   @override
   Stream<List<Service>> build(skir.RecordId organizationId) =>
       Stream.value([_service()]);
@@ -38,9 +38,8 @@ class _Harness {
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
-        organizationServicesProvider(
-          _organizationId,
-        ).overrideWith(() => notifier = _SeededServices()),
+        canonicalOrganizationServicesProvider(_organizationId)
+            .overrideWith(() => notifier = _SeededServices()),
       ],
     );
   }
@@ -51,8 +50,11 @@ class _Harness {
   ProviderSubscription<AsyncValue<List<Service>>>? subscription;
 
   Future<void> ready() async {
-    subscription = container.listen(servicesProvider, (previous, next) {});
-    await container.read(servicesProvider.future);
+    subscription = container.listen(
+      canonicalServicesProvider,
+      (previous, next) {},
+    );
+    await container.read(canonicalServicesProvider.future);
   }
 
   void respond(String subject, Uint8List Function(Uint8List data) handler) {
@@ -95,7 +97,7 @@ void main() {
     );
 
     final result = await harness.container
-        .read(servicesProvider.notifier)
+        .read(canonicalServicesProvider.notifier)
         .updateService(_service(name: "Updated"));
 
     expect(result, isA<MutationInvalid>());
@@ -119,14 +121,16 @@ void main() {
     );
 
     final result = await harness.container
-        .read(servicesProvider.notifier)
+        .read(canonicalServicesProvider.notifier)
         .updateService(_service(name: "Updated"));
 
     expect(result, isA<MutationConflict>());
     final conflict = result as MutationConflict;
     expect(conflict.expectedRevision, 1);
     expect(conflict.actualRevision, 3);
-    expect(harness.container.read(servicesProvider).requireValue, [actual]);
+    expect(harness.container.read(canonicalServicesProvider).requireValue, [
+      actual,
+    ]);
     expect(reports, isEmpty);
   });
 
@@ -140,7 +144,7 @@ void main() {
       });
 
       final result = await harness.container
-          .read(servicesProvider.notifier)
+          .read(canonicalServicesProvider.notifier)
           .updateService(_service(name: "Requested"));
 
       expect(result, isA<MutationUncertain>());
@@ -148,14 +152,17 @@ void main() {
       expect(uncertain.cause, isA<StateError>());
       expect(uncertain.replay, isNotNull);
       expect(uncertain.submissionId, isNotNull);
-      expect(harness.container.read(servicesProvider).requireValue, [newest]);
+      expect(harness.container.read(canonicalServicesProvider).requireValue, [
+        newest,
+      ]);
 
       expect(reports, isEmpty);
+      await harness.container.pump();
       final submission = harness.container
           .read(localWorkProvider)
           .submissions
           .single;
-      expect(submission.result, isA<SubmissionUncertain>());
+      expect(submission.result, LocalWorkSubmissionResult.uncertain);
       expect(submission.canReplay, isTrue);
     },
   );
@@ -169,12 +176,14 @@ void main() {
 
     await expectLater(
       harness.container
-          .read(servicesProvider.notifier)
+          .read(canonicalServicesProvider.notifier)
           .deleteService(_service().serviceId),
       throwsA(isA<SubmissionException>()),
     );
 
-    expect(harness.container.read(servicesProvider).requireValue, [newest]);
+    expect(harness.container.read(canonicalServicesProvider).requireValue, [
+      newest,
+    ]);
     expect(reports, isEmpty);
   });
 }

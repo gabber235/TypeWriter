@@ -91,33 +91,34 @@ class _Harness {
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
         ),
-        organizationServicesProvider(
-          _organizationId,
-        ).overrideWith(() => _SeededServices([service])),
-        organizationTopologyControllerProvider(
-          _organizationId,
-        ).overrideWith(() => _SeededTopology(topology)),
+        canonicalOrganizationServicesProvider(_organizationId)
+            .overrideWith(() => _SeededServices([service])),
+        organizationTopologyControllerProvider(_organizationId)
+            .overrideWith(() => _SeededTopology(topology)),
       ],
     );
 
     await container.read(userIdProvider.future);
     final servicesSubscription = container.listen(
-      servicesProvider,
+      canonicalServicesProvider,
       (previous, next) {},
     );
     final topologySubscription = container.listen(
       organizationTopologyStreamProvider,
       (previous, next) {},
     );
-    await container.read(servicesProvider.future);
+    await container.read(canonicalServicesProvider.future);
     await container.read(organizationTopologyStreamProvider.future);
-
     container
         .read(selectionProvider.notifier)
         .select(ServiceHostIdentifier(host.hostId));
-    final selectable =
-        container.read(selectedProvider).requireValue.single
-            as InspectableSelectable;
+    final selected = await waitForProvider(
+      container,
+      selectedProvider,
+      (value) => value.hasValue && value.requireValue.isNotEmpty,
+      description: "service host selection",
+    );
+    final selectable = selected.requireValue.single as InspectableSelectable;
 
     return _Harness._(
       nats: nats,
@@ -163,7 +164,7 @@ class _ReplaceableNats extends Nats {
   set connection(NatsClient next) => state = next;
 }
 
-class _SeededServices extends OrganizationServices {
+class _SeededServices extends CanonicalOrganizationServices {
   _SeededServices(this.services);
 
   final List<Service> services;

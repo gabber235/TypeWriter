@@ -36,7 +36,7 @@ void main() {
 
         final container = ProviderContainer.test(
           overrides: [
-            servicesProvider.overrideWith(() => _Services(service)),
+            canonicalServicesProvider.overrideWith(() => _Services(service)),
             organizationTopologyStreamProvider.overrideWith(
               (ref) => Stream.value(
                 OrganizationTopology(
@@ -88,7 +88,7 @@ void main() {
   );
 }
 
-class _Services extends Services {
+class _Services extends CanonicalServices {
   _Services(this.service);
   final Service service;
 

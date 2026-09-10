@@ -9,39 +9,42 @@ part of 'services.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(OrganizationServices)
-final organizationServicesProvider = OrganizationServicesFamily._();
+@ProviderFor(CanonicalOrganizationServices)
+final canonicalOrganizationServicesProvider =
+    CanonicalOrganizationServicesFamily._();
 
-final class OrganizationServicesProvider
-    extends $StreamNotifierProvider<OrganizationServices, List<Service>> {
-  OrganizationServicesProvider._({
-    required OrganizationServicesFamily super.from,
+final class CanonicalOrganizationServicesProvider
+    extends
+        $StreamNotifierProvider<CanonicalOrganizationServices, List<Service>> {
+  CanonicalOrganizationServicesProvider._({
+    required CanonicalOrganizationServicesFamily super.from,
     required skir.RecordId super.argument,
   }) : super(
          retry: null,
-         name: r'organizationServicesProvider',
+         name: r'canonicalOrganizationServicesProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$organizationServicesHash();
+  String debugGetCreateSourceHash() => _$canonicalOrganizationServicesHash();
 
   @override
   String toString() {
-    return r'organizationServicesProvider'
+    return r'canonicalOrganizationServicesProvider'
         ''
         '($argument)';
   }
 
   @$internal
   @override
-  OrganizationServices create() => OrganizationServices();
+  CanonicalOrganizationServices create() => CanonicalOrganizationServices();
 
   @override
   bool operator ==(Object other) {
-    return other is OrganizationServicesProvider && other.argument == argument;
+    return other is CanonicalOrganizationServicesProvider &&
+        other.argument == argument;
   }
 
   @override
@@ -50,35 +53,39 @@ final class OrganizationServicesProvider
   }
 }
 
-String _$organizationServicesHash() =>
-    r'1e755f6fbc29097b084ec213c5e6a06cfce381c5';
+String _$canonicalOrganizationServicesHash() =>
+    r'ca7f3899d62573786c7d08d150f840767584f6a1';
 
-final class OrganizationServicesFamily extends $Family
+final class CanonicalOrganizationServicesFamily extends $Family
     with
         $ClassFamilyOverride<
-          OrganizationServices,
+          CanonicalOrganizationServices,
           AsyncValue<List<Service>>,
           List<Service>,
           Stream<List<Service>>,
           skir.RecordId
         > {
-  OrganizationServicesFamily._()
+  CanonicalOrganizationServicesFamily._()
     : super(
         retry: null,
-        name: r'organizationServicesProvider',
+        name: r'canonicalOrganizationServicesProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  OrganizationServicesProvider call(skir.RecordId organizationId) =>
-      OrganizationServicesProvider._(argument: organizationId, from: this);
+  CanonicalOrganizationServicesProvider call(skir.RecordId organizationId) =>
+      CanonicalOrganizationServicesProvider._(
+        argument: organizationId,
+        from: this,
+      );
 
   @override
-  String toString() => r'organizationServicesProvider';
+  String toString() => r'canonicalOrganizationServicesProvider';
 }
 
-abstract class _$OrganizationServices extends $StreamNotifier<List<Service>> {
+abstract class _$CanonicalOrganizationServices
+    extends $StreamNotifier<List<Service>> {
   late final _$args = ref.$arg as skir.RecordId;
   skir.RecordId get organizationId => _$args;
 
@@ -99,30 +106,30 @@ abstract class _$OrganizationServices extends $StreamNotifier<List<Service>> {
   }
 }
 
-@ProviderFor(service)
-final serviceProvider = ServiceFamily._();
+@ProviderFor(canonicalService)
+final canonicalServiceProvider = CanonicalServiceFamily._();
 
-final class ServiceProvider
+final class CanonicalServiceProvider
     extends
         $FunctionalProvider<AsyncValue<Service?>, Service?, FutureOr<Service?>>
     with $FutureModifier<Service?>, $FutureProvider<Service?> {
-  ServiceProvider._({
-    required ServiceFamily super.from,
+  CanonicalServiceProvider._({
+    required CanonicalServiceFamily super.from,
     required skir.RecordId super.argument,
   }) : super(
          retry: null,
-         name: r'serviceProvider',
+         name: r'canonicalServiceProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$serviceHash();
+  String debugGetCreateSourceHash() => _$canonicalServiceHash();
 
   @override
   String toString() {
-    return r'serviceProvider'
+    return r'canonicalServiceProvider'
         ''
         '($argument)';
   }
@@ -135,12 +142,12 @@ final class ServiceProvider
   @override
   FutureOr<Service?> create(Ref ref) {
     final argument = this.argument as skir.RecordId;
-    return service(ref, argument);
+    return canonicalService(ref, argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ServiceProvider && other.argument == argument;
+    return other is CanonicalServiceProvider && other.argument == argument;
   }
 
   @override
@@ -149,53 +156,53 @@ final class ServiceProvider
   }
 }
 
-String _$serviceHash() => r'3c409075a9fd560b0622bb74b06d4c0b1450d092';
+String _$canonicalServiceHash() => r'b4cabbb3f59a4a93bb98b2074038a92c916a1661';
 
-final class ServiceFamily extends $Family
+final class CanonicalServiceFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Service?>, skir.RecordId> {
-  ServiceFamily._()
+  CanonicalServiceFamily._()
     : super(
         retry: null,
-        name: r'serviceProvider',
+        name: r'canonicalServiceProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  ServiceProvider call(skir.RecordId id) =>
-      ServiceProvider._(argument: id, from: this);
+  CanonicalServiceProvider call(skir.RecordId id) =>
+      CanonicalServiceProvider._(argument: id, from: this);
 
   @override
-  String toString() => r'serviceProvider';
+  String toString() => r'canonicalServiceProvider';
 }
 
-@ProviderFor(Services)
-final servicesProvider = ServicesProvider._();
+@ProviderFor(CanonicalServices)
+final canonicalServicesProvider = CanonicalServicesProvider._();
 
-final class ServicesProvider
-    extends $StreamNotifierProvider<Services, List<Service>> {
-  ServicesProvider._()
+final class CanonicalServicesProvider
+    extends $StreamNotifierProvider<CanonicalServices, List<Service>> {
+  CanonicalServicesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'servicesProvider',
+        name: r'canonicalServicesProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$servicesHash();
+  String debugGetCreateSourceHash() => _$canonicalServicesHash();
 
   @$internal
   @override
-  Services create() => Services();
+  CanonicalServices create() => CanonicalServices();
 }
 
-String _$servicesHash() => r'a73dacdcfcc43b3b8100d858f81dbe667e3fd005';
+String _$canonicalServicesHash() => r'068de9cecaf6154f42b023858fd20ea83e4ee603';
 
-abstract class _$Services extends $StreamNotifier<List<Service>> {
+abstract class _$CanonicalServices extends $StreamNotifier<List<Service>> {
   Stream<List<Service>> build();
   @$mustCallSuper
   @override
@@ -211,6 +218,136 @@ abstract class _$Services extends $StreamNotifier<List<Service>> {
             >;
     return element.handleCreate(ref, build);
   }
+}
+
+@ProviderFor(projectedServices)
+final projectedServicesProvider = ProjectedServicesProvider._();
+
+final class ProjectedServicesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Service>>,
+          AsyncValue<List<Service>>,
+          AsyncValue<List<Service>>
+        >
+    with $Provider<AsyncValue<List<Service>>> {
+  ProjectedServicesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'projectedServicesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedServicesHash();
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<List<Service>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<List<Service>> create(Ref ref) {
+    return projectedServices(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<Service>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<List<Service>>>(value),
+    );
+  }
+}
+
+String _$projectedServicesHash() => r'3b12ff8d3f1dfb2b264c2cc7604208167e89d319';
+
+@ProviderFor(projectedService)
+final projectedServiceProvider = ProjectedServiceFamily._();
+
+final class ProjectedServiceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Service?>,
+          AsyncValue<Service?>,
+          AsyncValue<Service?>
+        >
+    with $Provider<AsyncValue<Service?>> {
+  ProjectedServiceProvider._({
+    required ProjectedServiceFamily super.from,
+    required skir.RecordId super.argument,
+  }) : super(
+         retry: null,
+         name: r'projectedServiceProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedServiceHash();
+
+  @override
+  String toString() {
+    return r'projectedServiceProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<Service?>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<Service?> create(Ref ref) {
+    final argument = this.argument as skir.RecordId;
+    return projectedService(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Service?> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<Service?>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectedServiceProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$projectedServiceHash() => r'a8ae591bfa8d83435ff7659db7a81506ebafec2d';
+
+final class ProjectedServiceFamily extends $Family
+    with $FunctionalFamilyOverride<AsyncValue<Service?>, skir.RecordId> {
+  ProjectedServiceFamily._()
+    : super(
+        retry: null,
+        name: r'projectedServiceProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProjectedServiceProvider call(skir.RecordId serviceId) =>
+      ProjectedServiceProvider._(argument: serviceId, from: this);
+
+  @override
+  String toString() => r'projectedServiceProvider';
 }
 
 @ProviderFor(organizationTopologyStream)
@@ -412,7 +549,7 @@ final class ServiceConnectionsProvider
 }
 
 String _$serviceConnectionsHash() =>
-    r'76071ad90e4e70ecbf5abf6ff2176f674530a307';
+    r'81da9210c2a948b562f83b91902888be9edf7f2d';
 
 @ProviderFor(hostConnected)
 final hostConnectedProvider = HostConnectedFamily._();

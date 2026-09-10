@@ -64,7 +64,7 @@ void main() {
     await tester.pumpWidget(
       FakeApp(
         overrides: [
-          organizationServicesProvider.overrideWith2(
+          canonicalOrganizationServicesProvider.overrideWith2(
             (_) => _StoryServices(services),
           ),
           organizationTopologyControllerProvider.overrideWith2(
@@ -154,7 +154,7 @@ void main() {
   });
 }
 
-class _StoryServices extends OrganizationServices {
+class _StoryServices extends CanonicalOrganizationServices {
   _StoryServices(this.services);
 
   final List<Service> services;

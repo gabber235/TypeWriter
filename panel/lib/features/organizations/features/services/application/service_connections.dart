@@ -3,7 +3,8 @@ part of "services.dart";
 /// Shares one deadline projection for a service list across its consumers.
 @riverpod
 Map<skir.RecordId, bool> serviceConnections(Ref ref) {
-  final services = ref.watch(servicesProvider).value ?? const <Service>[];
+  final services =
+      ref.watch(canonicalServicesProvider).value ?? const <Service>[];
 
   final now = clock.now();
   final deadline = services

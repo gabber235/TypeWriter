@@ -1,8 +1,10 @@
 import "dart:async";
+
 import "package:clock/clock.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:riverpod/riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
@@ -33,7 +35,7 @@ part "topology_host_selection.dart";
 part "topology_runtime_selection.dart";
 
 @riverpod
-class OrganizationServices extends _$OrganizationServices {
+class CanonicalOrganizationServices extends _$CanonicalOrganizationServices {
   @override
   Stream<List<Service>> build(skir.RecordId organizationId) async* {
     final userId = await ref.watch(userIdProvider.future);
@@ -258,6 +260,7 @@ class OrganizationServices extends _$OrganizationServices {
 }
 
 @riverpod
-Future<Service?> service(Ref ref, skir.RecordId id) async => (await ref.watch(
-  servicesProvider.future,
-)).firstWhereOrNull((service) => service.serviceId == id);
+Future<Service?> canonicalService(Ref ref, skir.RecordId id) async {
+  return (await ref.watch(canonicalServicesProvider.future))
+      .firstWhereOrNull((service) => service.serviceId == id);
+}

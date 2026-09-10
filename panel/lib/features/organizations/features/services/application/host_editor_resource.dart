@@ -64,7 +64,7 @@ final class HostEditorResource implements EditableResource {
   final skir.RecordId hostId;
   @override
   EditorResourceKey get key => EditorResourceKey(
-    scope: (repository.organization, null),
+    scope: EditorResourceScope(organizationId: repository.organization),
     identity: hostId,
   );
   @override

@@ -73,6 +73,22 @@ abstract class Service with _$Service {
   }
 }
 
+extension ServiceIdentityConversion on Service {
+  RecordValue get identityValue => RecordValue({"name": name.asValue});
+
+  Service? withIdentityValue(DataValue value) {
+    if (value is! RecordValue) return null;
+    final name = value.fields["name"];
+    if (name is! StringValue || name.value.trim().isEmpty) return null;
+    return copyWith(name: name.value);
+  }
+
+  Service projected(LocalEditorValue? local) {
+    if (local == null) return this;
+    return withIdentityValue(local.projectOnto(identityValue)) ?? this;
+  }
+}
+
 @freezed
 sealed class ServiceRole with _$ServiceRole {
   @Assert("version.isNotEmpty", "Version must not be empty.")

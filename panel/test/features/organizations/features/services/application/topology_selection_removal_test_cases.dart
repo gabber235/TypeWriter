@@ -13,32 +13,28 @@ void _testTopologySelectionRemoval() {
         final engineId = recordId("engine_instance:paper");
         final topology =
             (container.read(
-                    organizationTopologyControllerProvider(
-                      _organizationId,
-                    ).notifier,
-                  )
-                  as _SeededTopology)
-              ..replace(
-                OrganizationTopology(
-                  hosts: [TopologyHost.fromSkir(harness.host)],
-                  realmInstances: [TopologyRealm.fromSkir(harness.realm)],
-                  engineInstances: [
-                    TopologyEngine.fromSkir(
-                      skir.EngineInstance(
-                        engineId: engineId,
+              organizationTopologyControllerProvider(_organizationId).notifier,
+            ) as _SeededTopology)..replace(
+              OrganizationTopology(
+                hosts: [TopologyHost.fromSkir(harness.host)],
+                realmInstances: [TopologyRealm.fromSkir(harness.realm)],
+                engineInstances: [
+                  TopologyEngine.fromSkir(
+                    skir.EngineInstance(
+                      engineId: engineId,
+                      ownerHost: harness.realm.ownerHost,
+                      realm: skir.RealmInfo(
+                        realmId: harness.realm.realmId,
                         ownerHost: harness.realm.ownerHost,
-                        realm: skir.RealmInfo(
-                          realmId: harness.realm.realmId,
-                          ownerHost: harness.realm.ownerHost,
-                        ),
-                        revision: 1,
-                        target: harness.realm.targetEngine,
-                        state: skir.ChildRuntimeState.defaultInstance,
                       ),
+                      revision: 1,
+                      target: harness.realm.targetEngine,
+                      state: skir.ChildRuntimeState.defaultInstance,
                     ),
-                  ],
-                ),
-              );
+                  ),
+                ],
+              ),
+            );
         await container.pump();
 
         await container.read(organizationTopologyStreamProvider.future);
@@ -50,10 +46,13 @@ void _testTopologySelectionRemoval() {
         container.read(selectionProvider.notifier).selectAll([identifier]);
         final session = container.listen(inspectionSessionProvider, (_, _) {});
         addTearDown(session.close);
-        expect(
-          container.read(inspectedSelectionProvider).requireValue,
-          hasLength(1),
+        final inspected = await waitForProvider(
+          container,
+          inspectedSelectionProvider,
+          (value) => value.hasValue && value.requireValue.length == 1,
+          description: "inspected topology selection",
         );
+        expect(inspected.requireValue, hasLength(1));
 
         final missing = Completer<AsyncValue<List<InspectableSelectable>>>();
         final errors = container.listen(inspectedSelectionProvider, (_, value) {

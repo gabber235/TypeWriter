@@ -44,7 +44,7 @@ class _Harness {
       ],
     );
     subscription = container.listen(
-      servicesProvider,
+      canonicalServicesProvider,
       (previous, next) => value = next,
       fireImmediately: true,
     );
@@ -81,14 +81,14 @@ class _Harness {
       skir.WatchOrganizationServicesResponse.serializer.toBytes(response),
     );
     await Future<void>.delayed(const Duration(milliseconds: 20));
-    return container.read(servicesProvider).requireValue;
+    return container.read(canonicalServicesProvider).requireValue;
   }
 
   Future<Object> emitError(
     skir.WatchOrganizationServicesResponse response,
   ) async {
     final completer = Completer<Object>();
-    final errorSubscription = container.listen(servicesProvider, (
+    final errorSubscription = container.listen(canonicalServicesProvider, (
       previous,
       next,
     ) {
@@ -272,12 +272,12 @@ void main() {
       addTearDown(container.dispose);
       addTearDown(nats.dispose);
       final subscription = container.listen(
-        servicesProvider,
+        canonicalServicesProvider,
         (previous, next) {},
       );
       addTearDown(subscription.close);
 
-      expect(await container.read(servicesProvider.future), isEmpty);
+      expect(await container.read(canonicalServicesProvider.future), isEmpty);
       expect(nats.requests, isEmpty);
       expect(nats.subscriptionSubjects, isEmpty);
     });
