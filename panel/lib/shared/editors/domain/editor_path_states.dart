@@ -9,6 +9,7 @@ part "editor_path_states.freezed.dart";
 /// instead of recorded snapshots, so a path can never report a stale phase.
 final class EditorPathStates {
   final Map<DataPath, EditorPathRecord> _records = {};
+  final Map<DataPath, EditorContentionDetails> _contentions = {};
 
   Set<DataPath> get dirtyPaths => _pathsWhere((record) => record.dirty);
 
@@ -37,7 +38,10 @@ final class EditorPathStates {
     var bestPriority = _phasePriority(best.phase);
     for (final entry in _records.entries) {
       if (!entry.key.isAtOrBelow(path)) continue;
-      final candidate = entry.value.saveState(entry.key);
+      final candidate = entry.value.saveState(
+        entry.key,
+        contention: _contentions[entry.key],
+      );
       final priority = _phasePriority(candidate.phase);
       if (priority <= bestPriority) continue;
       best = candidate;
@@ -74,8 +78,12 @@ final class EditorPathStates {
     }
   }
 
-  void markContended(Iterable<DataPath> paths) {
+  void markContended(
+    Iterable<DataPath> paths,
+    EditorContentionDetails contention,
+  ) {
     for (final path in paths) {
+      _contentions[path] = contention;
       _setProgress(path, const EditorPathProgress.contended());
     }
   }
@@ -135,8 +143,10 @@ final class EditorPathStates {
     };
   }
 
-  void _setProgress(DataPath path, EditorPathProgress? progress) =>
-      _transform(path, (record) => record.copyWith(progress: progress));
+  void _setProgress(DataPath path, EditorPathProgress? progress) {
+    if (progress is! ContendedPathProgress) _contentions.remove(path);
+    _transform(path, (record) => record.copyWith(progress: progress));
+  }
 
   void _transform(
     DataPath path,
@@ -185,7 +195,10 @@ abstract class EditorPathRecord with _$EditorPathRecord {
     };
   }
 
-  EditorSaveState saveState(DataPath path) {
+  EditorSaveState saveState(
+    DataPath path, {
+    EditorContentionDetails? contention,
+  }) {
     return EditorSaveState(
       phase: phase,
       path: path,
@@ -197,6 +210,7 @@ abstract class EditorPathRecord with _$EditorPathRecord {
         FailedPathProgress(:final diagnostics) => diagnostics,
         _ => const [],
       },
+      contention: contention,
     );
   }
 }

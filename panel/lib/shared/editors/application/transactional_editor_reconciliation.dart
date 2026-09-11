@@ -1,6 +1,52 @@
 part of "transactional_editor_source.dart";
 
 extension _EditorReconciliation on TransactionalEditorSource {
+  bool _acceptAuthoritativeSnapshot(EditorDocument document) {
+    if (_disposed || _deleted || document.revision < _document.revision) {
+      return false;
+    }
+    if (document.revision > _document.revision) {
+      _refreshDocument(document);
+      return false;
+    }
+    final divergent = document.confirmedValue != _document.confirmedValue;
+    var reconciliationDiagnostics = const <TypeDiagnostic>[];
+    if (divergent) {
+      final result = _reconciler.reconcile(
+        base: _document.confirmedValue,
+        local: _draft,
+        remote: document.confirmedValue,
+        remoteRevision: document.revision,
+        dirtyPaths: _states.dirtyPaths,
+        mergePolicies: _document.mergePolicies,
+      );
+      _document = _document.copyWith(
+        confirmedValue: result.base,
+        revision: result.revision,
+      );
+      reconciliationDiagnostics = result.diagnostics;
+      _draft = result.draft;
+      _states.applyReconciliation(
+        dirtyPaths: result.dirtyPaths,
+        confirmedPaths: result.confirmedPaths,
+        conflicts: result.conflicts,
+        confirmedPhase: EditorSavePhase.saved,
+      );
+    }
+    final refreshed = _document.copyWith(
+      rootType: document.rootType,
+      typeCatalog: document.typeCatalog,
+      mergePolicies: document.mergePolicies,
+      diagnostics: [...document.diagnostics, ...reconciliationDiagnostics],
+      readOnly: document.readOnly,
+    );
+    if (!_document.hasSameContent(refreshed) || divergent) {
+      _document = refreshed;
+      _notify();
+    }
+    return divergent;
+  }
+
   void _refreshDocument(EditorDocument document) {
     if (_disposed) return;
     if (_document.hasSameContent(document)) return;

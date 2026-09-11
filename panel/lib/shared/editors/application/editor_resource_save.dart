@@ -15,13 +15,24 @@ extension EditorResourceBinding on TransactionalEditorSource {
     _snapshot = snapshot;
     refreshDocument(snapshot.document);
   }
+
+  bool refreshAuthoritativeSnapshot(EditorSnapshot snapshot) {
+    if (snapshot.document.revision < document.revision) return false;
+    _snapshot = snapshot;
+    return _acceptAuthoritativeSnapshot(snapshot.document);
+  }
 }
 
 /// Runs resource reads and request capture inside the same reservation.
 final class _ResourceSave {
-  const _ResourceSave(this.commits, this.results);
+  const _ResourceSave(
+    this.commits,
+    this.results, {
+    this.authoritativeDivergence = false,
+  });
   final Map<TransactionalEditorSource, EditorCommit> commits;
   final Map<TransactionalEditorSource, TypedMutationResult> results;
+  final bool authoritativeDivergence;
 
   static Future<_ResourceSave> run(
     Map<TransactionalEditorSource, Set<DataPath>> paths,
@@ -40,23 +51,43 @@ final class _ResourceSave {
       final snapshots = await Future.wait([
         for (final source in paths.keys) source.resource!.refresh(),
       ]);
+      var authoritativeDivergence = false;
       for (final indexed in paths.keys.indexed) {
         final source = indexed.$2;
         if (source._disposed || source._deleted) {
-          throw StateError("Editor is no longer available");
+          return _ResourceSave({}, {
+            for (final participant in paths.keys)
+              participant: _unavailable("The resource is no longer available"),
+          });
         }
         final snapshot = snapshots[indexed.$1];
         if (snapshot == null) {
           source.acceptRemoteDeletion();
-          throw StateError("The resource was deleted");
+          return _ResourceSave({}, {
+            for (final participant in paths.keys)
+              participant: _unavailable("The resource was deleted"),
+          });
         }
-        source.refreshSnapshot(snapshot);
+        authoritativeDivergence =
+            source.refreshAuthoritativeSnapshot(snapshot) ||
+            authoritativeDivergence;
+      }
+      if (authoritativeDivergence) {
+        return _ResourceSave({}, {
+          for (final participant in paths.keys)
+            participant: _unavailable(
+              "The authoritative resource changed while preparing the save",
+            ),
+        }, authoritativeDivergence: true);
       }
       for (final source in paths.keys) {
         if (source.document.readOnly || source._states.hasConflicts) {
-          throw StateError(
-            "Resolve unavailable resources and conflicting fields before saving",
-          );
+          return _ResourceSave({}, {
+            for (final participant in paths.keys)
+              participant: _unavailable(
+                "Resolve unavailable resources and conflicting fields before saving",
+              ),
+          });
         }
         final diagnostics = source._saveDiagnostics();
         if (diagnostics.isNotEmpty) {
@@ -133,10 +164,20 @@ final class _ResourceSave {
         for (final indexed in commits.keys.indexed)
           indexed.$2: settled[indexed.$1],
       });
-    } on Object catch (error) {
+    } on Object catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: "Typewriter editor resource save",
+          context: ErrorDescription("while preparing an editor resource save"),
+        ),
+      );
       return _ResourceSave({}, {
         for (final source in paths.keys)
-          source: _unavailable("The resource could not be prepared: $error"),
+          source: _unavailable(
+            "The resource could not be prepared (${error.runtimeType})",
+          ),
       });
     } finally {
       reservation?.release();
@@ -147,7 +188,7 @@ final class _ResourceSave {
 extension _ResourcePersistence on TransactionalEditorSource {
   Future<TypedMutationResult> _persistResource(Set<DataPath> paths) async {
     var activePaths = paths;
-    var attempt = 0;
+    var attempts = 0;
     try {
       while (true) {
         final saved = await _ResourceSave.run({this: activePaths});
@@ -157,10 +198,13 @@ extension _ResourcePersistence on TransactionalEditorSource {
         final result = saved.results[this] ?? _settledResult();
         final commit = saved.commits[this];
         if (commit == null) {
-          if (result is! MutationSuccess) {
-            _failPaths(activePaths, [
-              _diagnostic("The resource could not be saved"),
-            ]);
+          final diagnostics = switch (result) {
+            MutationInvalid(:final diagnostics) ||
+            MutationUnavailable(:final diagnostics) => diagnostics,
+            _ => [_diagnostic("The resource could not be saved")],
+          };
+          if (result is! MutationSuccess && !saved.authoritativeDivergence) {
+            _failPaths(activePaths, diagnostics);
           }
           return result;
         }
@@ -176,7 +220,14 @@ extension _ResourcePersistence on TransactionalEditorSource {
         }
 
         final next = _states.flushCandidates(activePaths);
-        if (next.isEmpty || !await _waitForRetry(next, attempt++)) {
+        if (next.isEmpty) return result;
+        attempts++;
+        if (!await _waitForRetry(
+          next,
+          attempts,
+          expectedVersion: result.expectedRevision,
+          observedVersion: result.actualRevision,
+        )) {
           return result;
         }
         activePaths = next;

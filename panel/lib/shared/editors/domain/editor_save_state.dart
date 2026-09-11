@@ -24,6 +24,29 @@ final class EditorPathConflict {
   final DataValue remote;
 }
 
+enum EditorContentionKind { versionMismatch }
+
+final class EditorContentionDetails {
+  EditorContentionDetails({
+    required this.kind,
+    required this.attempts,
+    required this.retryLimit,
+    required Iterable<DataPath> paths,
+    this.expectedVersion,
+    this.observedVersion,
+  }) : paths = Set.unmodifiable(paths),
+       assert(attempts > 0),
+       assert(retryLimit >= 0),
+       assert(attempts > retryLimit);
+
+  final EditorContentionKind kind;
+  final int attempts;
+  final int retryLimit;
+  final Set<DataPath> paths;
+  final int? expectedVersion;
+  final int? observedVersion;
+}
+
 final class EditorSaveState {
   const EditorSaveState({
     required this.phase,
@@ -31,6 +54,7 @@ final class EditorSaveState {
     this.replayAvailable = false,
     this.submissionId,
     this.conflict,
+    this.contention,
     this.diagnostics = const [],
   });
 
@@ -41,6 +65,7 @@ final class EditorSaveState {
   final bool replayAvailable;
   final Object? submissionId;
   final EditorPathConflict? conflict;
+  final EditorContentionDetails? contention;
   final List<TypeDiagnostic> diagnostics;
 
   bool get canRetry =>

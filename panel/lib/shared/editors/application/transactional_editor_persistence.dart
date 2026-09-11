@@ -45,7 +45,7 @@ extension _EditorPersistence on TransactionalEditorSource {
   Future<TypedMutationResult> _persist(Set<DataPath> paths) async {
     if (resource != null) return _persistResource(paths);
 
-    var attempt = 0;
+    var attempts = 0;
     var activePaths = paths;
 
     try {
@@ -99,7 +99,15 @@ extension _EditorPersistence on TransactionalEditorSource {
         }
         final retryPaths = _states.flushCandidates(activePaths);
         if (retryPaths.isEmpty) return result;
-        if (!await _waitForRetry(retryPaths, attempt++)) return result;
+        attempts++;
+        if (!await _waitForRetry(
+          retryPaths,
+          attempts,
+          expectedVersion: result.expectedRevision,
+          observedVersion: result.actualRevision,
+        )) {
+          return result;
+        }
         activePaths = retryPaths;
       }
     } finally {
@@ -171,13 +179,28 @@ extension _EditorPersistence on TransactionalEditorSource {
     }
   }
 
-  Future<bool> _waitForRetry(Set<DataPath> paths, int attempt) async {
-    if (attempt >= _retryDelays.length) {
-      _states.markContended(paths);
+  Future<bool> _waitForRetry(
+    Set<DataPath> paths,
+    int attempts, {
+    required int expectedVersion,
+    required int observedVersion,
+  }) async {
+    if (attempts > _retryDelays.length) {
+      _states.markContended(
+        paths,
+        EditorContentionDetails(
+          kind: EditorContentionKind.versionMismatch,
+          attempts: attempts,
+          retryLimit: _retryDelays.length,
+          paths: paths,
+          expectedVersion: expectedVersion,
+          observedVersion: observedVersion,
+        ),
+      );
       _notify();
       return false;
     }
-    final base = _retryDelays[attempt];
+    final base = _retryDelays[attempts - 1];
     final jitter = _jitter.next(
       Duration(microseconds: base.inMicroseconds ~/ 2),
     );

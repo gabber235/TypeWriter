@@ -508,11 +508,13 @@ void main() {
 
   test("repeated contention pauses after three jittered retries", () async {
     final scheduler = _Scheduler();
+    var calls = 0;
     var revision = 1;
     final source = _source(
       scheduler: scheduler,
       jitter: const _Jitter(Duration.zero),
       commit: (commit) async {
+        calls++;
         revision++;
         return TypedMutationResult.conflict(
           expectedRevision: commit.expectedRevision,
@@ -531,7 +533,16 @@ void main() {
       Duration(milliseconds: 100),
       Duration(milliseconds: 200),
     ]);
+    expect(calls, 4);
+    expect(source.value(title).valueOrNull, const StringValue("New"));
     expect(source.saveState(title).phase, EditorSavePhase.repeatedContention);
+    final contention = source.saveState(title).contention!;
+    expect(contention.kind, EditorContentionKind.versionMismatch);
+    expect(contention.attempts, 4);
+    expect(contention.retryLimit, 3);
+    expect(contention.expectedVersion, 4);
+    expect(contention.observedVersion, 5);
+    expect(contention.paths, {title});
     source.dispose();
   });
 
