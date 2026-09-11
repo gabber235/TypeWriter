@@ -61,10 +61,13 @@ class CanonicalBooks extends _$CanonicalBooks {
 
   Future<TypedMutationResult> updateBook(Book book, {Book? expected}) async {
     state.ensureReady();
-    final before =
-        expected ??
-        state.requireValue.firstWhere((value) => value.bookId == book.bookId);
-    final commands = ref.readAuthoringSession().notifier;
+    final session = ref.readAuthoringSession();
+    final current = session.state.books[book.bookId];
+    if (current == null || session.state.sequence == null) {
+      throw ApiException.notFound("Book");
+    }
+    final before = expected ?? Book.fromWire(current);
+    final commands = session.notifier;
     final owners = EditorOwnerRegistry(
       workspace: ref.read(localWorkControllerProvider),
     );
@@ -80,7 +83,7 @@ class CanonicalBooks extends _$CanonicalBooks {
           onOpen: null,
           id: BookIdentifier(book.bookId),
           book: before,
-          revision: ref.readAuthoringSession().state.sequence ?? 0,
+          revision: session.state.sequence!,
           tagCollection: (ref.read(projectedTagsProvider).value ?? const [])
               .presentationCollection(),
         ),
@@ -96,4 +99,13 @@ class CanonicalBooks extends _$CanonicalBooks {
 
 List<Book> _projectBooks(AuthoringSessionState value) {
   return value.books.values.map(Book.fromWire).toList();
+}
+
+extension AuthoringBookValue on AuthoringSessionState {
+  AuthoringValue<Book>? bookEditorValue(skir.RecordId bookId) {
+    final value = books[bookId];
+    final revision = sequence;
+    if (value == null || revision == null) return null;
+    return AuthoringValue(value: Book.fromWire(value), revision: revision);
+  }
 }

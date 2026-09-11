@@ -29,7 +29,6 @@ void main() {
           ),
         ),
       ];
-
       await tester.pumpTestApp(
         settle: false,
         overrides: [
@@ -37,6 +36,17 @@ void main() {
           realmIdProvider.overrideWithValue(realmId),
           selectedProvider.overrideWithValue(const AsyncData([])),
           ...pageElementsProviderOverrides(overwriteElements: elements),
+          decodedRealmDocumentValuesProvider.overrideWith(
+            (ref, _) => ref
+                .watch(pageElementsProvider(organizationId, realmId, "page"))
+                .when(
+                  data: (value) => AsyncData(
+                    AuthoringValue(value: {"page": value}, revision: 1),
+                  ),
+                  error: AsyncError.new,
+                  loading: AsyncLoading.new,
+                ),
+          ),
           ...entryProviderOverrides(definition: definition),
           pageDocumentHealthProvider(
             organizationId,

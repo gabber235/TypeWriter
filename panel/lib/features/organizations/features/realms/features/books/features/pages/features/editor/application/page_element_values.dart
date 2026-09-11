@@ -57,9 +57,15 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
       _ => throw ApiException.badRequest("The element has no editable value"),
     };
     final codec = _codec();
-    final canonical = codec.codec
-        .decodeValue(_wireElement(elementId).value)
-        .valueOrNull;
+    final session = ref.read(_sessionProvider);
+    final revision = session.sequence;
+    final wireElement = session.documents[_pageId]?.elements
+        .where((element) => element.id.id == elementId)
+        .firstOrNull;
+    if (revision == null || wireElement == null) {
+      throw ApiException.notFound("Element");
+    }
+    final canonical = codec.codec.decodeValue(wireElement.value).valueOrNull;
     if (canonical == null) {
       throw ApiException.badRequest("The element value cannot be decoded");
     }
@@ -68,7 +74,7 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
       repository: ref
           .read(resourceRepositoriesProvider)
           .authoring(this.organizationId, this.realmId),
-      state: ref.read(_sessionProvider),
+      state: session,
       identity: EntryIdentifier(elementId),
       pageId: _pageId.id,
       label: _elementName(current),
@@ -76,7 +82,7 @@ mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
         rootType: NamedType(definition.rootType),
         typeCatalog: codec.registry.catalog,
         confirmedValue: canonical,
-        revision: ref.read(_sessionProvider).sequence ?? 0,
+        revision: revision,
       ),
     );
   }

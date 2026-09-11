@@ -29,7 +29,4 @@ mixin _PageElementMutationContext on _$PageElements {
     if (document == null) throw ApiException.notFound("Page");
     return document;
   }
-
-  wire.PageElement _wireElement(String id) =>
-      _document.elements.singleWhere((element) => element.id.id == id);
 }

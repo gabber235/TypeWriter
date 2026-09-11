@@ -18,82 +18,10 @@ part "page_element_access.dart";
 part "page_element_models.dart";
 part "page_element_mutation_context.dart";
 part "page_element_mutations.dart";
+part "page_element_projections.dart";
 part "page_element_values.dart";
 part "page_elements.freezed.dart";
 part "page_elements.g.dart";
-
-@riverpod
-AsyncValue<Map<String, List<PageElement>>> decodedRealmDocuments(
-  Ref ref,
-  skir.RecordId organizationId,
-  skir.RecordId realmId,
-) {
-  final activeOrganizationId = ref.watch(organizationIdProvider);
-  final activeRealmId = ref.watch(realmIdProvider);
-  if (activeOrganizationId != organizationId || activeRealmId != realmId) {
-    return const AsyncLoading();
-  }
-
-  final session = ref.watch(authoringSessionProvider(organizationId, realmId));
-  if (session.sequence == null) return const AsyncLoading();
-  ref.watch(
-    realmEditorCatalogLeaseProvider(
-      RealmEditorCatalogRequest(
-        types: {
-          for (final document in session.documents.values)
-            for (final element in document.elements)
-              ResolvedTypeRef(
-                id: DeclaredTypeId(element.elementType),
-                revision: element.schemaRevision,
-              ),
-        },
-      ),
-    ),
-  );
-
-  final catalog = ref.watch(realmEditorCatalogProvider);
-  if (catalog.isLoading) return const AsyncLoading();
-  return catalog.when(
-    data: (state) => switch (state) {
-      RealmEditorCatalogReady(:final value) => AsyncData({
-        for (final document in session.documents.entries)
-          document.key.id: _decodePageElements(document.value, value),
-      }),
-      RealmEditorCatalogUnavailable(:final diagnostics) => AsyncError(
-        ElementDefinitionException(diagnostics),
-        StackTrace.current,
-      ),
-      RealmEditorCatalogLoading() => const AsyncLoading(),
-    },
-    error: AsyncError.new,
-    loading: AsyncLoading.new,
-  );
-}
-
-@riverpod
-AsyncValue<Map<String, CachedPageEntry>> realmEntryIndex(
-  Ref ref,
-  skir.RecordId organizationId,
-  skir.RecordId realmId,
-) {
-  final documents = ref.watch(
-    decodedRealmDocumentsProvider(organizationId, realmId),
-  );
-  if (documents.mapUnready<Map<String, CachedPageEntry>>() case final value?) {
-    return value;
-  }
-  return AsyncData({
-    for (final document in documents.requireValue.entries)
-      for (final element in document.value)
-        if (element case PageElementEntry(
-          entry: DefinitionPageEntry(:final definition),
-        ))
-          definition.id: CachedPageEntry(
-            pageId: document.key,
-            definition: definition,
-          ),
-  });
-}
 
 @riverpod
 PageDocumentHealth? pageDocumentHealth(
@@ -192,60 +120,4 @@ class PageElements extends _$PageElements
     applyDocuments(ref.read(documentsProvider));
     return initial.future;
   }
-}
-
-@riverpod
-AsyncValue<List<PageElement>> projectedPageElements(
-  Ref ref,
-  skir.RecordId organizationId,
-  skir.RecordId realmId,
-  String pageId,
-) {
-  final canonical = ref.watch(
-    pageElementsProvider(organizationId, realmId, pageId),
-  );
-  if (canonical.mapUnready<List<PageElement>>() case final value?) return value;
-  final local = ref.watch(
-    localWorkProvider.select((state) => state.editorValues),
-  );
-  return AsyncData([
-    for (final element in canonical.requireValue)
-      element.projected(
-        local[EditorResourceKey(
-          scope: EditorResourceScope(
-            organizationId: organizationId,
-            realmId: realmId,
-          ),
-          identity: recordId("element:${element.id}"),
-        )],
-      ),
-  ]);
-}
-
-@riverpod
-AsyncValue<PageElement?> projectedPageElement(
-  Ref ref,
-  skir.RecordId organizationId,
-  skir.RecordId realmId,
-  String pageId,
-  String elementId,
-) {
-  final canonical = ref.watch(
-    pageElementsProvider(organizationId, realmId, pageId),
-  );
-  if (canonical.mapUnready<PageElement?>() case final value?) return value;
-  final key = EditorResourceKey(
-    scope: EditorResourceScope(
-      organizationId: organizationId,
-      realmId: realmId,
-    ),
-    identity: recordId("element:$elementId"),
-  );
-  final local = ref.watch(
-    localWorkProvider.select((state) => state.editorValues[key]),
-  );
-  final element = canonical.requireValue
-      .where((value) => value.id == elementId)
-      .firstOrNull;
-  return AsyncData(element?.projected(local));
 }

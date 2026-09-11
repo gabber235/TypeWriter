@@ -63,10 +63,13 @@ class CanonicalTags extends _$CanonicalTags {
 
   Future<TypedMutationResult> updateTag(Tag tag, {Tag? expected}) async {
     state.ensureReady();
-    final before =
-        expected ??
-        state.requireValue.firstWhere((value) => value.tagId == tag.tagId);
-    final commands = ref.readAuthoringSession().notifier;
+    final session = ref.readAuthoringSession();
+    final current = session.state.tags[tag.tagId];
+    if (current == null || session.state.sequence == null) {
+      throw ApiException.notFound("Tag");
+    }
+    final before = expected ?? Tag.fromWire(current);
+    final commands = session.notifier;
     final owners = EditorOwnerRegistry(
       workspace: ref.read(localWorkControllerProvider),
     );
@@ -82,7 +85,7 @@ class CanonicalTags extends _$CanonicalTags {
           onDelete: () => deleteTag(tag.tagId),
           id: TagIdentifier(tag.tagId),
           tag: before,
-          revision: ref.readAuthoringSession().state.sequence ?? 0,
+          revision: session.state.sequence!,
           tagCollection: state.requireValue.presentationCollection(),
         ),
       );
@@ -131,6 +134,15 @@ Future<Tag?> canonicalTag(Ref ref, skir.RecordId tagId) async {
 
 List<Tag> _projectTags(AuthoringSessionState value) {
   return value.tags.values.map(Tag.fromWire).toList();
+}
+
+extension AuthoringTagValue on AuthoringSessionState {
+  AuthoringValue<Tag>? tagEditorValue(skir.RecordId tagId) {
+    final value = tags[tagId];
+    final revision = sequence;
+    if (value == null || revision == null) return null;
+    return AuthoringValue(value: Tag.fromWire(value), revision: revision);
+  }
 }
 
 @riverpod

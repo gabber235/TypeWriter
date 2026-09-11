@@ -64,6 +64,31 @@ final class TagEditorResource extends AuthoringEditorResource {
   }
 
   @override
+  EditorSnapshot? projectApplied(
+    wire.AuthoringChanged change,
+    EditorSnapshot submitted,
+  ) {
+    for (final resource in change.changes) {
+      switch (resource) {
+        case wire.AuthoringResourceChange_upsertTagWrapper(:final value):
+          if (value.id == id) {
+            return TagEditorSnapshot(Tag.fromWire(value), change.sequence);
+          }
+        case wire.AuthoringResourceChange_removeTagWrapper(:final value):
+          if (value == id) return null;
+        case wire.AuthoringResourceChange_unknown() ||
+            wire.AuthoringResourceChange_upsertBookWrapper() ||
+            wire.AuthoringResourceChange_removeBookWrapper() ||
+            wire.AuthoringResourceChange_upsertPageWrapper() ||
+            wire.AuthoringResourceChange_removePageWrapper() ||
+            wire.AuthoringResourceChange_upsertElementWrapper() ||
+            wire.AuthoringResourceChange_removeElementWrapper():
+      }
+    }
+    return null;
+  }
+
+  @override
   wire.AuthoringOperation operation(
     EditorSnapshot snapshot,
     EditorCommit commit,

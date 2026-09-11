@@ -35,21 +35,16 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
       );
     }
     final tagsCommands = ref.watch(canonicalTagsProvider.notifier);
-    final canonicalTag = ref.watch(canonicalTagProvider(tagId));
-    if (canonicalTag.mapUnready<Selectable>() case final value?) return value;
-    final tag = canonicalTag.requireValue;
-    if (tag == null) {
+    final session = ref.watch(authoringSessionProvider(organization, realm));
+    final tagValue = session.tagEditorValue(tagId);
+    if (tagValue == null) {
+      if (session.sequence == null) return const AsyncLoading();
       return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
+    final tag = tagValue.value;
     final tagsAsync = ref.watch(projectedTagsProvider);
     if (tagsAsync.mapUnready<Selectable>() case final value?) return value;
     final tags = tagsAsync.requireValue;
-    final revision = ref.watch(
-      authoringSessionProvider(
-        organization,
-        realm,
-      ).select((value) => value.sequence ?? 0),
-    );
     return AsyncValue.data(
       TagSelectable(
         resource: TagEditorResource(
@@ -61,7 +56,7 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
         onDelete: () => tagsCommands.deleteTag(tagId),
         id: this,
         tag: tag,
-        revision: revision,
+        revision: tagValue.revision,
         tagCollection: tags.presentationCollection(
           editingTagId: tag.tagId,
           existingParentIds: tag.parentIds,

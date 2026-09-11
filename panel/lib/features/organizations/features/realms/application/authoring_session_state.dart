@@ -1,6 +1,12 @@
 part of "authoring_session.dart";
 
 @freezed
+abstract class AuthoringValue<T> with _$AuthoringValue<T> {
+  const factory AuthoringValue({required T value, required int revision}) =
+      _AuthoringValue<T>;
+}
+
+@freezed
 abstract class AuthoringSessionState with _$AuthoringSessionState {
   const factory AuthoringSessionState({
     int? sequence,

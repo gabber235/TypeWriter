@@ -123,6 +123,12 @@ void main() {
             (ref) => recordId("organization:test"),
           ),
           realmIdProvider.overrideWith((ref) => recordId("realm:test")),
+          authoringSessionProvider(
+            recordId("organization:test"),
+            recordId("realm:test"),
+          ).overrideWithValue(
+            AuthoringSessionState(sequence: 1, tags: {tag.tagId: tag.toWire()}),
+          ),
           userIdProvider.overrideWith((ref) async => "user"),
           natsProvider.overrideWithValue(FakeNatsClient()),
           panelTelemetryProvider.overrideWithValue(

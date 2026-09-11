@@ -56,6 +56,19 @@ void main() {
       overrides: [
         organizationIdProvider.overrideWithValue(recordId("organization:test")),
         realmIdProvider.overrideWithValue(recordId("realm:test")),
+        authoringSessionProvider(
+          recordId("organization:test"),
+          recordId("realm:test"),
+        ).overrideWithValue(
+          AuthoringSessionState(
+            sequence: 1,
+            books: {book.bookId: book.toWire()},
+            tags: {
+              directTag.tagId: directTag.toWire(),
+              parentTag.tagId: parentTag.toWire(),
+            },
+          ),
+        ),
         natsProvider.overrideWithValue(FakeNatsClient()),
         panelTelemetryProvider.overrideWithValue(
           const AsyncData(NoopPanelTelemetry()),
@@ -117,7 +130,7 @@ void main() {
         directSummary.presentation.item.element as CollectionLookupElement;
     final summaryChip = summaryLookup.found.element as ChipElement;
 
-    expect(document.revision, 0);
+    expect(document.revision, 1);
     expect(resolved.diagnostics, isEmpty);
     expect(resolved.valueOrNull, isNotNull);
     expect(inspector.collections.single.id, tagCollectionSourceId);

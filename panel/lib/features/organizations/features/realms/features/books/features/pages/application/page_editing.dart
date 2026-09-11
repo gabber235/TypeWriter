@@ -169,6 +169,29 @@ final class PageEditorResource extends AuthoringEditorResource {
   }
 
   @override
+  EditorSnapshot? projectApplied(
+    wire.AuthoringChanged change,
+    EditorSnapshot submitted,
+  ) {
+    for (final resource in change.changes) {
+      switch (resource) {
+        case wire.AuthoringResourceChange_upsertPageWrapper(:final value):
+          if (value.id == id) return pageEditorSnapshot(value, change.sequence);
+        case wire.AuthoringResourceChange_removePageWrapper(:final value):
+          if (value == id) return null;
+        case wire.AuthoringResourceChange_unknown() ||
+            wire.AuthoringResourceChange_upsertBookWrapper() ||
+            wire.AuthoringResourceChange_removeBookWrapper() ||
+            wire.AuthoringResourceChange_upsertTagWrapper() ||
+            wire.AuthoringResourceChange_removeTagWrapper() ||
+            wire.AuthoringResourceChange_upsertElementWrapper() ||
+            wire.AuthoringResourceChange_removeElementWrapper():
+      }
+    }
+    return null;
+  }
+
+  @override
   wire.AuthoringOperation operation(
     EditorSnapshot snapshot,
     EditorCommit commit,

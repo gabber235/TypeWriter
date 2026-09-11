@@ -33,6 +33,31 @@ final class BookEditorResource extends AuthoringEditorResource {
   }
 
   @override
+  EditorSnapshot? projectApplied(
+    wire.AuthoringChanged change,
+    EditorSnapshot submitted,
+  ) {
+    for (final resource in change.changes) {
+      switch (resource) {
+        case wire.AuthoringResourceChange_upsertBookWrapper(:final value):
+          if (value.id == id) {
+            return BookEditorSnapshot(Book.fromWire(value), change.sequence);
+          }
+        case wire.AuthoringResourceChange_removeBookWrapper(:final value):
+          if (value == id) return null;
+        case wire.AuthoringResourceChange_unknown() ||
+            wire.AuthoringResourceChange_upsertTagWrapper() ||
+            wire.AuthoringResourceChange_removeTagWrapper() ||
+            wire.AuthoringResourceChange_upsertPageWrapper() ||
+            wire.AuthoringResourceChange_removePageWrapper() ||
+            wire.AuthoringResourceChange_upsertElementWrapper() ||
+            wire.AuthoringResourceChange_removeElementWrapper():
+      }
+    }
+    return null;
+  }
+
+  @override
   wire.AuthoringOperation operation(
     EditorSnapshot snapshot,
     EditorCommit commit,

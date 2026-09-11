@@ -26,193 +26,6 @@ Map<String, dynamic> _$ElementLinkToJson(_ElementLink instance) =>
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(decodedRealmDocuments)
-final decodedRealmDocumentsProvider = DecodedRealmDocumentsFamily._();
-
-final class DecodedRealmDocumentsProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<Map<String, List<PageElement>>>,
-          AsyncValue<Map<String, List<PageElement>>>,
-          AsyncValue<Map<String, List<PageElement>>>
-        >
-    with $Provider<AsyncValue<Map<String, List<PageElement>>>> {
-  DecodedRealmDocumentsProvider._({
-    required DecodedRealmDocumentsFamily super.from,
-    required (skir.RecordId, skir.RecordId) super.argument,
-  }) : super(
-         retry: null,
-         name: r'decodedRealmDocumentsProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$decodedRealmDocumentsHash();
-
-  @override
-  String toString() {
-    return r'decodedRealmDocumentsProvider'
-        ''
-        '$argument';
-  }
-
-  @$internal
-  @override
-  $ProviderElement<AsyncValue<Map<String, List<PageElement>>>> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  AsyncValue<Map<String, List<PageElement>>> create(Ref ref) {
-    final argument = this.argument as (skir.RecordId, skir.RecordId);
-    return decodedRealmDocuments(ref, argument.$1, argument.$2);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Map<String, List<PageElement>>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride:
-          $SyncValueProvider<AsyncValue<Map<String, List<PageElement>>>>(value),
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is DecodedRealmDocumentsProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$decodedRealmDocumentsHash() =>
-    r'4a0ccfc47b17cd520a63a57462920a535037d2aa';
-
-final class DecodedRealmDocumentsFamily extends $Family
-    with
-        $FunctionalFamilyOverride<
-          AsyncValue<Map<String, List<PageElement>>>,
-          (skir.RecordId, skir.RecordId)
-        > {
-  DecodedRealmDocumentsFamily._()
-    : super(
-        retry: null,
-        name: r'decodedRealmDocumentsProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  DecodedRealmDocumentsProvider call(
-    skir.RecordId organizationId,
-    skir.RecordId realmId,
-  ) => DecodedRealmDocumentsProvider._(
-    argument: (organizationId, realmId),
-    from: this,
-  );
-
-  @override
-  String toString() => r'decodedRealmDocumentsProvider';
-}
-
-@ProviderFor(realmEntryIndex)
-final realmEntryIndexProvider = RealmEntryIndexFamily._();
-
-final class RealmEntryIndexProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<Map<String, CachedPageEntry>>,
-          AsyncValue<Map<String, CachedPageEntry>>,
-          AsyncValue<Map<String, CachedPageEntry>>
-        >
-    with $Provider<AsyncValue<Map<String, CachedPageEntry>>> {
-  RealmEntryIndexProvider._({
-    required RealmEntryIndexFamily super.from,
-    required (skir.RecordId, skir.RecordId) super.argument,
-  }) : super(
-         retry: null,
-         name: r'realmEntryIndexProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$realmEntryIndexHash();
-
-  @override
-  String toString() {
-    return r'realmEntryIndexProvider'
-        ''
-        '$argument';
-  }
-
-  @$internal
-  @override
-  $ProviderElement<AsyncValue<Map<String, CachedPageEntry>>> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
-
-  @override
-  AsyncValue<Map<String, CachedPageEntry>> create(Ref ref) {
-    final argument = this.argument as (skir.RecordId, skir.RecordId);
-    return realmEntryIndex(ref, argument.$1, argument.$2);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Map<String, CachedPageEntry>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride:
-          $SyncValueProvider<AsyncValue<Map<String, CachedPageEntry>>>(value),
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is RealmEntryIndexProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$realmEntryIndexHash() => r'1ac282a6315c4bb3e9939a2e2bc6cd34da52ae72';
-
-final class RealmEntryIndexFamily extends $Family
-    with
-        $FunctionalFamilyOverride<
-          AsyncValue<Map<String, CachedPageEntry>>,
-          (skir.RecordId, skir.RecordId)
-        > {
-  RealmEntryIndexFamily._()
-    : super(
-        retry: null,
-        name: r'realmEntryIndexProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  RealmEntryIndexProvider call(
-    skir.RecordId organizationId,
-    skir.RecordId realmId,
-  ) => RealmEntryIndexProvider._(
-    argument: (organizationId, realmId),
-    from: this,
-  );
-
-  @override
-  String toString() => r'realmEntryIndexProvider';
-}
-
 @ProviderFor(pageDocumentHealth)
 final pageDocumentHealthProvider = PageDocumentHealthFamily._();
 
@@ -413,6 +226,486 @@ abstract class _$PageElements extends $AsyncNotifier<List<PageElement>> {
   }
 }
 
+@ProviderFor(decodedRealmDocumentValues)
+final decodedRealmDocumentValuesProvider = DecodedRealmDocumentValuesFamily._();
+
+final class DecodedRealmDocumentValuesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>,
+          AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>,
+          AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>
+        >
+    with $Provider<AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>> {
+  DecodedRealmDocumentValuesProvider._({
+    required DecodedRealmDocumentValuesFamily super.from,
+    required (skir.RecordId, skir.RecordId) super.argument,
+  }) : super(
+         retry: null,
+         name: r'decodedRealmDocumentValuesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$decodedRealmDocumentValuesHash();
+
+  @override
+  String toString() {
+    return r'decodedRealmDocumentValuesProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>>
+  $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<AuthoringValue<Map<String, List<PageElement>>>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, skir.RecordId);
+    return decodedRealmDocumentValues(ref, argument.$1, argument.$2);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(
+    AsyncValue<AuthoringValue<Map<String, List<PageElement>>>> value,
+  ) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<
+            AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>
+          >(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DecodedRealmDocumentValuesProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$decodedRealmDocumentValuesHash() =>
+    r'82cf167f9eecae98df0a2fcc55cf0a833ea68195';
+
+final class DecodedRealmDocumentValuesFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>,
+          (skir.RecordId, skir.RecordId)
+        > {
+  DecodedRealmDocumentValuesFamily._()
+    : super(
+        retry: null,
+        name: r'decodedRealmDocumentValuesProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  DecodedRealmDocumentValuesProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+  ) => DecodedRealmDocumentValuesProvider._(
+    argument: (organizationId, realmId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'decodedRealmDocumentValuesProvider';
+}
+
+@ProviderFor(decodedRealmDocuments)
+final decodedRealmDocumentsProvider = DecodedRealmDocumentsFamily._();
+
+final class DecodedRealmDocumentsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<String, List<PageElement>>>,
+          AsyncValue<Map<String, List<PageElement>>>,
+          AsyncValue<Map<String, List<PageElement>>>
+        >
+    with $Provider<AsyncValue<Map<String, List<PageElement>>>> {
+  DecodedRealmDocumentsProvider._({
+    required DecodedRealmDocumentsFamily super.from,
+    required (skir.RecordId, skir.RecordId) super.argument,
+  }) : super(
+         retry: null,
+         name: r'decodedRealmDocumentsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$decodedRealmDocumentsHash();
+
+  @override
+  String toString() {
+    return r'decodedRealmDocumentsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<Map<String, List<PageElement>>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<Map<String, List<PageElement>>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, skir.RecordId);
+    return decodedRealmDocuments(ref, argument.$1, argument.$2);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Map<String, List<PageElement>>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<AsyncValue<Map<String, List<PageElement>>>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DecodedRealmDocumentsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$decodedRealmDocumentsHash() =>
+    r'0651dda3ca3683062eed53dae7f4b74676d0e3d9';
+
+final class DecodedRealmDocumentsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<Map<String, List<PageElement>>>,
+          (skir.RecordId, skir.RecordId)
+        > {
+  DecodedRealmDocumentsFamily._()
+    : super(
+        retry: null,
+        name: r'decodedRealmDocumentsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  DecodedRealmDocumentsProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+  ) => DecodedRealmDocumentsProvider._(
+    argument: (organizationId, realmId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'decodedRealmDocumentsProvider';
+}
+
+@ProviderFor(authoringPageElements)
+final authoringPageElementsProvider = AuthoringPageElementsFamily._();
+
+final class AuthoringPageElementsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AuthoringValue<List<PageElement>>>,
+          AsyncValue<AuthoringValue<List<PageElement>>>,
+          AsyncValue<AuthoringValue<List<PageElement>>>
+        >
+    with $Provider<AsyncValue<AuthoringValue<List<PageElement>>>> {
+  AuthoringPageElementsProvider._({
+    required AuthoringPageElementsFamily super.from,
+    required (skir.RecordId, skir.RecordId, String) super.argument,
+  }) : super(
+         retry: null,
+         name: r'authoringPageElementsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$authoringPageElementsHash();
+
+  @override
+  String toString() {
+    return r'authoringPageElementsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<AuthoringValue<List<PageElement>>>>
+  $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<AuthoringValue<List<PageElement>>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, skir.RecordId, String);
+    return authoringPageElements(ref, argument.$1, argument.$2, argument.$3);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(
+    AsyncValue<AuthoringValue<List<PageElement>>> value,
+  ) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<AsyncValue<AuthoringValue<List<PageElement>>>>(
+            value,
+          ),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AuthoringPageElementsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$authoringPageElementsHash() =>
+    r'3f757d0f595b124dcb85739c860a1e041aee04f6';
+
+final class AuthoringPageElementsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<AuthoringValue<List<PageElement>>>,
+          (skir.RecordId, skir.RecordId, String)
+        > {
+  AuthoringPageElementsFamily._()
+    : super(
+        retry: null,
+        name: r'authoringPageElementsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  AuthoringPageElementsProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+    String pageId,
+  ) => AuthoringPageElementsProvider._(
+    argument: (organizationId, realmId, pageId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'authoringPageElementsProvider';
+}
+
+@ProviderFor(authoringEntryIndex)
+final authoringEntryIndexProvider = AuthoringEntryIndexFamily._();
+
+final class AuthoringEntryIndexProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>>,
+          AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>>,
+          AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>>
+        >
+    with $Provider<AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>>> {
+  AuthoringEntryIndexProvider._({
+    required AuthoringEntryIndexFamily super.from,
+    required (skir.RecordId, skir.RecordId) super.argument,
+  }) : super(
+         retry: null,
+         name: r'authoringEntryIndexProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$authoringEntryIndexHash();
+
+  @override
+  String toString() {
+    return r'authoringEntryIndexProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>>>
+  $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, skir.RecordId);
+    return authoringEntryIndex(ref, argument.$1, argument.$2);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(
+    AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>> value,
+  ) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<
+            AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>>
+          >(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is AuthoringEntryIndexProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$authoringEntryIndexHash() =>
+    r'110f89277833d20c03324c2b3da0ce5ba8b72bfb';
+
+final class AuthoringEntryIndexFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<AuthoringValue<Map<String, CachedPageEntry>>>,
+          (skir.RecordId, skir.RecordId)
+        > {
+  AuthoringEntryIndexFamily._()
+    : super(
+        retry: null,
+        name: r'authoringEntryIndexProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  AuthoringEntryIndexProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+  ) => AuthoringEntryIndexProvider._(
+    argument: (organizationId, realmId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'authoringEntryIndexProvider';
+}
+
+@ProviderFor(realmEntryIndex)
+final realmEntryIndexProvider = RealmEntryIndexFamily._();
+
+final class RealmEntryIndexProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<String, CachedPageEntry>>,
+          AsyncValue<Map<String, CachedPageEntry>>,
+          AsyncValue<Map<String, CachedPageEntry>>
+        >
+    with $Provider<AsyncValue<Map<String, CachedPageEntry>>> {
+  RealmEntryIndexProvider._({
+    required RealmEntryIndexFamily super.from,
+    required (skir.RecordId, skir.RecordId) super.argument,
+  }) : super(
+         retry: null,
+         name: r'realmEntryIndexProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$realmEntryIndexHash();
+
+  @override
+  String toString() {
+    return r'realmEntryIndexProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<Map<String, CachedPageEntry>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<Map<String, CachedPageEntry>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, skir.RecordId);
+    return realmEntryIndex(ref, argument.$1, argument.$2);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Map<String, CachedPageEntry>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<AsyncValue<Map<String, CachedPageEntry>>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RealmEntryIndexProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$realmEntryIndexHash() => r'0f6aeed83acfc9f414c0e86a43b9181ef00de474';
+
+final class RealmEntryIndexFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<Map<String, CachedPageEntry>>,
+          (skir.RecordId, skir.RecordId)
+        > {
+  RealmEntryIndexFamily._()
+    : super(
+        retry: null,
+        name: r'realmEntryIndexProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  RealmEntryIndexProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+  ) => RealmEntryIndexProvider._(
+    argument: (organizationId, realmId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'realmEntryIndexProvider';
+}
+
 @ProviderFor(projectedPageElements)
 final projectedPageElementsProvider = ProjectedPageElementsFamily._();
 
@@ -479,7 +772,7 @@ final class ProjectedPageElementsProvider
 }
 
 String _$projectedPageElementsHash() =>
-    r'f3d73ca63433918d39f579bbd6ae0b34389642a3';
+    r'86ef0fd521003438a4f90f49f9da061f1b743d7a';
 
 final class ProjectedPageElementsFamily extends $Family
     with
@@ -507,6 +800,110 @@ final class ProjectedPageElementsFamily extends $Family
 
   @override
   String toString() => r'projectedPageElementsProvider';
+}
+
+@ProviderFor(projectedPageElementValues)
+final projectedPageElementValuesProvider = ProjectedPageElementValuesFamily._();
+
+final class ProjectedPageElementValuesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AuthoringValue<List<PageElement>>>,
+          AsyncValue<AuthoringValue<List<PageElement>>>,
+          AsyncValue<AuthoringValue<List<PageElement>>>
+        >
+    with $Provider<AsyncValue<AuthoringValue<List<PageElement>>>> {
+  ProjectedPageElementValuesProvider._({
+    required ProjectedPageElementValuesFamily super.from,
+    required (skir.RecordId, skir.RecordId, String) super.argument,
+  }) : super(
+         retry: null,
+         name: r'projectedPageElementValuesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectedPageElementValuesHash();
+
+  @override
+  String toString() {
+    return r'projectedPageElementValuesProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<AuthoringValue<List<PageElement>>>>
+  $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<AuthoringValue<List<PageElement>>> create(Ref ref) {
+    final argument = this.argument as (skir.RecordId, skir.RecordId, String);
+    return projectedPageElementValues(
+      ref,
+      argument.$1,
+      argument.$2,
+      argument.$3,
+    );
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(
+    AsyncValue<AuthoringValue<List<PageElement>>> value,
+  ) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $SyncValueProvider<AsyncValue<AuthoringValue<List<PageElement>>>>(
+            value,
+          ),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProjectedPageElementValuesProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$projectedPageElementValuesHash() =>
+    r'378f2b2e19ce09a5862d9eb820d18cca747e88ab';
+
+final class ProjectedPageElementValuesFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          AsyncValue<AuthoringValue<List<PageElement>>>,
+          (skir.RecordId, skir.RecordId, String)
+        > {
+  ProjectedPageElementValuesFamily._()
+    : super(
+        retry: null,
+        name: r'projectedPageElementValuesProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProjectedPageElementValuesProvider call(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+    String pageId,
+  ) => ProjectedPageElementValuesProvider._(
+    argument: (organizationId, realmId, pageId),
+    from: this,
+  );
+
+  @override
+  String toString() => r'projectedPageElementValuesProvider';
 }
 
 @ProviderFor(projectedPageElement)
@@ -580,7 +977,7 @@ final class ProjectedPageElementProvider
 }
 
 String _$projectedPageElementHash() =>
-    r'4ea99393d3fa0c49926007b0570f7a53a97e102c';
+    r'f88e10845db11ee8f886c68df9b2867ac2371c63';
 
 final class ProjectedPageElementFamily extends $Family
     with

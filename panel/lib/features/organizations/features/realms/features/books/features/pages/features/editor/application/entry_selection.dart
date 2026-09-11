@@ -22,11 +22,14 @@ class EntryIdentifier extends SelectableIdentifier
         StackTrace.current,
       );
     }
-    final index = ref.watch(realmEntryIndexProvider(organizationId, realmId));
+    final index = ref.watch(
+      authoringEntryIndexProvider(organizationId, realmId),
+    );
     if (index.mapUnready<Selectable<EntryIdentifier>>() case final state?) {
       return state;
     }
-    final location = index.requireValue[id];
+    final indexed = index.requireValue;
+    final location = indexed.value[id];
 
     if (location == null) {
       return AsyncError(SelectableNotFoundException(this), StackTrace.current);
@@ -37,15 +40,7 @@ class EntryIdentifier extends SelectableIdentifier
         .watch(resourceRepositoriesProvider)
         .authoring(organizationId, realmId);
 
-    final asyncEntry = ref.watch(entryProvider(id));
-    if (asyncEntry.mapUnready<Selectable<EntryIdentifier>>()
-        case final value?) {
-      return value;
-    }
-    final value = asyncEntry.requireValue;
-    if (value == null) {
-      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
-    }
+    final value = location.definition;
 
     final catalogState = ref.watch(
       realmEditorCatalogForTypeProvider(value.elementDefinition.rootType),
@@ -64,7 +59,7 @@ class EntryIdentifier extends SelectableIdentifier
             rootType: NamedType(value.elementDefinition.rootType),
             typeCatalog: catalog,
             confirmedValue: value.data,
-            revision: state.sequence ?? 0,
+            revision: indexed.revision,
           ),
         ),
         id: EntryIdentifier(id, pageId: location.pageId),

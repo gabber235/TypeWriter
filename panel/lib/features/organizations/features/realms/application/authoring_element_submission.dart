@@ -52,11 +52,16 @@ Future<TypedMutationResult> acceptElementCommit(
   EditorCommit commit,
   EditorDocument? actual,
 ) async => switch (response) {
-  wire.ApplyAuthoringBatchResponse_appliedWrapper(:final value) =>
-    TypedMutationResult.success(
-      revision: value.sequence,
-      value: commit.rootValue,
-    ),
+  wire.ApplyAuthoringBatchResponse_appliedWrapper() =>
+    actual == null
+        ? unavailableMutation(
+            "The element no longer exists",
+            targetDeleted: true,
+          )
+        : TypedMutationResult.success(
+            revision: actual.revision,
+            value: actual.confirmedValue,
+          ),
   wire.ApplyAuthoringBatchResponse_conflictWrapper() =>
     actual == null
         ? unavailableMutation(

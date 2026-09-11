@@ -64,10 +64,57 @@ final class ElementEditorResource extends AuthoringEditorResource {
       }
     }
     if (element == null) {
-      throw StateError(
-        "The element was removed or moved from its original page",
-      );
+      return null;
     }
+    return _projectElement(element, snapshot.sequence);
+  }
+
+  @override
+  EditorSnapshot? projectApplied(
+    wire.AuthoringChanged change,
+    EditorSnapshot submitted,
+  ) {
+    for (final resource in change.changes) {
+      switch (resource) {
+        case wire.AuthoringResourceChange_upsertElementWrapper(:final value):
+          if (value.id == id && value.page == pageId) {
+            final root = ResolvedTypeRef(
+              id: DeclaredTypeId(value.elementType),
+              revision: value.schemaRevision,
+            );
+            final registry = TypeRegistry(submitted.document.typeCatalog);
+            if (registry.definition(root) == null) return null;
+            final decoded = SkirEditorCodec(registry).decodeValue(value.value);
+            final elementValue = decoded.valueOrNull;
+            if (elementValue == null) return null;
+            return elementEditorSnapshot(
+              value,
+              EditorDocument(
+                rootType: NamedType(root),
+                typeCatalog: submitted.document.typeCatalog,
+                confirmedValue: elementValue,
+                revision: change.sequence,
+              ),
+            );
+          }
+        case wire.AuthoringResourceChange_removeElementWrapper(:final value):
+          if (value == id) return null;
+        case wire.AuthoringResourceChange_unknown() ||
+            wire.AuthoringResourceChange_upsertBookWrapper() ||
+            wire.AuthoringResourceChange_removeBookWrapper() ||
+            wire.AuthoringResourceChange_upsertTagWrapper() ||
+            wire.AuthoringResourceChange_removeTagWrapper() ||
+            wire.AuthoringResourceChange_upsertPageWrapper() ||
+            wire.AuthoringResourceChange_removePageWrapper():
+      }
+    }
+    return null;
+  }
+
+  Future<EditorSnapshot?> _projectElement(
+    wire.PageElement element,
+    int sequence,
+  ) async {
     final root = ResolvedTypeRef(
       id: DeclaredTypeId(element.elementType),
       revision: element.schemaRevision,
@@ -91,9 +138,8 @@ final class ElementEditorResource extends AuthoringEditorResource {
         "The editor catalog changed while refreshing",
       ),
     };
-    final decoded = SkirEditorCodec(
-      TypeRegistry(catalog),
-    ).decodeValue(element.value);
+    final decoded = SkirEditorCodec(TypeRegistry(catalog))
+        .decodeValue(element.value);
     final value = decoded.valueOrNull;
     if (value == null) throw ElementDefinitionException(decoded.diagnostics);
     return elementEditorSnapshot(
@@ -102,7 +148,7 @@ final class ElementEditorResource extends AuthoringEditorResource {
         rootType: NamedType(root),
         typeCatalog: catalog,
         confirmedValue: value,
-        revision: snapshot.sequence,
+        revision: sequence,
       ),
     );
   }

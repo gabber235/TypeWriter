@@ -57,14 +57,15 @@ class CueIdentifier extends SelectableIdentifier {
         .watch(resourceRepositoriesProvider)
         .authoring(organizationId, realmId);
     final asyncElements = ref.watch(
-      projectedPageElementsProvider(organizationId, realmId, pageId),
+      projectedPageElementValuesProvider(organizationId, realmId, pageId),
     );
 
     if (asyncElements.mapUnready<Selectable<CueIdentifier>>()
         case final value?) {
       return value;
     }
-    final elements = asyncElements.requireValue;
+    final indexed = asyncElements.requireValue;
+    final elements = indexed.value;
 
     Cue? cue;
     for (final element in elements) {
@@ -96,7 +97,7 @@ class CueIdentifier extends SelectableIdentifier {
             rootType: NamedType(resolvedCue.elementDefinition.rootType),
             typeCatalog: catalog,
             confirmedValue: resolvedCue.data,
-            revision: state.sequence ?? 0,
+            revision: indexed.revision,
           ),
         ),
         id: this,

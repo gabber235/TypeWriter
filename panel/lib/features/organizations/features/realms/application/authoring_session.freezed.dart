@@ -298,6 +298,273 @@ $AuthoringSessionStateCopyWith<$Res> get state {
 }
 
 /// @nodoc
+mixin _$AuthoringValue<T> {
+
+ T get value; int get revision;
+/// Create a copy of AuthoringValue
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthoringValueCopyWith<T, AuthoringValue<T>> get copyWith => _$AuthoringValueCopyWithImpl<T, AuthoringValue<T>>(this as AuthoringValue<T>, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as AuthoringValue<T>;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthoringValue<T>&&const DeepCollectionEquality().equals(other.value, _this.value)&&(identical(other.revision, _this.revision) || other.revision == _this.revision));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as AuthoringValue<T>;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.value),_this.revision);
+}
+
+@override
+String toString() {
+  final _this = this as AuthoringValue<T>;
+  return 'AuthoringValue<$T>(value: ${_this.value}, revision: ${_this.revision})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthoringValueCopyWith<T,$Res>  {
+  factory $AuthoringValueCopyWith(AuthoringValue<T> value, $Res Function(AuthoringValue<T>) _then) = _$AuthoringValueCopyWithImpl;
+@useResult
+$Res call({
+ T value, int revision
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthoringValueCopyWithImpl<T,$Res>
+    implements $AuthoringValueCopyWith<T, $Res> {
+  _$AuthoringValueCopyWithImpl(this._self, this._then);
+
+  final AuthoringValue<T> _self;
+  final $Res Function(AuthoringValue<T>) _then;
+
+/// Create a copy of AuthoringValue
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? value = freezed,Object? revision = null,}) {
+  return _then(AuthoringValue(
+value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as T,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AuthoringValue].
+extension AuthoringValuePatterns<T> on AuthoringValue<T> {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AuthoringValue<T> value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AuthoringValue() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AuthoringValue<T> value)  $default,){
+final _that = this;
+switch (_that) {
+case _AuthoringValue():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AuthoringValue<T> value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AuthoringValue() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( T value,  int revision)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AuthoringValue() when $default != null:
+return $default(_that.value,_that.revision);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( T value,  int revision)  $default,) {final _that = this;
+switch (_that) {
+case _AuthoringValue():
+return $default(_that.value,_that.revision);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( T value,  int revision)?  $default,) {final _that = this;
+switch (_that) {
+case _AuthoringValue() when $default != null:
+return $default(_that.value,_that.revision);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _AuthoringValue<T> implements AuthoringValue<T> {
+  const _AuthoringValue({required this.value, required this.revision});
+
+
+@override final  T value;
+@override final  int revision;
+
+/// Create a copy of AuthoringValue
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AuthoringValueCopyWith<T, _AuthoringValue<T>> get copyWith => __$AuthoringValueCopyWithImpl<T, _AuthoringValue<T>>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthoringValue<T>&&const DeepCollectionEquality().equals(other.value, value)&&(identical(other.revision, revision) || other.revision == revision));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(value),revision);
+}
+
+@override
+String toString() {
+    return 'AuthoringValue<$T>(value: $value, revision: $revision)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AuthoringValueCopyWith<T,$Res> implements $AuthoringValueCopyWith<T, $Res> {
+  factory _$AuthoringValueCopyWith(_AuthoringValue<T> value, $Res Function(_AuthoringValue<T>) _then) = __$AuthoringValueCopyWithImpl;
+@override @useResult
+$Res call({
+ T value, int revision
+});
+
+
+
+
+}
+/// @nodoc
+class __$AuthoringValueCopyWithImpl<T,$Res>
+    implements _$AuthoringValueCopyWith<T, $Res> {
+  __$AuthoringValueCopyWithImpl(this._self, this._then);
+
+  final _AuthoringValue<T> _self;
+  final $Res Function(_AuthoringValue<T>) _then;
+
+/// Create a copy of AuthoringValue
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? value = freezed,Object? revision = null,}) {
+  return _then(_AuthoringValue<T>(
+value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as T,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$AuthoringSessionState {
 
  int? get sequence; Map<skir.RecordId, skir.Book> get books; Map<skir.RecordId, skir.Tag> get tags; Map<skir.RecordId, skir.Page> get pages; Map<skir.RecordId, skir.PageDocument> get documents; bool get refreshing;

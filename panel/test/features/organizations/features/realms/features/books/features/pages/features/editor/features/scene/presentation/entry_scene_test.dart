@@ -401,13 +401,13 @@ class _TestPageElements extends PageElements {
       updateCalls.add(changed);
     }
     final timings = {for (final item in changed) item.$1: (item.$2, item.$3)};
-    state = AsyncData([
-      for (final element in state.requireValue)
-        if (timings[element.id] case final timing?)
-          element.updateCueTo(timing.$1, timing.$2)
-        else
-          element,
-    ]);
+    for (var index = 0; index < initialElements.length; index++) {
+      final element = initialElements[index];
+      if (timings[element.id] case final timing?) {
+        initialElements[index] = element.updateCueTo(timing.$1, timing.$2);
+      }
+    }
+    state = AsyncData(List.of(initialElements));
   }
 
   bool _hasResizeChanges(
@@ -444,6 +444,14 @@ List<Override> _pageElementOverrides(_TestPageElements notifier) => [
   organizationIdProvider.overrideWithValue(_testOrganization),
   realmIdProvider.overrideWithValue(_testRealm),
   _testPageElementsProvider.overrideWith(() => notifier),
+  decodedRealmDocumentValuesProvider(
+    _testOrganization,
+    _testRealm,
+  ).overrideWithValue(
+    AsyncData(
+      AuthoringValue(value: {"page": notifier.initialElements}, revision: 1),
+    ),
+  ),
   pageDocumentHealthProvider(
     _testOrganization,
     _testRealm,
