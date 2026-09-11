@@ -115,7 +115,7 @@ LET $services = SELECT * FROM service
         .execute()
         .await
         .error_with_slug("service-binding-snapshot-query-failed")?
-        .take::<Option<OrganizationRecord>>()
+        .parse::<Option<OrganizationRecord>>()
         .error_with_slug("service-binding-snapshot-parse-failed")?;
     if let Some(organization) = organization {
         wasmcloud_utils::skir_subjects::service_bound(&service_id)
