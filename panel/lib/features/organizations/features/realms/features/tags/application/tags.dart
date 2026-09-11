@@ -83,7 +83,7 @@ class CanonicalTags extends _$CanonicalTags {
           id: TagIdentifier(tag.tagId),
           tag: before,
           revision: ref.readAuthoringSession().state.sequence ?? 0,
-          tagCollection: tagPresentationCollection(state.requireValue),
+          tagCollection: state.requireValue.presentationCollection(),
         ),
       );
       return await owner.applyChanges(

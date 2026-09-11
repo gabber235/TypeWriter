@@ -37,6 +37,12 @@ ThemeData applyComponentThemes(
       borderRadius: shapes.mediumBorderRadius,
       borderSide: BorderSide(color: colors.danger, width: 2),
     ),
+    helperStyle: base.textTheme.bodySmall?.copyWith(
+      color: colors.contentDisabled,
+      fontVariations: [.weight(300)],
+      fontStyle: .italic,
+      letterSpacing: 0.3,
+    ),
   );
   ButtonStyle button(Color foreground) => ButtonStyle(
     foregroundColor: WidgetStateProperty.resolveWith(
@@ -161,9 +167,8 @@ ThemeData applyComponentThemes(
       ),
     ),
     iconButtonTheme: IconButtonThemeData(
-      style: button(
-        colors.contentPrimary,
-      ).copyWith(padding: const WidgetStatePropertyAll(EdgeInsets.zero)),
+      style: button(colors.contentPrimary)
+          .copyWith(padding: const WidgetStatePropertyAll(EdgeInsets.zero)),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: colors.brandContainer,

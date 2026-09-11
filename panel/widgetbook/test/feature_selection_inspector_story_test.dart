@@ -10,6 +10,7 @@ import "package:widgetbook_workspace/stories/features/organizations/features/rea
 import "package:widgetbook_workspace/stories/features/organizations/features/realms/features/tags/presentation/route.stories.dart";
 import "package:widgetbook_workspace/stories/features/organizations/features/realms/features/tags/presentation/tag_node.stories.dart";
 import "package:widgetbook_workspace/stories/features/organizations/features/services/presentation/route.stories.dart";
+import "package:widgetbook_workspace/stories/shared/inspector/presentation/inspector.stories.dart";
 
 import "support/network_images.dart";
 
@@ -90,6 +91,94 @@ void main() {
     expect(committed.fields["layout"], original.fields["layout"]);
     expect((committed.fields["parents"]! as ListValue).values, hasLength(1));
   });
+
+  testWidgetsWithNetworkImages(
+    "Book mixed selection resolves both cards through the Book inspector",
+    (tester) async {
+      await _prepareStory(tester);
+      await tester.pumpWidget(
+        mixedBookSelectionStory(initiallySelected: false),
+      );
+      await tester.pumpAndSettle();
+
+      final books = find.byType(BookWidget);
+      await tester.tap(books.at(0));
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.tap(books.at(1));
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pumpAndSettle();
+
+      final container = _inspectorContainer(tester);
+      expect(container.read(selectionProvider), hasLength(2));
+      expect(find.byType(ComposedEditor), findsOneWidget);
+      expect(
+        find.text("Title"),
+        findsOneWidget,
+        reason: tester
+            .widgetList<Text>(find.byType(Text))
+            .map((text) => text.data)
+            .join(" | "),
+      );
+      expect(find.text("Icon"), findsOneWidget);
+      expect(find.text("Color"), findsOneWidget);
+      expect(find.text("Direct Tags"), findsOneWidget);
+      expect(find.text("Binding is not available"), findsNothing);
+    },
+  );
+
+  testWidgetsWithNetworkImages(
+    "Tag mixed selection resolves both nodes through the Tag inspector",
+    (tester) async {
+      await _prepareStory(tester);
+      await tester.pumpWidget(mixedTagSelectionStory(initiallySelected: false));
+      await tester.pumpAndSettle();
+
+      final tags = find.byType(TagNode);
+      await tester.tap(tags.at(2));
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.tap(tags.at(3));
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pumpAndSettle();
+
+      final container = _inspectorContainer(tester);
+      expect(container.read(selectionProvider), hasLength(2));
+      expect(find.byType(ComposedEditor), findsOneWidget);
+      expect(find.text("Name"), findsOneWidget);
+      expect(find.text("Color"), findsOneWidget);
+      expect(find.text("Direct Parents"), findsOneWidget);
+      expect(find.text("Binding is not available"), findsNothing);
+    },
+  );
+
+  testWidgetsWithNetworkImages(
+    "heterogeneous mixed color selection keeps only the shared field",
+    (tester) async {
+      await _prepareStory(tester);
+      await tester.pumpWidget(bookAndTagSelectionStory(sharedColor: false));
+      await tester.pumpAndSettle();
+
+      final container = _inspectorContainer(tester);
+      expect(container.read(selectionProvider), hasLength(2));
+      expect(find.byType(ComposedEditor), findsOneWidget);
+      expect(find.text("Color"), findsOneWidget);
+      expect(find.text("Binding is not available"), findsNothing);
+    },
+  );
+
+  testWidgetsWithNetworkImages(
+    "heterogeneous shared color selection renders the common color",
+    (tester) async {
+      await _prepareStory(tester);
+      await tester.pumpWidget(bookAndTagSelectionStory(sharedColor: true));
+      await tester.pumpAndSettle();
+
+      final container = _inspectorContainer(tester);
+      expect(container.read(selectionProvider), hasLength(2));
+      expect(find.byType(ComposedEditor), findsOneWidget);
+      expect(find.text("Color"), findsOneWidget);
+      expect(find.text("Binding is not available"), findsNothing);
+    },
+  );
 
   testWidgetsWithNetworkImages(
     "Services page story opens the Service inspector",
@@ -245,3 +334,6 @@ RecordValue _editorRoot(WidgetTester tester) {
   final value = owner.value(DataPath.root);
   return (value as ReadyEditorValue).value as RecordValue;
 }
+
+ProviderContainer _inspectorContainer(WidgetTester tester) =>
+    ProviderScope.containerOf(tester.element(find.byType(InspectorScaffold)));

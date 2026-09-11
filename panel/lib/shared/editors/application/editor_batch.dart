@@ -110,37 +110,14 @@ final class EditorBatch {
       }
     }
     if (resourceBatch) {
-      final saved = await _ResourceSave.run({
-        for (final entry in changes.entries)
-          entry.key: entry.value.keys.toSet(),
-      });
-      final batch =
-          EditorBatch._(
-              saved.commits,
-              send,
-              paths: {
-                for (final entry in changes.entries)
-                  entry.key: entry.value.keys.toSet(),
-              },
-            )
-            .._results = saved.results
-            .._settle();
-      for (final source in changes.keys) {
-        final result = saved.results[source] ?? source._settledResult();
-        if (!saved.commits.containsKey(source) && result is! MutationSuccess) {
-          source._rejectedBatch = batch;
-          source._failPaths(changes[source]!.keys.toSet(), [
-            _diagnostic("The batch could not be prepared"),
-          ]);
-        }
-        source._activeCommit = null;
-        completions[source]!.complete(result);
-        source._notify();
-      }
-      return {
-        for (final source in changes.keys)
-          source: saved.results[source] ?? source._settledResult(),
-      };
+      return _flushPreparedClaimed(
+        {
+          for (final entry in changes.entries)
+            entry.key: entry.value.keys.toSet(),
+        },
+        completions,
+        send: send,
+      );
     }
     for (final entry in changes.entries) {
       final source = entry.key;
@@ -181,6 +158,173 @@ final class EditorBatch {
         source: batch._results[source] ?? source._settledResult(),
     };
   }
+
+  static Future<Map<TransactionalEditorSource, TypedMutationResult>>
+  _flushPrepared(
+    Map<TransactionalEditorSource, Set<DataPath>> paths, {
+    EditorBatchSender? send,
+  }) async {
+    final resourceBatch = _validatePreparedPaths(paths, send: send);
+    while (paths.keys.any((source) => source._activeCommit != null)) {
+      await Future.wait([
+        for (final source in paths.keys) ?source._activeCommit,
+      ]);
+    }
+    final completions = _claim(paths.keys);
+    return resourceBatch
+        ? _flushPreparedClaimed(paths, completions, send: send)
+        : _flushLocalPreparedClaimed(paths, completions, send!);
+  }
+
+  static Future<Map<TransactionalEditorSource, TypedMutationResult>>
+  _flushPreparedClaimed(
+    Map<TransactionalEditorSource, Set<DataPath>> paths,
+    Map<TransactionalEditorSource, Completer<TypedMutationResult>>
+    completions, {
+    EditorBatchSender? send,
+  }) async {
+    late final Map<TransactionalEditorSource, TypedMutationResult> results;
+    try {
+      final saved = await _ResourceSave.run(paths);
+      final batch =
+          EditorBatch._(saved.commits, send, paths: _immutablePaths(paths))
+            .._results = saved.results
+            .._settle();
+      for (final source in paths.keys) {
+        final result = saved.results[source] ?? source._settledResult();
+        if (!saved.commits.containsKey(source) && result is! MutationSuccess) {
+          source._rejectedBatch = batch;
+          source._failPaths(paths[source]!, [
+            _diagnostic("The batch could not be prepared"),
+          ]);
+        }
+      }
+      results = {
+        for (final source in paths.keys)
+          source: saved.results[source] ?? source._settledResult(),
+      };
+    } on Object catch (error) {
+      results = {
+        for (final source in paths.keys)
+          source: _unavailable("The batch could not be settled: $error"),
+      };
+    } finally {
+      _completeClaim(completions, results);
+    }
+    return results;
+  }
+
+  static Future<Map<TransactionalEditorSource, TypedMutationResult>>
+  _flushLocalPreparedClaimed(
+    Map<TransactionalEditorSource, Set<DataPath>> paths,
+    Map<TransactionalEditorSource, Completer<TypedMutationResult>> completions,
+    EditorBatchSender send,
+  ) async {
+    final commits = <TransactionalEditorSource, EditorCommit>{};
+    for (final entry in paths.entries) {
+      final source = entry.key;
+      final selected = source._states.flushCandidates(entry.value);
+      if (selected.isEmpty) continue;
+      commits[source] = source.captureCommit(selected);
+      source._states.markSaving(selected);
+      source._notify();
+    }
+
+    final batch = EditorBatch._(
+      Map.unmodifiable(commits),
+      send,
+      paths: _immutablePaths(paths),
+    );
+    try {
+      batch._results = commits.isEmpty ? {} : await send(batch._commits);
+    } on Object catch (error, stackTrace) {
+      batch._results = {
+        for (final source in paths.keys)
+          source: TypedMutationResult.uncertain(
+            message: "The batch result could not be confirmed",
+            cause: error,
+            stackTrace: stackTrace,
+          ),
+      };
+    }
+
+    try {
+      batch._settle();
+      return {
+        for (final source in paths.keys)
+          source: batch._results[source] ?? source._settledResult(),
+      };
+    } finally {
+      _completeClaim(completions, {
+        for (final source in paths.keys)
+          source: batch._results[source] ?? source._settledResult(),
+      });
+      for (final source in paths.keys) {
+        source._scheduleAutoFlush();
+      }
+    }
+  }
+
+  static Map<TransactionalEditorSource, Completer<TypedMutationResult>> _claim(
+    Iterable<TransactionalEditorSource> sources,
+  ) {
+    final completions = {
+      for (final source in sources) source: Completer<TypedMutationResult>(),
+    };
+    for (final source in sources) {
+      source._activeCommit = completions[source]!.future;
+      source._cancelScheduledTasks();
+    }
+    return completions;
+  }
+
+  static void _completeClaim(
+    Map<TransactionalEditorSource, Completer<TypedMutationResult>> completions,
+    Map<TransactionalEditorSource, TypedMutationResult> results,
+  ) {
+    for (final source in completions.keys) {
+      final result =
+          results[source] ?? _unavailable("The batch produced no result");
+      source._activeCommit = null;
+      completions[source]!.complete(result);
+      source._notify();
+    }
+  }
+
+  static bool _validatePreparedPaths(
+    Map<TransactionalEditorSource, Set<DataPath>> paths, {
+    EditorBatchSender? send,
+  }) {
+    if (paths.isEmpty || paths.values.any((value) => value.isEmpty)) {
+      throw ArgumentError.value(paths, "paths", "Must not be empty");
+    }
+    final resourceBatch = paths.keys.first.resource != null;
+    if (paths.keys.any(
+      (source) => (source.resource != null) != resourceBatch,
+    )) {
+      throw StateError(
+        "Prepared paths cannot mix resources and local callbacks",
+      );
+    }
+    if (!resourceBatch) {
+      if (send == null) {
+        throw StateError("Prepared local paths require a sender");
+      }
+      return false;
+    }
+    final workspace = paths.keys.first.workspace;
+    if (workspace == null ||
+        paths.keys.any((source) => source.workspace != workspace)) {
+      throw StateError("Prepared paths must belong to one workspace");
+    }
+    return true;
+  }
+
+  static Map<TransactionalEditorSource, Set<DataPath>> _immutablePaths(
+    Map<TransactionalEditorSource, Set<DataPath>> paths,
+  ) => Map.unmodifiable({
+    for (final entry in paths.entries) entry.key: Set.unmodifiable(entry.value),
+  });
 
   void _settle() {
     for (final entry in _commits.entries) {

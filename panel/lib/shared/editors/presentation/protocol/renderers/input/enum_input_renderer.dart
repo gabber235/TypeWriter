@@ -10,10 +10,12 @@ extension EnumInputElementRendering on EnumInputElement {
           : "Enum control requires an enum binding",
       builder: (context, field) {
         final values = (field.binding.type as EnumType).values;
-        return Dropdown<DataValue>(
-          selected: values.contains(field.binding.value)
-              ? field.binding.value
-              : null,
+        final current = field.value;
+        final dropdown = Dropdown<DataValue>(
+          selected: values.contains(current) ? current : null,
+          initialization: field.mixed
+              ? SelectionInitializationPolicy.explicit
+              : SelectionInitializationPolicy.automatic,
           dropdownMenuEntries: [
             for (final option in values)
               DropdownMenuEntry(
@@ -25,6 +27,11 @@ extension EnumInputElementRendering on EnumInputElement {
           onSelected: (next) {
             if (next != null) field.update(next);
           },
+        );
+        if (!field.mixed) return dropdown;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [dropdown, const MixedValueMessage()],
         );
       },
     );

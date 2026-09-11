@@ -23,22 +23,20 @@ extension NamedInputElementRendering on NamedInputElement {
         }
 
         const payloadId = BindingId(2147483646);
-
         const payloadReference = BindingReference(bindingId: payloadId);
-        final childScope = scope.withVirtualBinding(
-          VirtualBindingHost(
-            id: payloadId,
-            snapshot: BindingSnapshot(
-              type: nominal.representation,
-              value: field.binding.value,
-              revision: field.binding.revision,
-              writable: field.binding.writable,
-            ),
-            onChanged: field.update,
-            interactionTarget: scope.canonical(field.binding.reference),
-          ),
+        final source = scope.expressions.bindings.project(
+          control.binding,
+          registry: scope.registry,
         );
-        return ResolvedBinding(
+        if (source case TypeFailure(:final diagnostics)) {
+          return presentationDiagnostic(context, diagnostics);
+        }
+        final childScope = scope.withAlias(
+          payloadId,
+          control.binding,
+          source.valueOrNull!.withRootType(nominal.representation),
+        );
+        return InspectedBinding(
           reference: payloadReference,
           type: nominal.representation,
           value: field.binding.value,

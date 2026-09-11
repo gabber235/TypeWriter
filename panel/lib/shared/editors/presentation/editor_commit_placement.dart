@@ -155,8 +155,7 @@ class _EditorCommitPlacementState extends State<EditorCommitPlacement> {
               presentationDiagnostic(context, [
                 const TypeDiagnostic(
                   code: TypeDiagnosticCode.invalidPresentation,
-                  message:
-                      "Duplicate commit controls; use the controls at the editor end",
+                  message: "Duplicate commit controls; use the controls at the editor end",
                 ),
               ])
             else if (placements.count(owner) == 1)

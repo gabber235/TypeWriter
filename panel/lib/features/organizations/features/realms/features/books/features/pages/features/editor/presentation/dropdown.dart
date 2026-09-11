@@ -15,6 +15,7 @@ class Dropdown<T extends Object> extends HookWidget {
     this.controller,
     this.inputFieldController,
     this.enabled = true,
+    this.initialization = SelectionInitializationPolicy.automatic,
     this.actions,
     this.menuActions,
     this.surroundingActions,
@@ -44,6 +45,7 @@ class Dropdown<T extends Object> extends HookWidget {
 
   /// Whether the dropdown is interactive.
   final bool enabled;
+  final SelectionInitializationPolicy initialization;
 
   /// Actions available when either surrounding or input has focus.
   final List<ActionShortcut>? actions;
@@ -101,6 +103,7 @@ class Dropdown<T extends Object> extends HookWidget {
           .where((entry) => entry.enabled)
           .map((entry) => entry.value),
       enabled: enabled,
+      policy: initialization,
       onSelected: onSelected,
       child: InputFieldContainer(
         controller: inputFieldController,

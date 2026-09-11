@@ -115,13 +115,16 @@ final class PresentationSearchHistoryStorage implements SearchHistoryStorage {
 
     final bindings = <Map<String, Object?>>[];
     for (final id in definition.bindingIds) {
-      final binding = payload.expressions.bindings.bindings[id];
-      if (binding == null) return null;
+      final binding = payload.expressions.bindings.resolve(
+        BindingReference(bindingId: id),
+      );
+      if (binding case TypeFailure()) return null;
+      final resolved = binding.valueOrNull!;
 
       bindings.add({
         "id": id.value,
-        "type": const TypeExpressionJsonConverter().toJson(binding.type),
-        "value": const DataValueJsonConverter().toJson(binding.value),
+        "type": const TypeExpressionJsonConverter().toJson(resolved.type),
+        "value": const DataValueJsonConverter().toJson(resolved.value),
       });
     }
     return {

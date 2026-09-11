@@ -4,23 +4,22 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "render_scope.freezed.dart";
 
-typedef BindingSetter =
-    void Function(
-      BindingReference reference,
-      DataValue value,
-      ExpressionContext context,
-      Map<BindingId, BindingReference> aliases,
-    );
+typedef BindingSetter = void Function(
+  BindingReference reference,
+  DataValue value,
+  ExpressionContext context,
+  Map<BindingId, BindingReference> aliases,
+);
 
-typedef ActionExecutor =
-    void Function(
-      EditorAction action,
-      ExpressionContext context,
-      Map<BindingId, BindingReference> aliases,
-    );
+typedef ActionExecutor = void Function(
+  EditorAction action,
+  ExpressionContext context,
+  Map<BindingId, BindingReference> aliases,
+);
 
-typedef EditorInteractionStarter =
-    EditorInteractionSession? Function(BindingReference reference);
+typedef EditorInteractionStarter = EditorInteractionSession? Function(
+  BindingReference reference,
+);
 
 final class VirtualBindingHost {
   VirtualBindingHost({
@@ -65,15 +64,27 @@ final class VirtualBindingHost {
   }) {
     var current = context;
     for (final entry in context.bindings.bindings.entries) {
-      final address = BindingReference(
-        bindingId: entry.key,
-      ).canonicalizedWith(aliases);
+      final address = BindingReference(bindingId: entry.key)
+          .canonicalizedWith(aliases);
       if (address.bindingId != id) continue;
       final value = address.path.read(_snapshot.value).valueOrNull;
       if (value == null) continue;
+      final inspected = context.bindings.inspect(
+        BindingReference(bindingId: entry.key),
+        registry: registry,
+      );
+      if (inspected case TypeFailure(:final diagnostics)) {
+        return LocalMutationInvalid(diagnostics);
+      }
+      final binding = inspected.valueOrNull!;
       current = current.withBinding(
         entry.key,
-        entry.value.copyWith(value: value, revision: _snapshot.revision),
+        BindingSnapshot(
+          type: binding.type,
+          value: value,
+          revision: _snapshot.revision,
+          writable: binding.writable,
+        ),
       );
     }
     final result = action.execute(current, registry: registry, budget: budget);
@@ -133,11 +144,10 @@ final class HeaderExpansionStore {
   }
 }
 
-typedef PresentationResolver =
-    ResolvedPresentationDefinition? Function(
-      TypeExpression? type,
-      PresentationId? requested,
-    );
+typedef PresentationResolver = ResolvedPresentationDefinition? Function(
+  TypeExpression? type,
+  PresentationId? requested,
+);
 
 @freezed
 abstract class PresentationRenderScope with _$PresentationRenderScope {
@@ -150,7 +160,6 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
     required PresentationResolver resolvePresentation,
     required HeaderExpansionStore expansionStore,
     EditorInteractionStarter? startInteraction,
-    EditorValue? Function(BindingReference reference)? fieldValue,
     RealmPresentationSearchSourceBuilder? realmSearchSourceBuilder,
     @Default({})
     Map<PresentationCollectionSourceId, PresentationCollectionSource>
@@ -188,6 +197,9 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
   TypeResult<ResolvedBinding> resolve(BindingReference reference) =>
       expressions.bindings.resolve(reference, registry: registry);
 
+  TypeResult<InspectedBinding> inspect(BindingReference reference) =>
+      expressions.bindings.inspect(reference, registry: registry);
+
   TypeResult<DataValue> evaluate(TypedExpression expression) =>
       expression.evaluate(expressions, registry: registry, budget: budget);
 
@@ -220,9 +232,9 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
   PresentationRenderScope withAlias(
     BindingId id,
     BindingReference source,
-    BindingSnapshot snapshot,
+    BindingSource bindingSource,
   ) => copyWith(
-    expressions: expressions.withBinding(id, snapshot),
+    expressions: expressions.withBinding(id, bindingSource),
     aliases: {...aliases, id: canonical(source)},
     inputAccess: {...inputAccess, id: accessOf(source)},
     ownerBindings: {...ownerBindings, id: ownerReference(source)},

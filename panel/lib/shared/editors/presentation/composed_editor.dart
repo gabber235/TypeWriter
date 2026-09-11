@@ -1,4 +1,5 @@
 import "dart:async";
+
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
@@ -72,13 +73,10 @@ class _ComposedEditorState extends State<ComposedEditor> {
       historyNamespace: widget.historyNamespace,
       inputAccess: widget.model.inputAccess,
       ownerBindings: widget.model.ownerBindings,
-      collections: {
-        for (final source in widget.model.collections) source.id: source,
-      },
+      collections: widget.model.collections.byId,
       realmSearchSourceBuilder: widget.realmSearchSourceBuilder,
       headerShortcuts: widget.headerShortcuts,
       startInteraction: _session.beginInteraction,
-      fieldValue: _session.fieldValue,
       setBinding: (reference, value, context, aliases) {
         _accept(_session.update(reference.canonicalizedWith(aliases), value));
       },

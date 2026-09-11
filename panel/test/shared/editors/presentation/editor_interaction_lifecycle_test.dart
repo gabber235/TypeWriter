@@ -236,4 +236,39 @@ void main() {
     expect(source.cancelCount, 1);
     expect(source.commitCount, 2);
   });
+
+  testWidgets("date picker Escape commits and Ctrl+Escape cancels", (
+    tester,
+  ) async {
+    final source = await tester.pumpTypedEditor(
+      type: const TimestampType(),
+      value: TimestampValue(DateTime.utc(2026, 1, 2, 10, 30)),
+      presentation: const PresentationNode(
+        id: "date",
+        element: DateTimeInputElement(
+          control: BoundControl(
+            binding: BindingReference(bindingId: BindingId(0)),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byTooltip("Open picker"));
+    await tester.pumpAndSettle();
+    expect(source.beginCount, 1);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(source.commitCount, 1);
+
+    await tester.tap(find.byTooltip("Open picker"));
+    await tester.pumpAndSettle();
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+    await tester.pumpAndSettle();
+
+    expect(source.cancelCount, 1);
+    expect(source.commitCount, 1);
+  });
 }

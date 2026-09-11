@@ -78,7 +78,7 @@ extension on PresentationElement {
 
     if (element case CommitControlsElement(:final binding)) {
       diagnostics.addAll(
-        context.bindings.resolve(binding, registry: registry).diagnostics,
+        context.bindings.inspect(binding, registry: registry).diagnostics,
       );
     }
     if (element case SelectInputElement(
@@ -86,7 +86,7 @@ extension on PresentationElement {
       defaultValue: final expression?,
     )) {
       final binding = context.bindings
-          .resolve(control.binding, registry: registry)
+          .inspect(control.binding, registry: registry)
           .valueOrNull;
       final value = expression
           .evaluate(context, registry: registry, budget: budget)
@@ -172,9 +172,8 @@ extension on PresentationElement {
       }
     }
 
-    if (element case RelativeTimeElement(
-      :final value,
-    ) when value.resultType is! TimestampType) {
+    if (element case RelativeTimeElement(:final value)
+        when value.resultType is! TimestampType) {
       diagnostics.add(
         _invalid("Relative time value must declare a timestamp result"),
       );
@@ -223,9 +222,8 @@ extension on PresentationElement {
         diagnostics.add(_invalid("Padding must be finite and nonnegative"));
       }
     }
-    if (element case PresentationSlotElement(
-      :final slotId,
-    ) when slotId.isEmpty) {
+    if (element case PresentationSlotElement(:final slotId)
+        when slotId.isEmpty) {
       diagnostics.add(_invalid("Presentation slot ID must not be empty"));
     }
     if (element case CollectionGraphElement(
@@ -309,7 +307,7 @@ extension on PresentationElement {
     }
 
     if (element case TypedFieldElement(:final binding, :final expectedType)) {
-      final resolved = context.bindings.resolve(binding, registry: registry);
+      final resolved = context.bindings.inspect(binding, registry: registry);
       diagnostics.addAll(resolved.diagnostics);
       final actual = resolved.valueOrNull?.type;
       if (actual != null &&
@@ -323,7 +321,7 @@ extension on PresentationElement {
     }
 
     if (control == null) return diagnostics;
-    final binding = context.bindings.resolve(
+    final binding = context.bindings.inspect(
       control.binding,
       registry: registry,
     );

@@ -1,7 +1,56 @@
+import "package:collection/collection.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 part "presentation_model.freezed.dart";
+
+@immutable
+final class PresentationCollections {
+  factory PresentationCollections(
+    Iterable<PresentationCollectionSource> sources,
+  ) {
+    final byId =
+        <PresentationCollectionSourceId, PresentationCollectionSource>{};
+    for (final source in sources) {
+      if (byId.containsKey(source.id)) {
+        throw ArgumentError.value(
+          source.id,
+          "sources",
+          "Collection identifiers must be unique",
+        );
+      }
+      byId[source.id] = source;
+    }
+    return PresentationCollections._(Map.unmodifiable(byId));
+  }
+
+  const PresentationCollections.empty() : _byId = const {};
+
+  const PresentationCollections._(this._byId);
+
+  final Map<PresentationCollectionSourceId, PresentationCollectionSource> _byId;
+
+  Map<PresentationCollectionSourceId, PresentationCollectionSource> get byId =>
+      _byId;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PresentationCollections &&
+          const MapEquality<
+                PresentationCollectionSourceId,
+                PresentationCollectionSource
+              >()
+              .equals(_byId, other._byId);
+
+  @override
+  int get hashCode =>
+      const MapEquality<
+            PresentationCollectionSourceId,
+            PresentationCollectionSource
+          >()
+          .hash(_byId);
+}
 
 @freezed
 sealed class PresentationInput with _$PresentationInput {
@@ -24,7 +73,8 @@ abstract class PresentationModel with _$PresentationModel {
     required PresentationNode root,
     @Default({}) Map<EditOwner, String> ownerLabels,
     @Default([]) List<PresentationDefinition> presentations,
-    @Default([]) List<PresentationCollectionSource> collections,
+    @Default(PresentationCollections.empty())
+    PresentationCollections collections,
     @Default([]) List<TypeDiagnostic> diagnostics,
   }) = _PresentationModel;
 
@@ -48,7 +98,7 @@ abstract class PresentationModel with _$PresentationModel {
     },
     root: presentation ?? _singlePresentationRoot(type, catalog, presentations),
     presentations: presentations,
-    collections: collections,
+    collections: PresentationCollections(collections),
     diagnostics: diagnostics,
   );
 
@@ -77,7 +127,7 @@ abstract class PresentationModel with _$PresentationModel {
             presentations,
           ),
       presentations: presentations,
-      collections: collections,
+      collections: PresentationCollections(collections),
       diagnostics: diagnostics,
     );
   }

@@ -33,7 +33,7 @@ final class CanonicalTagsProvider
   CanonicalTags create() => CanonicalTags();
 }
 
-String _$canonicalTagsHash() => r'f6fac3c85172623d3495af842319ac6d01a0f0d9';
+String _$canonicalTagsHash() => r'bfdb0f68f03a899663feb509b96241050232c6cb';
 
 abstract class _$CanonicalTags extends $AsyncNotifier<List<Tag>> {
   FutureOr<List<Tag>> build();

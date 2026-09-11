@@ -13,6 +13,8 @@ import "package:flutter/widgets.dart";
 /// caller's normal edit and commit policy. Delivery consumes initialization even
 /// if the caller rejects the value. Updates cancel and reconsider pending work;
 /// disposal cancels it. Later updates never reinitialize a consumed instance.
+enum SelectionInitializationPolicy { automatic, explicit }
+
 class SelectionInitialization<T extends Object> extends StatefulWidget {
   const SelectionInitialization({
     required this.selected,
@@ -21,6 +23,7 @@ class SelectionInitialization<T extends Object> extends StatefulWidget {
     required this.child,
     this.defaultValue,
     this.enabled = true,
+    this.policy = SelectionInitializationPolicy.automatic,
     super.key,
   });
 
@@ -29,6 +32,7 @@ class SelectionInitialization<T extends Object> extends StatefulWidget {
   final Iterable<T> choices;
   final ValueChanged<T?>? onSelected;
   final bool enabled;
+  final SelectionInitializationPolicy policy;
   final Widget child;
 
   @override
@@ -56,7 +60,12 @@ class _SelectionInitializationState<T extends Object>
   void _initialize() {
     final generation = ++_generation;
     if (widget.selected != null) _initialized = true;
-    if (_initialized || !widget.enabled || widget.onSelected == null) return;
+    if (_initialized ||
+        !widget.enabled ||
+        widget.onSelected == null ||
+        widget.policy == SelectionInitializationPolicy.explicit) {
+      return;
+    }
     final choices = widget.choices.toSet();
 
     final preferred = widget.defaultValue;

@@ -186,7 +186,7 @@ void main() {
         id: BookIdentifier(book.bookId),
         book: book,
         revision: 1,
-        tagCollection: tagPresentationCollection(const []),
+        tagCollection: const <Tag>[].presentationCollection(),
       );
 
       await tester.pumpTestApp(
@@ -201,7 +201,59 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  test("Book multi inspection rejects inconsistent Tag collections", () {
+    final first = _bookSelection(
+      "first",
+      [_tag("shared", Colors.blue)].presentationCollection(),
+    );
+    final second = _bookSelection(
+      "second",
+      [_tag("shared", Colors.red)].presentationCollection(),
+    );
+
+    final result = [first, second].sharedBookTagCollection;
+
+    expect(result.valueOrNull, isNull);
+    expect(
+      result.diagnostics.single.message,
+      "Selected Books have inconsistent Tag collections",
+    );
+  });
 }
+
+BookSelection _bookSelection(
+  String id,
+  PresentationCollectionSource tagCollection,
+) {
+  final book = Book(
+    bookId: recordId("book:$id"),
+    title: id,
+    icon: "mdi:book",
+    color: Colors.blue,
+    tagIds: const [],
+  );
+  return BookSelection(
+    resource: FakeEditableResource(
+      key: EditorResourceKey(scope: null, identity: book.bookId),
+      current: BookEditorSnapshot(book, 1),
+      commit: (_) async => throw StateError("No save in this domain test"),
+    ),
+    onOpen: null,
+    id: BookIdentifier(book.bookId),
+    book: book,
+    revision: 1,
+    tagCollection: tagCollection,
+  );
+}
+
+Tag _tag(String id, Color color) => Tag(
+  tagId: recordId("tag:$id"),
+  name: id,
+  color: color,
+  parentIds: const [],
+  placement: const Placement(x: 0, y: 0, width: 4, height: 1),
+);
 
 void _expectTagChip(ChipElement chip) {
   expect(chip.color, isNotNull);

@@ -31,43 +31,33 @@ class BoundControlShell extends HookWidget {
 
   /// Returns a diagnostic message when the resolved binding does not have
   /// the shape this control requires.
-  final String? Function(ResolvedBinding binding)? shapeMismatch;
+  final String? Function(InspectedBinding binding)? shapeMismatch;
 
   final Widget Function(BuildContext context, BoundControlField field) builder;
 
   @override
   Widget build(BuildContext context) {
     final interaction = useEditorFieldInteraction(scope, control.binding);
-    final resolved = scope.resolve(control.binding);
+    final resolved = scope.inspect(control.binding);
     if (resolved case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
     }
     final declared = resolved.valueOrNull!;
+    if (declared.value case InvalidEditorValue(:final diagnostics)) {
+      return presentationDiagnostic(context, diagnostics);
+    }
+    if (declared.value is LoadingEditorValue) {
+      return LabeledControl(
+        control: control,
+        scope: scope,
+        child: const LinearProgressIndicator(),
+      );
+    }
     final binding = declared.copyWith(
       type: nominal
           ? declared.type.bindingNominal(scope.registry)
           : declared.type.bindingRepresentation(scope.registry),
     );
-    if (scope.fieldValue?.call(scope.canonical(control.binding))
-            is MixedEditorValue &&
-        binding.type.bindingRepresentation(scope.registry) is! RecordType) {
-      return LabeledControl(
-        control: control,
-        scope: scope,
-        child: TextButton(
-          onPressed: scope.readOnly || !binding.writable
-              ? null
-              : () {
-                  final value = binding.type
-                      .createInitialValue(registry: scope.registry)
-                      .valueOrNull;
-                  if (value != null) scope.update(control.binding, value);
-                },
-          child: const Text("Mixed values. Set a common value"),
-        ),
-      );
-    }
-
     if (shapeMismatch?.call(binding) case final message?) {
       return presentationDiagnostic(context, [
         TypeDiagnostic(code: TypeDiagnosticCode.invalidValue, message: message),
@@ -99,13 +89,15 @@ final class BoundControlField {
   });
 
   final PresentationRenderScope _scope;
-  final ResolvedBinding binding;
+  final InspectedBinding binding;
   final EditorFieldInteraction interaction;
   final bool enabled;
   final bool readOnly;
 
   bool get editable => enabled && !readOnly;
   bool get locked => !editable;
+  bool get mixed => binding.value is MixedEditorValue;
+  DataValue? get value => binding.value.valueOrNull;
 
   void update(DataValue value) => _scope.update(binding.reference, value);
 }

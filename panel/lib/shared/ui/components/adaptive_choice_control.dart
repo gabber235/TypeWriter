@@ -9,6 +9,7 @@ class AdaptiveChoiceControl<T extends Object> extends StatelessWidget {
     required this.onSelected,
     this.enabled = true,
     this.defaultValue,
+    this.initialization = SelectionInitializationPolicy.automatic,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class AdaptiveChoiceControl<T extends Object> extends StatelessWidget {
   final ValueChanged<T?> onSelected;
   final bool enabled;
   final T? defaultValue;
+  final SelectionInitializationPolicy initialization;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +29,8 @@ class AdaptiveChoiceControl<T extends Object> extends StatelessWidget {
           decoration: const InputDecoration(enabled: false),
           child: Text(
             "No options available",
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: context.colors.contentSecondary,
-            ),
+            style: Theme.of(context).textTheme.labelMedium
+                ?.copyWith(color: context.colors.contentSecondary),
           ),
         ),
       );
@@ -44,6 +45,7 @@ class AdaptiveChoiceControl<T extends Object> extends StatelessWidget {
             DropdownMenuEntry(value: value, label: label),
         ],
         enabled: enabled,
+        initialization: initialization,
         onSelected: onSelected,
       );
     }
@@ -53,6 +55,7 @@ class AdaptiveChoiceControl<T extends Object> extends StatelessWidget {
       defaultValue: defaultValue,
       choices: choices.keys,
       enabled: enabled,
+      policy: initialization,
       onSelected: onSelected,
       child: CupertinoSlidingSegmentedControl<T>(
         groupValue: selected,

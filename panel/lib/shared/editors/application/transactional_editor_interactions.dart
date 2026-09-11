@@ -68,6 +68,100 @@ extension _EditorInteractions on TransactionalEditorSource {
   }
 }
 
+/// Commits one resource interaction per source through one atomic batch.
+///
+/// Every interaction gate remains closed until this operation owns settlement
+/// for the complete cohort. Inactive cohorts settle without persistence.
+extension AtomicResourceInteractionCommit
+    on Iterable<EditorInteractionSession> {
+  Future<void> commitAtomically() async {
+    final sessions = toList(growable: false);
+    final interactions = sessions.whereType<_Interaction>().toList();
+    if (sessions.isEmpty || interactions.length != sessions.length) {
+      throw StateError(
+        "Atomic interaction commit requires resource editor interactions",
+      );
+    }
+    final sources = interactions.map((interaction) => interaction.source);
+    if ((Set<TransactionalEditorSource>.identity()..addAll(sources)).length !=
+        interactions.length) {
+      throw StateError("Atomic interaction sources must be identity unique");
+    }
+    if (interactions.any(
+      (interaction) => interaction.source.resource == null,
+    )) {
+      throw StateError("Atomic interaction commit requires resources");
+    }
+    final workspace = interactions.first.source.workspace;
+    if (workspace == null ||
+        interactions.any(
+          (interaction) => interaction.source.workspace != workspace,
+        )) {
+      throw StateError("Atomic interactions must belong to one workspace");
+    }
+    final policy = interactions.first.source.commitPolicy;
+    if (interactions.any(
+      (interaction) => interaction.source.commitPolicy != policy,
+    )) {
+      throw StateError("Atomic interactions must share one commit policy");
+    }
+
+    if (interactions.every((interaction) => !interaction.active)) return;
+    if (interactions.any((interaction) => !interaction.active)) {
+      for (final interaction in interactions.where(
+        (interaction) => interaction.active,
+      )) {
+        interaction.cancel();
+      }
+      return;
+    }
+
+    while (interactions.any(
+      (interaction) => interaction.source._activeCommit != null,
+    )) {
+      await Future.wait([
+        for (final interaction in interactions)
+          ?interaction.source._activeCommit,
+      ]);
+    }
+    final stillOwned = interactions.every(
+      (interaction) =>
+          interaction.active &&
+          identical(
+            interaction.source._states.gate(interaction.path),
+            interaction,
+          ),
+    );
+    if (!stillOwned) {
+      for (final interaction in interactions.where(
+        (interaction) => interaction.active,
+      )) {
+        interaction.cancel();
+      }
+      return;
+    }
+
+    final paths = {
+      for (final interaction in interactions)
+        interaction.source: {
+          ...interaction.source._states.autoFlushCandidates,
+          interaction.path,
+        },
+    };
+    final completions = EditorBatch._claim(paths.keys);
+    for (final interaction in interactions) {
+      interaction.source._release(interaction);
+    }
+    if (policy == EditorCommitPolicy.applyResource) {
+      EditorBatch._completeClaim(completions, {
+        for (final source in paths.keys) source: source._settledResult(),
+      });
+      return;
+    }
+    await EditorBatch._flushPreparedClaimed(paths, completions);
+  }
+}
+
 final class _Interaction implements EditorInteractionSession {
   _Interaction({
     required this.source,

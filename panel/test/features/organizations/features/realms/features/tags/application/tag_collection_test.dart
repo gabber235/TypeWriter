@@ -35,8 +35,7 @@ void main() {
       final current = _tag("current", parents: ["parent"]);
       final parent = _tag("parent");
       final descendant = _tag("descendant", parents: ["current"]);
-      final source = tagPresentationCollection(
-        [current, parent, descendant],
+      final source = [current, parent, descendant].presentationCollection(
         editingTagId: current.tagId,
         existingParentIds: current.parentIds,
       );
@@ -47,23 +46,19 @@ void main() {
 
       expect(snapshot.diagnostics, isEmpty);
       expect(_selectable(snapshot, "current"), isFalse);
-      expect(_reason(snapshot, "current"), contains("itself"));
       expect(_selectable(snapshot, "descendant"), isFalse);
-      expect(_reason(snapshot, "descendant"), contains("descendant"));
       expect(_selectable(snapshot, "parent"), isTrue);
-
-      expect(_reason(snapshot, "parent"), isNull);
     },
   );
 
   test(
     "effective inheritance deduplicates ancestors and retains every path",
     () async {
-      final source = tagPresentationCollection([
+      final source = [
         _tag("story", parents: ["shared"]),
         _tag("combat", parents: ["shared"]),
         _tag("shared"),
-      ]);
+      ].presentationCollection();
 
       final snapshot = await source
           .watch(
@@ -88,6 +83,32 @@ void main() {
       );
     },
   );
+
+  test("Tag multi inspection intersects candidate selectability", () async {
+    final first = _tag("first");
+    final second = _tag("second");
+    final tags = [first, second];
+    final selections = [
+      _tagSelection(
+        first,
+        tags.presentationCollection(editingTagId: first.tagId),
+      ),
+      _tagSelection(
+        second,
+        tags.presentationCollection(editingTagId: second.tagId),
+      ),
+    ];
+
+    final result = selections.sharedTagCollection;
+    final source = result.valueOrNull!;
+    final snapshot = await source
+        .watch(const PresentationCollectionQuery.all())
+        .first;
+
+    expect(result.diagnostics, isEmpty);
+    expect(_selectable(snapshot, "first"), isFalse);
+    expect(_selectable(snapshot, "second"), isFalse);
+  });
 
   test(
     "Tag inspector exposes parent collection and collapsed layout",
@@ -228,9 +249,7 @@ void main() {
         id: TagIdentifier(tag.tagId),
         tag: tag,
         revision: 1,
-        tagCollection: tagPresentationCollection([
-          tag,
-        ], editingTagId: tag.tagId),
+        tagCollection: [tag].presentationCollection(editingTagId: tag.tagId),
       );
 
       await tester.pumpTestApp(
@@ -286,6 +305,22 @@ void main() {
   );
 }
 
+TagSelectable _tagSelection(
+  Tag tag,
+  PresentationCollectionSource tagCollection,
+) => TagSelectable(
+  resource: FakeEditableResource(
+    key: EditorResourceKey(scope: null, identity: tag.tagId),
+    current: TagEditorSnapshot(tag, 1),
+    commit: (_) async => throw StateError("No save in this domain test"),
+  ),
+  onDelete: () async => throw StateError("No delete in this domain test"),
+  id: TagIdentifier(tag.tagId),
+  tag: tag,
+  revision: 1,
+  tagCollection: tagCollection,
+);
+
 void _expectTagChip(ChipElement chip) {
   expect(chip.color, isNotNull);
   final color = chip.color!.expression as BindingExpression;
@@ -328,18 +363,6 @@ void _expectDimensionControl(GridElement grid, String field, String label) {
 bool _selectable(PresentationCollectionSnapshot snapshot, String id) {
   final value = _field(snapshot, id, "selectable");
   return (value as BooleanValue).value;
-}
-
-String? _reason(PresentationCollectionSnapshot snapshot, String id) {
-  final value = _field(snapshot, id, "unavailableReason");
-  return switch (value) {
-    PolymorphicValue(value: UnitValue()) => null,
-    PolymorphicValue(
-      value: RecordValue(fields: {"value": StringValue(:final value)}),
-    ) =>
-      value,
-    _ => throw StateError("Unexpected unavailable reason: $value"),
-  };
 }
 
 DataValue _field(

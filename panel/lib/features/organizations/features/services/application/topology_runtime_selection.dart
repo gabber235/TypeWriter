@@ -28,7 +28,7 @@ class _RealmInstanceSelectable
   String get name => realm.ownerHost.name.formatted;
 
   @override
-  PresentationModel buildPresentation(EditorOwnerRegistry owners) =>
+  PresentationModel buildPresentation(EditorOwnerScope owners) =>
       PresentationModel(
         catalog: _realmInstanceInspectorCatalog,
         inputs: {
@@ -53,7 +53,7 @@ class _RealmInstanceSelectable
   ];
 
   @override
-  InspectionContent buildInspection(EditorOwnerRegistry owners) =>
+  InspectionContent buildInspection(EditorOwnerScope owners) =>
       InspectionContent(
         model: buildPresentation(owners),
         header: InspectorHeader(
@@ -96,7 +96,7 @@ class _EngineInstanceSelectable
   String get name => "${engine.target.engineId} engine";
 
   @override
-  PresentationModel buildPresentation(EditorOwnerRegistry owners) =>
+  PresentationModel buildPresentation(EditorOwnerScope owners) =>
       PresentationModel(
         catalog: _engineInstanceInspectorCatalog,
         inputs: {
@@ -119,7 +119,7 @@ class _EngineInstanceSelectable
   List<SelectionCapability> get capabilities => [];
 
   @override
-  InspectionContent buildInspection(EditorOwnerRegistry owners) =>
+  InspectionContent buildInspection(EditorOwnerScope owners) =>
       InspectionContent(
         model: buildPresentation(owners),
         header: InspectorHeader(
@@ -140,9 +140,8 @@ RecordValue _runtimeValue({
   if (assignedRealm != null)
     _RuntimeInspectorFields.assignedRealm: assignedRealm.asValue,
   _RuntimeInspectorFields.target: _targetLabel(target).asValue,
-  _RuntimeInspectorFields.runtimeStatus: childRuntimeStatusLabel(
-    state.status,
-  ).asValue,
+  _RuntimeInspectorFields.runtimeStatus: childRuntimeStatusLabel(state.status)
+      .asValue,
   _RuntimeInspectorFields.artifactVersion:
       (state.activeArtifactVersion ?? "None").asValue,
   _RuntimeInspectorFields.runtimeMessage: (state.message ?? "None").asValue,

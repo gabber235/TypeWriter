@@ -81,9 +81,8 @@ class CanonicalBooks extends _$CanonicalBooks {
           id: BookIdentifier(book.bookId),
           book: before,
           revision: ref.readAuthoringSession().state.sequence ?? 0,
-          tagCollection: tagPresentationCollection(
-            ref.read(projectedTagsProvider).value ?? const [],
-          ),
+          tagCollection: (ref.read(projectedTagsProvider).value ?? const [])
+              .presentationCollection(),
         ),
       );
       return await owner.applyChanges(

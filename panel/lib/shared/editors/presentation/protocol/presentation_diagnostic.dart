@@ -22,9 +22,8 @@ Widget presentationDiagnostic(
               child: Text(
                 values.map((item) => item.message).join("\n"),
                 textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colors.onErrorContainer,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: colors.onErrorContainer),
               ),
             ),
             Positioned(

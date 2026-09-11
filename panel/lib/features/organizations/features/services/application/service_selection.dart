@@ -107,7 +107,7 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
 
   @override
   PresentationModel buildPresentation(
-    EditorOwnerRegistry owners,
+    EditorOwnerScope owners,
   ) => PresentationModel(
     catalog: _serviceInspectorCatalog,
     inputs: {
@@ -136,7 +136,7 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
   ];
 
   @override
-  InspectionContent buildInspection(EditorOwnerRegistry owners) =>
+  InspectionContent buildInspection(EditorOwnerScope owners) =>
       InspectionContent(
         model: buildPresentation(owners),
         header: ManagedInspectorHeader(

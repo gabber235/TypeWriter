@@ -143,9 +143,8 @@ class _PresentationHeaderChromeState extends State<PresentationHeaderChrome> {
                     width: double.infinity,
                     child: Text(
                       resolved.description,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: context.colors.contentSecondary,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: context.colors.contentSecondary),
                     ),
                   ),
                 ],

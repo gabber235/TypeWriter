@@ -24,7 +24,7 @@ class PresentationSearchInput extends HookConsumerWidget {
   });
 
   final SearchInputElement element;
-  final ResolvedBinding binding;
+  final InspectedBinding binding;
   final PresentationRenderScope scope;
   final double maximumExtent;
   final PresentationSearchSourceBuilder? sourceBuilder;
@@ -61,8 +61,10 @@ class PresentationSearchInput extends HookConsumerWidget {
     );
 
     void restoreOriginal() {
-      if (binding.value != original.value) {
-        scope.update(binding.reference, original.value);
+      final current = binding.value.valueOrNull;
+      final previous = original.value.valueOrNull;
+      if (current != previous && previous != null) {
+        scope.update(binding.reference, previous);
       }
     }
 
@@ -90,9 +92,8 @@ class PresentationSearchInput extends HookConsumerWidget {
 
     DataValue? nextValue(DataValue selected, {required bool toggle}) {
       if (element.selectionMode == SearchSelectionMode.single) return selected;
-      final current = binding.value;
-      if (current is! ListValue) return null;
-      final values = [...current.values];
+      final current = binding.value.valueOrNull;
+      final values = current is ListValue ? [...current.values] : <DataValue>[];
 
       final index = values.indexOf(selected);
       if (toggle && index >= 0) {
@@ -183,7 +184,9 @@ class PresentationSearchInput extends HookConsumerWidget {
 
     String initialQuery() {
       final expression = element.initialQuery;
-      if (expression == null) return binding.value.expressionDisplayText;
+      if (expression == null) {
+        return binding.value.valueOrNull?.expressionDisplayText ?? "";
+      }
       final result = scope.evaluate(expression);
       if (result.valueOrNull case StringValue(:final value)) return value;
       validationMessage.value =

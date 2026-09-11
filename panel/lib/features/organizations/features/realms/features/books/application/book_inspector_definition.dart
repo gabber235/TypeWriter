@@ -99,3 +99,83 @@ final _bookInspectorPresentation = PresentationDefinition.single(
     ),
   ),
 );
+
+final class BookMultiInspectionDefinition implements MultiInspectionDefinition {
+  const BookMultiInspectionDefinition();
+
+  @override
+  PresentationId get id => _bookInspectorPresentationId;
+
+  @override
+  bool isCompatibleWith(MultiInspectionDefinition other) =>
+      other is BookMultiInspectionDefinition;
+
+  @override
+  TypeResult<InspectionContent> build(
+    List<EditableSelectable> selection,
+    InspectionBuildContext context,
+  ) {
+    final selected = selection.requireAll<BookSelection>();
+    final books = selected.valueOrNull;
+    if (books == null) return TypeResult.failure(selected.diagnostics);
+    final catalog = books.mergedTypeCatalog;
+    final merged = catalog.valueOrNull;
+    if (merged == null) return TypeResult.failure(catalog.diagnostics);
+    final collection = books.sharedBookTagCollection;
+    final tags = collection.valueOrNull;
+    if (tags == null) return TypeResult.failure(collection.diagnostics);
+    final owner = context.multiEditorFor(
+      books,
+      rootType: const NamedType(bookInspectorTypeRef),
+      typeCatalog: merged,
+    );
+    return TypeResult.success(
+      InspectionContent(
+        model: PresentationModel.editor(
+          owner: owner,
+          presentations: [_bookInspectorPresentation],
+          collections: [tags],
+        ),
+      ),
+    );
+  }
+}
+
+extension BookSelectionCollectionConsistency on List<BookSelection> {
+  TypeResult<PresentationCollectionSource> get sharedBookTagCollection {
+    final first = firstOrNull?.tagCollection;
+    if (first == null) {
+      return TypeResult.failure([
+        const TypeDiagnostic(
+          code: TypeDiagnosticCode.invalidValue,
+          message: "Selected Books have no Tag collection",
+        ),
+      ]);
+    }
+    for (final selection in skip(1)) {
+      final candidate = selection.tagCollection;
+      final sameLocalRows = switch ((first, candidate)) {
+        (
+          LocalPresentationCollectionSource(:final rows),
+          LocalPresentationCollectionSource(rows: final candidateRows),
+        ) =>
+          const ListEquality<DataValue>().equals(
+            rows.toList(),
+            candidateRows.toList(),
+          ),
+        _ => identical(first, candidate),
+      };
+      if (candidate.id != first.id ||
+          candidate.schema != first.schema ||
+          !sameLocalRows) {
+        return TypeResult.failure([
+          const TypeDiagnostic(
+            code: TypeDiagnosticCode.invalidValue,
+            message: "Selected Books have inconsistent Tag collections",
+          ),
+        ]);
+      }
+    }
+    return TypeResult.success(first);
+  }
+}

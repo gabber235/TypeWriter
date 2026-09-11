@@ -70,11 +70,16 @@ extension on ReorderListItemAction {
       return invalidLocalMutation("Reorder index is outside the list");
     }
     if (location.$2 == nextIndex) {
-      final root = context.bindings.bindings[source.bindingId];
-      if (root == null) return invalidLocalMutation("Binding is not available");
+      final root = context.bindings.resolve(
+        BindingReference(bindingId: source.bindingId),
+        registry: registry,
+      );
+      if (root case TypeFailure(:final diagnostics)) {
+        return LocalMutationInvalid(diagnostics);
+      }
       return LocalMutationApplied(
         bindingId: source.bindingId,
-        value: root.value,
+        value: root.valueOrNull!.value,
       );
     }
 

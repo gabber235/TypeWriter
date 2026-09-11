@@ -110,7 +110,7 @@ Widget _story({
                 representation: ListType(element: tagReferenceType),
               ),
             ]),
-            collections: [tagPresentationCollection(tags)],
+            collections: [tags.presentationCollection()],
             presentation: effectiveTagGraph(
               id: "widgetbook.tagInheritance",
               title: "Inheritance",

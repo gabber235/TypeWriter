@@ -15,6 +15,31 @@ void main() {
       expect(relationId.toString(), "references");
     });
 
+    test("collection indexing rejects duplicate source identifiers", () {
+      final source = LocalPresentationCollectionSource(
+        id: const PresentationCollectionSourceId("elements"),
+        schema: const PresentationCollectionSchema(
+          rowType: StringType(),
+          keyType: StringType(),
+          rowBindingId: BindingId(1),
+          key: TypedExpression(
+            resultType: StringType(),
+            expression: Expression.binding(
+              BindingReference(bindingId: BindingId(1)),
+            ),
+          ),
+        ),
+        rows: const [],
+        registry: TypeRegistry(const TypeCatalog([])),
+      );
+
+      expect(PresentationCollections([source]).byId[source.id], same(source));
+      expect(
+        () => PresentationCollections([source, source]),
+        throwsArgumentError,
+      );
+    });
+
     test("schemas and relations support deep equality and copying", () {
       const relation = PresentationCollectionRelation(
         id: PresentationCollectionRelationId("references"),

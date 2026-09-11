@@ -32,7 +32,7 @@ class _ServiceHostSelectable
   String get name => service?.displayName ?? host.hostId.id;
 
   @override
-  PresentationModel buildPresentation(EditorOwnerRegistry owners) {
+  PresentationModel buildPresentation(EditorOwnerScope owners) {
     final view = _hostObservation(host, service);
     final definition = _hostInspectorPresentation(
       realmTargets: _realmTargets,
@@ -84,7 +84,7 @@ class _ServiceHostSelectable
   ];
 
   @override
-  InspectionContent buildInspection(EditorOwnerRegistry owners) {
+  InspectionContent buildInspection(EditorOwnerScope owners) {
     final id = host.hostId.id;
     final fallbackName = name;
     final fallbackColor = service?.color ?? standaloneServiceColor;

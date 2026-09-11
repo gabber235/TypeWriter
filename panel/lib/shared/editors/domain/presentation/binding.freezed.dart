@@ -889,6 +889,639 @@ $DataValueCopyWith<$Res> get value {
 }
 
 /// @nodoc
+mixin _$BindingSourceState {
+
+ TypeExpression get type; EditorValue get value;
+/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BindingSourceStateCopyWith<BindingSourceState> get copyWith => _$BindingSourceStateCopyWithImpl<BindingSourceState>(this as BindingSourceState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as BindingSourceState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BindingSourceState&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.value, _this.value) || other.value == _this.value));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as BindingSourceState;
+  return Object.hash(runtimeType,_this.type,_this.value);
+}
+
+@override
+String toString() {
+  final _this = this as BindingSourceState;
+  return 'BindingSourceState(type: ${_this.type}, value: ${_this.value})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $BindingSourceStateCopyWith<$Res>  {
+  factory $BindingSourceStateCopyWith(BindingSourceState value, $Res Function(BindingSourceState) _then) = _$BindingSourceStateCopyWithImpl;
+@useResult
+$Res call({
+ TypeExpression type, EditorValue value
+});
+
+
+$TypeExpressionCopyWith<$Res> get type;$EditorValueCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class _$BindingSourceStateCopyWithImpl<$Res>
+    implements $BindingSourceStateCopyWith<$Res> {
+  _$BindingSourceStateCopyWithImpl(this._self, this._then);
+
+  final BindingSourceState _self;
+  final $Res Function(BindingSourceState) _then;
+
+/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? value = null,}) {
+  return _then(BindingSourceState(
+type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as TypeExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as EditorValue,
+  ));
+}
+/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypeExpressionCopyWith<$Res> get type {
+
+  return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EditorValueCopyWith<$Res> get value {
+
+  return $EditorValueCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [BindingSourceState].
+extension BindingSourceStatePatterns on BindingSourceState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _BindingSourceState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _BindingSourceState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _BindingSourceState value)  $default,){
+final _that = this;
+switch (_that) {
+case _BindingSourceState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _BindingSourceState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _BindingSourceState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TypeExpression type,  EditorValue value)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _BindingSourceState() when $default != null:
+return $default(_that.type,_that.value);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TypeExpression type,  EditorValue value)  $default,) {final _that = this;
+switch (_that) {
+case _BindingSourceState():
+return $default(_that.type,_that.value);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TypeExpression type,  EditorValue value)?  $default,) {final _that = this;
+switch (_that) {
+case _BindingSourceState() when $default != null:
+return $default(_that.type,_that.value);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _BindingSourceState implements BindingSourceState {
+  const _BindingSourceState({required this.type, required this.value});
+
+
+@override final  TypeExpression type;
+@override final  EditorValue value;
+
+/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$BindingSourceStateCopyWith<_BindingSourceState> get copyWith => __$BindingSourceStateCopyWithImpl<_BindingSourceState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BindingSourceState&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,type,value);
+}
+
+@override
+String toString() {
+    return 'BindingSourceState(type: $type, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$BindingSourceStateCopyWith<$Res> implements $BindingSourceStateCopyWith<$Res> {
+  factory _$BindingSourceStateCopyWith(_BindingSourceState value, $Res Function(_BindingSourceState) _then) = __$BindingSourceStateCopyWithImpl;
+@override @useResult
+$Res call({
+ TypeExpression type, EditorValue value
+});
+
+
+@override $TypeExpressionCopyWith<$Res> get type;@override $EditorValueCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class __$BindingSourceStateCopyWithImpl<$Res>
+    implements _$BindingSourceStateCopyWith<$Res> {
+  __$BindingSourceStateCopyWithImpl(this._self, this._then);
+
+  final _BindingSourceState _self;
+  final $Res Function(_BindingSourceState) _then;
+
+/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? value = null,}) {
+  return _then(_BindingSourceState(
+type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as TypeExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as EditorValue,
+  ));
+}
+
+/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypeExpressionCopyWith<$Res> get type {
+
+  return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}/// Create a copy of BindingSourceState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EditorValueCopyWith<$Res> get value {
+
+  return $EditorValueCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$InspectedBinding {
+
+ BindingReference get reference; TypeExpression get type; EditorValue get value; int get revision; bool get writable;
+/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$InspectedBindingCopyWith<InspectedBinding> get copyWith => _$InspectedBindingCopyWithImpl<InspectedBinding>(this as InspectedBinding, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as InspectedBinding;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InspectedBinding&&(identical(other.reference, _this.reference) || other.reference == _this.reference)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&(identical(other.writable, _this.writable) || other.writable == _this.writable));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as InspectedBinding;
+  return Object.hash(runtimeType,_this.reference,_this.type,_this.value,_this.revision,_this.writable);
+}
+
+@override
+String toString() {
+  final _this = this as InspectedBinding;
+  return 'InspectedBinding(reference: ${_this.reference}, type: ${_this.type}, value: ${_this.value}, revision: ${_this.revision}, writable: ${_this.writable})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $InspectedBindingCopyWith<$Res>  {
+  factory $InspectedBindingCopyWith(InspectedBinding value, $Res Function(InspectedBinding) _then) = _$InspectedBindingCopyWithImpl;
+@useResult
+$Res call({
+ BindingReference reference, TypeExpression type, EditorValue value, int revision, bool writable
+});
+
+
+$BindingReferenceCopyWith<$Res> get reference;$TypeExpressionCopyWith<$Res> get type;$EditorValueCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class _$InspectedBindingCopyWithImpl<$Res>
+    implements $InspectedBindingCopyWith<$Res> {
+  _$InspectedBindingCopyWithImpl(this._self, this._then);
+
+  final InspectedBinding _self;
+  final $Res Function(InspectedBinding) _then;
+
+/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? reference = null,Object? type = null,Object? value = null,Object? revision = null,Object? writable = null,}) {
+  return _then(InspectedBinding(
+reference: null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
+as BindingReference,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as TypeExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as EditorValue,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
+as int,writable: null == writable ? _self.writable : writable // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BindingReferenceCopyWith<$Res> get reference {
+
+  return $BindingReferenceCopyWith<$Res>(_self.reference, (value) {
+    return _then(_self.copyWith(reference: value));
+  });
+}/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypeExpressionCopyWith<$Res> get type {
+
+  return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EditorValueCopyWith<$Res> get value {
+
+  return $EditorValueCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [InspectedBinding].
+extension InspectedBindingPatterns on InspectedBinding {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _InspectedBinding value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _InspectedBinding() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _InspectedBinding value)  $default,){
+final _that = this;
+switch (_that) {
+case _InspectedBinding():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _InspectedBinding value)?  $default,){
+final _that = this;
+switch (_that) {
+case _InspectedBinding() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BindingReference reference,  TypeExpression type,  EditorValue value,  int revision,  bool writable)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _InspectedBinding() when $default != null:
+return $default(_that.reference,_that.type,_that.value,_that.revision,_that.writable);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BindingReference reference,  TypeExpression type,  EditorValue value,  int revision,  bool writable)  $default,) {final _that = this;
+switch (_that) {
+case _InspectedBinding():
+return $default(_that.reference,_that.type,_that.value,_that.revision,_that.writable);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BindingReference reference,  TypeExpression type,  EditorValue value,  int revision,  bool writable)?  $default,) {final _that = this;
+switch (_that) {
+case _InspectedBinding() when $default != null:
+return $default(_that.reference,_that.type,_that.value,_that.revision,_that.writable);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _InspectedBinding implements InspectedBinding {
+  const _InspectedBinding({required this.reference, required this.type, required this.value, required this.revision, required this.writable});
+
+
+@override final  BindingReference reference;
+@override final  TypeExpression type;
+@override final  EditorValue value;
+@override final  int revision;
+@override final  bool writable;
+
+/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InspectedBindingCopyWith<_InspectedBinding> get copyWith => __$InspectedBindingCopyWithImpl<_InspectedBinding>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _InspectedBinding&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.type, type) || other.type == type)&&(identical(other.value, value) || other.value == value)&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.writable, writable) || other.writable == writable));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,reference,type,value,revision,writable);
+}
+
+@override
+String toString() {
+    return 'InspectedBinding(reference: $reference, type: $type, value: $value, revision: $revision, writable: $writable)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$InspectedBindingCopyWith<$Res> implements $InspectedBindingCopyWith<$Res> {
+  factory _$InspectedBindingCopyWith(_InspectedBinding value, $Res Function(_InspectedBinding) _then) = __$InspectedBindingCopyWithImpl;
+@override @useResult
+$Res call({
+ BindingReference reference, TypeExpression type, EditorValue value, int revision, bool writable
+});
+
+
+@override $BindingReferenceCopyWith<$Res> get reference;@override $TypeExpressionCopyWith<$Res> get type;@override $EditorValueCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class __$InspectedBindingCopyWithImpl<$Res>
+    implements _$InspectedBindingCopyWith<$Res> {
+  __$InspectedBindingCopyWithImpl(this._self, this._then);
+
+  final _InspectedBinding _self;
+  final $Res Function(_InspectedBinding) _then;
+
+/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? reference = null,Object? type = null,Object? value = null,Object? revision = null,Object? writable = null,}) {
+  return _then(_InspectedBinding(
+reference: null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
+as BindingReference,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as TypeExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as EditorValue,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
+as int,writable: null == writable ? _self.writable : writable // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BindingReferenceCopyWith<$Res> get reference {
+
+  return $BindingReferenceCopyWith<$Res>(_self.reference, (value) {
+    return _then(_self.copyWith(reference: value));
+  });
+}/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypeExpressionCopyWith<$Res> get type {
+
+  return $TypeExpressionCopyWith<$Res>(_self.type, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}/// Create a copy of InspectedBinding
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EditorValueCopyWith<$Res> get value {
+
+  return $EditorValueCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
+}
+
+/// @nodoc
 mixin _$ResolvedBinding {
 
  BindingReference get reference; TypeExpression get type; DataValue get value; int get revision; bool get writable;
@@ -1221,7 +1854,7 @@ $DataValueCopyWith<$Res> get value {
 /// @nodoc
 mixin _$BindingEnvironment {
 
- Map<BindingId, BindingSnapshot> get bindings;
+ Map<BindingId, BindingSource> get bindings;
 /// Create a copy of BindingEnvironment
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1257,7 +1890,7 @@ abstract mixin class $BindingEnvironmentCopyWith<$Res>  {
   factory $BindingEnvironmentCopyWith(BindingEnvironment value, $Res Function(BindingEnvironment) _then) = _$BindingEnvironmentCopyWithImpl;
 @useResult
 $Res call({
- Map<BindingId, BindingSnapshot> bindings
+ Map<BindingId, BindingSource> bindings
 });
 
 
@@ -1277,7 +1910,7 @@ class _$BindingEnvironmentCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? bindings = null,}) {
   return _then(BindingEnvironment(
 null == bindings ? _self.bindings : bindings // ignore: cast_nullable_to_non_nullable
-as Map<BindingId, BindingSnapshot>,
+as Map<BindingId, BindingSource>,
   ));
 }
 
@@ -1362,7 +1995,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<BindingId, BindingSnapshot> bindings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<BindingId, BindingSource> bindings)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BindingEnvironment() when $default != null:
 return $default(_that.bindings);case _:
@@ -1383,7 +2016,7 @@ return $default(_that.bindings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<BindingId, BindingSnapshot> bindings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<BindingId, BindingSource> bindings)  $default,) {final _that = this;
 switch (_that) {
 case _BindingEnvironment():
 return $default(_that.bindings);case _:
@@ -1403,7 +2036,7 @@ return $default(_that.bindings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<BindingId, BindingSnapshot> bindings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<BindingId, BindingSource> bindings)?  $default,) {final _that = this;
 switch (_that) {
 case _BindingEnvironment() when $default != null:
 return $default(_that.bindings);case _:
@@ -1418,11 +2051,11 @@ return $default(_that.bindings);case _:
 
 
 class _BindingEnvironment extends BindingEnvironment {
-  const _BindingEnvironment( Map<BindingId, BindingSnapshot> bindings): _bindings = bindings,super._();
+  const _BindingEnvironment( Map<BindingId, BindingSource> bindings): _bindings = bindings,super._();
 
 
- final  Map<BindingId, BindingSnapshot> _bindings;
-@override Map<BindingId, BindingSnapshot> get bindings {
+ final  Map<BindingId, BindingSource> _bindings;
+@override Map<BindingId, BindingSource> get bindings {
   if (_bindings is EqualUnmodifiableMapView) return _bindings;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_bindings);
@@ -1461,7 +2094,7 @@ abstract mixin class _$BindingEnvironmentCopyWith<$Res> implements $BindingEnvir
   factory _$BindingEnvironmentCopyWith(_BindingEnvironment value, $Res Function(_BindingEnvironment) _then) = __$BindingEnvironmentCopyWithImpl;
 @override @useResult
 $Res call({
- Map<BindingId, BindingSnapshot> bindings
+ Map<BindingId, BindingSource> bindings
 });
 
 
@@ -1481,7 +2114,7 @@ class __$BindingEnvironmentCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? bindings = null,}) {
   return _then(_BindingEnvironment(
 null == bindings ? _self._bindings : bindings // ignore: cast_nullable_to_non_nullable
-as Map<BindingId, BindingSnapshot>,
+as Map<BindingId, BindingSource>,
   ));
 }
 

@@ -42,6 +42,8 @@ void main() {
         owners: [first, second],
         rootType: type,
         typeCatalog: catalog,
+        commitInteractions: (interactions) =>
+            interactions.commitIndependently(),
       );
       final session = PresentationSession(
         PresentationModel(

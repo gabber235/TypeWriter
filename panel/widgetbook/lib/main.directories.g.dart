@@ -74,6 +74,8 @@ import 'package:widgetbook_workspace/stories/shared/editors/presentation/editor_
     as _widgetbook_workspace_stories_shared_editors_presentation_editor_save_status_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/editor_surface.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_editor_surface_stories;
+import 'package:widgetbook_workspace/stories/shared/editors/presentation/mixed_value_controls.stories.dart'
+    as _widgetbook_workspace_stories_shared_editors_presentation_mixed_value_controls_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/protocol/header_renderer/header_renderer.stories.dart'
     as _widgetbook_workspace_stories_shared_editors_presentation_protocol_header_renderer_header_renderer_stories;
 import 'package:widgetbook_workspace/stories/shared/editors/presentation/protocol/renderers/content/content_renderer.stories.dart'
@@ -108,6 +110,8 @@ import 'package:widgetbook_workspace/stories/shared/graph/presentation/graph.sto
     as _widgetbook_workspace_stories_shared_graph_presentation_graph_stories;
 import 'package:widgetbook_workspace/stories/shared/graph/presentation/resizable_element.stories.dart'
     as _widgetbook_workspace_stories_shared_graph_presentation_resizable_element_stories;
+import 'package:widgetbook_workspace/stories/shared/inspector/presentation/inspector.stories.dart'
+    as _widgetbook_workspace_stories_shared_inspector_presentation_inspector_stories;
 import 'package:widgetbook_workspace/stories/shared/interaction_mode/presentation/mode_display_chip.stories.dart'
     as _widgetbook_workspace_stories_shared_interaction_mode_presentation_mode_display_chip_stories;
 import 'package:widgetbook_workspace/stories/shared/search/presentation/search_frame.stories.dart'
@@ -574,6 +578,12 @@ final directories = <_widgetbook.WidgetbookNode>[
                                         _widgetbook_workspace_stories_features_organizations_features_realms_features_books_presentation_book_stories
                                             .bookUseCase,
                                   ),
+                                  _widgetbook.WidgetbookUseCase(
+                                    name: 'Mixed selection',
+                                    builder:
+                                        _widgetbook_workspace_stories_features_organizations_features_realms_features_books_presentation_book_stories
+                                            .mixedBookSelectionUseCase,
+                                  ),
                                 ],
                               ),
                               _widgetbook.WidgetbookFolder(
@@ -679,6 +689,12 @@ final directories = <_widgetbook.WidgetbookNode>[
                                     builder:
                                         _widgetbook_workspace_stories_features_organizations_features_realms_features_tags_presentation_tag_node_stories
                                             .tagNodeUseCase,
+                                  ),
+                                  _widgetbook.WidgetbookUseCase(
+                                    name: 'Mixed selection',
+                                    builder:
+                                        _widgetbook_workspace_stories_features_organizations_features_realms_features_tags_presentation_tag_node_stories
+                                            .mixedTagSelectionUseCase,
                                   ),
                                   _widgetbook.WidgetbookUseCase(
                                     name: 'Multiple Colors',
@@ -811,6 +827,18 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_editors_presentation_composed_editor_stories
                             .composedEditorUseCase,
+                  ),
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Mixed values',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_mixed_value_controls_stories
+                            .mixedValueControlsUseCase,
+                  ),
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Shared values',
+                    builder:
+                        _widgetbook_workspace_stories_shared_editors_presentation_mixed_value_controls_stories
+                            .sharedValueControlsUseCase,
                   ),
                 ],
               ),
@@ -1584,6 +1612,39 @@ final directories = <_widgetbook.WidgetbookNode>[
                     builder:
                         _widgetbook_workspace_stories_shared_graph_presentation_resizable_element_stories
                             .resizableElementDefault,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      _widgetbook.WidgetbookFolder(
+        name: 'inspector',
+        children: [
+          _widgetbook.WidgetbookFolder(
+            name: 'presentation',
+            children: [
+              _widgetbook.WidgetbookComponent(
+                name: 'InspectorScaffold',
+                useCases: [
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Book plus Tag mixed color',
+                    builder:
+                        _widgetbook_workspace_stories_shared_inspector_presentation_inspector_stories
+                            .mixedBookAndTagColorUseCase,
+                  ),
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Book plus Tag shared color',
+                    builder:
+                        _widgetbook_workspace_stories_shared_inspector_presentation_inspector_stories
+                            .sharedBookAndTagColorUseCase,
+                  ),
+                  _widgetbook.WidgetbookUseCase(
+                    name: 'Default',
+                    builder:
+                        _widgetbook_workspace_stories_shared_inspector_presentation_inspector_stories
+                            .inspectorUseCase,
                   ),
                 ],
               ),

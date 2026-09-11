@@ -56,7 +56,7 @@ class BookIdentifier extends SelectableIdentifier {
         id: this,
         book: book,
         revision: revision,
-        tagCollection: tagPresentationCollection(tags),
+        tagCollection: tags.presentationCollection(),
       ),
     );
   }
@@ -92,6 +92,10 @@ class BookSelection extends EditableSelectable<BookIdentifier> {
   final VoidCallback? onOpen;
 
   final PresentationCollectionSource tagCollection;
+
+  @override
+  MultiInspectionDefinition get multiInspection =>
+      const BookMultiInspectionDefinition();
 
   @override
   String get name => book.title;

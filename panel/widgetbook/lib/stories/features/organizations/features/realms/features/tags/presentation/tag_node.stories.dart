@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
+import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
+    as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
 import "package:widgetbook_annotation/widgetbook_annotation.dart" as widgetbook;
+import "package:widgetbook_workspace/support/selected_inspector_story.dart";
 
 @widgetbook.UseCase(name: "Default", type: TagNode)
 Widget tagNodeUseCase(BuildContext context) {
@@ -40,6 +43,79 @@ Widget tagNodeUseCase(BuildContext context) {
     ),
   );
 }
+
+@widgetbook.UseCase(name: "Mixed selection", type: TagNode)
+Widget mixedTagSelectionUseCase(BuildContext context) =>
+    mixedTagSelectionStory();
+
+Widget mixedTagSelectionStory({bool initiallySelected = true}) {
+  final earth = _storyTag("earth", color: Colors.blue, x: 0);
+  final europe = _storyTag(
+    "europe",
+    color: Colors.indigo,
+    parents: [earth.tagId],
+    x: 4,
+  );
+  final netherlands = _storyTag(
+    "netherlands",
+    color: Colors.orange,
+    parents: [europe.tagId],
+    x: 8,
+  );
+  final italy = _storyTag(
+    "italy",
+    color: Colors.orange,
+    parents: [earth.tagId],
+    x: 12,
+  );
+  final tags = [earth, europe, netherlands, italy];
+  final selected = [netherlands, italy];
+
+  return FakeApp(
+    overrides: [
+      ...authoringSessionMockOverrides(),
+      organizationIdProvider.overrideWithValue(
+        recordId("organization:widgetbook"),
+      ),
+      realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
+      ...tagsProviderOverrides(tags: tags),
+    ],
+    child: InspectorScaffold(
+      child: SelectedInspectorStory(
+        selection: initiallySelected
+            ? [for (final tag in selected) TagIdentifier(tag.tagId)]
+            : const [],
+        child: Center(
+          child: Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              for (final tag in tags)
+                SizedBox(
+                  width: 150,
+                  height: 50,
+                  child: TagNode(tagId: tag.tagId),
+                ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Tag _storyTag(
+  String name, {
+  required Color color,
+  required int x,
+  List<skir.RecordId> parents = const [],
+}) => Tag(
+  tagId: recordId("tag:$name"),
+  name: name,
+  color: color,
+  parentIds: parents,
+  placement: Placement(x: x, y: 0, width: 4, height: 1),
+);
 
 @widgetbook.UseCase(name: "Multiple Colors", type: TagNode)
 Widget tagNodeColorsUseCase(BuildContext context) {

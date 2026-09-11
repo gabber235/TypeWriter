@@ -1,6 +1,7 @@
 import "package:flutter/widgets.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+
 import "../../../support/test_utils.dart";
 
 void main() {
@@ -75,6 +76,7 @@ void main() {
       owners: owners,
       rootType: const StringType(),
       typeCatalog: const TypeCatalog([]),
+      commitInteractions: (interactions) => interactions.commitIndependently(),
     );
     addTearDown(group.dispose);
     await tester.pumpTestApp(

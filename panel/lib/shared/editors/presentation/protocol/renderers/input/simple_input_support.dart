@@ -10,12 +10,13 @@ Widget _inputDiagnostic(String message) {
 
 Widget _renderParsedTextValue({
   required BoundControlField field,
-  required String text,
+  required String? text,
   required DataValue? Function(String) parse,
 }) {
   return EditorTextField(
     key: ValueKey(field.binding.reference),
     text: text,
+    decoration: field.mixed ? const InputDecoration().forMixedValue : null,
     enabled: field.editable,
     onInputFocus: field.interaction.begin,
     onDone: (_) => field.interaction.commit(),

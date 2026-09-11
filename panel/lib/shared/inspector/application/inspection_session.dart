@@ -32,7 +32,7 @@ final class InspectionSession extends ChangeNotifier {
   final Ref ref;
   bool _disposed = false;
   final EditorOwnerRegistry owners;
-  final List<MultiEditOwner> _groups = [];
+  InspectionBuildContext? _buildContext;
 
   Widget? header;
   PresentationModel? model;
@@ -40,12 +40,6 @@ final class InspectionSession extends ChangeNotifier {
   void _refresh() {
     final selection = ref.read(inspectedSelectionProvider).value;
     if (selection == null) return;
-
-    for (final group in _groups) {
-      group.dispose();
-    }
-
-    _groups.clear();
 
     final router = ref.read(appRouterProvider);
     final path = router.currentPath;
@@ -58,27 +52,84 @@ final class InspectionSession extends ChangeNotifier {
       identity: identity,
     );
 
-    owners.begin();
-    final contents = selection
-        .map((item) => item.buildInspection(owners))
-        .toList();
-    owners.end();
+    final refresh = owners.beginRefresh();
+    final next = InspectionBuildContext(refresh);
+    var committed = false;
+    try {
+      final content = _buildSelection(selection, next);
+      final nextModel = content?.model.copyWith(ownerLabels: refresh.labels);
 
-    header = contents.length == 1 ? contents.single.header : null;
-
-    final models = contents.map((content) => content.model).toList();
-
-    model = switch (models.length) {
-      0 => null,
-      1 => models.single,
-      _ => _combine(models),
-    };
-
-    model = model?.copyWith(ownerLabels: owners.labels);
-    notifyListeners();
+      refresh.commit();
+      committed = true;
+      final previous = _buildContext;
+      _buildContext = next;
+      header = content?.header;
+      model = nextModel;
+      previous?.dispose();
+      notifyListeners();
+    } on Object {
+      if (!committed) {
+        next.dispose();
+        refresh.rollback();
+      }
+      rethrow;
+    } finally {
+      refresh.dispose();
+    }
   }
 
-  PresentationModel _combine(List<PresentationModel> models) {
+  InspectionContent? _buildSelection(
+    List<InspectableSelectable> selection,
+    InspectionBuildContext context,
+  ) {
+    if (selection.isEmpty) return null;
+    if (selection.length == 1) {
+      return selection.single.buildInspection(context.owners);
+    }
+
+    final editable = selection.whereType<EditableSelectable>().toList();
+    final definition = editable.length == selection.length
+        ? editable.sharedMultiInspection
+        : const TypeResult<MultiInspectionDefinition?>.success(null);
+    if (definition.valueOrNull case final shared?) {
+      final composed = context.compose(shared, editable);
+      if (composed.valueOrNull case final content?) return content;
+      return _buildStructural(
+        selection,
+        context,
+        diagnostics: composed.diagnostics,
+      );
+    }
+    return _buildStructural(
+      selection,
+      context,
+      diagnostics: definition.diagnostics,
+    );
+  }
+
+  InspectionContent _buildStructural(
+    List<InspectableSelectable> selection,
+    InspectionBuildContext context, {
+    List<TypeDiagnostic> diagnostics = const [],
+  }) {
+    final contents = selection
+        .map((item) => item.buildInspection(context.owners))
+        .toList();
+    final model = _combine(
+      contents.map((content) => content.model).toList(),
+      context,
+    );
+    return InspectionContent(
+      model: model.copyWith(
+        diagnostics: [...model.diagnostics, ...diagnostics],
+      ),
+    );
+  }
+
+  PresentationModel _combine(
+    List<PresentationModel> models,
+    InspectionBuildContext context,
+  ) {
     final catalog = TypeCatalog(
       models.expand((model) => model.catalog.definitions).toSet().toList(),
     );
@@ -132,12 +183,11 @@ final class InspectionSession extends ChangeNotifier {
           .toList();
       final common = types.commonEditableProjection().valueOrNull;
       if (common == null) continue;
-      final owner = MultiEditOwner(
-        owners: members,
+      final owner = context.multiEditorForOwners(
+        members,
         rootType: common,
         typeCatalog: catalog,
       );
-      _groups.add(owner);
       final id = BindingId(inputs.length);
       inputs[id] = PresentationInput.edit(owner);
       children.add(
@@ -163,9 +213,7 @@ final class InspectionSession extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
-    for (final group in _groups) {
-      group.dispose();
-    }
+    _buildContext?.dispose();
     owners.dispose();
     super.dispose();
   }

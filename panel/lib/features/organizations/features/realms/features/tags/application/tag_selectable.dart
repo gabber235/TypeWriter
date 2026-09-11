@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:riverpod/riverpod.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
@@ -63,8 +64,7 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
         id: this,
         tag: tag,
         revision: revision,
-        tagCollection: tagPresentationCollection(
-          tags,
+        tagCollection: tags.presentationCollection(
           editingTagId: tag.tagId,
           existingParentIds: tag.parentIds,
         ),
@@ -101,6 +101,10 @@ class TagSelectable extends EditableSelectable<TagIdentifier> {
   final Tag tag;
   final int revision;
   final PresentationCollectionSource tagCollection;
+
+  @override
+  MultiInspectionDefinition get multiInspection =>
+      const TagMultiInspectionDefinition();
 
   @override
   String get name => tag.name;

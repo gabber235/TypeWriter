@@ -65,15 +65,16 @@ final class _BatchResource implements EditableResource {
 
 TransactionalEditorSource _source(
   LocalWorkSession workspace,
-  _BatchResource resource,
-) {
+  _BatchResource resource, {
+  EditorCommitPolicy commitPolicy = EditorCommitPolicy.applyResource,
+}) {
   final source = workspace.editor(
     ResourceEditorTarget(
       targetId: resource.key.identity,
       label: "Resource",
       resource: resource,
       snapshot: _snapshot(),
-      commitPolicy: EditorCommitPolicy.applyResource,
+      commitPolicy: commitPolicy,
     ),
   ) as TransactionalEditorSource;
   workspace.retain(resource.key);
@@ -81,6 +82,272 @@ TransactionalEditorSource _source(
 }
 
 void main() {
+  test(
+    "multi interaction sends one batch for every selected resource",
+    () async {
+      final workspace = LocalWorkSession();
+      addTearDown(workspace.dispose);
+      final requests = <List<_Operation>>[];
+      final combiner = MutationCombiner<_Operation, List<_Operation>>(
+        prepare: (operations) => PreparedCommit(
+          id: Object(),
+          label: "Batch",
+          resources: operations.map((operation) => operation.$1).toSet(),
+          send: () async {
+            requests.add(operations);
+            return SubmissionConfirmed(operations);
+          },
+        ),
+      );
+      final first = _source(
+        workspace,
+        _BatchResource("first", combiner),
+        commitPolicy: EditorCommitPolicy.autosaveChanges,
+      );
+      final second = _source(
+        workspace,
+        _BatchResource("second", combiner),
+        commitPolicy: EditorCommitPolicy.autosaveChanges,
+      );
+      final owner = MultiEditOwner(
+        owners: [first, second],
+        rootType: const StringType(),
+        typeCatalog: const TypeCatalog([]),
+        commitInteractions: (interactions) => interactions.commitAtomically(),
+      );
+      addTearDown(owner.dispose);
+
+      final interaction = owner.beginInteraction(DataPath.root);
+      expect(
+        owner.update(DataPath.root, const StringValue("Shared")),
+        isA<AppliedEditorMutation>(),
+      );
+      await interaction.commit();
+
+      expect(requests, hasLength(1));
+      expect(requests.single, hasLength(2));
+      expect(
+        requests.single.map((operation) => operation.$2.rootValue),
+        everyElement(const StringValue("Shared")),
+      );
+      expect(first.hasWork, isFalse);
+      expect(second.hasWork, isFalse);
+    },
+  );
+
+  test("rejected multi interaction retry does not replay mutations", () async {
+    final workspace = LocalWorkSession();
+    addTearDown(workspace.dispose);
+    final requests = <List<_Operation>>[];
+    var reject = true;
+    final combiner = MutationCombiner<_Operation, List<_Operation>>(
+      prepare: (operations) => PreparedCommit(
+        id: Object(),
+        label: "Batch",
+        resources: operations.map((operation) => operation.$1).toSet(),
+        send: () async {
+          requests.add(operations);
+          return reject
+              ? const SubmissionRejected(message: "Try again")
+              : SubmissionConfirmed(operations);
+        },
+      ),
+    );
+    final first = _source(
+      workspace,
+      _BatchResource("first", combiner),
+      commitPolicy: EditorCommitPolicy.autosaveChanges,
+    );
+    final second = _source(
+      workspace,
+      _BatchResource("second", combiner),
+      commitPolicy: EditorCommitPolicy.autosaveChanges,
+    );
+    final owner = MultiEditOwner(
+      owners: [first, second],
+      rootType: const StringType(),
+      typeCatalog: const TypeCatalog([]),
+      commitInteractions: (interactions) => interactions.commitAtomically(),
+    );
+    addTearDown(owner.dispose);
+
+    final interaction = owner.beginInteraction(DataPath.root);
+    owner.update(DataPath.root, const StringValue("Shared"));
+    await interaction.commit();
+    final rejected = requests.single;
+
+    reject = false;
+    await second.flush();
+
+    expect(requests, hasLength(2));
+    for (var index = 0; index < rejected.length; index++) {
+      expect(
+        requests.last[index].$2.localRevision,
+        rejected[index].$2.localRevision,
+      );
+      expect(requests.last[index].$2.mutations, rejected[index].$2.mutations);
+    }
+  });
+
+  test("apply resource interaction releases gates without saving", () async {
+    final workspace = LocalWorkSession();
+    addTearDown(workspace.dispose);
+    final requests = <List<_Operation>>[];
+    final combiner = MutationCombiner<_Operation, List<_Operation>>(
+      prepare: (operations) => PreparedCommit(
+        id: Object(),
+        label: "Batch",
+        resources: operations.map((operation) => operation.$1).toSet(),
+        send: () async {
+          requests.add(operations);
+          return SubmissionConfirmed(operations);
+        },
+      ),
+    );
+    final first = _source(workspace, _BatchResource("first", combiner));
+    final second = _source(workspace, _BatchResource("second", combiner));
+    final owner = MultiEditOwner(
+      owners: [first, second],
+      rootType: const StringType(),
+      typeCatalog: const TypeCatalog([]),
+      commitInteractions: (interactions) => interactions.commitAtomically(),
+    );
+    addTearDown(owner.dispose);
+
+    final interaction = owner.beginInteraction(DataPath.root);
+    owner.update(DataPath.root, const StringValue("Shared"));
+    await interaction.commit();
+
+    expect(interaction.active, isFalse);
+    expect(requests, isEmpty);
+    expect(first.hasWork, isTrue);
+    expect(second.hasWork, isTrue);
+  });
+
+  test("cancelling a multi interaction restores every draft", () async {
+    final workspace = LocalWorkSession();
+    addTearDown(workspace.dispose);
+    final requests = <List<_Operation>>[];
+    final combiner = MutationCombiner<_Operation, List<_Operation>>(
+      prepare: (operations) => PreparedCommit(
+        id: Object(),
+        label: "Batch",
+        resources: operations.map((operation) => operation.$1).toSet(),
+        send: () async {
+          requests.add(operations);
+          return SubmissionConfirmed(operations);
+        },
+      ),
+    );
+    final first = _source(
+      workspace,
+      _BatchResource("first", combiner),
+      commitPolicy: EditorCommitPolicy.autosaveChanges,
+    );
+    final second = _source(
+      workspace,
+      _BatchResource("second", combiner),
+      commitPolicy: EditorCommitPolicy.autosaveChanges,
+    );
+    final owner = MultiEditOwner(
+      owners: [first, second],
+      rootType: const StringType(),
+      typeCatalog: const TypeCatalog([]),
+      commitInteractions: (interactions) => interactions.commitAtomically(),
+    );
+    addTearDown(owner.dispose);
+
+    final interaction = owner.beginInteraction(DataPath.root);
+    owner.update(DataPath.root, const StringValue("Shared"));
+    interaction.cancel();
+
+    expect(interaction.active, isFalse);
+    expect(requests, isEmpty);
+    expect(
+      first.value(DataPath.root).valueOrNull,
+      const StringValue("Original"),
+    );
+    expect(
+      second.value(DataPath.root).valueOrNull,
+      const StringValue("Original"),
+    );
+    expect(first.hasWork, isFalse);
+    expect(second.hasWork, isFalse);
+  });
+
+  test(
+    "partially closed atomic cohort cancels every remaining member",
+    () async {
+      final workspace = LocalWorkSession();
+      addTearDown(workspace.dispose);
+      final requests = <List<_Operation>>[];
+      final combiner = MutationCombiner<_Operation, List<_Operation>>(
+        prepare: (operations) => PreparedCommit(
+          id: Object(),
+          label: "Batch",
+          resources: operations.map((operation) => operation.$1).toSet(),
+          send: () async {
+            requests.add(operations);
+            return SubmissionConfirmed(operations);
+          },
+        ),
+      );
+      final first = _source(
+        workspace,
+        _BatchResource("first", combiner),
+        commitPolicy: EditorCommitPolicy.autosaveChanges,
+      );
+      final second = _source(
+        workspace,
+        _BatchResource("second", combiner),
+        commitPolicy: EditorCommitPolicy.autosaveChanges,
+      );
+      final firstInteraction = first.beginInteraction(DataPath.root);
+      final secondInteraction = second.beginInteraction(DataPath.root);
+      first.update(DataPath.root, const StringValue("First"));
+      second.update(DataPath.root, const StringValue("Second"));
+      firstInteraction.cancel();
+
+      await [firstInteraction, secondInteraction].commitAtomically();
+
+      expect(requests, isEmpty);
+      expect(
+        first.value(DataPath.root).valueOrNull,
+        const StringValue("Original"),
+      );
+      expect(
+        second.value(DataPath.root).valueOrNull,
+        const StringValue("Original"),
+      );
+      expect(secondInteraction.active, isFalse);
+    },
+  );
+
+  test("atomic commit rejects duplicate resource interactions", () async {
+    final workspace = LocalWorkSession();
+    addTearDown(workspace.dispose);
+    final combiner = MutationCombiner<_Operation, List<_Operation>>(
+      prepare: (operations) => PreparedCommit(
+        id: Object(),
+        label: "Batch",
+        resources: operations.map((operation) => operation.$1).toSet(),
+        send: () async => SubmissionConfirmed(operations),
+      ),
+    );
+    final source = _source(
+      workspace,
+      _BatchResource("first", combiner),
+      commitPolicy: EditorCommitPolicy.autosaveChanges,
+    );
+    final interaction = source.beginInteraction(DataPath.root);
+    addTearDown(interaction.cancel);
+
+    await expectLater(
+      [interaction, interaction].commitAtomically(),
+      throwsStateError,
+    );
+  });
+
   for (final failRefresh in [true, false]) {
     test(
       "retrying one member preserves the complete batch after ${failRefresh ? "refresh failure" : "rejection"}",

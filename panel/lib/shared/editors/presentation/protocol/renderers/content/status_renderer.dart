@@ -19,9 +19,8 @@ extension StatusElementRendering on StatusElement {
             const SizedBox(width: 6),
             Text(
               status.label,
-              style: DefaultTextStyle.of(
-                context,
-              ).style.copyWith(color: visual.color),
+              style: DefaultTextStyle.of(context).style
+                  .copyWith(color: visual.color),
             ),
           ],
         ),

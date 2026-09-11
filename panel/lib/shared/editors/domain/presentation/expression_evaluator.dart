@@ -15,7 +15,7 @@ abstract class ExpressionContext with _$ExpressionContext {
 
   const ExpressionContext._();
 
-  ExpressionContext withBinding(BindingId id, BindingSnapshot binding) =>
+  ExpressionContext withBinding(BindingId id, BindingSource binding) =>
       ExpressionContext(
         bindings: BindingEnvironment({...bindings.bindings, id: binding}),
         conversions: conversions,

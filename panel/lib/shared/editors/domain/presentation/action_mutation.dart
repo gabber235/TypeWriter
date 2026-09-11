@@ -14,11 +14,17 @@ extension BindingReferenceMutation on BindingReference {
       return LocalMutationInvalid(diagnostics);
     }
 
-    final snapshot = replaced.valueOrNull!.bindings[bindingId];
-    if (snapshot == null) {
-      return invalidLocalMutation("Updated binding is absent");
+    final binding = replaced.valueOrNull!.resolve(
+      BindingReference(bindingId: bindingId),
+      registry: registry,
+    );
+    if (binding case TypeFailure(:final diagnostics)) {
+      return LocalMutationInvalid(diagnostics);
     }
-    return LocalMutationApplied(bindingId: bindingId, value: snapshot.value);
+    return LocalMutationApplied(
+      bindingId: bindingId,
+      value: binding.valueOrNull!.value,
+    );
   }
 }
 

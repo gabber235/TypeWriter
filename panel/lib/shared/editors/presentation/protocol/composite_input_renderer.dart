@@ -16,12 +16,25 @@ extension ListInputElementResolvedRendering on ListInputElement {
       scope: scope,
       labeled: false,
       shapeMismatch: (binding) =>
-          binding.type is ListType && binding.value is ListValue
+          binding.type is ListType &&
+              (binding.value is MixedEditorValue ||
+                  binding.value.valueOrNull is ListValue)
           ? null
           : "List control does not match its binding",
       builder: (context, field) {
+        if (field.mixed) {
+          return LabeledControl(
+            control: control,
+            scope: scope,
+            child: MixedCollectionControl(
+              onReplace: field.editable
+                  ? () => field.update(const ListValue([]))
+                  : null,
+            ),
+          );
+        }
         return render(
-          binding: field.binding,
+          binding: field.binding.resolvedOrNull!,
           scope: scope,
           editable: field.editable,
         );
@@ -37,11 +50,24 @@ extension MapInputElementResolvedRendering on MapInputElement {
       scope: scope,
       labeled: false,
       shapeMismatch: (binding) =>
-          binding.type is MapType && binding.value is MapValue
+          binding.type is MapType &&
+              (binding.value is MixedEditorValue ||
+                  binding.value.valueOrNull is MapValue)
           ? null
           : "Map control does not match its binding",
       builder: (context, field) {
-        return render(binding: field.binding, scope: scope);
+        if (field.mixed) {
+          return LabeledControl(
+            control: control,
+            scope: scope,
+            child: MixedCollectionControl(
+              onReplace: field.editable
+                  ? () => field.update(const MapValue([]))
+                  : null,
+            ),
+          );
+        }
+        return render(binding: field.binding.resolvedOrNull!, scope: scope);
       },
     );
   }
@@ -54,7 +80,9 @@ extension RecordInputElementResolvedRendering on RecordInputElement {
       scope: scope,
       labeled: false,
       shapeMismatch: (binding) =>
-          binding.type is RecordType && binding.value is RecordValue
+          binding.type is RecordType &&
+              (binding.value is MixedEditorValue ||
+                  binding.value.valueOrNull is RecordValue)
           ? null
           : "Record control does not match its binding",
       builder: (context, field) {

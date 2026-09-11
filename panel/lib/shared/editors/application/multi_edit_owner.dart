@@ -1,18 +1,35 @@
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+typedef MultiInteractionCommitter = Future<void> Function(
+  List<EditorInteractionSession> interactions,
+);
+
 /// Projects common editable fields while preserving every resource owner.
 final class MultiEditOwner extends ChangeNotifier implements EditOwner {
   MultiEditOwner({
-    required this.owners,
+    required List<EditOwner> owners,
     required this.rootType,
     required this.typeCatalog,
-  }) {
-    for (final owner in owners) {
+    required this.commitInteractions,
+  }) : owners = List.unmodifiable(owners) {
+    if (this.owners.isEmpty) {
+      throw ArgumentError.value(owners, "owners", "Must not be empty");
+    }
+    if ((Set<EditOwner>.identity()..addAll(this.owners)).length !=
+        this.owners.length) {
+      throw ArgumentError.value(
+        owners,
+        "owners",
+        "Must contain identity unique owners",
+      );
+    }
+    for (final owner in this.owners) {
       owner.addListener(notifyListeners);
     }
   }
   final List<EditOwner> owners;
+  final MultiInteractionCommitter commitInteractions;
   @override
   final TypeExpression rootType;
   @override
@@ -31,7 +48,6 @@ final class MultiEditOwner extends ChangeNotifier implements EditOwner {
     final first = values.firstOrNull?.valueOrNull;
     if (first == null || values.any((value) => value.valueOrNull != first)) {
       return const EditorValue.mixed();
-
     }
     return EditorValue.ready(first);
   }
@@ -66,7 +82,8 @@ final class MultiEditOwner extends ChangeNotifier implements EditOwner {
   @override
   EditorInteractionSession beginInteraction(DataPath path) => _MultiInteraction(
     path,
-    owners.map((owner) => owner.beginInteraction(path)).toList(),
+    owners.map((owner) => owner.beginInteraction(path)).toList(growable: false),
+    commitInteractions,
   );
   @override
   void dispose() {
@@ -78,25 +95,35 @@ final class MultiEditOwner extends ChangeNotifier implements EditOwner {
 }
 
 final class _MultiInteraction implements EditorInteractionSession {
-  _MultiInteraction(this.path, this.sessions);
+  _MultiInteraction(this.path, this.sessions, this.commitAll);
 
   @override
   final DataPath path;
   final List<EditorInteractionSession> sessions;
+  final MultiInteractionCommitter commitAll;
 
   @override
-  bool get active => sessions.any((session) => session.active);
+  bool get active =>
+      sessions.isNotEmpty && sessions.every((session) => session.active);
 
   @override
-  Future<void> commit() async {
-    await Future.wait(sessions.map((session) => session.commit()));
-  }
+  Future<void> commit() => commitAll(sessions);
 
   @override
   void cancel() {
     for (final session in sessions) {
       session.cancel();
     }
+  }
+}
+
+extension IndependentInteractionCommit on Iterable<EditorInteractionSession> {
+  /// Commits unrelated interactions without claiming atomic persistence.
+  ///
+  /// Use only for local editors and isolated examples. Resource backed
+  /// selection editing must use [AtomicResourceInteractionCommit].
+  Future<void> commitIndependently() async {
+    await Future.wait(map((session) => session.commit()));
   }
 }
 
@@ -123,13 +150,11 @@ extension SelectionEditorMutationAggregation on Iterable<EditorMutationResult> {
           path: path,
         ),
       ]);
-
     }
 
     final accepted = applied.first.value;
     if (applied.skip(1).any((result) => result.value != accepted)) {
       return const EditorMutationResult.conflict();
-
     }
     return EditorMutationResult.applied(accepted);
   }

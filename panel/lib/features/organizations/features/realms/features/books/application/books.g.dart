@@ -33,7 +33,7 @@ final class CanonicalBooksProvider
   CanonicalBooks create() => CanonicalBooks();
 }
 
-String _$canonicalBooksHash() => r'ecd67e58d94e05f8f6310619f537dd5ec1d83385';
+String _$canonicalBooksHash() => r'596f6546e2c31bf9c7157a127b2c87c8571da64d';
 
 abstract class _$CanonicalBooks extends $AsyncNotifier<List<Book>> {
   FutureOr<List<Book>> build();

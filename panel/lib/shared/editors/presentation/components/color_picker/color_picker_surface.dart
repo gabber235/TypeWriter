@@ -12,6 +12,7 @@ class ColorPickerSurface extends HookConsumerWidget {
     required this.onChanged,
     this.enabled = true,
     this.warnsAboutAlpha = false,
+    this.replacing = false,
     super.key,
   });
 
@@ -20,6 +21,7 @@ class ColorPickerSurface extends HookConsumerWidget {
   final ValueChanged<Color> onChanged;
   final bool enabled;
   final bool warnsAboutAlpha;
+  final bool replacing;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,6 +83,8 @@ class ColorPickerSurface extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: context.spacing.space3,
                     children: [
+                      if (replacing)
+                        const Text("Choose one replacement color."),
                       SizedBox(
                         height: 180,
                         child: ClipRRect(

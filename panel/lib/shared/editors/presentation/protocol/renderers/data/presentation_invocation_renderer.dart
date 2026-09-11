@@ -30,7 +30,7 @@ extension PresentationInputScope on PresentationRenderScope {
     Map<BindingId, BindingReference> arguments,
   ) {
     final substitutions = <String, TypeExpression>{};
-    final snapshots = <BindingId, BindingSnapshot>{};
+    final sources = <BindingId, BindingSource>{};
     final destinations = <BindingId, BindingReference>{};
     final owners = <BindingId, BindingReference?>{};
     if (definition.inputs.map((input) => input.id).toSet().length !=
@@ -43,7 +43,7 @@ extension PresentationInputScope on PresentationRenderScope {
       if (argument == null) {
         return _inputFailure("Missing presentation input: ${input.name}");
       }
-      final resolved = resolve(argument);
+      final resolved = inspect(argument);
       if (resolved case TypeFailure(:final diagnostics)) {
         return TypeResult.failure(diagnostics);
       }
@@ -77,12 +77,14 @@ extension PresentationInputScope on PresentationRenderScope {
           "Presentation input requires editing: ${input.name}",
         );
       }
-      snapshots[input.id] = BindingSnapshot(
-        type: value.type,
-        value: value.value,
-        revision: value.revision,
-        writable: value.writable,
+      final projected = expressions.bindings.project(
+        argument,
+        registry: registry,
       );
+      if (projected case TypeFailure(:final diagnostics)) {
+        return TypeResult.failure(diagnostics);
+      }
+      sources[input.id] = projected.valueOrNull!;
 
       destinations[input.id] = canonical(argument);
       owners[input.id] = ownerReference(argument);
@@ -92,7 +94,7 @@ extension PresentationInputScope on PresentationRenderScope {
       definition.root.substitute(substitutions),
       copyWith(
         expressions: expressions.copyWith(
-          bindings: BindingEnvironment(snapshots),
+          bindings: BindingEnvironment(sources),
         ),
         aliases: destinations,
         ownerBindings: owners,

@@ -204,7 +204,7 @@ EditorProtocolRenderer _renderer(List<Tag> tags, List<String> rootTagIds) {
         representation: ListType(element: tagReferenceType),
       ),
     ]),
-    collections: [tagPresentationCollection(tags)],
+    collections: [tags.presentationCollection()],
     presentation: effectiveTagGraph(
       id: "book.effectiveTags",
       title: "Effective Tags",

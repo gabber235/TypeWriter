@@ -11,7 +11,7 @@ extension SelectInputElementRendering on SelectInputElement {
             if (scope.evaluate(option.value).valueOrNull case final value?)
               (option, value),
         ];
-        final current = field.binding.value;
+        final current = field.value;
         final hasSelection =
             allowCustomValue ||
             resolvedOptions.any((option) => option.$2 == current);
@@ -28,6 +28,9 @@ extension SelectInputElementRendering on SelectInputElement {
           children: [
             AdaptiveChoiceControl<DataValue>(
               selected: selected,
+              initialization: field.mixed
+                  ? SelectionInitializationPolicy.explicit
+                  : SelectionInitializationPolicy.automatic,
               defaultValue: defaultValue == null
                   ? null
                   : scope.evaluate(defaultValue!).valueOrNull,
@@ -40,6 +43,7 @@ extension SelectInputElementRendering on SelectInputElement {
                 if (value != null) field.update(value);
               },
             ),
+            if (field.mixed) const MixedValueMessage(),
             if (allowCustomValue) ...[
               SizedBox(height: context.spacing.space2),
               ProtocolBoundValueEditor(

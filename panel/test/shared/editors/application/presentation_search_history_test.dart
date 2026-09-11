@@ -49,7 +49,11 @@ void main() {
     expect(restoredPayload.selectedValue, const StringValue("Beta"));
 
     expect(
-      restoredPayload.expressions.bindings.bindings[_resultBindingId]?.value,
+      restoredPayload.expressions.bindings
+          .inspect(const BindingReference(bindingId: _resultBindingId))
+          .valueOrNull
+          ?.value
+          .valueOrNull,
       const StringValue("Beta"),
     );
   });
@@ -136,10 +140,8 @@ SearchProvider _provider() {
     ),
   );
   return SearchProvider.staticValues(
-    values: const ListValue([
-      StringValue("Alpha"),
-      StringValue("Beta"),
-    ]).asLiteral(const ListType(element: StringType())),
+    values: const ListValue([StringValue("Alpha"), StringValue("Beta")])
+        .asLiteral(const ListType(element: StringType())),
     result: const SearchResultMapping(
       bindingId: _resultBindingId,
       key: result,

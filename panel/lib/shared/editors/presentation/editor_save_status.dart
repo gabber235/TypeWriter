@@ -119,9 +119,8 @@ class _EditorSaveStatusState extends State<EditorSaveStatus> {
               children: [
                 Text(
                   label,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelSmall?.copyWith(color: color),
+                  style: Theme.of(context).textTheme.labelSmall
+                      ?.copyWith(color: color),
                 ),
                 if (state.canRetry)
                   LoadingIconButton(

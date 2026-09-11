@@ -7,6 +7,7 @@ extension _BatchRecovery on EditorBatch {
       (entry) =>
           entry.key._disposed ||
           entry.key._deleted ||
+          !identical(entry.key._rejectedBatch, this) ||
           entry.value.any((path) => entry.key.value(path).valueOrNull == null),
     )) {
       return Future.value({
@@ -17,15 +18,7 @@ extension _BatchRecovery on EditorBatch {
       });
     }
 
-    final changes = {
-      for (final entry in _paths.entries)
-        if (!entry.key._disposed && entry.key._rejectedBatch == this)
-          entry.key: {
-            for (final path in entry.value)
-              path: entry.key.value(path).valueOrNull!,
-          },
-    };
-    final operation = EditorBatch.submit(changes: changes, send: _send);
+    final operation = EditorBatch._flushPrepared(_paths, send: _send);
     _recovery = operation;
 
     return operation.whenComplete(() => _recovery = null);

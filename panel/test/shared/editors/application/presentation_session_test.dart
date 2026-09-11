@@ -1,4 +1,5 @@
 import "dart:async";
+
 import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
@@ -30,6 +31,72 @@ TransactionalEditorSource _resource(
 );
 
 void main() {
+  test("mixed record remains inspectable by child path", () {
+    final recordType = RecordType(
+      fields: const {
+        "name": TypeField(name: "name", type: StringType()),
+        "color": TypeField(
+          name: "color",
+          type: IntegerType(width: IntegerWidth.signed32),
+        ),
+      },
+    );
+    RecordValue value(String name) => RecordValue({
+      "name": StringValue(name),
+      "color": IntegerValue(BigInt.from(4)),
+    });
+    final first = LocalEditor(
+      rootType: recordType,
+      typeCatalog: _catalog,
+      value: value("Oak"),
+    );
+    final second = LocalEditor(
+      rootType: recordType,
+      typeCatalog: _catalog,
+      value: value("Pine"),
+    );
+    final group = MultiEditOwner(
+      owners: [first, second],
+      rootType: recordType,
+      typeCatalog: _catalog,
+      commitInteractions: (interactions) => interactions.commitIndependently(),
+    );
+    final session = PresentationSession(
+      PresentationModel(
+        catalog: _catalog,
+        root: _root,
+        inputs: {const BindingId(0): PresentationInput.edit(group)},
+      ),
+    );
+    addTearDown(first.dispose);
+    addTearDown(second.dispose);
+    addTearDown(group.dispose);
+    addTearDown(session.dispose);
+
+    final root = session.bindings.inspect(
+      const BindingReference(bindingId: BindingId(0)),
+    );
+    final name = session.bindings.inspect(
+      BindingReference(bindingId: const BindingId(0), path: _path),
+    );
+    final color = session.bindings.inspect(
+      BindingReference(
+        bindingId: const BindingId(0),
+        path: DataPath.root.field("color"),
+      ),
+    );
+
+    expect(root.valueOrNull!.type, recordType);
+    expect(root.valueOrNull!.value, isA<MixedEditorValue>());
+    expect(name.valueOrNull!.type, const StringType());
+    expect(name.valueOrNull!.value, isA<MixedEditorValue>());
+    expect(color.valueOrNull!.value.valueOrNull, IntegerValue(BigInt.from(4)));
+    expect(
+      session.bindings.resolve(name.valueOrNull!.reference),
+      isA<TypeFailure>(),
+    );
+  });
+
   test(
     "runtime refresh and another resource save preserve the pending name",
     () async {
@@ -183,6 +250,7 @@ void main() {
       owners: [first, second],
       rootType: type,
       typeCatalog: _catalog,
+      commitInteractions: (interactions) => interactions.commitIndependently(),
     );
     final session = PresentationSession(
       PresentationModel(

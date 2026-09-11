@@ -81,7 +81,7 @@ class BooksMock extends CanonicalBooks {
     );
     return TypedMutationResult.success(
       revision: 1,
-      value: bookMockInspectorValue(canonical),
+      value: canonical.inspectorValue,
     );
   }
 }
@@ -89,10 +89,3 @@ class BooksMock extends CanonicalBooks {
 List<Override> booksProviderOverrides({
   DisplayState state = DisplayState.loading,
 }) => [canonicalBooksProvider.overrideWith(() => BooksMock(state))];
-
-RecordValue bookMockInspectorValue(Book book) => RecordValue({
-  "title": book.title.asValue,
-  "icon": IconValue.from(book.icon).typedValue,
-  "color": book.color.asValue,
-  "tags": book.tagIds.map((tagId) => tagId.id.asValue).toList().asValue,
-});

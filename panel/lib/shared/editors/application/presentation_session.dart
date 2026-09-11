@@ -44,44 +44,25 @@ final class PresentationSession extends ChangeNotifier {
         _ => null,
       };
 
-  EditorValue? fieldValue(BindingReference reference) {
-    final input = model.inputs[reference.bindingId];
-    if (input is! PresentationEditInput) return null;
-    return input.owner.value(input.path.followedBy(reference.path));
-  }
-
   BindingEnvironment get bindings {
-    final registry = TypeRegistry(model.catalog);
-    final snapshots = <BindingId, BindingSnapshot>{};
+    final sources = <BindingId, BindingSource>{};
     for (final entry in model.inputs.entries) {
-      final (type, value, writable) = switch (entry.value) {
-        PresentationValueInput(:final type, :final value) => (
-          type,
-          value,
-          false,
-        ),
-        PresentationEditInput(:final owner, :final path) => (
-          owner.rootType.resolvePath(path, registry: registry).valueOrNull ??
-              owner.rootType,
-          owner.value(path),
-          !owner.readOnly,
-        ),
-      };
-      final visible =
-          value.valueOrNull ??
-          (value is MixedEditorValue
-              ? type.createInitialValue(registry: registry).valueOrNull
-              : null);
-      if (visible case final value?) {
-        snapshots[entry.key] = BindingSnapshot(
-          type: type,
-          value: value,
-          revision: _generation,
-          writable: writable,
-        );
+      switch (entry.value) {
+        case PresentationValueInput(:final type, :final value):
+          sources[entry.key] = EditorValueBindingSource(
+            type: type,
+            value: value,
+            revision: _generation,
+          );
+        case PresentationEditInput(:final owner, :final path):
+          sources[entry.key] = EditOwnerBindingSource(
+            owner: owner,
+            prefix: path,
+            revision: _generation,
+          );
       }
     }
-    return BindingEnvironment(snapshots);
+    return BindingEnvironment(sources);
   }
 
   EditorMutationResult update(
@@ -128,11 +109,10 @@ final class PresentationSession extends ChangeNotifier {
       final destinationPath = input.path.followedBy(destination.path);
       final prepared = <(EditOwner, DataValue, EditorStructuralMutation?)>[];
       for (final member in target.owners) {
-        final snapshots = {...context.bindings.bindings};
-        for (final entry in snapshots.entries.toList()) {
-          final address = BindingReference(
-            bindingId: entry.key,
-          ).canonicalizedWith(aliases);
+        final sources = {...context.bindings.bindings};
+        for (final entry in sources.entries.toList()) {
+          final address = BindingReference(bindingId: entry.key)
+              .canonicalizedWith(aliases);
           if (address.bindingId != destination.bindingId) continue;
           final input =
               model.inputs[address.bindingId]! as PresentationEditInput;
@@ -141,13 +121,23 @@ final class PresentationSession extends ChangeNotifier {
               .valueOrNull;
 
           if (value == null) return const EditorMutationResult.conflict();
-          snapshots[entry.key] = entry.value.copyWith(
+          final inspected = context.bindings.inspect(
+            BindingReference(bindingId: entry.key),
+            registry: TypeRegistry(model.catalog),
+          );
+          if (inspected case TypeFailure(:final diagnostics)) {
+            return EditorMutationResult.invalid(diagnostics);
+          }
+          final binding = inspected.valueOrNull!;
+          sources[entry.key] = BindingSnapshot(
+            type: binding.type,
             value: value,
+            revision: binding.revision,
             writable: !member.readOnly,
           );
         }
         final memberContext = context.copyWith(
-          bindings: BindingEnvironment(snapshots),
+          bindings: BindingEnvironment(sources),
         );
         final registry = TypeRegistry(member.typeCatalog);
 
@@ -162,9 +152,9 @@ final class PresentationSession extends ChangeNotifier {
             .valueOrNull;
 
         if (value == null) return const EditorMutationResult.conflict();
-        final prefix = BindingReference(
-          bindingId: local.bindingId,
-        ).canonicalizedWith(aliases).path;
+        final prefix = BindingReference(bindingId: local.bindingId)
+            .canonicalizedWith(aliases)
+            .path;
 
         final validation = member.validate(destinationPath, value);
 
@@ -208,9 +198,9 @@ final class PresentationSession extends ChangeNotifier {
       return EditorMutationResult.invalid(diagnostics);
     }
     final prefix = DataPath.root.followedBy(
-      BindingReference(
-        bindingId: local.bindingId,
-      ).canonicalizedWith(aliases).path,
+      BindingReference(bindingId: local.bindingId)
+          .canonicalizedWith(aliases)
+          .path,
     );
     final structural = structuralMutationFor(
       action.action,

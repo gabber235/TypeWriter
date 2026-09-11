@@ -6,16 +6,23 @@ extension TextInputElementRendering on TextInputElement {
       control: control,
       scope: scope,
       shapeMismatch: (binding) =>
-          binding.type is StringType && binding.value is StringValue
+          binding.type is StringType &&
+              (binding.value is MixedEditorValue ||
+                  binding.value.valueOrNull is StringValue)
           ? null
           : "Text control requires a string binding",
       builder: (context, field) {
         final prefix = renderControlPrefix(context, control, scope);
         return EditorTextField(
-          key: ValueKey(field.binding.reference),
-          text: (field.binding.value as StringValue).value,
+          key: ValueKey((field.binding.reference, field.mixed)),
+          text: (field.value as StringValue?)?.value,
           prefix: prefix ?? const Icones(HeroiconsSolid.pencil),
-          hintText: placeholder == null
+          decoration: field.mixed
+              ? const InputDecoration().forMixedValue
+              : null,
+          hintText: field.mixed
+              ? "Multiple values"
+              : placeholder == null
               ? "Enter text"
               : scope.expressionText(placeholder!),
           singleLine: !multiline,

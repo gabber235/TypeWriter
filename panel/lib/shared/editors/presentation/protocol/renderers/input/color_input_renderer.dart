@@ -18,13 +18,28 @@ extension ColorInputElementRendering on ColorInputElement {
         }
         const expected = IntegerType(width: IntegerWidth.unsigned32);
         if (!resolved.valueOrNull!.isConcrete ||
-            resolved.valueOrNull!.representation != expected ||
-            field.binding.value is! IntegerValue) {
+            resolved.valueOrNull!.representation != expected) {
           return _inputDiagnostic(
             "Color control requires a concrete unsigned 32 bit value",
           );
         }
-        final value = field.binding.value as IntegerValue;
+        if (field.mixed) {
+          return ColorPickerField.mixed(
+            includeAlpha: includeAlpha,
+            enabled: field.enabled,
+            readOnly: field.readOnly,
+            onInteractionStart: field.interaction.begin,
+            onInteractionCommit: field.interaction.commit,
+            onInteractionCancel: field.interaction.cancel,
+            onChanged: (next) => field.update(next.asValue),
+          );
+        }
+        final value = field.value;
+        if (value is! IntegerValue) {
+          return _inputDiagnostic(
+            "Color control requires a concrete unsigned 32 bit value",
+          );
+        }
         return ColorPickerField(
           color: Color(value.value.toInt()),
           includeAlpha: includeAlpha,

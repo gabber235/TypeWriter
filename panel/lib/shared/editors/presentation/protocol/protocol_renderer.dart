@@ -4,11 +4,10 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-typedef RealmActionExecutor =
-    FutureOr<RealmCommandResult> Function(
-      RealmAction action,
-      DataValue? payload,
-    );
+typedef RealmActionExecutor = FutureOr<RealmCommandResult> Function(
+  RealmAction action,
+  DataValue? payload,
+);
 
 final _defaultEditorHeaderShortcuts =
     Map<HeaderItemCommandId, List<ShortcutActivator>>.unmodifiable({

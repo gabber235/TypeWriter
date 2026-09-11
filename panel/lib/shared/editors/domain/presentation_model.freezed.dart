@@ -342,7 +342,7 @@ $DataPathCopyWith<$Res> get path {
 /// @nodoc
 mixin _$PresentationModel {
 
- TypeCatalog get catalog; Map<BindingId, PresentationInput> get inputs; PresentationNode get root; Map<EditOwner, String> get ownerLabels; List<PresentationDefinition> get presentations; List<PresentationCollectionSource> get collections; List<TypeDiagnostic> get diagnostics;
+ TypeCatalog get catalog; Map<BindingId, PresentationInput> get inputs; PresentationNode get root; Map<EditOwner, String> get ownerLabels; List<PresentationDefinition> get presentations; PresentationCollections get collections; List<TypeDiagnostic> get diagnostics;
 /// Create a copy of PresentationModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -354,14 +354,14 @@ $PresentationModelCopyWith<PresentationModel> get copyWith => _$PresentationMode
 @override
 bool operator ==(Object other) {
   final _this = this as PresentationModel;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationModel&&(identical(other.catalog, _this.catalog) || other.catalog == _this.catalog)&&const DeepCollectionEquality().equals(other.inputs, _this.inputs)&&(identical(other.root, _this.root) || other.root == _this.root)&&const DeepCollectionEquality().equals(other.ownerLabels, _this.ownerLabels)&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&const DeepCollectionEquality().equals(other.collections, _this.collections)&&const DeepCollectionEquality().equals(other.diagnostics, _this.diagnostics));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationModel&&(identical(other.catalog, _this.catalog) || other.catalog == _this.catalog)&&const DeepCollectionEquality().equals(other.inputs, _this.inputs)&&(identical(other.root, _this.root) || other.root == _this.root)&&const DeepCollectionEquality().equals(other.ownerLabels, _this.ownerLabels)&&const DeepCollectionEquality().equals(other.presentations, _this.presentations)&&(identical(other.collections, _this.collections) || other.collections == _this.collections)&&const DeepCollectionEquality().equals(other.diagnostics, _this.diagnostics));
 }
 
 
 @override
 int get hashCode {
   final _this = this as PresentationModel;
-  return Object.hash(runtimeType,_this.catalog,const DeepCollectionEquality().hash(_this.inputs),_this.root,const DeepCollectionEquality().hash(_this.ownerLabels),const DeepCollectionEquality().hash(_this.presentations),const DeepCollectionEquality().hash(_this.collections),const DeepCollectionEquality().hash(_this.diagnostics));
+  return Object.hash(runtimeType,_this.catalog,const DeepCollectionEquality().hash(_this.inputs),_this.root,const DeepCollectionEquality().hash(_this.ownerLabels),const DeepCollectionEquality().hash(_this.presentations),_this.collections,const DeepCollectionEquality().hash(_this.diagnostics));
 }
 
 @override
@@ -378,7 +378,7 @@ abstract mixin class $PresentationModelCopyWith<$Res>  {
   factory $PresentationModelCopyWith(PresentationModel value, $Res Function(PresentationModel) _then) = _$PresentationModelCopyWithImpl;
 @useResult
 $Res call({
- TypeCatalog catalog, Map<BindingId, PresentationInput> inputs, PresentationNode root, Map<EditOwner, String> ownerLabels, List<PresentationDefinition> presentations, List<PresentationCollectionSource> collections, List<TypeDiagnostic> diagnostics
+ TypeCatalog catalog, Map<BindingId, PresentationInput> inputs, PresentationNode root, Map<EditOwner, String> ownerLabels, List<PresentationDefinition> presentations, PresentationCollections collections, List<TypeDiagnostic> diagnostics
 });
 
 
@@ -403,7 +403,7 @@ as Map<BindingId, PresentationInput>,root: null == root ? _self.root : root // i
 as PresentationNode,ownerLabels: null == ownerLabels ? _self.ownerLabels : ownerLabels // ignore: cast_nullable_to_non_nullable
 as Map<EditOwner, String>,presentations: null == presentations ? _self.presentations : presentations // ignore: cast_nullable_to_non_nullable
 as List<PresentationDefinition>,collections: null == collections ? _self.collections : collections // ignore: cast_nullable_to_non_nullable
-as List<PresentationCollectionSource>,diagnostics: null == diagnostics ? _self.diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
+as PresentationCollections,diagnostics: null == diagnostics ? _self.diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
 as List<TypeDiagnostic>,
   ));
 }
@@ -507,7 +507,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TypeCatalog catalog,  Map<BindingId, PresentationInput> inputs,  PresentationNode root,  Map<EditOwner, String> ownerLabels,  List<PresentationDefinition> presentations,  List<PresentationCollectionSource> collections,  List<TypeDiagnostic> diagnostics)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TypeCatalog catalog,  Map<BindingId, PresentationInput> inputs,  PresentationNode root,  Map<EditOwner, String> ownerLabels,  List<PresentationDefinition> presentations,  PresentationCollections collections,  List<TypeDiagnostic> diagnostics)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PresentationModel() when $default != null:
 return $default(_that.catalog,_that.inputs,_that.root,_that.ownerLabels,_that.presentations,_that.collections,_that.diagnostics);case _:
@@ -528,7 +528,7 @@ return $default(_that.catalog,_that.inputs,_that.root,_that.ownerLabels,_that.pr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TypeCatalog catalog,  Map<BindingId, PresentationInput> inputs,  PresentationNode root,  Map<EditOwner, String> ownerLabels,  List<PresentationDefinition> presentations,  List<PresentationCollectionSource> collections,  List<TypeDiagnostic> diagnostics)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TypeCatalog catalog,  Map<BindingId, PresentationInput> inputs,  PresentationNode root,  Map<EditOwner, String> ownerLabels,  List<PresentationDefinition> presentations,  PresentationCollections collections,  List<TypeDiagnostic> diagnostics)  $default,) {final _that = this;
 switch (_that) {
 case _PresentationModel():
 return $default(_that.catalog,_that.inputs,_that.root,_that.ownerLabels,_that.presentations,_that.collections,_that.diagnostics);case _:
@@ -548,7 +548,7 @@ return $default(_that.catalog,_that.inputs,_that.root,_that.ownerLabels,_that.pr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TypeCatalog catalog,  Map<BindingId, PresentationInput> inputs,  PresentationNode root,  Map<EditOwner, String> ownerLabels,  List<PresentationDefinition> presentations,  List<PresentationCollectionSource> collections,  List<TypeDiagnostic> diagnostics)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TypeCatalog catalog,  Map<BindingId, PresentationInput> inputs,  PresentationNode root,  Map<EditOwner, String> ownerLabels,  List<PresentationDefinition> presentations,  PresentationCollections collections,  List<TypeDiagnostic> diagnostics)?  $default,) {final _that = this;
 switch (_that) {
 case _PresentationModel() when $default != null:
 return $default(_that.catalog,_that.inputs,_that.root,_that.ownerLabels,_that.presentations,_that.collections,_that.diagnostics);case _:
@@ -563,7 +563,7 @@ return $default(_that.catalog,_that.inputs,_that.root,_that.ownerLabels,_that.pr
 
 
 class _PresentationModel extends PresentationModel {
-  const _PresentationModel({required this.catalog, required  Map<BindingId, PresentationInput> inputs, required this.root,  Map<EditOwner, String> ownerLabels = const {},  List<PresentationDefinition> presentations = const [],  List<PresentationCollectionSource> collections = const [],  List<TypeDiagnostic> diagnostics = const []}): _inputs = inputs,_ownerLabels = ownerLabels,_presentations = presentations,_collections = collections,_diagnostics = diagnostics,super._();
+  const _PresentationModel({required this.catalog, required  Map<BindingId, PresentationInput> inputs, required this.root,  Map<EditOwner, String> ownerLabels = const {},  List<PresentationDefinition> presentations = const [], this.collections = const PresentationCollections.empty(),  List<TypeDiagnostic> diagnostics = const []}): _inputs = inputs,_ownerLabels = ownerLabels,_presentations = presentations,_diagnostics = diagnostics,super._();
 
 
 @override final  TypeCatalog catalog;
@@ -589,13 +589,7 @@ class _PresentationModel extends PresentationModel {
   return EqualUnmodifiableListView(_presentations);
 }
 
- final  List<PresentationCollectionSource> _collections;
-@override@JsonKey() List<PresentationCollectionSource> get collections {
-  if (_collections is EqualUnmodifiableListView) return _collections;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_collections);
-}
-
+@override@JsonKey() final  PresentationCollections collections;
  final  List<TypeDiagnostic> _diagnostics;
 @override@JsonKey() List<TypeDiagnostic> get diagnostics {
   if (_diagnostics is EqualUnmodifiableListView) return _diagnostics;
@@ -614,13 +608,13 @@ _$PresentationModelCopyWith<_PresentationModel> get copyWith => __$PresentationM
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationModel&&(identical(other.catalog, catalog) || other.catalog == catalog)&&const DeepCollectionEquality().equals(other.inputs, _inputs)&&(identical(other.root, root) || other.root == root)&&const DeepCollectionEquality().equals(other.ownerLabels, _ownerLabels)&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&const DeepCollectionEquality().equals(other.collections, _collections)&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationModel&&(identical(other.catalog, catalog) || other.catalog == catalog)&&const DeepCollectionEquality().equals(other.inputs, _inputs)&&(identical(other.root, root) || other.root == root)&&const DeepCollectionEquality().equals(other.ownerLabels, _ownerLabels)&&const DeepCollectionEquality().equals(other.presentations, _presentations)&&(identical(other.collections, collections) || other.collections == collections)&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,catalog,const DeepCollectionEquality().hash(_inputs),root,const DeepCollectionEquality().hash(_ownerLabels),const DeepCollectionEquality().hash(_presentations),const DeepCollectionEquality().hash(_collections),const DeepCollectionEquality().hash(_diagnostics));
+    return Object.hash(runtimeType,catalog,const DeepCollectionEquality().hash(_inputs),root,const DeepCollectionEquality().hash(_ownerLabels),const DeepCollectionEquality().hash(_presentations),collections,const DeepCollectionEquality().hash(_diagnostics));
 }
 
 @override
@@ -636,7 +630,7 @@ abstract mixin class _$PresentationModelCopyWith<$Res> implements $PresentationM
   factory _$PresentationModelCopyWith(_PresentationModel value, $Res Function(_PresentationModel) _then) = __$PresentationModelCopyWithImpl;
 @override @useResult
 $Res call({
- TypeCatalog catalog, Map<BindingId, PresentationInput> inputs, PresentationNode root, Map<EditOwner, String> ownerLabels, List<PresentationDefinition> presentations, List<PresentationCollectionSource> collections, List<TypeDiagnostic> diagnostics
+ TypeCatalog catalog, Map<BindingId, PresentationInput> inputs, PresentationNode root, Map<EditOwner, String> ownerLabels, List<PresentationDefinition> presentations, PresentationCollections collections, List<TypeDiagnostic> diagnostics
 });
 
 
@@ -660,8 +654,8 @@ as TypeCatalog,inputs: null == inputs ? _self._inputs : inputs // ignore: cast_n
 as Map<BindingId, PresentationInput>,root: null == root ? _self.root : root // ignore: cast_nullable_to_non_nullable
 as PresentationNode,ownerLabels: null == ownerLabels ? _self._ownerLabels : ownerLabels // ignore: cast_nullable_to_non_nullable
 as Map<EditOwner, String>,presentations: null == presentations ? _self._presentations : presentations // ignore: cast_nullable_to_non_nullable
-as List<PresentationDefinition>,collections: null == collections ? _self._collections : collections // ignore: cast_nullable_to_non_nullable
-as List<PresentationCollectionSource>,diagnostics: null == diagnostics ? _self._diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
+as List<PresentationDefinition>,collections: null == collections ? _self.collections : collections // ignore: cast_nullable_to_non_nullable
+as PresentationCollections,diagnostics: null == diagnostics ? _self._diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
 as List<TypeDiagnostic>,
   ));
 }
