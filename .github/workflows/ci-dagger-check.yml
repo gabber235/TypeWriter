@@ -41,5 +41,6 @@ jobs:
         uses: dagger/dagger-for-github@v8.4.1
         with:
           version: 0.21.8
+          cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
           verb: check
           args: --no-generate
