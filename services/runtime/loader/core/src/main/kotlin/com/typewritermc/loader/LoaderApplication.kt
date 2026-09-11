@@ -107,9 +107,7 @@ class LoaderApplication internal constructor(
  * returned application owns its telemetry SDK and dependency container; the caller owns closing it after host
  * shutdown.
  */
-fun loaderApplication(logOutput: LoaderLogOutput): LoaderApplication = createLoaderApplication(logOutput)
-
-private fun createLoaderApplication(logOutput: LoaderLogOutput): LoaderApplication {
+fun loaderApplication(logOutput: LoaderLogOutput): LoaderApplication {
     val settings = LoaderSettings.system()
     val openTelemetry = loaderOpenTelemetry(logOutput, settings.telemetryConfiguration())
     val application =
