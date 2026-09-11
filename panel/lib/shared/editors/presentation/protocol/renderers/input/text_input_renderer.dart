@@ -14,7 +14,7 @@ extension TextInputElementRendering on TextInputElement {
       builder: (context, field) {
         final prefix = renderControlPrefix(context, control, scope);
         return EditorTextField(
-          key: ValueKey((field.binding.reference, field.mixed)),
+          key: ValueKey(field.binding.reference),
           text: (field.value as StringValue?)?.value,
           prefix: prefix ?? const Icones(HeroiconsSolid.pencil),
           decoration: field.mixed

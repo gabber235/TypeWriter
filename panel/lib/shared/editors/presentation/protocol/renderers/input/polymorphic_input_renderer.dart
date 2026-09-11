@@ -87,12 +87,12 @@ extension on PolymorphicValue {
     const payloadBindingId = BindingId(2147483647);
     const payloadReference = BindingReference(bindingId: payloadBindingId);
 
-    final representation = concrete.valueOrNull!.representation;
+    final nominalType = NamedType(concreteType);
     final childScope = scope.withVirtualBinding(
       VirtualBindingHost(
         id: payloadBindingId,
         snapshot: BindingSnapshot(
-          type: representation,
+          type: nominalType,
           value: value,
           revision: binding.revision,
           writable: binding.writable,
@@ -105,15 +105,12 @@ extension on PolymorphicValue {
       ),
       source: element.control.binding,
     );
-    return ResolvedBinding(
-      reference: payloadReference,
-      type: representation,
-      value: value,
-      revision: binding.revision,
-      writable: binding.writable,
-    ).renderDefaultPresentation(
-      childScope,
-      nodeId: "polymorphic.${concreteType.id}",
+    return PresentationNodeRenderer(
+      node: PresentationNode(
+        id: "polymorphic.${concreteType.id}",
+        element: const DefaultPresentationElement(binding: payloadReference),
+      ),
+      scope: childScope,
     );
   }
 }
