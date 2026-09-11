@@ -322,9 +322,9 @@ class _TopRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: 16,
+          width: 28,
           child: IconTheme(
-            data: const IconThemeData(color: Colors.white60),
+            data: const IconThemeData(color: Colors.white60, size: 28),
             child: icon,
           ),
         ),
