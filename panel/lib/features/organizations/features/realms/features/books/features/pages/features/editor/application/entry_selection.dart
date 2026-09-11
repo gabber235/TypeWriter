@@ -31,23 +31,26 @@ class EntryIdentifier extends SelectableIdentifier
     if (location == null) {
       return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
+
     final state = ref.watch(authoringSessionProvider(organizationId, realmId));
     final repository = ref
         .watch(resourceRepositoriesProvider)
         .authoring(organizationId, realmId);
+
     final asyncEntry = ref.watch(entryProvider(id));
     if (asyncEntry.mapUnready<Selectable<EntryIdentifier>>()
         case final value?) {
       return value;
     }
     final value = asyncEntry.requireValue;
-
     if (value == null) {
-      throw SelectableNotFoundException(this);
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
+
     final catalogState = ref.watch(
       realmEditorCatalogForTypeProvider(value.elementDefinition.rootType),
     );
+
     return catalogState.resolveElement(
       value.elementDefinition,
       (catalog, presentations) => EntrySelection(

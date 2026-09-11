@@ -35,13 +35,11 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
       );
     }
     final tagsCommands = ref.watch(canonicalTagsProvider.notifier);
-    final canonicalTags = ref.watch(canonicalTagsProvider);
-    if (canonicalTags.mapUnready<Selectable>() case final value?) return value;
-    final tag = canonicalTags.requireValue
-        .where((value) => value.tagId == tagId)
-        .firstOrNull;
+    final canonicalTag = ref.watch(canonicalTagProvider(tagId));
+    if (canonicalTag.mapUnready<Selectable>() case final value?) return value;
+    final tag = canonicalTag.requireValue;
     if (tag == null) {
-      throw SelectableNotFoundException(this);
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
     final tagsAsync = ref.watch(projectedTagsProvider);
     if (tagsAsync.mapUnready<Selectable>() case final value?) return value;

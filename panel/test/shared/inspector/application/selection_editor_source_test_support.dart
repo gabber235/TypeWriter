@@ -43,17 +43,14 @@ class _Identifier extends SelectableIdentifier {
   @override
   AsyncValue<Selectable<_Identifier>> create(Ref ref) {
     if (failure case final error?) {
-      return AsyncValue.error(error, StackTrace.current);
+      return AsyncError(error, StackTrace.current);
     }
     if (deleted) {
-      return AsyncValue.error(
-        SelectableNotFoundException(this),
-        StackTrace.current,
-      );
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
-    if (loading) return const AsyncValue.loading();
+    if (loading) return const AsyncLoading();
     latest = _Inspectable(this);
-    return AsyncValue.data(latest!);
+    return AsyncData(latest!);
   }
 
   @override

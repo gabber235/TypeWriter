@@ -25,11 +25,12 @@ class BookIdentifier extends SelectableIdentifier {
         .watch(resourceRepositoriesProvider)
         .authoring(organization, realm);
     final router = ref.watch(appRouterProvider);
-    final canonicalBooks = ref.watch(canonicalBooksProvider);
-    if (canonicalBooks.mapUnready<Selectable>() case final value?) return value;
-    final book = canonicalBooks.requireValue
-        .where((value) => value.bookId == bookId)
-        .firstOrNull;
+    final canonicalBook = ref.watch(canonicalBookProvider(bookId));
+    if (canonicalBook.mapUnready<Selectable>() case final value?) return value;
+    final book = canonicalBook.requireValue;
+    if (book == null) {
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
+    }
 
     final tagsAsync = ref.watch(projectedTagsProvider);
     if (tagsAsync.mapUnready<Selectable>() case final value?) return value;
@@ -40,7 +41,6 @@ class BookIdentifier extends SelectableIdentifier {
         realm,
       ).select((value) => value.sequence ?? 0),
     );
-    if (book == null) throw SelectableNotFoundException(this);
     return AsyncData(
       BookSelection(
         resource: BookEditorResource(repository, bookId),

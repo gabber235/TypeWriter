@@ -12,9 +12,7 @@ class SelectableScope extends InheritedWidget {
 
   static SelectableIdentifier? maybeOf(BuildContext? context) {
     if (context == null) return null;
-    final element = context
-        .getElementForInheritedWidgetOfExactType<SelectableScope>();
-    final scope = element?.widget as SelectableScope?;
+    final scope = context.getInheritedWidgetOfExactType<SelectableScope>();
     return scope?.id;
   }
 

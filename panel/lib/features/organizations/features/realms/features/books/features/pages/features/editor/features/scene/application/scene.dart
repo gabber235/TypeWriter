@@ -76,7 +76,7 @@ class CueIdentifier extends SelectableIdentifier {
     }
 
     if (cue == null) {
-      throw SelectableNotFoundException(this);
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
     }
 
     final resolvedCue = cue;

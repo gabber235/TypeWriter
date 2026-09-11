@@ -45,11 +45,16 @@ class ServiceIdentifier extends SelectableIdentifier {
     final canonicalState = ref.watch(canonicalServiceProvider(serviceId));
     if (canonicalState.mapUnready<Selectable>() case final value?) return value;
     final canonical = canonicalState.requireValue;
-    if (canonical == null) throw SelectableNotFoundException(this);
+    if (canonical == null) {
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
+    }
+
     final projectedState = ref.watch(projectedServiceProvider(serviceId));
     if (projectedState.mapUnready<Selectable>() case final value?) return value;
     final service = projectedState.requireValue;
-    if (service == null) throw SelectableNotFoundException(this);
+    if (service == null) {
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
+    }
 
     return AsyncData(
       ServiceSelectable(
