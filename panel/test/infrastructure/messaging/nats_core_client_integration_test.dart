@@ -10,6 +10,29 @@ const _seed = "SUAKYRHVIOREXV7EUZTBHUHL7NUMHPMAS7QMDU3GTIUWEI5LDNOXD43IZY";
 const _rejectedSeed =
     "SUAMZVERVLN7XWYTEVQ4JCSJODRGOYGIITJMJUOOVUEUOTRWAOET7LFU3Q";
 
+Future<T> _waitForConnectionState<T extends NatsConnectionState>(
+  NatsClient client,
+) async {
+  final completed = Completer<T>();
+  final subscription = client.connectionStateChanges
+      .where((state) => state is T)
+      .cast<T>()
+      .listen((state) {
+        if (!completed.isCompleted) {
+          completed.complete(state);
+        }
+      });
+  final current = client.connectionState;
+  if (current is T && !completed.isCompleted) {
+    completed.complete(current);
+  }
+  try {
+    return await completed.future;
+  } finally {
+    await subscription.cancel();
+  }
+}
+
 void main() {
   final serverUrl = Platform.environment["NATS_ADAPTER_URL"];
   final skipReason = serverUrl == null ? "NATS_ADAPTER_URL is not set" : false;
@@ -33,9 +56,7 @@ void main() {
       );
       addTearDown(client.close);
       if (client.connectionState is! NatsConnected) {
-        await client.connectionStateChanges.firstWhere(
-          (connectionState) => connectionState is NatsConnected,
-        );
+        await _waitForConnectionState<NatsConnected>(client);
       }
 
       final received = Completer<core.NatsMessage>();
@@ -87,11 +108,7 @@ void main() {
       );
       addTearDown(client.close);
 
-      final failed =
-          await client.connectionStateChanges.firstWhere(
-                (connectionState) => connectionState is NatsFailed,
-              )
-              as NatsFailed;
+      final failed = await _waitForConnectionState<NatsFailed>(client);
 
       expect(failed.failure.kind, NatsFailureKind.authentication);
       expect(failed.failure.cause, isA<core.NatsAuthenticationException>());

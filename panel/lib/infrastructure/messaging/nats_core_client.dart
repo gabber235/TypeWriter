@@ -66,16 +66,13 @@ final class NatsCoreClient implements NatsClient {
       _setConnectionState(const NatsConnected());
     } on Object catch (error, stackTrace) {
       if (_closed) return;
+      _setConnectionState(NatsFailed(_translate(error, stackTrace)));
       debugPrint("nats: connection error ${_diagnostic(error)}");
       if (kDebugMode) {
         if (error case core.NatsException(:final causeStackTrace?)) {
-          debugPrintStack(
-            label: "nats: connection error cause",
-            stackTrace: causeStackTrace,
-          );
+          debugPrint("nats: connection error cause\n$causeStackTrace");
         }
       }
-      _setConnectionState(NatsFailed(_translate(error, stackTrace)));
     }
   }
 

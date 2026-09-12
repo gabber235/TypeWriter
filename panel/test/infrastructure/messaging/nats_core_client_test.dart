@@ -15,11 +15,9 @@ void main() {
       );
       addTearDown(client.close);
 
-      final failed =
-          await client.connectionStateChanges.firstWhere(
-                (connectionState) => connectionState is NatsFailed,
-              )
-              as NatsFailed;
+      final failed = await client.connectionStateChanges.firstWhere(
+        (connectionState) => connectionState is NatsFailed,
+      ) as NatsFailed;
 
       expect(failed.failure.kind, NatsFailureKind.unknown);
       expect(failed.failure.message, "Unexpected NATS client failure");
@@ -29,6 +27,24 @@ void main() {
       expect(client.connectionState, same(failed));
     },
   );
+
+  test("nonstandard cause stack cannot prevent failure state", () async {
+    final error = core.NatsAuthenticationException(
+      "authentication rejected",
+      causeStackTrace: StackTrace.fromString("<asynchronous suspension>"),
+    );
+    final client = NatsCoreClient.fromConnectionFuture(
+      Future<core.NatsConnection>.error(error, StackTrace.current),
+    );
+    addTearDown(client.close);
+
+    await pumpEventQueue();
+
+    expect(client.connectionState, isA<NatsFailed>());
+    final failed = client.connectionState as NatsFailed;
+    expect(failed.failure.kind, NatsFailureKind.authentication);
+    expect(failed.failure.cause, same(error));
+  });
 
   test("explicit close remains closed when initial connection fails", () async {
     final connection = Completer<core.NatsConnection>();
