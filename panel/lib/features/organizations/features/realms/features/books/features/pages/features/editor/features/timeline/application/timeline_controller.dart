@@ -365,9 +365,10 @@ class TimelineController extends ChangeNotifier {
     final displayFrameSpan = math.max(1, endFrame - startFrame);
 
     final width = viewport.planeWidth;
-    final nextPixelsPerFrame = (width / displayFrameSpan)
-        .clamp(minPixelsPerFrame, maxPixelsPerFrame)
-        .toDouble();
+    final nextPixelsPerFrame = (width / displayFrameSpan).clamp(
+      minPixelsPerFrame,
+      maxPixelsPerFrame,
+    );
     final nextHorizontalOffset = math.max(0.0, startFrame * nextPixelsPerFrame);
     if (nextPixelsPerFrame == _pixelsPerFrame.target &&
         nextHorizontalOffset == _horizontalOffset.target) {
