@@ -71,6 +71,129 @@ impl OrganizationMember {
 }
 
 // ==============================================================================
+// struct OrganizationMembersSnapshot
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct OrganizationMembersSnapshot {
+    pub sequence: i64,
+    pub values: Vec<OrganizationMember>,
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<OrganizationMembersSnapshot>>,
+}
+
+impl OrganizationMembersSnapshot {
+    pub fn default_ref() -> &'static OrganizationMembersSnapshot {
+        static D: std::sync::LazyLock<OrganizationMembersSnapshot> = std::sync::LazyLock::new(OrganizationMembersSnapshot::default);
+        &D
+    }
+}
+
+impl OrganizationMembersSnapshot {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<OrganizationMembersSnapshot> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<OrganizationMembersSnapshot>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/member.skir",
+                    "OrganizationMembersSnapshot",
+                    "",
+                    |x: &OrganizationMembersSnapshot| &x._unrecognized,
+                    |x: &mut OrganizationMembersSnapshot, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<OrganizationMembersSnapshot> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(OrganizationMembersSnapshot::_adapter())
+    }
+}
+
+// ==============================================================================
+// enum OrganizationMembersChange
+// ==============================================================================
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum OrganizationMembersChange {
+    Unknown(Option<crate::skir_client::UnrecognizedVariant<OrganizationMembersChange>>),
+    Add(Box<OrganizationMember>),
+    Update(Box<OrganizationMember>),
+    Remove(Box<crate::skirout::base::kernel::v1::record_id::RecordId>),
+}
+
+impl Default for OrganizationMembersChange {
+    fn default() -> Self {
+        OrganizationMembersChange::Unknown(None)
+    }
+}
+
+impl OrganizationMembersChange {
+    fn _adapter() -> &'static crate::skir_client::internal::EnumAdapter<OrganizationMembersChange> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::EnumAdapter<OrganizationMembersChange>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::EnumAdapter::new(
+                    |x: &OrganizationMembersChange| match x {
+                        OrganizationMembersChange::Unknown(_) => 0,
+                        OrganizationMembersChange::Add(_) => 1,
+                        OrganizationMembersChange::Update(_) => 2,
+                        OrganizationMembersChange::Remove(_) => 3,
+                    },
+                    |u| OrganizationMembersChange::Unknown(Some(u)),
+                    |x: &OrganizationMembersChange| match x { OrganizationMembersChange::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
+                    "organization/v1/member.skir",
+                    "OrganizationMembersChange",
+                    "",
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<OrganizationMembersChange> {
+        initialize_module_serializers();
+        crate::skir_client::internal::enum_serializer_from_static(OrganizationMembersChange::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct OrganizationMembersChanged
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct OrganizationMembersChanged {
+    pub sequence: i64,
+    pub operation_id: String,
+    pub changes: Vec<OrganizationMembersChange>,
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<OrganizationMembersChanged>>,
+}
+
+impl OrganizationMembersChanged {
+    pub fn default_ref() -> &'static OrganizationMembersChanged {
+        static D: std::sync::LazyLock<OrganizationMembersChanged> = std::sync::LazyLock::new(OrganizationMembersChanged::default);
+        &D
+    }
+}
+
+impl OrganizationMembersChanged {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<OrganizationMembersChanged> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<OrganizationMembersChanged>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/member.skir",
+                    "OrganizationMembersChanged",
+                    "",
+                    |x: &OrganizationMembersChanged| &x._unrecognized,
+                    |x: &mut OrganizationMembersChanged, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<OrganizationMembersChanged> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(OrganizationMembersChanged::_adapter())
+    }
+}
+
+// ==============================================================================
 // struct WatchOrganizationMembersRequest
 // ==============================================================================
 
@@ -115,10 +238,8 @@ impl WatchOrganizationMembersRequest {
 pub enum WatchOrganizationMembersResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<WatchOrganizationMembersResponse>>),
     InternalError(Box<crate::skirout::base::kernel::v1::errors::InternalError>),
-    List(Vec<OrganizationMember>),
-    Add(Box<OrganizationMember>),
-    Update(Box<OrganizationMember>),
-    Remove(Box<crate::skirout::base::kernel::v1::record_id::RecordId>),
+    Snapshot(Box<OrganizationMembersSnapshot>),
+    Changed(Box<OrganizationMembersChanged>),
 }
 
 impl Default for WatchOrganizationMembersResponse {
@@ -135,10 +256,8 @@ impl WatchOrganizationMembersResponse {
                     |x: &WatchOrganizationMembersResponse| match x {
                         WatchOrganizationMembersResponse::Unknown(_) => 0,
                         WatchOrganizationMembersResponse::InternalError(_) => 1,
-                        WatchOrganizationMembersResponse::List(_) => 2,
-                        WatchOrganizationMembersResponse::Add(_) => 3,
-                        WatchOrganizationMembersResponse::Update(_) => 4,
-                        WatchOrganizationMembersResponse::Remove(_) => 5,
+                        WatchOrganizationMembersResponse::Snapshot(_) => 2,
+                        WatchOrganizationMembersResponse::Changed(_) => 3,
                     },
                     |u| WatchOrganizationMembersResponse::Unknown(Some(u)),
                     |x: &WatchOrganizationMembersResponse| match x { WatchOrganizationMembersResponse::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
@@ -192,6 +311,45 @@ impl UpdateOrganizationMemberRolesRequest {
     pub fn serializer() -> crate::skir_client::Serializer<UpdateOrganizationMemberRolesRequest> {
         initialize_module_serializers();
         crate::skir_client::internal::struct_serializer_from_static(UpdateOrganizationMemberRolesRequest::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct UpdateOrganizationMemberRolesResponse.Success
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct UpdateOrganizationMemberRolesResponse_Success {
+    pub members: Vec<OrganizationMember>,
+    pub event: OrganizationMembersChanged,
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<UpdateOrganizationMemberRolesResponse_Success>>,
+}
+
+impl UpdateOrganizationMemberRolesResponse_Success {
+    pub fn default_ref() -> &'static UpdateOrganizationMemberRolesResponse_Success {
+        static D: std::sync::LazyLock<UpdateOrganizationMemberRolesResponse_Success> = std::sync::LazyLock::new(UpdateOrganizationMemberRolesResponse_Success::default);
+        &D
+    }
+}
+
+impl UpdateOrganizationMemberRolesResponse_Success {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<UpdateOrganizationMemberRolesResponse_Success> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<UpdateOrganizationMemberRolesResponse_Success>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/member.skir",
+                    "UpdateOrganizationMemberRolesResponse.Success",
+                    "",
+                    |x: &UpdateOrganizationMemberRolesResponse_Success| &x._unrecognized,
+                    |x: &mut UpdateOrganizationMemberRolesResponse_Success, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<UpdateOrganizationMemberRolesResponse_Success> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(UpdateOrganizationMemberRolesResponse_Success::_adapter())
     }
 }
 
@@ -467,7 +625,7 @@ impl UpdateOrganizationMemberRolesResponse_InvalidSelectionError {
 pub enum UpdateOrganizationMemberRolesResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<UpdateOrganizationMemberRolesResponse>>),
     InternalError(Box<crate::skirout::base::kernel::v1::errors::InternalError>),
-    Success(Vec<OrganizationMember>),
+    Success(Box<UpdateOrganizationMemberRolesResponse_Success>),
     UserNotFoundError(Box<UpdateOrganizationMemberRolesResponse_UserNotFoundError>),
     RolesNotFoundError(Box<UpdateOrganizationMemberRolesResponse_RolesNotFoundError>),
     RolesNotAssignableError(Box<UpdateOrganizationMemberRolesResponse_RolesNotAssignableError>),
@@ -636,6 +794,7 @@ impl RemoveOrganizationMemberResponse_OperationIdentityReusedError {
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct RemoveOrganizationMemberResponse_Success {
+    pub event: OrganizationMembersChanged,
     /// Set this to None when you're creating a struct.
     pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<RemoveOrganizationMemberResponse_Success>>,
 }
@@ -813,16 +972,34 @@ fn initialize_module_serializers() {
                 (*a).finalize();
             }
             unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<OrganizationMembersSnapshot> = OrganizationMembersSnapshot::_adapter() as *const _ as *mut _;
+                (*a).add_field("sequence", 0, crate::skir_client::Serializer::int64(), "", |x: &OrganizationMembersSnapshot| &x.sequence, |x: &mut OrganizationMembersSnapshot, v| x.sequence = v);
+                (*a).add_field("values", 1, crate::skir_client::Serializer::array(crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter())), "", |x: &OrganizationMembersSnapshot| &x.values, |x: &mut OrganizationMembersSnapshot, v| x.values = v);
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::EnumAdapter<OrganizationMembersChange> = OrganizationMembersChange::_adapter() as *const _ as *mut _;
+                (*a).add_wrapper_variant("add", 1, 1, crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter()), "", |v| OrganizationMembersChange::Add(Box::new(v)), |x| match x { OrganizationMembersChange::Add(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("update", 2, 2, crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter()), "", |v| OrganizationMembersChange::Update(Box::new(v)), |x| match x { OrganizationMembersChange::Update(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("remove", 3, 3, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |v| OrganizationMembersChange::Remove(Box::new(v)), |x| match x { OrganizationMembersChange::Remove(b) => b.as_ref(), _ => unreachable!() });
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<OrganizationMembersChanged> = OrganizationMembersChanged::_adapter() as *const _ as *mut _;
+                (*a).add_field("sequence", 0, crate::skir_client::Serializer::int64(), "", |x: &OrganizationMembersChanged| &x.sequence, |x: &mut OrganizationMembersChanged, v| x.sequence = v);
+                (*a).add_field("operation_id", 1, crate::skir_client::Serializer::string(), "", |x: &OrganizationMembersChanged| &x.operation_id, |x: &mut OrganizationMembersChanged, v| x.operation_id = v);
+                (*a).add_field("changes", 2, crate::skir_client::Serializer::array(crate::skir_client::internal::enum_serializer_from_static(OrganizationMembersChange::_adapter())), "", |x: &OrganizationMembersChanged| &x.changes, |x: &mut OrganizationMembersChanged, v| x.changes = v);
+                (*a).finalize();
+            }
+            unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<WatchOrganizationMembersRequest> = WatchOrganizationMembersRequest::_adapter() as *const _ as *mut _;
                 (*a).finalize();
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<WatchOrganizationMembersResponse> = WatchOrganizationMembersResponse::_adapter() as *const _ as *mut _;
                 (*a).add_wrapper_variant("internal_error", 1, 1, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| WatchOrganizationMembersResponse::InternalError(Box::new(v)), |x| match x { WatchOrganizationMembersResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("list", 2, 2, crate::skir_client::Serializer::array(crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter())), "", |v| WatchOrganizationMembersResponse::List(v), |x| match x { WatchOrganizationMembersResponse::List(v) => v, _ => unreachable!() });
-                (*a).add_wrapper_variant("add", 3, 3, crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter()), "", |v| WatchOrganizationMembersResponse::Add(Box::new(v)), |x| match x { WatchOrganizationMembersResponse::Add(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("update", 4, 4, crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter()), "", |v| WatchOrganizationMembersResponse::Update(Box::new(v)), |x| match x { WatchOrganizationMembersResponse::Update(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("remove", 5, 5, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |v| WatchOrganizationMembersResponse::Remove(Box::new(v)), |x| match x { WatchOrganizationMembersResponse::Remove(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("snapshot", 2, 2, crate::skir_client::internal::struct_serializer_from_static(OrganizationMembersSnapshot::_adapter()), "", |v| WatchOrganizationMembersResponse::Snapshot(Box::new(v)), |x| match x { WatchOrganizationMembersResponse::Snapshot(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("changed", 3, 3, crate::skir_client::internal::struct_serializer_from_static(OrganizationMembersChanged::_adapter()), "", |v| WatchOrganizationMembersResponse::Changed(Box::new(v)), |x| match x { WatchOrganizationMembersResponse::Changed(b) => b.as_ref(), _ => unreachable!() });
                 (*a).finalize();
             }
             unsafe {
@@ -830,6 +1007,12 @@ fn initialize_module_serializers() {
                 (*a).add_field("operation_id", 0, crate::skir_client::Serializer::string(), "", |x: &UpdateOrganizationMemberRolesRequest| &x.operation_id, |x: &mut UpdateOrganizationMemberRolesRequest, v| x.operation_id = v);
                 (*a).add_field("user_ids", 1, crate::skir_client::Serializer::array(crate::skirout::base::kernel::v1::record_id::RecordId::serializer()), "", |x: &UpdateOrganizationMemberRolesRequest| &x.user_ids, |x: &mut UpdateOrganizationMemberRolesRequest, v| x.user_ids = v);
                 (*a).add_field("role_ids", 2, crate::skir_client::Serializer::array(crate::skirout::base::kernel::v1::record_id::RecordId::serializer()), "", |x: &UpdateOrganizationMemberRolesRequest| &x.role_ids, |x: &mut UpdateOrganizationMemberRolesRequest, v| x.role_ids = v);
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<UpdateOrganizationMemberRolesResponse_Success> = UpdateOrganizationMemberRolesResponse_Success::_adapter() as *const _ as *mut _;
+                (*a).add_field("members", 0, crate::skir_client::Serializer::array(crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter())), "", |x: &UpdateOrganizationMemberRolesResponse_Success| &x.members, |x: &mut UpdateOrganizationMemberRolesResponse_Success, v| x.members = v);
+                (*a).add_field("event", 1, crate::skir_client::internal::struct_serializer_from_static(OrganizationMembersChanged::_adapter()), "", |x: &UpdateOrganizationMemberRolesResponse_Success| &x.event, |x: &mut UpdateOrganizationMemberRolesResponse_Success, v| x.event = v);
                 (*a).finalize();
             }
             unsafe {
@@ -868,7 +1051,7 @@ fn initialize_module_serializers() {
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<UpdateOrganizationMemberRolesResponse> = UpdateOrganizationMemberRolesResponse::_adapter() as *const _ as *mut _;
                 (*a).add_wrapper_variant("internal_error", 1, 1, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| UpdateOrganizationMemberRolesResponse::InternalError(Box::new(v)), |x| match x { UpdateOrganizationMemberRolesResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("success", 2, 2, crate::skir_client::Serializer::array(crate::skir_client::internal::struct_serializer_from_static(OrganizationMember::_adapter())), "", |v| UpdateOrganizationMemberRolesResponse::Success(v), |x| match x { UpdateOrganizationMemberRolesResponse::Success(v) => v, _ => unreachable!() });
+                (*a).add_wrapper_variant("success", 2, 2, crate::skir_client::internal::struct_serializer_from_static(UpdateOrganizationMemberRolesResponse_Success::_adapter()), "", |v| UpdateOrganizationMemberRolesResponse::Success(Box::new(v)), |x| match x { UpdateOrganizationMemberRolesResponse::Success(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("user_not_found_error", 3, 3, crate::skir_client::internal::struct_serializer_from_static(UpdateOrganizationMemberRolesResponse_UserNotFoundError::_adapter()), "", |v| UpdateOrganizationMemberRolesResponse::UserNotFoundError(Box::new(v)), |x| match x { UpdateOrganizationMemberRolesResponse::UserNotFoundError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("roles_not_found_error", 4, 4, crate::skir_client::internal::struct_serializer_from_static(UpdateOrganizationMemberRolesResponse_RolesNotFoundError::_adapter()), "", |v| UpdateOrganizationMemberRolesResponse::RolesNotFoundError(Box::new(v)), |x| match x { UpdateOrganizationMemberRolesResponse::RolesNotFoundError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).add_wrapper_variant("roles_not_assignable_error", 5, 5, crate::skir_client::internal::struct_serializer_from_static(UpdateOrganizationMemberRolesResponse_RolesNotAssignableError::_adapter()), "", |v| UpdateOrganizationMemberRolesResponse::RolesNotAssignableError(Box::new(v)), |x| match x { UpdateOrganizationMemberRolesResponse::RolesNotAssignableError(b) => b.as_ref(), _ => unreachable!() });
@@ -895,6 +1078,7 @@ fn initialize_module_serializers() {
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<RemoveOrganizationMemberResponse_Success> = RemoveOrganizationMemberResponse_Success::_adapter() as *const _ as *mut _;
+                (*a).add_field("event", 0, crate::skir_client::internal::struct_serializer_from_static(OrganizationMembersChanged::_adapter()), "", |x: &RemoveOrganizationMemberResponse_Success| &x.event, |x: &mut RemoveOrganizationMemberResponse_Success, v| x.event = v);
                 (*a).finalize();
             }
             unsafe {

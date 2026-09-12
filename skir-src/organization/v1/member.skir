@@ -14,15 +14,30 @@ struct OrganizationMember {
   joined_at: timestamp;
 }
 
+struct OrganizationMembersSnapshot {
+  sequence: int64;
+  values: [OrganizationMember];
+}
+
+enum OrganizationMembersChange {
+  add: OrganizationMember;
+  update: OrganizationMember;
+  remove: RecordId;
+}
+
+struct OrganizationMembersChanged {
+  sequence: int64;
+  operation_id: string;
+  changes: [OrganizationMembersChange];
+}
+
 method WatchOrganizationMembers(
   struct {}
 ): enum {
   internal_error: InternalError;
 
-  list: [OrganizationMember];
-  add: OrganizationMember;
-  update: OrganizationMember;
-  remove: RecordId;
+  snapshot: OrganizationMembersSnapshot;
+  changed: OrganizationMembersChanged;
 } = 638484;
 
 // Applies one role selection to every selected member in one transaction.
@@ -35,7 +50,10 @@ method UpdateOrganizationMemberRoles(
   }
 ): enum {
   internal_error: InternalError;
-  success: [OrganizationMember];
+  success: struct {
+    members: [OrganizationMember];
+    event: OrganizationMembersChanged;
+  };
   user_not_found_error: struct {
     user_ids: [RecordId];
   };
@@ -65,7 +83,9 @@ method RemoveOrganizationMember(
   operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  success: struct {};
+  success: struct {
+    event: OrganizationMembersChanged;
+  };
 
   user_not_member_error: struct {
     user_id: RecordId;

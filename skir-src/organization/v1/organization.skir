@@ -10,6 +10,22 @@ struct Organization {
   logo_url: string;
 }
 
+struct UserOrganizationsSnapshot {
+  sequence: int64;
+  values: [Organization];
+}
+
+enum UserOrganizationsChange {
+  add: Organization;
+  remove: RecordId;
+}
+
+struct UserOrganizationsChanged {
+  sequence: int64;
+  operation_id: string;
+  changes: [UserOrganizationsChange];
+}
+
 method CreateOrganization(
   struct {
     operation_id: string;
@@ -21,7 +37,10 @@ method CreateOrganization(
   operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  success: Organization;
+  success: struct {
+    organization: Organization;
+    event: UserOrganizationsChanged;
+  };
 } = 336038;
 
 method DeleteOrganization(

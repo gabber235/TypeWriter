@@ -3,7 +3,10 @@ import {
   InvalidRecordIdError,
 } from "kernel/v1/errors.skir";
 import { RecordId } from "kernel/v1/record_id.skir";
-import { OrganizationMember } from "organization/v1/member.skir";
+import {
+  OrganizationMember,
+  OrganizationMembersChanged,
+} from "organization/v1/member.skir";
 import { OrganizationRole } from "organization/v1/role.skir";
 
 // OrganizationJoinRequest represents a pending request from a user to join an organization.
@@ -28,6 +31,38 @@ struct UserJoinRequest {
   expires_at: timestamp;
 }
 
+struct OrganizationJoinRequestsSnapshot {
+  sequence: int64;
+  values: [OrganizationJoinRequest];
+}
+
+enum OrganizationJoinRequestsChange {
+  add: OrganizationJoinRequest;
+  remove: RecordId;
+}
+
+struct OrganizationJoinRequestsChanged {
+  sequence: int64;
+  operation_id: string;
+  changes: [OrganizationJoinRequestsChange];
+}
+
+struct UserJoinRequestsSnapshot {
+  sequence: int64;
+  values: [UserJoinRequest];
+}
+
+enum UserJoinRequestsChange {
+  add: UserJoinRequest;
+  remove: RecordId;
+}
+
+struct UserJoinRequestsChanged {
+  sequence: int64;
+  operation_id: string;
+  changes: [UserJoinRequestsChange];
+}
+
 struct AutoAcceptedMember {
   organization_id: RecordId;
   organization_name: string;
@@ -40,9 +75,8 @@ method WatchOrganizationJoinRequests(
 ): enum {
   internal_error: InternalError;
 
-  list: [OrganizationJoinRequest];
-  add: OrganizationJoinRequest;
-  remove: RecordId;
+  snapshot: OrganizationJoinRequestsSnapshot;
+  changed: OrganizationJoinRequestsChanged;
 } = 399821;
 
 struct ApprovedOrganizationJoinRequest {
@@ -60,7 +94,11 @@ method ApproveOrganizationJoinRequests(
   }
 ): enum {
   internal_error: InternalError;
-  success: [ApprovedOrganizationJoinRequest];
+  success: struct {
+    approvals: [ApprovedOrganizationJoinRequest];
+    join_requests_event: OrganizationJoinRequestsChanged;
+    members_event: OrganizationMembersChanged;
+  };
   request_not_found_error: struct {
     request_ids: [RecordId];
   };
@@ -89,7 +127,9 @@ method DeclineOrganizationJoinRequest(
   operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  success: struct {};
+  success: struct {
+    event: OrganizationJoinRequestsChanged;
+  };
 
   request_not_found_error: struct {
     request_id: RecordId;

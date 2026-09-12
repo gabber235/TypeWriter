@@ -618,6 +618,1080 @@ class UserJoinRequest private constructor(
     }
 }
 
+sealed interface OrganizationJoinRequestsSnapshot_OrMutable {
+    val sequence: kotlin.Long;
+    val values: kotlin.collections.List<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable>;
+
+    fun toFrozen(): skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class OrganizationJoinRequestsSnapshot private constructor(
+    override val sequence: kotlin.Long,
+    override val values: kotlin.collections.List<skirout.organization.v1.join_request.OrganizationJoinRequest>,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot>? =
+        null,
+): skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long,
+        values: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable>,
+        _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot>? =
+            null,
+    ): this(
+        sequence,
+        build.skir.internal.toFrozenList(values, { it.toFrozen() }),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        sequence = this.sequence,
+        values = this.values,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long =
+            this.sequence,
+        values: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable> =
+            this.values,
+    ) = skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot(
+        sequence,
+        build.skir.internal.toFrozenList(values, { it.toFrozen() }),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot && this.sequence == other.sequence && this.values == other.values);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.sequence, this.values).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [OrganizationJoinRequestsSnapshot]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var sequence: kotlin.Long =
+            0L,
+        override var values: kotlin.collections.List<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable> =
+            build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.OrganizationJoinRequest>(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot>? =
+            null,
+    ): skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot(
+            sequence = this.sequence,
+            values = this.values,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [values] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [values] and returns it.
+         */
+        val mutableValues: kotlin.collections.MutableList<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable> get() {
+            var value = this.values;
+            return when (value) {
+                is build.skir.internal.MutableList -> value;
+                else -> {
+                    value = build.skir.internal.MutableList(value);
+                    this.values = value;
+                    value;
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot(
+                0L,
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.OrganizationJoinRequest>(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [OrganizationJoinRequestsSnapshot].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            sequence: kotlin.Long =
+                0L,
+            values: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable> =
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.OrganizationJoinRequest>(),
+        ) = skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot(
+            sequence = sequence,
+            values = values,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "organization/v1/join_request.skir:OrganizationJoinRequestsSnapshot",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [OrganizationJoinRequestsSnapshot] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [OrganizationJoinRequestsSnapshot] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "sequence",
+                "sequence",
+                0,
+                build.skir.Serializers.int64,
+                "",
+                { it.sequence },
+                { mut, v -> mut.sequence = v },
+            );
+            serializerImpl.addField(
+                "values",
+                "values",
+                1,
+                build.skir.Serializers.list(
+                    skirout.organization.v1.join_request.OrganizationJoinRequest.serializer,
+                ),
+                "",
+                { it.values },
+                { mut, v -> mut.values = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
+/** Deeply immutable. */
+sealed class OrganizationJoinRequestsChange private constructor() {
+    /** The kind of variant held by a `OrganizationJoinRequestsChange`. */
+    enum class Kind {
+        UNKNOWN,
+        ADD_WRAPPER,
+        REMOVE_WRAPPER,
+    }
+
+    class Unknown @kotlin.Deprecated("For internal use", kotlin.ReplaceWith("skirout.organization.v1.join_request.OrganizationJoinRequestsChange.UNKNOWN")) internal constructor(
+        internal val _kind: Kind,
+        internal override val _unrecognized: _UnrecognizedVariant<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>?,
+    ) : skirout.organization.v1.join_request.OrganizationJoinRequestsChange() {
+        override val kind get() = _kind;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.organization.v1.join_request.OrganizationJoinRequestsChange && other.kind == kind;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return kind.ordinal;
+        }
+    }
+
+    class AddWrapper private constructor (
+        val value: skirout.organization.v1.join_request.OrganizationJoinRequest,
+    ) : skirout.organization.v1.join_request.OrganizationJoinRequestsChange() {
+        constructor(
+            value: skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.ADD_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.organization.v1.join_request.OrganizationJoinRequestsChange.AddWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + 96417;
+        }
+    }
+
+    class RemoveWrapper private constructor (
+        val value: skirout.kernel.v1.record_id.RecordId,
+    ) : skirout.organization.v1.join_request.OrganizationJoinRequestsChange() {
+        constructor(
+            value: skirout.kernel.v1.record_id.RecordId_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.REMOVE_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.organization.v1.join_request.OrganizationJoinRequestsChange.RemoveWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + -934610812;
+        }
+    }
+
+    internal open val _unrecognized: _UnrecognizedVariant<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>? get() = null;
+
+    abstract val kind: Kind;
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.organization.v1.join_request.OrganizationJoinRequestsChange._serializerImpl,
+        )
+    }
+
+    companion object {
+        /**
+         * Constant indicating an unknown [OrganizationJoinRequestsChange].
+         * Default value for fields of type [OrganizationJoinRequestsChange].
+         */
+        val UNKNOWN = @kotlin.Suppress("DEPRECATION") Unknown(Kind.UNKNOWN, null);
+
+        /** Shortcut for `AddWrapper(skirout.organization.v1.join_request.OrganizationJoinRequest(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createAdd(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            requestId: skirout.kernel.v1.record_id.RecordId_OrMutable,
+            userId: skirout.kernel.v1.record_id.RecordId_OrMutable,
+            userName: kotlin.String?,
+            userEmail: kotlin.String?,
+            userAvatarUrl: kotlin.String?,
+            requestedAt: java.time.Instant,
+            expiresAt: java.time.Instant,
+        ) = AddWrapper(
+            skirout.organization.v1.join_request.OrganizationJoinRequest(
+                requestId = requestId,
+                userId = userId,
+                userName = userName,
+                userEmail = userEmail,
+                userAvatarUrl = userAvatarUrl,
+                requestedAt = requestedAt,
+                expiresAt = expiresAt,
+            )
+        );
+
+        /** Shortcut for `RemoveWrapper(skirout.kernel.v1.record_id.RecordId(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createRemove(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            table: kotlin.String,
+            key: skirout.kernel.v1.record_id.RecordIdKey,
+        ) = RemoveWrapper(
+            skirout.kernel.v1.record_id.RecordId(
+                table = table,
+                key = key,
+            )
+        );
+
+        private val _serializerImpl =
+            build.skir.internal.EnumSerializer.create<skirout.organization.v1.join_request.OrganizationJoinRequestsChange, Unknown>(
+                recordId = "organization/v1/join_request.skir:OrganizationJoinRequestsChange",
+                doc = "",
+                getKindOrdinal = { it.kind.ordinal },
+                kindCount = Kind.values().size,
+                unknownInstance = UNKNOWN,
+                wrapUnrecognized = { @kotlin.Suppress("DEPRECATION") Unknown(Kind.UNKNOWN, it) },
+                getUnrecognized = { it._unrecognized },
+            );
+
+        /** Serializer for [OrganizationJoinRequestsChange] instances. */
+        val serializer = build.skir.internal.makeSerializer(_serializerImpl);
+
+        /** Describes the [OrganizationJoinRequestsChange] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = _serializerImpl.typeDescriptor;
+
+        init {
+            _maybeFinalizeSerializer();
+        }
+
+        private var _finalizationCounter = 0;
+
+        private fun _maybeFinalizeSerializer() {
+            _finalizationCounter += 1;
+            if (_finalizationCounter == 1) {
+                _serializerImpl.addWrapperVariant(
+                    1,
+                    "add",
+                    Kind.ADD_WRAPPER.ordinal,
+                    skirout.organization.v1.join_request.OrganizationJoinRequest.serializer,
+                    "",
+                    { AddWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.addWrapperVariant(
+                    2,
+                    "remove",
+                    Kind.REMOVE_WRAPPER.ordinal,
+                    skirout.kernel.v1.record_id.RecordId.serializer,
+                    "",
+                    { RemoveWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.finalizeEnum();
+            }
+        }
+    }
+}
+
+sealed interface OrganizationJoinRequestsChanged_OrMutable {
+    val sequence: kotlin.Long;
+    val operationId: kotlin.String;
+    val changes: kotlin.collections.List<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>;
+
+    fun toFrozen(): skirout.organization.v1.join_request.OrganizationJoinRequestsChanged;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class OrganizationJoinRequestsChanged private constructor(
+    override val sequence: kotlin.Long,
+    override val operationId: kotlin.String,
+    override val changes: kotlin.collections.List<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.OrganizationJoinRequestsChanged>? =
+        null,
+): skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long,
+        operationId: kotlin.String,
+        changes: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>,
+        _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.OrganizationJoinRequestsChanged>? =
+            null,
+    ): this(
+        sequence,
+        operationId,
+        build.skir.internal.toFrozenList(changes),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        sequence = this.sequence,
+        operationId = this.operationId,
+        changes = this.changes,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long =
+            this.sequence,
+        operationId: kotlin.String =
+            this.operationId,
+        changes: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequestsChange> =
+            this.changes,
+    ) = skirout.organization.v1.join_request.OrganizationJoinRequestsChanged(
+        sequence,
+        operationId,
+        build.skir.internal.toFrozenList(changes),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.organization.v1.join_request.OrganizationJoinRequestsChanged && this.sequence == other.sequence && this.operationId == other.operationId && this.changes == other.changes);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.sequence, this.operationId, this.changes).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [OrganizationJoinRequestsChanged]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var sequence: kotlin.Long =
+            0L,
+        override var operationId: kotlin.String =
+            "",
+        override var changes: kotlin.collections.List<skirout.organization.v1.join_request.OrganizationJoinRequestsChange> =
+            build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.OrganizationJoinRequestsChanged>? =
+            null,
+    ): skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.organization.v1.join_request.OrganizationJoinRequestsChanged(
+            sequence = this.sequence,
+            operationId = this.operationId,
+            changes = this.changes,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [changes] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [changes] and returns it.
+         */
+        val mutableChanges: kotlin.collections.MutableList<skirout.organization.v1.join_request.OrganizationJoinRequestsChange> get() {
+            var value = this.changes;
+            return when (value) {
+                is build.skir.internal.MutableList -> value;
+                else -> {
+                    value = build.skir.internal.MutableList(value);
+                    this.changes = value;
+                    value;
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.organization.v1.join_request.OrganizationJoinRequestsChanged(
+                0L,
+                "",
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [OrganizationJoinRequestsChanged].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            sequence: kotlin.Long =
+                0L,
+            operationId: kotlin.String =
+                "",
+            changes: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequestsChange> =
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>(),
+        ) = skirout.organization.v1.join_request.OrganizationJoinRequestsChanged(
+            sequence = sequence,
+            operationId = operationId,
+            changes = changes,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "organization/v1/join_request.skir:OrganizationJoinRequestsChanged",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [OrganizationJoinRequestsChanged] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [OrganizationJoinRequestsChanged] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "sequence",
+                "sequence",
+                0,
+                build.skir.Serializers.int64,
+                "",
+                { it.sequence },
+                { mut, v -> mut.sequence = v },
+            );
+            serializerImpl.addField(
+                "operation_id",
+                "operationId",
+                1,
+                build.skir.Serializers.string,
+                "",
+                { it.operationId },
+                { mut, v -> mut.operationId = v },
+            );
+            serializerImpl.addField(
+                "changes",
+                "changes",
+                2,
+                build.skir.Serializers.list(
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChange.serializer,
+                ),
+                "",
+                { it.changes },
+                { mut, v -> mut.changes = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
+sealed interface UserJoinRequestsSnapshot_OrMutable {
+    val sequence: kotlin.Long;
+    val values: kotlin.collections.List<skirout.organization.v1.join_request.UserJoinRequest_OrMutable>;
+
+    fun toFrozen(): skirout.organization.v1.join_request.UserJoinRequestsSnapshot;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class UserJoinRequestsSnapshot private constructor(
+    override val sequence: kotlin.Long,
+    override val values: kotlin.collections.List<skirout.organization.v1.join_request.UserJoinRequest>,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.UserJoinRequestsSnapshot>? =
+        null,
+): skirout.organization.v1.join_request.UserJoinRequestsSnapshot_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long,
+        values: kotlin.collections.Iterable<skirout.organization.v1.join_request.UserJoinRequest_OrMutable>,
+        _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.UserJoinRequestsSnapshot>? =
+            null,
+    ): this(
+        sequence,
+        build.skir.internal.toFrozenList(values, { it.toFrozen() }),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        sequence = this.sequence,
+        values = this.values,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long =
+            this.sequence,
+        values: kotlin.collections.Iterable<skirout.organization.v1.join_request.UserJoinRequest_OrMutable> =
+            this.values,
+    ) = skirout.organization.v1.join_request.UserJoinRequestsSnapshot(
+        sequence,
+        build.skir.internal.toFrozenList(values, { it.toFrozen() }),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.organization.v1.join_request.UserJoinRequestsSnapshot && this.sequence == other.sequence && this.values == other.values);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.sequence, this.values).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.organization.v1.join_request.UserJoinRequestsSnapshot.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [UserJoinRequestsSnapshot]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var sequence: kotlin.Long =
+            0L,
+        override var values: kotlin.collections.List<skirout.organization.v1.join_request.UserJoinRequest_OrMutable> =
+            build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.UserJoinRequest>(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.UserJoinRequestsSnapshot>? =
+            null,
+    ): skirout.organization.v1.join_request.UserJoinRequestsSnapshot_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.organization.v1.join_request.UserJoinRequestsSnapshot(
+            sequence = this.sequence,
+            values = this.values,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [values] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [values] and returns it.
+         */
+        val mutableValues: kotlin.collections.MutableList<skirout.organization.v1.join_request.UserJoinRequest_OrMutable> get() {
+            var value = this.values;
+            return when (value) {
+                is build.skir.internal.MutableList -> value;
+                else -> {
+                    value = build.skir.internal.MutableList(value);
+                    this.values = value;
+                    value;
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.organization.v1.join_request.UserJoinRequestsSnapshot(
+                0L,
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.UserJoinRequest>(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [UserJoinRequestsSnapshot].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            sequence: kotlin.Long =
+                0L,
+            values: kotlin.collections.Iterable<skirout.organization.v1.join_request.UserJoinRequest_OrMutable> =
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.UserJoinRequest>(),
+        ) = skirout.organization.v1.join_request.UserJoinRequestsSnapshot(
+            sequence = sequence,
+            values = values,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "organization/v1/join_request.skir:UserJoinRequestsSnapshot",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [UserJoinRequestsSnapshot] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [UserJoinRequestsSnapshot] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "sequence",
+                "sequence",
+                0,
+                build.skir.Serializers.int64,
+                "",
+                { it.sequence },
+                { mut, v -> mut.sequence = v },
+            );
+            serializerImpl.addField(
+                "values",
+                "values",
+                1,
+                build.skir.Serializers.list(
+                    skirout.organization.v1.join_request.UserJoinRequest.serializer,
+                ),
+                "",
+                { it.values },
+                { mut, v -> mut.values = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
+/** Deeply immutable. */
+sealed class UserJoinRequestsChange private constructor() {
+    /** The kind of variant held by a `UserJoinRequestsChange`. */
+    enum class Kind {
+        UNKNOWN,
+        ADD_WRAPPER,
+        REMOVE_WRAPPER,
+    }
+
+    class Unknown @kotlin.Deprecated("For internal use", kotlin.ReplaceWith("skirout.organization.v1.join_request.UserJoinRequestsChange.UNKNOWN")) internal constructor(
+        internal val _kind: Kind,
+        internal override val _unrecognized: _UnrecognizedVariant<skirout.organization.v1.join_request.UserJoinRequestsChange>?,
+    ) : skirout.organization.v1.join_request.UserJoinRequestsChange() {
+        override val kind get() = _kind;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.organization.v1.join_request.UserJoinRequestsChange && other.kind == kind;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return kind.ordinal;
+        }
+    }
+
+    class AddWrapper private constructor (
+        val value: skirout.organization.v1.join_request.UserJoinRequest,
+    ) : skirout.organization.v1.join_request.UserJoinRequestsChange() {
+        constructor(
+            value: skirout.organization.v1.join_request.UserJoinRequest_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.ADD_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.organization.v1.join_request.UserJoinRequestsChange.AddWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + 96417;
+        }
+    }
+
+    class RemoveWrapper private constructor (
+        val value: skirout.kernel.v1.record_id.RecordId,
+    ) : skirout.organization.v1.join_request.UserJoinRequestsChange() {
+        constructor(
+            value: skirout.kernel.v1.record_id.RecordId_OrMutable,
+        ): this(value.toFrozen()) {}
+
+        override val kind get() = Kind.REMOVE_WRAPPER;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return other is skirout.organization.v1.join_request.UserJoinRequestsChange.RemoveWrapper && value == other.value;
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return this.value.hashCode() + -934610812;
+        }
+    }
+
+    internal open val _unrecognized: _UnrecognizedVariant<skirout.organization.v1.join_request.UserJoinRequestsChange>? get() = null;
+
+    abstract val kind: Kind;
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.organization.v1.join_request.UserJoinRequestsChange._serializerImpl,
+        )
+    }
+
+    companion object {
+        /**
+         * Constant indicating an unknown [UserJoinRequestsChange].
+         * Default value for fields of type [UserJoinRequestsChange].
+         */
+        val UNKNOWN = @kotlin.Suppress("DEPRECATION") Unknown(Kind.UNKNOWN, null);
+
+        /** Shortcut for `AddWrapper(skirout.organization.v1.join_request.UserJoinRequest(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createAdd(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            requestId: skirout.kernel.v1.record_id.RecordId_OrMutable,
+            organizationId: skirout.kernel.v1.record_id.RecordId_OrMutable,
+            organizationName: kotlin.String,
+            organizationLogoUrl: kotlin.String,
+            requestedAt: java.time.Instant,
+            expiresAt: java.time.Instant,
+        ) = AddWrapper(
+            skirout.organization.v1.join_request.UserJoinRequest(
+                requestId = requestId,
+                organizationId = organizationId,
+                organizationName = organizationName,
+                organizationLogoUrl = organizationLogoUrl,
+                requestedAt = requestedAt,
+                expiresAt = expiresAt,
+            )
+        );
+
+        /** Shortcut for `RemoveWrapper(skirout.kernel.v1.record_id.RecordId(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createRemove(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            table: kotlin.String,
+            key: skirout.kernel.v1.record_id.RecordIdKey,
+        ) = RemoveWrapper(
+            skirout.kernel.v1.record_id.RecordId(
+                table = table,
+                key = key,
+            )
+        );
+
+        private val _serializerImpl =
+            build.skir.internal.EnumSerializer.create<skirout.organization.v1.join_request.UserJoinRequestsChange, Unknown>(
+                recordId = "organization/v1/join_request.skir:UserJoinRequestsChange",
+                doc = "",
+                getKindOrdinal = { it.kind.ordinal },
+                kindCount = Kind.values().size,
+                unknownInstance = UNKNOWN,
+                wrapUnrecognized = { @kotlin.Suppress("DEPRECATION") Unknown(Kind.UNKNOWN, it) },
+                getUnrecognized = { it._unrecognized },
+            );
+
+        /** Serializer for [UserJoinRequestsChange] instances. */
+        val serializer = build.skir.internal.makeSerializer(_serializerImpl);
+
+        /** Describes the [UserJoinRequestsChange] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = _serializerImpl.typeDescriptor;
+
+        init {
+            _maybeFinalizeSerializer();
+        }
+
+        private var _finalizationCounter = 0;
+
+        private fun _maybeFinalizeSerializer() {
+            _finalizationCounter += 1;
+            if (_finalizationCounter == 1) {
+                _serializerImpl.addWrapperVariant(
+                    1,
+                    "add",
+                    Kind.ADD_WRAPPER.ordinal,
+                    skirout.organization.v1.join_request.UserJoinRequest.serializer,
+                    "",
+                    { AddWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.addWrapperVariant(
+                    2,
+                    "remove",
+                    Kind.REMOVE_WRAPPER.ordinal,
+                    skirout.kernel.v1.record_id.RecordId.serializer,
+                    "",
+                    { RemoveWrapper(it) },
+                    { it.value },
+                );
+                _serializerImpl.finalizeEnum();
+            }
+        }
+    }
+}
+
+sealed interface UserJoinRequestsChanged_OrMutable {
+    val sequence: kotlin.Long;
+    val operationId: kotlin.String;
+    val changes: kotlin.collections.List<skirout.organization.v1.join_request.UserJoinRequestsChange>;
+
+    fun toFrozen(): skirout.organization.v1.join_request.UserJoinRequestsChanged;
+}
+
+/** Deeply immutable. */
+@kotlin.Suppress("UNUSED_PARAMETER")
+class UserJoinRequestsChanged private constructor(
+    override val sequence: kotlin.Long,
+    override val operationId: kotlin.String,
+    override val changes: kotlin.collections.List<skirout.organization.v1.join_request.UserJoinRequestsChange>,
+    private val _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.UserJoinRequestsChanged>? =
+        null,
+): skirout.organization.v1.join_request.UserJoinRequestsChanged_OrMutable {
+    constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long,
+        operationId: kotlin.String,
+        changes: kotlin.collections.Iterable<skirout.organization.v1.join_request.UserJoinRequestsChange>,
+        _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.UserJoinRequestsChanged>? =
+            null,
+    ): this(
+        sequence,
+        operationId,
+        build.skir.internal.toFrozenList(changes),
+        _unrecognizedFields,
+    ) {}
+
+    @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+    override fun toFrozen() = this;
+
+    /** Returns a mutable shallow copy of this instance */
+    fun toMutable() = Mutable(
+        sequence = this.sequence,
+        operationId = this.operationId,
+        changes = this.changes,
+    );
+
+    /** Returns a shallow copy of this instance with the specified fields replaced. */
+    fun copy(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        sequence: kotlin.Long =
+            this.sequence,
+        operationId: kotlin.String =
+            this.operationId,
+        changes: kotlin.collections.Iterable<skirout.organization.v1.join_request.UserJoinRequestsChange> =
+            this.changes,
+    ) = skirout.organization.v1.join_request.UserJoinRequestsChanged(
+        sequence,
+        operationId,
+        build.skir.internal.toFrozenList(changes),
+        this._unrecognizedFields,
+    );
+
+    @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+    fun copy() = this;
+
+    override fun equals(other: kotlin.Any?): kotlin.Boolean {
+        return this === other || (other is skirout.organization.v1.join_request.UserJoinRequestsChanged && this.sequence == other.sequence && this.operationId == other.operationId && this.changes == other.changes);
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return kotlin.collections.listOf<kotlin.Any?>(this.sequence, this.operationId, this.changes).hashCode();
+    }
+
+    override fun toString(): kotlin.String {
+        return build.skir.internal.toStringImpl(
+            this,
+            skirout.organization.v1.join_request.UserJoinRequestsChanged.serializerImpl,
+        )
+    }
+
+    /** Mutable version of [UserJoinRequestsChanged]. */
+    class Mutable internal constructor(
+        _mustNameArguments: _MustNameArguments =
+            _MustNameArguments,
+        override var sequence: kotlin.Long =
+            0L,
+        override var operationId: kotlin.String =
+            "",
+        override var changes: kotlin.collections.List<skirout.organization.v1.join_request.UserJoinRequestsChange> =
+            build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.UserJoinRequestsChange>(),
+        internal var _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.UserJoinRequestsChanged>? =
+            null,
+    ): skirout.organization.v1.join_request.UserJoinRequestsChanged_OrMutable {
+        /** Returns a deeply immutable copy of this instance */
+        override fun toFrozen() = skirout.organization.v1.join_request.UserJoinRequestsChanged(
+            sequence = this.sequence,
+            operationId = this.operationId,
+            changes = this.changes,
+            _unrecognizedFields = this._unrecognizedFields,
+        );
+
+        /**
+         * If the value of [changes] is already mutable, returns it as-is.
+         * Otherwise, makes a mutable copy, assigns it back to [changes] and returns it.
+         */
+        val mutableChanges: kotlin.collections.MutableList<skirout.organization.v1.join_request.UserJoinRequestsChange> get() {
+            var value = this.changes;
+            return when (value) {
+                is build.skir.internal.MutableList -> value;
+                else -> {
+                    value = build.skir.internal.MutableList(value);
+                    this.changes = value;
+                    value;
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val default =
+            skirout.organization.v1.join_request.UserJoinRequestsChanged(
+                0L,
+                "",
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.UserJoinRequestsChange>(),
+            );
+
+        /** Returns an instance with all fields set to their default values. */
+        fun partial() = default;
+
+        /**
+         * Creates a new instance of [UserJoinRequestsChanged].
+         * Unlike the constructor, does not require all fields to be specified.
+         * Missing fields will be set to their default values.
+         */
+        fun partial(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            sequence: kotlin.Long =
+                0L,
+            operationId: kotlin.String =
+                "",
+            changes: kotlin.collections.Iterable<skirout.organization.v1.join_request.UserJoinRequestsChange> =
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.UserJoinRequestsChange>(),
+        ) = skirout.organization.v1.join_request.UserJoinRequestsChanged(
+            sequence = sequence,
+            operationId = operationId,
+            changes = changes,
+            _unrecognizedFields = null,
+        );
+
+        private val serializerImpl = build.skir.internal.StructSerializer(
+            recordId = "organization/v1/join_request.skir:UserJoinRequestsChanged",
+            doc = "",
+            defaultInstance = default,
+            newMutableFn = { it?.toMutable() ?: Mutable() },
+            toFrozenFn = { it.toFrozen() },
+            getUnrecognizedFields = { it._unrecognizedFields },
+            setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+        );
+
+        /** Serializer for [UserJoinRequestsChanged] instances. */
+        val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+        /** Describes the [UserJoinRequestsChanged] type. Provides runtime introspection capabilities. */
+        val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+        init {
+            serializerImpl.addField(
+                "sequence",
+                "sequence",
+                0,
+                build.skir.Serializers.int64,
+                "",
+                { it.sequence },
+                { mut, v -> mut.sequence = v },
+            );
+            serializerImpl.addField(
+                "operation_id",
+                "operationId",
+                1,
+                build.skir.Serializers.string,
+                "",
+                { it.operationId },
+                { mut, v -> mut.operationId = v },
+            );
+            serializerImpl.addField(
+                "changes",
+                "changes",
+                2,
+                build.skir.Serializers.list(
+                    skirout.organization.v1.join_request.UserJoinRequestsChange.serializer,
+                ),
+                "",
+                { it.changes },
+                { mut, v -> mut.changes = v },
+            );
+            serializerImpl.finalizeStruct();
+        }
+    }
+}
+
 sealed interface AutoAcceptedMember_OrMutable {
     val organizationId: skirout.kernel.v1.record_id.RecordId_OrMutable;
     val organizationName: kotlin.String;
@@ -958,9 +2032,8 @@ sealed class WatchOrganizationJoinRequestsResponse private constructor() {
     enum class Kind {
         UNKNOWN,
         INTERNAL_ERROR_WRAPPER,
-        LIST_WRAPPER,
-        ADD_WRAPPER,
-        REMOVE_WRAPPER,
+        SNAPSHOT_WRAPPER,
+        CHANGED_WRAPPER,
     }
 
     class Unknown @kotlin.Deprecated("For internal use", kotlin.ReplaceWith("skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse.UNKNOWN")) internal constructor(
@@ -996,57 +2069,39 @@ sealed class WatchOrganizationJoinRequestsResponse private constructor() {
         }
     }
 
-    class ListWrapper private constructor (
-        val value: kotlin.collections.List<skirout.organization.v1.join_request.OrganizationJoinRequest>,
+    class SnapshotWrapper private constructor (
+        val value: skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot,
     ) : skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse() {
         constructor(
-            value: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable>,
-        ): this(build.skir.internal.toFrozenList(value, { it.toFrozen() })) {}
+            value: skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot_OrMutable,
+        ): this(value.toFrozen()) {}
 
-        override val kind get() = Kind.LIST_WRAPPER;
+        override val kind get() = Kind.SNAPSHOT_WRAPPER;
 
         override fun equals(other: kotlin.Any?): kotlin.Boolean {
-            return other is skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse.ListWrapper && value == other.value;
+            return other is skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse.SnapshotWrapper && value == other.value;
         }
 
         override fun hashCode(): kotlin.Int {
-            return this.value.hashCode() + 3322014;
+            return this.value.hashCode() + 284874180;
         }
     }
 
-    class AddWrapper private constructor (
-        val value: skirout.organization.v1.join_request.OrganizationJoinRequest,
+    class ChangedWrapper private constructor (
+        val value: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged,
     ) : skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse() {
         constructor(
-            value: skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable,
+            value: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable,
         ): this(value.toFrozen()) {}
 
-        override val kind get() = Kind.ADD_WRAPPER;
+        override val kind get() = Kind.CHANGED_WRAPPER;
 
         override fun equals(other: kotlin.Any?): kotlin.Boolean {
-            return other is skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse.AddWrapper && value == other.value;
+            return other is skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse.ChangedWrapper && value == other.value;
         }
 
         override fun hashCode(): kotlin.Int {
-            return this.value.hashCode() + 96417;
-        }
-    }
-
-    class RemoveWrapper private constructor (
-        val value: skirout.kernel.v1.record_id.RecordId,
-    ) : skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse() {
-        constructor(
-            value: skirout.kernel.v1.record_id.RecordId_OrMutable,
-        ): this(value.toFrozen()) {}
-
-        override val kind get() = Kind.REMOVE_WRAPPER;
-
-        override fun equals(other: kotlin.Any?): kotlin.Boolean {
-            return other is skirout.organization.v1.join_request.WatchOrganizationJoinRequestsResponse.RemoveWrapper && value == other.value;
-        }
-
-        override fun hashCode(): kotlin.Int {
-            return this.value.hashCode() + -934610812;
+            return this.value.hashCode() + 738943668;
         }
     }
 
@@ -1077,41 +2132,33 @@ sealed class WatchOrganizationJoinRequestsResponse private constructor() {
             skirout.kernel.v1.errors.InternalError()
         );
 
-        /** Shortcut for `AddWrapper(skirout.organization.v1.join_request.OrganizationJoinRequest(...))`. */
+        /** Shortcut for `SnapshotWrapper(skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot(...))`. */
         @kotlin.Suppress("UNUSED_PARAMETER")
-        fun createAdd(
+        fun createSnapshot(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            requestId: skirout.kernel.v1.record_id.RecordId_OrMutable,
-            userId: skirout.kernel.v1.record_id.RecordId_OrMutable,
-            userName: kotlin.String?,
-            userEmail: kotlin.String?,
-            userAvatarUrl: kotlin.String?,
-            requestedAt: java.time.Instant,
-            expiresAt: java.time.Instant,
-        ) = AddWrapper(
-            skirout.organization.v1.join_request.OrganizationJoinRequest(
-                requestId = requestId,
-                userId = userId,
-                userName = userName,
-                userEmail = userEmail,
-                userAvatarUrl = userAvatarUrl,
-                requestedAt = requestedAt,
-                expiresAt = expiresAt,
+            sequence: kotlin.Long,
+            values: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequest_OrMutable>,
+        ) = SnapshotWrapper(
+            skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot(
+                sequence = sequence,
+                values = values,
             )
         );
 
-        /** Shortcut for `RemoveWrapper(skirout.kernel.v1.record_id.RecordId(...))`. */
+        /** Shortcut for `ChangedWrapper(skirout.organization.v1.join_request.OrganizationJoinRequestsChanged(...))`. */
         @kotlin.Suppress("UNUSED_PARAMETER")
-        fun createRemove(
+        fun createChanged(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            table: kotlin.String,
-            key: skirout.kernel.v1.record_id.RecordIdKey,
-        ) = RemoveWrapper(
-            skirout.kernel.v1.record_id.RecordId(
-                table = table,
-                key = key,
+            sequence: kotlin.Long,
+            operationId: kotlin.String,
+            changes: kotlin.collections.Iterable<skirout.organization.v1.join_request.OrganizationJoinRequestsChange>,
+        ) = ChangedWrapper(
+            skirout.organization.v1.join_request.OrganizationJoinRequestsChanged(
+                sequence = sequence,
+                operationId = operationId,
+                changes = changes,
             )
         );
 
@@ -1152,31 +2199,20 @@ sealed class WatchOrganizationJoinRequestsResponse private constructor() {
                 );
                 _serializerImpl.addWrapperVariant(
                     2,
-                    "list",
-                    Kind.LIST_WRAPPER.ordinal,
-                    build.skir.Serializers.list(
-                        skirout.organization.v1.join_request.OrganizationJoinRequest.serializer,
-                    ),
+                    "snapshot",
+                    Kind.SNAPSHOT_WRAPPER.ordinal,
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsSnapshot.serializer,
                     "",
-                    { ListWrapper(it) },
+                    { SnapshotWrapper(it) },
                     { it.value },
                 );
                 _serializerImpl.addWrapperVariant(
                     3,
-                    "add",
-                    Kind.ADD_WRAPPER.ordinal,
-                    skirout.organization.v1.join_request.OrganizationJoinRequest.serializer,
+                    "changed",
+                    Kind.CHANGED_WRAPPER.ordinal,
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.serializer,
                     "",
-                    { AddWrapper(it) },
-                    { it.value },
-                );
-                _serializerImpl.addWrapperVariant(
-                    4,
-                    "remove",
-                    Kind.REMOVE_WRAPPER.ordinal,
-                    skirout.kernel.v1.record_id.RecordId.serializer,
-                    "",
-                    { RemoveWrapper(it) },
+                    { ChangedWrapper(it) },
                     { it.value },
                 );
                 _serializerImpl.finalizeEnum();
@@ -1640,11 +2676,11 @@ sealed class ApproveOrganizationJoinRequestsResponse private constructor() {
     }
 
     class SuccessWrapper private constructor (
-        val value: kotlin.collections.List<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest>,
+        val value: skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success,
     ) : skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse() {
         constructor(
-            value: kotlin.collections.Iterable<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable>,
-        ): this(build.skir.internal.toFrozenList(value, { it.toFrozen() })) {}
+            value: skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success_OrMutable,
+        ): this(value.toFrozen()) {}
 
         override val kind get() = Kind.SUCCESS_WRAPPER;
 
@@ -1828,6 +2864,22 @@ sealed class ApproveOrganizationJoinRequestsResponse private constructor() {
             skirout.kernel.v1.errors.InternalError()
         );
 
+        /** Shortcut for `SuccessWrapper(skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success(...))`. */
+        @kotlin.Suppress("UNUSED_PARAMETER")
+        fun createSuccess(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            approvals: kotlin.collections.Iterable<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable>,
+            joinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable,
+            membersEvent: skirout.organization.v1.member.OrganizationMembersChanged_OrMutable,
+        ) = SuccessWrapper(
+            skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success(
+                approvals = approvals,
+                joinRequestsEvent = joinRequestsEvent,
+                membersEvent = membersEvent,
+            )
+        );
+
         /** Shortcut for `RequestNotFoundErrorWrapper(skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.RequestNotFoundError(...))`. */
         @kotlin.Suppress("UNUSED_PARAMETER")
         fun createRequestNotFoundError(
@@ -1956,9 +3008,7 @@ sealed class ApproveOrganizationJoinRequestsResponse private constructor() {
                     2,
                     "success",
                     Kind.SUCCESS_WRAPPER.ordinal,
-                    build.skir.Serializers.list(
-                        skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest.serializer,
-                    ),
+                    skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success.serializer,
                     "",
                     { SuccessWrapper(it) },
                     { it.value },
@@ -2036,6 +3086,236 @@ sealed class ApproveOrganizationJoinRequestsResponse private constructor() {
                     { it.value },
                 );
                 _serializerImpl.finalizeEnum();
+            }
+        }
+    }
+
+    sealed interface Success_OrMutable {
+        val approvals: kotlin.collections.List<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable>;
+        val joinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable;
+        val membersEvent: skirout.organization.v1.member.OrganizationMembersChanged_OrMutable;
+
+        fun toFrozen(): skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success;
+    }
+
+    /** Deeply immutable. */
+    @kotlin.Suppress("UNUSED_PARAMETER")
+    class Success private constructor(
+        override val approvals: kotlin.collections.List<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest>,
+        override val joinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged,
+        override val membersEvent: skirout.organization.v1.member.OrganizationMembersChanged,
+        private val _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success>? =
+            null,
+    ): skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success_OrMutable {
+        constructor(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            approvals: kotlin.collections.Iterable<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable>,
+            joinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable,
+            membersEvent: skirout.organization.v1.member.OrganizationMembersChanged_OrMutable,
+            _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success>? =
+                null,
+        ): this(
+            build.skir.internal.toFrozenList(approvals, { it.toFrozen() }),
+            joinRequestsEvent.toFrozen(),
+            membersEvent.toFrozen(),
+            _unrecognizedFields,
+        ) {}
+
+        @kotlin.Deprecated("Already frozen", kotlin.ReplaceWith("this"))
+        override fun toFrozen() = this;
+
+        /** Returns a mutable shallow copy of this instance */
+        fun toMutable() = Mutable(
+            approvals = this.approvals,
+            joinRequestsEvent = this.joinRequestsEvent,
+            membersEvent = this.membersEvent,
+        );
+
+        /** Returns a shallow copy of this instance with the specified fields replaced. */
+        fun copy(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            approvals: kotlin.collections.Iterable<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable> =
+                this.approvals,
+            joinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable =
+                this.joinRequestsEvent,
+            membersEvent: skirout.organization.v1.member.OrganizationMembersChanged_OrMutable =
+                this.membersEvent,
+        ) = skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success(
+            build.skir.internal.toFrozenList(approvals, { it.toFrozen() }),
+            joinRequestsEvent.toFrozen(),
+            membersEvent.toFrozen(),
+            this._unrecognizedFields,
+        );
+
+        @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+        fun copy() = this;
+
+        override fun equals(other: kotlin.Any?): kotlin.Boolean {
+            return this === other || (other is skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success && this.approvals == other.approvals && this.joinRequestsEvent == other.joinRequestsEvent && this.membersEvent == other.membersEvent);
+        }
+
+        override fun hashCode(): kotlin.Int {
+            return kotlin.collections.listOf<kotlin.Any?>(this.approvals, this.joinRequestsEvent, this.membersEvent).hashCode();
+        }
+
+        override fun toString(): kotlin.String {
+            return build.skir.internal.toStringImpl(
+                this,
+                skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success.serializerImpl,
+            )
+        }
+
+        /** Mutable version of [Success]. */
+        class Mutable internal constructor(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            override var approvals: kotlin.collections.List<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable> =
+                build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest>(),
+            override var joinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable =
+                skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.partial(),
+            override var membersEvent: skirout.organization.v1.member.OrganizationMembersChanged_OrMutable =
+                skirout.organization.v1.member.OrganizationMembersChanged.partial(),
+            internal var _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success>? =
+                null,
+        ): skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success_OrMutable {
+            /** Returns a deeply immutable copy of this instance */
+            override fun toFrozen() = skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success(
+                approvals = this.approvals,
+                joinRequestsEvent = this.joinRequestsEvent,
+                membersEvent = this.membersEvent,
+                _unrecognizedFields = this._unrecognizedFields,
+            );
+
+            /**
+             * If the value of [approvals] is already mutable, returns it as-is.
+             * Otherwise, makes a mutable copy, assigns it back to [approvals] and returns it.
+             */
+            val mutableApprovals: kotlin.collections.MutableList<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable> get() {
+                var value = this.approvals;
+                return when (value) {
+                    is build.skir.internal.MutableList -> value;
+                    else -> {
+                        value = build.skir.internal.MutableList(value);
+                        this.approvals = value;
+                        value;
+                    }
+                }
+            }
+
+            /**
+             * If the value of [joinRequestsEvent] is already mutable, returns it as-is.
+             * Otherwise, makes a mutable copy, assigns it back to [joinRequestsEvent] and returns it.
+             */
+            val mutableJoinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.Mutable get() {
+                var value = this.joinRequestsEvent;
+                return when (value) {
+                    is skirout.organization.v1.join_request.OrganizationJoinRequestsChanged -> {
+                        value = value.toMutable();
+                        this.joinRequestsEvent = value;
+                        return value;
+                    }
+                    is skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.Mutable -> value;
+                }
+            }
+
+            /**
+             * If the value of [membersEvent] is already mutable, returns it as-is.
+             * Otherwise, makes a mutable copy, assigns it back to [membersEvent] and returns it.
+             */
+            val mutableMembersEvent: skirout.organization.v1.member.OrganizationMembersChanged.Mutable get() {
+                var value = this.membersEvent;
+                return when (value) {
+                    is skirout.organization.v1.member.OrganizationMembersChanged -> {
+                        value = value.toMutable();
+                        this.membersEvent = value;
+                        return value;
+                    }
+                    is skirout.organization.v1.member.OrganizationMembersChanged.Mutable -> value;
+                }
+            }
+        }
+
+        companion object {
+            private val default =
+                skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success(
+                    build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest>(),
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.partial(),
+                    skirout.organization.v1.member.OrganizationMembersChanged.partial(),
+                );
+
+            /** Returns an instance with all fields set to their default values. */
+            fun partial() = default;
+
+            /**
+             * Creates a new instance of [Success].
+             * Unlike the constructor, does not require all fields to be specified.
+             * Missing fields will be set to their default values.
+             */
+            fun partial(
+                _mustNameArguments: _MustNameArguments =
+                    _MustNameArguments,
+                approvals: kotlin.collections.Iterable<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest_OrMutable> =
+                    build.skir.internal.emptyFrozenList<skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest>(),
+                joinRequestsEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable =
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.partial(),
+                membersEvent: skirout.organization.v1.member.OrganizationMembersChanged_OrMutable =
+                    skirout.organization.v1.member.OrganizationMembersChanged.partial(),
+            ) = skirout.organization.v1.join_request.ApproveOrganizationJoinRequestsResponse.Success(
+                approvals = approvals,
+                joinRequestsEvent = joinRequestsEvent,
+                membersEvent = membersEvent,
+                _unrecognizedFields = null,
+            );
+
+            private val serializerImpl = build.skir.internal.StructSerializer(
+                recordId = "organization/v1/join_request.skir:ApproveOrganizationJoinRequestsResponse.Success",
+                doc = "",
+                defaultInstance = default,
+                newMutableFn = { it?.toMutable() ?: Mutable() },
+                toFrozenFn = { it.toFrozen() },
+                getUnrecognizedFields = { it._unrecognizedFields },
+                setUnrecognizedFields = { m, u -> m._unrecognizedFields = u },
+            );
+
+            /** Serializer for [Success] instances. */
+            val serializer = build.skir.internal.makeSerializer(serializerImpl);
+
+            /** Describes the [Success] type. Provides runtime introspection capabilities. */
+            val typeDescriptor get() = serializerImpl.typeDescriptor;
+
+            init {
+                serializerImpl.addField(
+                    "approvals",
+                    "approvals",
+                    0,
+                    build.skir.Serializers.list(
+                        skirout.organization.v1.join_request.ApprovedOrganizationJoinRequest.serializer,
+                    ),
+                    "",
+                    { it.approvals },
+                    { mut, v -> mut.approvals = v },
+                );
+                serializerImpl.addField(
+                    "join_requests_event",
+                    "joinRequestsEvent",
+                    1,
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.serializer,
+                    "",
+                    { it.joinRequestsEvent },
+                    { mut, v -> mut.joinRequestsEvent = v },
+                );
+                serializerImpl.addField(
+                    "members_event",
+                    "membersEvent",
+                    2,
+                    skirout.organization.v1.member.OrganizationMembersChanged.serializer,
+                    "",
+                    { it.membersEvent },
+                    { mut, v -> mut.membersEvent = v },
+                );
+                serializerImpl.finalizeStruct();
             }
         }
     }
@@ -3281,8 +4561,11 @@ sealed class DeclineOrganizationJoinRequestResponse private constructor() {
         fun createSuccess(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
+            event: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable,
         ) = SuccessWrapper(
-            skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success()
+            skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success(
+                event = event,
+            )
         );
 
         /** Shortcut for `RequestNotFoundErrorWrapper(skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.RequestNotFoundError(...))`. */
@@ -3585,21 +4868,26 @@ sealed class DeclineOrganizationJoinRequestResponse private constructor() {
     }
 
     sealed interface Success_OrMutable {
+        val event: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable;
+
         fun toFrozen(): skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success;
     }
 
     /** Deeply immutable. */
     @kotlin.Suppress("UNUSED_PARAMETER")
     class Success private constructor(
+        override val event: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged,
         private val _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success>? =
             null,
     ): skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success_OrMutable {
         constructor(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
+            event: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable,
             _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success>? =
                 null,
         ): this(
+            event.toFrozen(),
             _unrecognizedFields,
         ) {}
 
@@ -3607,14 +4895,30 @@ sealed class DeclineOrganizationJoinRequestResponse private constructor() {
         override fun toFrozen() = this;
 
         /** Returns a mutable shallow copy of this instance */
-        fun toMutable() = Mutable();
+        fun toMutable() = Mutable(
+            event = this.event,
+        );
+
+        /** Returns a shallow copy of this instance with the specified fields replaced. */
+        fun copy(
+            _mustNameArguments: _MustNameArguments =
+                _MustNameArguments,
+            event: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable =
+                this.event,
+        ) = skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success(
+            event.toFrozen(),
+            this._unrecognizedFields,
+        );
+
+        @kotlin.Deprecated("No point in creating an exact copy of an immutable object", kotlin.ReplaceWith("this"))
+        fun copy() = this;
 
         override fun equals(other: kotlin.Any?): kotlin.Boolean {
-            return this === other || (other is skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success);
+            return this === other || (other is skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success && this.event == other.event);
         }
 
         override fun hashCode(): kotlin.Int {
-            return kotlin.collections.listOf<kotlin.Any?>().hashCode();
+            return kotlin.collections.listOf<kotlin.Any?>(this.event).hashCode();
         }
 
         override fun toString(): kotlin.String {
@@ -3628,18 +4932,39 @@ sealed class DeclineOrganizationJoinRequestResponse private constructor() {
         class Mutable internal constructor(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
+            override var event: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable =
+                skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.partial(),
             internal var _unrecognizedFields: _UnrecognizedFields<skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success>? =
                 null,
         ): skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success_OrMutable {
             /** Returns a deeply immutable copy of this instance */
             override fun toFrozen() = skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success(
+                event = this.event,
                 _unrecognizedFields = this._unrecognizedFields,
             );
+
+            /**
+             * If the value of [event] is already mutable, returns it as-is.
+             * Otherwise, makes a mutable copy, assigns it back to [event] and returns it.
+             */
+            val mutableEvent: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.Mutable get() {
+                var value = this.event;
+                return when (value) {
+                    is skirout.organization.v1.join_request.OrganizationJoinRequestsChanged -> {
+                        value = value.toMutable();
+                        this.event = value;
+                        return value;
+                    }
+                    is skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.Mutable -> value;
+                }
+            }
         }
 
         companion object {
             private val default =
-                skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success();
+                skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success(
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.partial(),
+                );
 
             /** Returns an instance with all fields set to their default values. */
             fun partial() = default;
@@ -3652,7 +4977,10 @@ sealed class DeclineOrganizationJoinRequestResponse private constructor() {
             fun partial(
                 _mustNameArguments: _MustNameArguments =
                     _MustNameArguments,
+                event: skirout.organization.v1.join_request.OrganizationJoinRequestsChanged_OrMutable =
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.partial(),
             ) = skirout.organization.v1.join_request.DeclineOrganizationJoinRequestResponse.Success(
+                event = event,
                 _unrecognizedFields = null,
             );
 
@@ -3673,6 +5001,15 @@ sealed class DeclineOrganizationJoinRequestResponse private constructor() {
             val typeDescriptor get() = serializerImpl.typeDescriptor;
 
             init {
+                serializerImpl.addField(
+                    "event",
+                    "event",
+                    0,
+                    skirout.organization.v1.join_request.OrganizationJoinRequestsChanged.serializer,
+                    "",
+                    { it.event },
+                    { mut, v -> mut.event = v },
+                );
                 serializerImpl.finalizeStruct();
             }
         }
