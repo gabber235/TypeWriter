@@ -83,18 +83,19 @@ async fn generate_join_code_persists_and_publishes(
 
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.organization.alpha.members.join_codes.watch")
+        .expect_persisted_publish("typewriter.to.organization.alpha.join_codes.changed")
         .body_matches(move |body| {
             matches!(
-                WatchOrganizationJoinCodesResponse::serializer().from_bytes(
+                OrganizationJoinCodesChanged::serializer().from_bytes(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchOrganizationJoinCodesResponse::List(codes))
-                    if codes.len() == 1 && !codes[0].single_use
-                        && codes[0].expires_at.is_none()
-                        && codes[0].auto_accept.role_ids.len() == 1
-                        && codes[0].auto_accept.role_ids[0].key.to_string() == expected_writer_key
+                Ok(event)
+                    if matches!(event.changes.as_slice(), [OrganizationJoinCodesChange::Add(code)]
+                        if !code.single_use
+                            && code.expires_at.is_none()
+                            && code.auto_accept.role_ids.len() == 1
+                            && code.auto_accept.role_ids[0].key.to_string() == expected_writer_key)
             )
         });
 
@@ -123,8 +124,8 @@ async fn generate_join_code_persists_and_publishes(
     let GenerateOrganizationJoinCodeResponse::Success(code) = response else {
         anyhow::bail!("expected join code success, received {response:?}")
     };
-    assert!(!code.single_use);
-    assert!(code.expires_at.is_none());
+    assert!(!code.code.single_use);
+    assert!(code.code.expires_at.is_none());
     let codes = database
         .query_json(
             "RETURN { count: count(SELECT id FROM organization_join_code), never: (SELECT VALUE expires_at IS NULL FROM ONLY organization_join_code) }",
@@ -195,17 +196,21 @@ async fn member_update_keeps_protected_founder_role(
 
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.organization.alpha.members.watch")
+        .expect_persisted_publish("typewriter.to.organization.alpha.members.changed")
         .body_matches(|body| {
-            let Ok(WatchOrganizationMembersResponse::List(members)) =
-                WatchOrganizationMembersResponse::serializer()
+            let Ok(event) =
+                OrganizationMembersChanged::serializer()
                     .from_bytes(body, UnrecognizedValues::Drop)
             else {
                 return false;
             };
-            let Some(member) = members
+            let Some(member) = event.changes
                 .iter()
-                .find(|member| member.user_id.key.to_string() == "founder")
+                .find_map(|change| match change {
+                    OrganizationMembersChange::Update(member)
+                        if member.user_id.key.to_string() == "founder" => Some(member.as_ref()),
+                    _ => None,
+                })
             else {
                 return false;
             };
@@ -239,7 +244,7 @@ async fn member_update_keeps_protected_founder_role(
     let UpdateOrganizationMemberRolesResponse::Success(members) = response else {
         anyhow::bail!("expected member update success, received {response:?}")
     };
-    let mut names = members[0]
+    let mut names = members.members[0]
         .roles
         .iter()
         .map(|role| role.name.as_str())
@@ -403,8 +408,8 @@ async fn revoke_join_code_deletes_and_notifies(
         .ok_or_else(|| anyhow::anyhow!("database handle missing"))?;
     seed_organization(&database).await?;
     database.execute("CREATE organization_join_code:invite SET organization = organization:alpha, single_use = false, auto_accept_roles = [], expires_at = NULL").await?;
-    context.messaging_mock()?.expect_publish("typewriter.to.organization.alpha.members.join_codes.watch").body_matches(|body| {
-        matches!(WatchOrganizationJoinCodesResponse::serializer().from_bytes(body, UnrecognizedValues::Drop), Ok(WatchOrganizationJoinCodesResponse::Remove(code)) if code.key.to_string() == "invite")
+    context.messaging_mock()?.expect_persisted_publish("typewriter.to.organization.alpha.join_codes.changed").body_matches(|body| {
+        matches!(OrganizationJoinCodesChanged::serializer().from_bytes(body, UnrecognizedValues::Drop), Ok(event) if matches!(event.changes.as_slice(), [OrganizationJoinCodesChange::Remove(code)] if code.key.to_string() == "invite"))
     });
     let request = RevokeOrganizationJoinCodeRequest {
         operation_id: crate::framework::operation_id(),
@@ -489,12 +494,12 @@ async fn approve_request_atomically_creates_member_and_removes_request(
     let request_key = database_record_key(&request_id, "request_to_join")?;
     let writer = role_key(&database, "writer").await?;
     for subject in [
-        "typewriter.to.organization.alpha.members.join_requests.watch",
-        "typewriter.to.user.applicant.organization.join_requests.watch",
-        "typewriter.to.organization.alpha.members.watch",
-        "typewriter.to.user.applicant.organization.watch",
+        "typewriter.to.organization.alpha.join_requests.changed",
+        "typewriter.to.user.applicant.join_requests.changed",
+        "typewriter.to.organization.alpha.members.changed",
+        "typewriter.to.user.applicant.organizations.changed",
     ] {
-        context.messaging_mock()?.expect_publish(subject);
+        context.messaging_mock()?.expect_persisted_publish(subject);
     }
     let request = ApproveOrganizationJoinRequestsRequest {
         operation_id: crate::framework::operation_id(),
@@ -514,7 +519,7 @@ async fn approve_request_atomically_creates_member_and_removes_request(
         )
         .await?;
     assert!(
-        matches!(response, ApproveOrganizationJoinRequestsResponse::Success(approvals) if approvals.len() == 1 && approvals[0].member.user_id.key.to_string() == "applicant")
+        matches!(response, ApproveOrganizationJoinRequestsResponse::Success(success) if success.approvals.len() == 1 && success.approvals[0].member.user_id.key.to_string() == "applicant")
     );
     let state = database.query_json("RETURN { members: count(SELECT id FROM member_of WHERE in = user:applicant AND out = organization:alpha), requests: count(SELECT id FROM request_to_join WHERE in = user:applicant) }").await?;
     assert_jm!(state, { "members": 1, "requests": 0 });
@@ -640,10 +645,10 @@ async fn decline_request_deletes_and_notifies_both_views(
     let request_key = database_record_key(&request_id, "request_to_join")?;
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.organization.alpha.members.join_requests.watch");
+        .expect_persisted_publish("typewriter.to.organization.alpha.join_requests.changed");
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.user.applicant.organization.join_requests.watch");
+        .expect_persisted_publish("typewriter.to.user.applicant.join_requests.changed");
     let request = DeclineOrganizationJoinRequestRequest {
         operation_id: crate::framework::operation_id(),
         request_id: skir_record_id("request_to_join", &request_key),

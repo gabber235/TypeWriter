@@ -71,13 +71,13 @@ async fn manual_request_and_approval_are_visible_from_both_components(
         .await?;
 
     let mock = context.messaging_mock()?;
-    mock.expect_publish("typewriter.to.user.applicant.organization.join_requests.watch");
-    mock.expect_publish("typewriter.to.organization.alpha.members.join_requests.watch");
-    mock.expect_publish("typewriter.to.organization.alpha.members.join_codes.watch");
-    mock.expect_publish("typewriter.to.user.applicant.organization.join_requests.watch");
-    mock.expect_publish("typewriter.to.organization.alpha.members.join_requests.watch");
-    mock.expect_publish("typewriter.to.organization.alpha.members.watch");
-    mock.expect_publish("typewriter.to.user.applicant.organization.watch");
+    mock.expect_persisted_publish("typewriter.to.user.applicant.join_requests.changed");
+    mock.expect_persisted_publish("typewriter.to.organization.alpha.join_requests.changed");
+    mock.expect_persisted_publish("typewriter.to.organization.alpha.join_codes.changed");
+    mock.expect_persisted_publish("typewriter.to.user.applicant.join_requests.changed");
+    mock.expect_persisted_publish("typewriter.to.organization.alpha.join_requests.changed");
+    mock.expect_persisted_publish("typewriter.to.organization.alpha.members.changed");
+    mock.expect_persisted_publish("typewriter.to.user.applicant.organizations.changed");
 
     let join_response = context
         .messaging()?
@@ -149,8 +149,8 @@ async fn manual_request_and_approval_are_visible_from_both_components(
         .await?;
     assert!(matches!(
         user_view,
-        WatchUserOrganizationsResponse::List(organizations)
-            if organizations.len() == 1 && organizations[0].name == "alpha"
+        WatchUserOrganizationsResponse::Snapshot(snapshot)
+            if snapshot.values.len() == 1 && snapshot.values[0].name == "alpha"
     ));
 
     let organization_view = context
@@ -166,8 +166,8 @@ async fn manual_request_and_approval_are_visible_from_both_components(
         .await?;
     assert!(matches!(
         organization_view,
-        WatchOrganizationMembersResponse::List(members)
-            if members.iter().any(|member| member.user_id.key.to_string() == "applicant")
+        WatchOrganizationMembersResponse::Snapshot(snapshot)
+            if snapshot.values.iter().any(|member| member.user_id.key.to_string() == "applicant")
     ));
     Ok(())
 }

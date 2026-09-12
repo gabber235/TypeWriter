@@ -2,9 +2,13 @@ use crate::{
     define_skir_subjects,
     skirout::base::{
         organization::v1::{
-            join_codes::WatchOrganizationJoinCodesResponse,
-            join_request::WatchOrganizationJoinRequestsResponse,
-            member::WatchOrganizationMembersResponse,
+            join_codes::{OrganizationJoinCodesChanged, WatchOrganizationJoinCodesResponse},
+            join_request::{
+                OrganizationJoinRequestsChanged, UserJoinRequestsChanged,
+                WatchOrganizationJoinRequestsResponse,
+            },
+            member::{OrganizationMembersChanged, WatchOrganizationMembersResponse},
+            organization::UserOrganizationsChanged,
             user::{WatchUserJoinRequestsResponse, WatchUserOrganizationsResponse},
         },
         service::v1::{
@@ -30,6 +34,21 @@ define_skir_subjects! {
 
     organization_join_codes(organization_id) -> WatchOrganizationJoinCodesResponse =
         "typewriter.to.organization.{organization_id}.members.join_codes.watch";
+
+    user_organizations_changed(user_id) -> UserOrganizationsChanged =
+        "typewriter.to.user.{user_id}.organizations.changed";
+
+    user_join_requests_changed(user_id) -> UserJoinRequestsChanged =
+        "typewriter.to.user.{user_id}.join_requests.changed";
+
+    organization_members_changed(organization_id) -> OrganizationMembersChanged =
+        "typewriter.to.organization.{organization_id}.members.changed";
+
+    organization_join_requests_changed(organization_id) -> OrganizationJoinRequestsChanged =
+        "typewriter.to.organization.{organization_id}.join_requests.changed";
+
+    organization_join_codes_changed(organization_id) -> OrganizationJoinCodesChanged =
+        "typewriter.to.organization.{organization_id}.join_codes.changed";
 
     organization_services(organization_id) -> WatchOrganizationServicesResponse =
         "typewriter.to.organization.{organization_id}.services.watch";
@@ -93,6 +112,30 @@ mod tests {
         assert_eq!(
             subject.subject(),
             "typewriter.to.organization.org_123.members.join_codes.watch"
+        );
+    }
+
+    #[test]
+    fn membership_change_subjects_match_jetstream_filters() {
+        assert_eq!(
+            super::user_organizations_changed("user_123").subject(),
+            "typewriter.to.user.user_123.organizations.changed"
+        );
+        assert_eq!(
+            super::user_join_requests_changed("user_123").subject(),
+            "typewriter.to.user.user_123.join_requests.changed"
+        );
+        assert_eq!(
+            super::organization_members_changed("org_123").subject(),
+            "typewriter.to.organization.org_123.members.changed"
+        );
+        assert_eq!(
+            super::organization_join_requests_changed("org_123").subject(),
+            "typewriter.to.organization.org_123.join_requests.changed"
+        );
+        assert_eq!(
+            super::organization_join_codes_changed("org_123").subject(),
+            "typewriter.to.organization.org_123.join_codes.changed"
         );
     }
 

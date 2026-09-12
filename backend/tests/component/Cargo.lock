@@ -6730,6 +6730,7 @@ dependencies = [
  "opentelemetry",
  "otel-wasi",
  "serde",
+ "serde_json",
  "skir-client",
  "surrealdb-component-sdk",
  "surrealdb-types",

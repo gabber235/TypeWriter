@@ -11,6 +11,18 @@ DEFINE FIELD OVERWRITE founder ON organization TYPE record<user>
     REFERENCE ON DELETE REJECT
     DEFAULT $auth;
 
+DEFINE FIELD OVERWRITE members_sequence ON organization TYPE int
+    DEFAULT 0
+    ASSERT $value >= 0;
+
+DEFINE FIELD OVERWRITE join_requests_sequence ON organization TYPE int
+    DEFAULT 0
+    ASSERT $value >= 0;
+
+DEFINE FIELD OVERWRITE join_codes_sequence ON organization TYPE int
+    DEFAULT 0
+    ASSERT $value >= 0;
+
 DEFINE FIELD OVERWRITE created_at ON organization TYPE datetime
     DEFAULT time::now()
     READONLY

@@ -169,14 +169,14 @@ wasmcloud_utils_macros::skir_response! {
 
 wasmcloud_utils_macros::skir_response! {
     WatchUserOrganizationsResponse {
-        success: [List, Add, Remove],
+        success: [Snapshot, Changed],
         errors {}
     }
 }
 
 wasmcloud_utils_macros::skir_response! {
     WatchUserJoinRequestsResponse {
-        success: [List, Add, Remove],
+        success: [Snapshot, Changed],
         errors {}
     }
 }
@@ -211,7 +211,7 @@ wasmcloud_utils_macros::skir_response! {
 
 wasmcloud_utils_macros::skir_response! {
     WatchOrganizationJoinCodesResponse {
-        success: [List, Add, Remove],
+        success: [Snapshot, Changed],
         errors {}
     }
 }
@@ -244,7 +244,7 @@ wasmcloud_utils_macros::skir_response! {
 
 wasmcloud_utils_macros::skir_response! {
     WatchOrganizationJoinRequestsResponse {
-        success: [List, Add, Remove],
+        success: [Snapshot, Changed],
         errors {}
     }
 }
@@ -279,7 +279,7 @@ wasmcloud_utils_macros::skir_response! {
 
 wasmcloud_utils_macros::skir_response! {
     WatchOrganizationMembersResponse {
-        success: [List, Add, Update, Remove],
+        success: [Snapshot, Changed],
         errors {}
     }
 }

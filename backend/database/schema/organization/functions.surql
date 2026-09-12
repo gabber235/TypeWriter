@@ -159,6 +159,9 @@ DEFINE FUNCTION OVERWRITE fn::organization::members::update_roles(
         UPDATE ONLY $change.id SET roles = $change.roles;
     };
 
+    LET $sequence = UPDATE ONLY $org SET members_sequence += 1
+        RETURN VALUE members_sequence;
+
     LET $result = {
         outcome: 'updated',
         members: (
@@ -172,7 +175,8 @@ DEFINE FUNCTION OVERWRITE fn::organization::members::update_roles(
             FROM member_of
             WHERE in IN $users AND out = $org
             FETCH roles
-        )
+        ),
+        sequence: $sequence
     };
 
     RETURN fn::mutation::commit($receipt, $request_bytes, $result);
@@ -264,7 +268,15 @@ DEFINE FUNCTION OVERWRITE fn::organization::members::approve_requests(
         LET $user = $pending_request.user.id;
         RELATE $user->member_of->$org SET roles = $roles;
         DELETE $pending_request.id;
+        UPDATE ONLY $user SET
+            organizations_sequence += 1,
+            join_requests_sequence += 1;
     };
+
+    LET $join_requests_sequence = UPDATE ONLY $org SET join_requests_sequence += 1
+        RETURN VALUE join_requests_sequence;
+    LET $members_sequence = UPDATE ONLY $org SET members_sequence += 1
+        RETURN VALUE members_sequence;
 
     LET $result = {
         outcome: 'approved',
@@ -282,9 +294,13 @@ DEFINE FUNCTION OVERWRITE fn::organization::members::approve_requests(
                     FROM member_of
                     WHERE in = $pending_request.user.id AND out = $org
                     FETCH roles
-                )[0]
+                )[0],
+                user_join_requests_sequence: (SELECT VALUE join_requests_sequence FROM ONLY $pending_request.user.id),
+                user_organizations_sequence: (SELECT VALUE organizations_sequence FROM ONLY $pending_request.user.id)
             };
-        })
+        }),
+        join_requests_sequence: $join_requests_sequence,
+        members_sequence: $members_sequence
     };
 
     RETURN fn::mutation::commit($receipt, $request_bytes, $result);

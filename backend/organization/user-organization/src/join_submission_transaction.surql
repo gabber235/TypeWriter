@@ -37,10 +37,21 @@ RETURN {
         };
 
         LET $request = RELATE ONLY $user->request_to_join->$org;
+        LET $user_sequence = UPDATE ONLY $user SET join_requests_sequence += 1
+            RETURN VALUE join_requests_sequence;
+        LET $organization_sequence = UPDATE ONLY $org SET join_requests_sequence += 1
+            RETURN VALUE join_requests_sequence;
+        LET $join_codes_sequence = IF $join_code.single_use {
+            UPDATE ONLY $org SET join_codes_sequence += 1 RETURN VALUE join_codes_sequence
+        } ELSE { NONE };
 
         RETURN {
             kind: 'request_made',
             single_use: $join_code.single_use,
+            code_id: $code,
+            user_sequence: $user_sequence,
+            organization_sequence: $organization_sequence,
+            join_codes_sequence: $join_codes_sequence,
             request: (SELECT
                 id,
                 in.* AS user,
@@ -64,10 +75,21 @@ RETURN {
     };
 
     LET $member = RELATE ONLY $user->member_of->$org SET roles = $roles;
+    LET $user_sequence = UPDATE ONLY $user SET organizations_sequence += 1
+        RETURN VALUE organizations_sequence;
+    LET $organization_sequence = UPDATE ONLY $org SET members_sequence += 1
+        RETURN VALUE members_sequence;
+    LET $join_codes_sequence = IF $join_code.single_use {
+        UPDATE ONLY $org SET join_codes_sequence += 1 RETURN VALUE join_codes_sequence
+    } ELSE { NONE };
 
     RETURN {
         kind: 'auto_accepted',
         single_use: $join_code.single_use,
+        code_id: $code,
+        user_sequence: $user_sequence,
+        organization_sequence: $organization_sequence,
+        join_codes_sequence: $join_codes_sequence,
         organization: $organization,
         member: (SELECT
             in.id AS user_id,

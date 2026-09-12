@@ -1,8 +1,8 @@
-use otel_wasi::{ResultWithSlug, main_attribute, wasi_error};
+use otel_wasi::{main_attribute, wasi_error, ResultWithSlug};
 use serde::Deserialize;
 use std::collections::HashMap;
 use wasmcloud_utils::{
-    database::{DatabaseDuration, RecordId, organization::JoinCodeRecord, transaction_query},
+    database::{organization::JoinCodeRecord, transaction_query, DatabaseDuration, RecordId},
     decode_skir, extract_params,
     skir::base::organization::v1::join_codes::*,
     skir_transaction_outcome,
@@ -14,7 +14,7 @@ use wasmcloud_utils::{
 #[derive(Debug, Deserialize)]
 #[serde(tag = "outcome", rename_all = "kebab-case")]
 enum JoinCodeGenerationOutcome {
-    Created { code: JoinCodeRecord },
+    Created { code: JoinCodeRecord, sequence: i64 },
     RolesNotFoundError { role_ids: Vec<RecordId> },
     RolesNotAssignableError { role_ids: Vec<RecordId> },
 }
@@ -66,6 +66,7 @@ pub async fn handle_generate(
         "GenerateOrganizationJoinCode",
         &req.operation_id,
     );
+    let operation_id = req.operation_id.clone();
     wasmcloud_utils::validate_record_ids!(
         GenerateOrganizationJoinCodeResponse,
         req.auto_accept.role_ids,
@@ -133,9 +134,13 @@ RETURN {
                 auto_accept_roles = $roles,
                 expires_at = IF $duration = NONE OR $duration = NULL { NULL } ELSE { time::now() + $duration };
 
+            LET $sequence = UPDATE ONLY $org SET join_codes_sequence += 1
+                RETURN VALUE join_codes_sequence;
+
             RETURN {
                 outcome: 'created',
-                code: (SELECT id, created_at, expires_at, single_use, auto_accept_roles FROM ONLY $code)
+                code: (SELECT id, created_at, expires_at, single_use, auto_accept_roles FROM ONLY $code),
+                sequence: $sequence
             };
         };
             };
@@ -167,7 +172,7 @@ RETURN {
     let row = skir_transaction_outcome!(
         GenerateOrganizationJoinCodeResponse,
         result,
-        success JoinCodeGenerationOutcome::Created { code } => code,
+        success JoinCodeGenerationOutcome::Created { code, sequence } => (code, sequence),
         errors {
             JoinCodeGenerationOutcome::RolesNotFoundError { role_ids } => {
                 role_ids: role_ids.into_skir_record_ids()
@@ -178,15 +183,16 @@ RETURN {
         }
     );
 
-    let code: JoinCode = row.into();
-    wasmcloud_utils::skir_subjects::organization_join_codes(org_id)
-        .publish(
-            wasmcloud_utils::database::organization::snapshots::join_codes(RecordId::new(
-                "organization",
-                org_id,
-            ))
-            .await?,
-        )
+    let (code, sequence) = row;
+    let code: JoinCode = code.into();
+    let event = OrganizationJoinCodesChanged {
+        sequence,
+        operation_id,
+        changes: vec![OrganizationJoinCodesChange::Add(Box::new(code.clone()))],
+        ..Default::default()
+    };
+    wasmcloud_utils::skir_subjects::organization_join_codes_changed(org_id)
+        .persist(event.clone())
         .await?;
 
     main_attribute!(
@@ -194,9 +200,9 @@ RETURN {
         "join_code.id" = code.code.key.to_string()
     );
 
-    Ok(GenerateOrganizationJoinCodeResponse::Success(Box::new(
-        code,
-    )))
+    Ok(skir_variant!(
+        GenerateOrganizationJoinCodeResponse::Success { code, event }
+    ))
 }
 
 #[tracing::instrument(skip(msg, params))]
@@ -231,8 +237,13 @@ pub async fn handle_revoke(
     let code_id = RecordId::from(&code);
     let organization_id = RecordId::new("organization", org_id);
 
+    #[derive(Deserialize)]
+    struct RevokedJoinCode {
+        sequence: i64,
+    }
+
     let deleted = transaction_query!(
-        Option<JoinCodeRecord>,
+        Option<RevokedJoinCode>,
         r#"
         BEGIN TRANSACTION;
         RETURN {
@@ -244,7 +255,10 @@ LET $deleted = DELETE $code
             AND (expires_at IS NONE OR expires_at IS NULL OR expires_at > time::now())
         RETURN BEFORE;
 
-        RETURN $deleted[0];
+        IF array::len($deleted) = 0 { RETURN NONE };
+        LET $sequence = UPDATE ONLY $org SET join_codes_sequence += 1
+            RETURN VALUE join_codes_sequence;
+        RETURN { sequence: $sequence };
             };
             IF $result != NONE {
                 LET $stored = fn::mutation::commit($receipt, $request_bytes, { value: $result });
@@ -274,16 +288,19 @@ LET $deleted = DELETE $code
         ));
     }
 
-    wasmcloud_utils::skir_subjects::organization_join_codes(org_id)
-        .publish(
-            wasmcloud_utils::database::organization::snapshots::join_codes(RecordId::new(
-                "organization",
-                org_id,
-            ))
-            .await?,
-        )
+    let deleted = deleted.expect("checked above");
+    let event = OrganizationJoinCodesChanged {
+        sequence: deleted.sequence,
+        operation_id: req.operation_id,
+        changes: vec![OrganizationJoinCodesChange::Remove(Box::new(code.clone()))],
+        ..Default::default()
+    };
+    wasmcloud_utils::skir_subjects::organization_join_codes_changed(org_id)
+        .persist(event.clone())
         .await?;
 
     main_attribute!("join_code.outcome" = "revoked");
-    Ok(skir_variant!(RevokeOrganizationJoinCodeResponse::Success))
+    Ok(skir_variant!(RevokeOrganizationJoinCodeResponse::Success {
+        event
+    }))
 }

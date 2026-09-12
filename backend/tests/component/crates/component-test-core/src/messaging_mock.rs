@@ -86,6 +86,14 @@ impl MessagingMock {
         self.push(MessagingOperation::Request, pattern.into())
     }
 
+    pub fn expect_persisted_publish(
+        &self,
+        pattern: impl Into<String>,
+    ) -> MessagingExpectation {
+        self.expect_request(pattern)
+            .reply(br#"{"stream":"TYPEWRITER_MEMBERSHIP","seq":1}"#.to_vec())
+    }
+
     fn push(&self, operation: MessagingOperation, pattern: String) -> MessagingExpectation {
         let mut state = self.state.lock().unwrap_or_else(|error| error.into_inner());
         let index = state.expectations.len();

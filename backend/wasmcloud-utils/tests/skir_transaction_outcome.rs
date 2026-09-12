@@ -28,7 +28,12 @@ fn returns_success_value() {
 
     assert_eq!(
         response,
-        UpdateOrganizationMemberRolesResponse::Success(vec![member])
+        UpdateOrganizationMemberRolesResponse::Success(Box::new(
+            UpdateOrganizationMemberRolesResponse_Success {
+                members: vec![member],
+                ..Default::default()
+            },
+        ))
     );
 }
 
@@ -94,7 +99,12 @@ fn map_outcome(
         }
     );
 
-    Ok(UpdateOrganizationMemberRolesResponse::Success(vec![member]))
+    Ok(UpdateOrganizationMemberRolesResponse::Success(Box::new(
+        UpdateOrganizationMemberRolesResponse_Success {
+            members: vec![member],
+            ..Default::default()
+        },
+    )))
 }
 
 fn record_id(table: &str, key: &str) -> RecordId {

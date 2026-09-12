@@ -234,6 +234,7 @@ RETURN {
 LET $result = fn::organization::members::update_roles(organization:acme, [user:alice, user:bob], [organization_role:acme_member], mutation_receipt:valid_roles, [2]);
 LET $replay = fn::organization::members::update_roles(organization:acme, [user:alice, user:bob], [organization_role:acme_member], mutation_receipt:valid_roles, [2]);
 RETURN $result.outcome = 'updated' AND array::len($result.members) = 2
+    AND $result.sequence = 1 AND organization:acme.members_sequence = 1
     AND $result = $replay AND fn::organization::founder_member(user:alice, organization:acme);
 };
 """
@@ -296,9 +297,19 @@ sql = """
 RETURN {
     CREATE user:approval_carol SET name = "Approval Carol";
     RELATE user:approval_carol->request_to_join:batch_carol->organization:acme;
+    LET $join_requests_before = organization:acme.join_requests_sequence;
+    LET $members_before = organization:acme.members_sequence;
     LET $result = fn::organization::members::approve_requests(organization:acme, [request_to_join:batch_dave, request_to_join:batch_carol], [organization_role:acme_member], mutation_receipt:valid_approvals, [6]);
     LET $replay = fn::organization::members::approve_requests(organization:acme, [request_to_join:batch_dave, request_to_join:batch_carol], [organization_role:acme_member], mutation_receipt:valid_approvals, [6]);
     RETURN $result.outcome = 'approved' AND array::len($result.approvals) = 2
+        AND $result.join_requests_sequence = $join_requests_before + 1
+        AND $result.members_sequence = $members_before + 1
+        AND organization:acme.join_requests_sequence = $join_requests_before + 1
+        AND organization:acme.members_sequence = $members_before + 1
+        AND user:approval_dave.join_requests_sequence = 1
+        AND user:approval_dave.organizations_sequence = 1
+        AND user:approval_carol.join_requests_sequence = 1
+        AND user:approval_carol.organizations_sequence = 1
         AND $result = $replay
         AND fn::organization::member(user:approval_dave, organization:acme)
         AND fn::organization::member(user:approval_carol, organization:acme)

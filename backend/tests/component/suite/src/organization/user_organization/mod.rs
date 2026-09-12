@@ -10,10 +10,10 @@ use typewriter_component_test::prelude::{
 };
 use wasmcloud_utils::{
     skir::base::organization::v1::{
-        join_codes::WatchOrganizationJoinCodesResponse,
-        join_request::WatchOrganizationJoinRequestsResponse,
-        member::WatchOrganizationMembersResponse,
-        organization::{CreateOrganizationRequest, CreateOrganizationResponse},
+        join_codes::*,
+        join_request::*,
+        member::*,
+        organization::*,
         user::*,
     },
     skir_client::UnrecognizedValues,
@@ -29,8 +29,14 @@ const JOIN_SUBMISSION_OUTCOME_INDEX: usize = wasmcloud_utils::transaction_outcom
 
 async fn execute_join_submission_transaction(
     query: typewriter_component_test::SeedQuery,
+    operation: &str,
 ) -> anyhow::Result<serde_json::Value> {
     query
+        .bind(
+            "receipt",
+            surrealdb_types::RecordId::from(skir_record_id("mutation_receipt", operation)),
+        )?
+        .bind("request_bytes", operation.as_bytes().to_vec())?
         .query_json_retrying_conflicts(JOIN_SUBMISSION_OUTCOME_INDEX)
         .await
 }
@@ -67,16 +73,17 @@ async fn create_organization_sets_up_roles_membership_and_notification(
 
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.user.alice.organization.watch")
+        .expect_persisted_publish("typewriter.to.user.alice.organizations.changed")
         .body_matches(|body| {
             matches!(
-                WatchUserOrganizationsResponse::serializer().from_bytes(
+                UserOrganizationsChanged::serializer().from_bytes(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchUserOrganizationsResponse::List(organizations))
-                    if organizations.len() == 1 && organizations[0].name == "alpha"
-                        && organizations[0].logo_url == "https://example.com/alpha.png"
+                Ok(event)
+                    if matches!(event.changes.as_slice(), [UserOrganizationsChange::Add(organization)]
+                        if organization.name == "alpha"
+                            && organization.logo_url == "https://example.com/alpha.png")
             )
         });
 
@@ -99,7 +106,7 @@ async fn create_organization_sets_up_roles_membership_and_notification(
         .await?;
 
     let organization = match response {
-        CreateOrganizationResponse::Success(organization) => organization,
+        CreateOrganizationResponse::Success(success) => Box::new(success.organization),
         response => anyhow::bail!("unexpected create organization response: {response:?}"),
     };
     assert_eq!(organization.name, "alpha");
@@ -158,42 +165,46 @@ async fn manual_join_consumes_single_use_code_and_publishes_both_views(
 
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.user.applicant.organization.join_requests.watch")
+        .expect_persisted_publish("typewriter.to.user.applicant.join_requests.changed")
         .body_matches(|body| {
             matches!(
-                WatchUserJoinRequestsResponse::serializer().from_bytes(
+                UserJoinRequestsChanged::serializer().from_bytes(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchUserJoinRequestsResponse::List(requests))
-                    if requests.len() == 1 && requests[0].organization_name == "alpha"
-                        && requests[0].organization_id.key.to_string() == "alpha"
+                Ok(event)
+                    if matches!(event.changes.as_slice(), [UserJoinRequestsChange::Add(request)]
+                        if request.organization_name == "alpha"
+                            && request.organization_id.key.to_string() == "alpha")
             )
         });
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.organization.alpha.members.join_requests.watch")
+        .expect_persisted_publish("typewriter.to.organization.alpha.join_requests.changed")
         .body_matches(|body| {
             matches!(
-                WatchOrganizationJoinRequestsResponse::serializer().from_bytes(
+                OrganizationJoinRequestsChanged::serializer().from_bytes(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchOrganizationJoinRequestsResponse::List(requests))
-                    if requests.len() == 1 && requests[0].user_id.key.to_string() == "applicant"
-                        && requests[0].user_name.as_deref() == Some("applicant")
+                Ok(event)
+                    if matches!(event.changes.as_slice(), [OrganizationJoinRequestsChange::Add(request)]
+                        if request.user_id.key.to_string() == "applicant"
+                            && request.user_name.as_deref() == Some("applicant"))
             )
         });
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.organization.alpha.members.join_codes.watch")
+        .expect_persisted_publish("typewriter.to.organization.alpha.join_codes.changed")
         .body_matches(|body| {
             matches!(
-                WatchOrganizationJoinCodesResponse::serializer().from_bytes(
+                OrganizationJoinCodesChanged::serializer().from_bytes(
                     body,
                     UnrecognizedValues::Drop,
                 ),
-                Ok(WatchOrganizationJoinCodesResponse::List(codes)) if codes.is_empty()
+                Ok(event)
+                    if matches!(event.changes.as_slice(), [OrganizationJoinCodesChange::Remove(code)]
+                        if code.key.to_string() == "invite")
             )
         });
 
@@ -215,7 +226,7 @@ async fn manual_join_consumes_single_use_code_and_publishes_both_views(
         .await?;
 
     assert!(
-        matches!(response, SubmitUserJoinRequestResponse::RequestMade(request) if request.organization_name == "alpha")
+        matches!(response, SubmitUserJoinRequestResponse::RequestMade(success) if success.request.organization_name == "alpha")
     );
     let state = database
         .query_json(
@@ -265,8 +276,8 @@ async fn concurrent_single_use_join_allows_exactly_one_request(
         )?
         .bind("code", code)?;
     let (first, second) = tokio::join!(
-        execute_join_submission_transaction(first),
-        execute_join_submission_transaction(second),
+        execute_join_submission_transaction(first, "concurrent-single-use-first"),
+        execute_join_submission_transaction(second, "concurrent-single-use-second"),
     );
     let responses = [first?, second?];
     assert_eq!(
@@ -330,8 +341,8 @@ async fn concurrent_automatic_join_retries_without_duplicate_membership(
         .bind("user", user)?
         .bind("code", code)?;
     let (first, second) = tokio::join!(
-        execute_join_submission_transaction(first),
-        execute_join_submission_transaction(second),
+        execute_join_submission_transaction(first, "concurrent-automatic-first"),
+        execute_join_submission_transaction(second, "concurrent-automatic-second"),
     );
     let responses = [first?, second?];
     assert_eq!(
@@ -436,11 +447,11 @@ async fn watch_returns_only_requested_user_organizations(
             UnrecognizedValues::Drop,
         )
         .await?;
-    let WatchUserOrganizationsResponse::List(organizations) = response else {
+    let WatchUserOrganizationsResponse::Snapshot(snapshot) = response else {
         anyhow::bail!("expected organization list")
     };
     assert_eq!(
-        organizations
+        snapshot.values
             .iter()
             .map(|organization| organization.name.as_str())
             .collect::<Vec<_>>(),
@@ -465,13 +476,13 @@ async fn automatic_join_creates_membership_and_consumes_code(
     "#).await?;
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.user.applicant.organization.watch");
-    context.messaging_mock()?.expect_publish("typewriter.to.organization.alpha.members.watch").body_matches(|body| {
-        matches!(WatchOrganizationMembersResponse::serializer().from_bytes(body, UnrecognizedValues::Drop), Ok(WatchOrganizationMembersResponse::List(members)) if members.iter().any(|member| member.user_id.key.to_string() == "applicant"))
+        .expect_persisted_publish("typewriter.to.user.applicant.organizations.changed");
+    context.messaging_mock()?.expect_persisted_publish("typewriter.to.organization.alpha.members.changed").body_matches(|body| {
+        matches!(OrganizationMembersChanged::serializer().from_bytes(body, UnrecognizedValues::Drop), Ok(event) if event.changes.iter().any(|change| matches!(change, OrganizationMembersChange::Add(member) if member.user_id.key.to_string() == "applicant")))
     });
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.organization.alpha.members.join_codes.watch");
+        .expect_persisted_publish("typewriter.to.organization.alpha.join_codes.changed");
     let request = SubmitUserJoinRequestRequest {
         operation_id: crate::framework::operation_id(),
         code: skir_record_id("organization_join_code", "automatic"),
@@ -489,7 +500,7 @@ async fn automatic_join_creates_membership_and_consumes_code(
         )
         .await?;
     assert!(
-        matches!(response, SubmitUserJoinRequestResponse::AutoAccepted(member) if member.organization_name == "alpha" && member.roles.iter().any(|role| role.name == "writer"))
+        matches!(response, SubmitUserJoinRequestResponse::AutoAccepted(success) if success.member.organization_name == "alpha" && success.member.roles.iter().any(|role| role.name == "writer"))
     );
     let state = database.query_json("RETURN { members: count(SELECT id FROM member_of WHERE in = user:applicant AND out = organization:alpha), codes: count(SELECT id FROM organization_join_code:automatic) }").await?;
     assert_jm!(state, { "members": 1, "codes": 0 });
@@ -519,10 +530,10 @@ async fn cancel_request_deletes_and_notifies_both_views(
     let key = database_record_key(&id, "request_to_join")?;
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.user.applicant.organization.join_requests.watch");
+        .expect_persisted_publish("typewriter.to.user.applicant.join_requests.changed");
     context
         .messaging_mock()?
-        .expect_publish("typewriter.to.organization.alpha.members.join_requests.watch");
+        .expect_persisted_publish("typewriter.to.organization.alpha.join_requests.changed");
     let request = CancelUserJoinRequestRequest {
         operation_id: crate::framework::operation_id(),
         request_id: skir_record_id("request_to_join", &key),

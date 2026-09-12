@@ -18,17 +18,19 @@ async fn role_batch_receipt_preserves_complete_result_without_reapplying(
         role_ids: vec![skir_record_id("organization_role", &writer)],
         _unrecognized: None,
     };
-    for expected_name in ["member", "renamed_after_commit"] {
-        context.messaging_mock()?.expect_publish("typewriter.to.organization.alpha.members.watch")
+    for _ in 0..2 {
+        context.messaging_mock()?.expect_persisted_publish("typewriter.to.organization.alpha.members.changed")
             .body_matches(move |body| {
-                matches!(WatchOrganizationMembersResponse::serializer().from_bytes(body, UnrecognizedValues::Drop),
-                    Ok(WatchOrganizationMembersResponse::List(members)) if members.iter().any(|member|
-                        member.user_id.key.to_string() == "member" && member.name.as_deref() == Some(expected_name)))
+                matches!(OrganizationMembersChanged::serializer().from_bytes(body, UnrecognizedValues::Drop),
+                    Ok(event) if event.sequence == 1 && event.changes.iter().any(|change|
+                        matches!(change, OrganizationMembersChange::Update(member)
+                            if member.user_id.key.to_string() == "member"
+                                && member.name.as_deref() == Some("member"))))
             });
     }
     let original = update(context, &request).await?;
     assert!(
-        matches!(&original, UpdateOrganizationMemberRolesResponse::Success(members) if members.len() == 2)
+        matches!(&original, UpdateOrganizationMemberRolesResponse::Success(success) if success.members.len() == 2)
     );
     database
         .execute("UPDATE user:member SET name = 'renamed_after_commit'")

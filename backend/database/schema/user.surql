@@ -12,6 +12,14 @@ DEFINE FIELD OVERWRITE name ON user TYPE none | null | string;
 DEFINE FIELD OVERWRITE avatar_url ON user TYPE none | null | string
     ASSERT $value == NONE OR $value == NULL OR fn::is_http_url($value);
 
+DEFINE FIELD OVERWRITE organizations_sequence ON user TYPE int
+    DEFAULT 0
+    ASSERT $value >= 0;
+
+DEFINE FIELD OVERWRITE join_requests_sequence ON user TYPE int
+    DEFAULT 0
+    ASSERT $value >= 0;
+
 DEFINE FIELD OVERWRITE created_at ON user TYPE datetime
     DEFAULT time::now()
     READONLY

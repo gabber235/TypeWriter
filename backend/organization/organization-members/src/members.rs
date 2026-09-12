@@ -3,7 +3,7 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use wasmcloud_utils::database::organization::projections::OrganizationMemberProjection;
 use wasmcloud_utils::{
-    database::{RecordId, TransactionOutcome, transaction_query},
+    database::{transaction_query, RecordId, TransactionOutcome},
     decode_skir, extract_params,
     skir::base::organization::v1::member::*,
     skir_transaction_outcome,
@@ -14,7 +14,8 @@ use wasmcloud_utils::{
 
 #[derive(Debug, Deserialize)]
 struct RemovedMemberRecord {
-    organization_id: RecordId,
+    members_sequence: i64,
+    organizations_sequence: i64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -22,6 +23,7 @@ struct RemovedMemberRecord {
 enum MemberUpdateOutcome {
     Updated {
         members: Vec<OrganizationMemberProjection>,
+        sequence: i64,
     },
     UserNotFoundError {
         user_ids: Vec<RecordId>,
@@ -140,7 +142,7 @@ pub async fn handle_update(
     let members = skir_transaction_outcome!(
         UpdateOrganizationMemberRolesResponse,
         result,
-        success MemberUpdateOutcome::Updated { members } => members,
+        success MemberUpdateOutcome::Updated { members, sequence } => (members, sequence),
         errors {
             MemberUpdateOutcome::UserNotFoundError { user_ids } => {
                 user_ids: user_ids.into_skir_record_ids()
@@ -158,18 +160,25 @@ pub async fn handle_update(
         }
     );
 
+    let (members, sequence) = members;
     let members: Vec<OrganizationMember> = members.into_iter().map(Into::into).collect();
-    wasmcloud_utils::skir_subjects::organization_members(org_id)
-        .publish(
-            wasmcloud_utils::database::organization::snapshots::members(RecordId::new(
-                "organization",
-                org_id,
-            ))
-            .await?,
-        )
+    let event = OrganizationMembersChanged {
+        sequence,
+        operation_id: request.operation_id,
+        changes: members
+            .iter()
+            .cloned()
+            .map(|member| OrganizationMembersChange::Update(Box::new(member)))
+            .collect(),
+        ..Default::default()
+    };
+    wasmcloud_utils::skir_subjects::organization_members_changed(org_id)
+        .persist(event.clone())
         .await?;
     otel_wasi::main_attribute!("member.outcome" = "updated");
-    Ok(UpdateOrganizationMemberRolesResponse::Success(members))
+    Ok(skir_variant!(
+        UpdateOrganizationMemberRolesResponse::Success { members, event }
+    ))
 }
 
 #[tracing::instrument(skip(msg, params))]
@@ -232,7 +241,15 @@ LET $founder = $org.founder;
 
         DELETE $member[0].id;
 
-        RETURN { organization_id: $org };
+        LET $members_sequence = UPDATE ONLY $org SET members_sequence += 1
+            RETURN VALUE members_sequence;
+        LET $organizations_sequence = UPDATE ONLY $user SET organizations_sequence += 1
+            RETURN VALUE organizations_sequence;
+
+        RETURN {
+            members_sequence: $members_sequence,
+            organizations_sequence: $organizations_sequence
+        };
             };
             IF $result != NONE {
                 LET $stored = fn::mutation::commit($receipt, $request_bytes, { value: $result });
@@ -262,21 +279,27 @@ LET $founder = $org.founder;
         "founder-cannot-be-removed-error" => { user_id: user_id.clone() }
     );
 
-    wasmcloud_utils::skir_subjects::organization_members(org_id)
-        .publish(
-            wasmcloud_utils::database::organization::snapshots::members(deleted.organization_id)
-                .await?,
-        )
+    let member_event = OrganizationMembersChanged {
+        sequence: deleted.members_sequence,
+        operation_id: request.operation_id.clone(),
+        changes: vec![OrganizationMembersChange::Remove(Box::new(user_id.clone()))],
+        ..Default::default()
+    };
+    wasmcloud_utils::skir_subjects::organization_members_changed(org_id)
+        .persist(member_event.clone())
         .await?;
-    wasmcloud_utils::skir_subjects::user_organizations(user_id.key.to_string())
-        .publish(
-            wasmcloud_utils::database::organization::snapshots::organizations(RecordId::from(
-                &user_id,
-            ))
-            .await?,
-        )
+    let organizations_event = wasmcloud_utils::skir::base::organization::v1::organization::UserOrganizationsChanged {
+        sequence: deleted.organizations_sequence,
+        operation_id: request.operation_id,
+        changes: vec![wasmcloud_utils::skir::base::organization::v1::organization::UserOrganizationsChange::Remove(Box::new(user_id.clone()))],
+        ..Default::default()
+    };
+    wasmcloud_utils::skir_subjects::user_organizations_changed(user_id.key.to_string())
+        .persist(organizations_event)
         .await?;
 
     otel_wasi::main_attribute!("member.outcome" = "removed");
-    Ok(skir_variant!(RemoveOrganizationMemberResponse::Success))
+    Ok(skir_variant!(RemoveOrganizationMemberResponse::Success {
+        event: member_event
+    }))
 }

@@ -1,4 +1,13 @@
 use crate::wasmcloud::messaging;
+use otel_wasi::ResultWithSlug;
+use serde::Deserialize;
+
+const MEMBERSHIP_STREAM: &str = "TYPEWRITER_MEMBERSHIP";
+
+#[derive(Deserialize)]
+struct JetStreamPublishAck {
+    stream: String,
+}
 
 pub struct SkirSubject<M> {
     subject: String,
@@ -19,6 +28,22 @@ impl<M> SkirSubject<M> {
 
     pub async fn publish(&self, message: M) -> Result<(), otel_wasi::Error> {
         messaging::publish(self.subject.clone(), (self.serialize)(&message)).await
+    }
+
+    pub async fn persist(&self, message: M) -> Result<(), otel_wasi::Error> {
+        let response = messaging::request(self.subject.clone(), (self.serialize)(&message)).await?;
+        let acknowledgement: JetStreamPublishAck = serde_json::from_slice(&response.body)
+            .error_with_slug("membership-event-ack-decode-failed")?;
+        if acknowledgement.stream != MEMBERSHIP_STREAM {
+            return Err(otel_wasi::Error::new(
+                "membership-event-wrong-stream",
+                format!(
+                    "expected {MEMBERSHIP_STREAM}, got {}",
+                    acknowledgement.stream
+                ),
+            ));
+        }
+        Ok(())
     }
 }
 
