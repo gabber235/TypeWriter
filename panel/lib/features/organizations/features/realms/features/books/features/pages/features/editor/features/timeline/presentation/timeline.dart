@@ -22,8 +22,9 @@ class TimelineCommitPayload {
   final int endFrame;
 }
 
-typedef TimelineCommit =
-    Future<void> Function(List<TimelineCommitPayload> changes);
+typedef TimelineCommit = Future<void> Function(
+  List<TimelineCommitPayload> changes,
+);
 
 class Timeline extends HookConsumerWidget {
   const Timeline({
@@ -109,6 +110,11 @@ class Timeline extends HookConsumerWidget {
               ),
               [data, controller.previews],
             );
+            final didApplyInitialZoom = useRef(false);
+            final canApplyInitialZoom =
+                viewport.planeWidth.isFinite &&
+                viewport.planeWidth > 0 &&
+                layout.placementsById.isNotEmpty;
             final placement = useMemoized(
               () => TimelinePlacementEngine().build(
                 layout: layout,
@@ -119,9 +125,19 @@ class Timeline extends HookConsumerWidget {
             );
 
             useDelayedExecution(() {
-              controller.resetZoom(viewport, layout, animate: false);
+              if (didApplyInitialZoom.value || !canApplyInitialZoom) {
+                return null;
+              }
+
+              didApplyInitialZoom.value = controller.resetZoom(
+                viewport,
+                layout,
+                minPixelsPerFrame: style.minPixelsPerFrame,
+                maxPixelsPerFrame: style.maxPixelsPerFrame,
+                animate: false,
+              );
               return null;
-            }, []);
+            }, [canApplyInitialZoom]);
 
             List<MoveTimelinePreview> resolveMovePreviews(
               TimelineIdentifier primaryId,

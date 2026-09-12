@@ -338,30 +338,40 @@ class TimelineController extends ChangeNotifier {
     }
   }
 
-  void resetZoom(
+  /// Fits nonempty timeline content into ready viewport geometry.
+  ///
+  /// Returns whether the fit was applied. A false result means content or
+  /// geometry is not ready yet and the existing viewport state is preserved.
+  bool resetZoom(
     TimelineViewport viewport,
     TimelineLayoutResult layout, {
+    required double minPixelsPerFrame,
+    required double maxPixelsPerFrame,
     bool animate = true,
   }) {
-    final startFrame =
-        layout.placementsById.values
-            .map((placement) => placement.element.startFrame)
-            .minOrNull ??
-        0;
-    final endFrame =
-        layout.placementsById.values
-            .map((placement) => placement.element.endFrame)
-            .maxOrNull ??
-        0;
+    if (!viewport.planeWidth.isFinite ||
+        viewport.planeWidth <= 0 ||
+        layout.placementsById.isEmpty) {
+      return false;
+    }
 
-    final frameDuration = endFrame - startFrame;
+    final startFrame = layout.placementsById.values
+        .map((placement) => placement.element.startFrame)
+        .minOrNull!;
+    final endFrame = layout.placementsById.values
+        .map((placement) => placement.element.endFrame)
+        .maxOrNull!;
+
+    final displayFrameSpan = math.max(1, endFrame - startFrame);
 
     final width = viewport.planeWidth;
-    final nextPixelsPerFrame = width / frameDuration;
+    final nextPixelsPerFrame = (width / displayFrameSpan)
+        .clamp(minPixelsPerFrame, maxPixelsPerFrame)
+        .toDouble();
     final nextHorizontalOffset = math.max(0.0, startFrame * nextPixelsPerFrame);
     if (nextPixelsPerFrame == _pixelsPerFrame.target &&
         nextHorizontalOffset == _horizontalOffset.target) {
-      return;
+      return true;
     }
     if (animate) {
       _pixelsPerFrame.target = nextPixelsPerFrame;
@@ -372,6 +382,7 @@ class TimelineController extends ChangeNotifier {
       _horizontalOffset.value = nextHorizontalOffset;
       notifyListeners();
     }
+    return true;
   }
 
   void centerOn(

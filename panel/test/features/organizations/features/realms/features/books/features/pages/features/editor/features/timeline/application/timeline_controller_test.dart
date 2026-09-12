@@ -20,6 +20,104 @@ void main() {
       expect(controller.horizontalOffset, 320);
     });
 
+    test("preserves viewport state while plane geometry is not ready", () {
+      final controller = _controller()..panBy(dx: 120, animate: false);
+      final layout = timeline()
+          .track(elements: [TimelineElementDsl.segment("segment", 0, 100)])
+          .build()
+          .layout();
+
+      final applied = controller.resetZoom(
+        defaultTimelineViewport.copyWith(planeWidth: 0),
+        layout,
+        minPixelsPerFrame: 0.01,
+        maxPixelsPerFrame: 56,
+        animate: false,
+      );
+
+      expect(applied, isFalse);
+      expect(controller.pixelsPerFrame, 12);
+      expect(controller.horizontalOffset, 120);
+    });
+
+    test("preserves viewport state while timeline content is not ready", () {
+      final controller = _controller()..panBy(dx: 120, animate: false);
+
+      final applied = controller.resetZoom(
+        defaultTimelineViewport,
+        timeline().build().layout(),
+        minPixelsPerFrame: 0.01,
+        maxPixelsPerFrame: 56,
+        animate: false,
+      );
+
+      expect(applied, isFalse);
+      expect(controller.pixelsPerFrame, 12);
+      expect(controller.horizontalOffset, 120);
+    });
+
+    test("fits one keyframe as one display frame", () {
+      final controller = _controller();
+      final layout = timeline()
+          .track(elements: [TimelineElementDsl.keyframe("keyframe", 42)])
+          .build()
+          .layout();
+
+      final applied = controller.resetZoom(
+        defaultTimelineViewport.copyWith(planeWidth: 1200),
+        layout,
+        minPixelsPerFrame: 0.01,
+        maxPixelsPerFrame: 56,
+        animate: false,
+      );
+
+      expect(applied, isTrue);
+      expect(controller.pixelsPerFrame, 56);
+      expect(controller.horizontalOffset, 2352);
+    });
+
+    test("fits ordinary content into the viewport", () {
+      final controller = _controller();
+      final layout = timeline()
+          .track(elements: [TimelineElementDsl.segment("segment", 10, 110)])
+          .build()
+          .layout();
+
+      final applied = controller.resetZoom(
+        defaultTimelineViewport.copyWith(planeWidth: 1200),
+        layout,
+        minPixelsPerFrame: 0.01,
+        maxPixelsPerFrame: 56,
+        animate: false,
+      );
+
+      expect(applied, isTrue);
+      expect(controller.pixelsPerFrame, 12);
+      expect(controller.horizontalOffset, 120);
+    });
+
+    test("respects the minimum zoom while fitting long content", () {
+      final controller = _controller();
+      final layout = timeline()
+          .track(
+            elements: [TimelineElementDsl.segment("segment", 0, 1_000_000)],
+          )
+          .build()
+          .layout();
+
+      final applied = controller.resetZoom(
+        defaultTimelineViewport.copyWith(planeWidth: 1200),
+        layout,
+        minPixelsPerFrame: 0.01,
+        maxPixelsPerFrame: 56,
+        animate: false,
+      );
+
+      expect(applied, isTrue);
+      expect(controller.pixelsPerFrame, 0.01);
+      expect(controller.horizontalOffset, 0);
+    });
+
     test("clamps move previews while preserving duration", () {
       final controller = _controller()
         ..startInteractionSession(
