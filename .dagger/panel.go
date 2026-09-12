@@ -25,10 +25,7 @@ func (m *Typewriter) panelContainer(source *dagger.Workspace) *dagger.Container 
 
 	return m.dartContainer().
 		WithDirectory("/workspace/panel", panelSource).
-		WithMountedCache("/root/.pub-cache", dag.CacheVolume("pub-cache")).
-		WithMountedCache("/workspace/panel/.dart_tool", dag.CacheVolume("dart-tool")).
-		WithMountedCache("/workspace/panel/testkit/.dart_tool", dag.CacheVolume("dart-tool-testkit")).
-		WithMountedCache("/workspace/panel/widgetbook/.dart_tool", dag.CacheVolume("dart-tool-widgetbook"))
+		WithMountedCache("/root/.pub-cache", dag.CacheVolume("pub-cache"))
 }
 
 func (m *Typewriter) panelGeneratorContainer(source *dagger.Workspace, packageName string) *dagger.Container {
