@@ -87,7 +87,7 @@ class FileCredentialStorage(
                 Files.createDirectories(parent)
                 temporary = Files.createTempFile(parent, ".${path.fileName}.", ".tmp")
                 FileChannel.open(temporary, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING).use { channel ->
-                    var remaining = ByteBuffer.wrap(encoded)
+                    val remaining = ByteBuffer.wrap(encoded)
                     while (remaining.hasRemaining()) channel.write(remaining)
                     channel.force(true)
                 }
