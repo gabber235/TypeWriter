@@ -12,9 +12,10 @@ import com.typewritermc.services.libs.utils.rethrowExceptionalThrowable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.cbor.Cbor
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 import java.nio.file.AtomicMoveNotSupportedException
@@ -25,22 +26,19 @@ import java.nio.file.StandardOpenOption
 import java.nio.file.attribute.PosixFilePermission
 
 /**
- * Persists versioned plaintext credentials using a bounded JSON file and replacement writes.
+ * Persists versioned plaintext credentials using a bounded CBOR file and replacement writes.
  *
  * Missing, corrupt, unsupported, and unavailable storage remain distinct. Reads reject symlinks and oversized
  * files. Writes flush temporary bytes and attempt owner only permissions; unsupported permission operations are
  * tolerated. Atomic moves are used when available, with ordinary replacement as fallback.
  */
+@OptIn(ExperimentalSerializationApi::class)
 class FileCredentialStorage(
     private val path: Path,
     private val maximumBytes: Long = 64 * 1024,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : CredentialStorage {
-    private val json =
-        Json {
-            encodeDefaults = true
-            ignoreUnknownKeys = false
-        }
+    private val cbor = Cbor { encodeDefaults = true }
 
     init {
         require(maximumBytes > 0) { "Maximum credential file size must be positive" }
@@ -49,15 +47,13 @@ class FileCredentialStorage(
     override suspend fun load(): CredentialLoadResult =
         withContext(dispatcher) {
             if (!Files.exists(path)) return@withContext CredentialLoadResult.Missing
-            if (Files.isSymbolicLink(path) || !Files.isRegularFile(path)) {
-                return@withContext corrupt()
-            }
+            if (Files.isSymbolicLink(path) || !Files.isRegularFile(path)) return@withContext corrupt()
             try {
                 val size = Files.size(path)
                 if (size > maximumBytes) return@withContext corrupt()
                 val bytes = Files.readAllBytes(path)
                 if (bytes.size.toLong() > maximumBytes) return@withContext corrupt()
-                val record = json.decodeFromString<StoredCredential>(bytes.decodeToString())
+                val record = cbor.decodeFromByteArray(StoredCredential.serializer(), bytes)
                 if (record.version != FORMAT_VERSION) {
                     return@withContext CredentialLoadResult.Failure(
                         CredentialStorageError.UnsupportedVersion(record.version),
@@ -75,7 +71,7 @@ class FileCredentialStorage(
 
     override suspend fun store(credentials: IdentityCredentials): CredentialStoreResult =
         withContext(dispatcher) {
-            val encoded = json.encodeToString(StoredCredential.from(credentials)).encodeToByteArray()
+            val encoded = cbor.encodeToByteArray(StoredCredential.serializer(), StoredCredential.from(credentials))
             if (encoded.size.toLong() > maximumBytes) {
                 return@withContext CredentialStoreResult.Failure(CredentialStorageError.Corrupt(STORAGE_LIMIT_SLUG))
             }
@@ -138,12 +134,12 @@ private data class StoredCredential(
     val serviceId: String,
     val displayName: String,
     val username: String,
-    val role: StoredRole,
+    val issuedServiceRole: StoredServiceRole,
     val token: String,
 ) {
     fun toCredentials(): IdentityCredentials =
         IdentityCredentials(
-            ServiceIdentity(serviceId, displayName, username, role.toRole()),
+            ServiceIdentity(serviceId, displayName, username, issuedServiceRole.toRole()),
             RedactedSecret.AppPassword(token),
         )
 
@@ -154,14 +150,14 @@ private data class StoredCredential(
                 credentials.identity.serviceId,
                 credentials.identity.displayName,
                 credentials.identity.username,
-                StoredRole.from(credentials.identity.role),
+                StoredServiceRole.from(credentials.identity.role),
                 credentials.revealAppPassword(),
             )
     }
 }
 
 @Serializable
-private data class StoredRole(
+private data class StoredServiceRole(
     val type: String,
     val version: String,
     val name: String? = null,
@@ -174,10 +170,10 @@ private data class StoredRole(
         }
 
     companion object {
-        fun from(role: ServiceRole): StoredRole =
+        fun from(role: ServiceRole): StoredServiceRole =
             when (role) {
-                is ServiceRole.Host -> StoredRole("host", role.version)
-                is ServiceRole.Custom -> StoredRole("custom", role.version, role.name)
+                is ServiceRole.Host -> StoredServiceRole("host", role.version)
+                is ServiceRole.Custom -> StoredServiceRole("custom", role.version, role.name)
             }
     }
 }

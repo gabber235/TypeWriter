@@ -13,6 +13,7 @@ dependencies {
     api(libs.koin.core)
     api(libs.kotlin.coroutines.core)
     api(libs.opentelemetry.api)
+    implementation(libs.kotlin.serialize.cbor)
     implementation(libs.kotlin.serialize.json)
     implementation(libs.mordant)
     testImplementation(libs.koin.test)

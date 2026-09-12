@@ -88,7 +88,11 @@ class TypewriterService private constructor(
                         module {
                             single { openTelemetry }
                             single { telemetry }
-                            single { FileCredentialStorage(stateDirectory.resolve("service-identity.json")) } bind
+                            single {
+                                FileCredentialStorage(
+                                    stateDirectory.resolve("service-identity.cbor"),
+                                )
+                            } bind
                                 CredentialStorage::class
                         },
                         registrarModule(
