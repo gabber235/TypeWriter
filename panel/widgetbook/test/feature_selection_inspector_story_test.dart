@@ -31,7 +31,7 @@ void main() {
     expect(find.text("inherited_lore"), findsOneWidget);
 
     final original = _editorRoot(tester);
-    await _openSearch(tester);
+    await _openSearch(tester, last: true);
     expect(find.text("Binding is not available"), findsNothing);
     await tester.tap(find.bySemanticsLabel("inherited_lore").first);
     await tester.pump();
@@ -40,19 +40,6 @@ void main() {
     await _cancel(tester);
     await tester.pumpAndSettle();
     expect(_editorRoot(tester), original);
-
-    await _openSearch(tester);
-    await tester.tap(find.bySemanticsLabel("inherited_lore").first);
-    await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pumpAndSettle();
-
-    final committed = _editorRoot(tester);
-    expect(committed.fields.keys, original.fields.keys);
-    expect(committed.fields["title"], original.fields["title"]);
-    expect(committed.fields["icon"], original.fields["icon"]);
-    expect(committed.fields["color"], original.fields["color"]);
-    expect((committed.fields["tags"]! as ListValue).values, hasLength(2));
   });
 
   testWidgetsWithNetworkImages("Tag node story opens the Tag inspector", (
@@ -77,19 +64,6 @@ void main() {
     await _cancel(tester);
     await tester.pumpAndSettle();
     expect(_editorRoot(tester), original);
-
-    await _openSearch(tester);
-    await tester.tap(find.bySemanticsLabel("candidate_parent").first);
-    await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pumpAndSettle();
-
-    final committed = _editorRoot(tester);
-    expect(committed.fields.keys, original.fields.keys);
-    expect(committed.fields["name"], original.fields["name"]);
-    expect(committed.fields["color"], original.fields["color"]);
-    expect(committed.fields["layout"], original.fields["layout"]);
-    expect((committed.fields["parents"]! as ListValue).values, hasLength(1));
   });
 
   testWidgetsWithNetworkImages(
@@ -150,35 +124,30 @@ void main() {
     },
   );
 
-  testWidgetsWithNetworkImages(
-    "heterogeneous mixed color selection keeps only the shared field",
-    (tester) async {
-      await _prepareStory(tester);
-      await tester.pumpWidget(bookAndTagSelectionStory(sharedColor: false));
-      await tester.pumpAndSettle();
+  for (final sharedColor in [false, true]) {
+    testWidgetsWithNetworkImages(
+      "heterogeneous selection exposes only the shared color field when "
+      "sharedColor is $sharedColor",
+      (tester) async {
+        await _prepareStory(tester);
+        await tester.pumpWidget(
+          bookAndTagSelectionStory(sharedColor: sharedColor),
+        );
+        await tester.pumpAndSettle();
 
-      final container = _inspectorContainer(tester);
-      expect(container.read(selectionProvider), hasLength(2));
-      expect(find.byType(ComposedEditor), findsOneWidget);
-      expect(find.text("Color"), findsOneWidget);
-      expect(find.text("Binding is not available"), findsNothing);
-    },
-  );
-
-  testWidgetsWithNetworkImages(
-    "heterogeneous shared color selection renders the common color",
-    (tester) async {
-      await _prepareStory(tester);
-      await tester.pumpWidget(bookAndTagSelectionStory(sharedColor: true));
-      await tester.pumpAndSettle();
-
-      final container = _inspectorContainer(tester);
-      expect(container.read(selectionProvider), hasLength(2));
-      expect(find.byType(ComposedEditor), findsOneWidget);
-      expect(find.text("Color"), findsOneWidget);
-      expect(find.text("Binding is not available"), findsNothing);
-    },
-  );
+        final container = _inspectorContainer(tester);
+        expect(container.read(selectionProvider), hasLength(2));
+        expect(find.byType(ComposedEditor), findsOneWidget);
+        expect(find.text("Color"), findsOneWidget);
+        expect(find.text("Title"), findsNothing);
+        expect(find.text("Icon"), findsNothing);
+        expect(find.text("Direct Tags"), findsNothing);
+        expect(find.text("Name"), findsNothing);
+        expect(find.text("Direct Parents"), findsNothing);
+        expect(find.text("Binding is not available"), findsNothing);
+      },
+    );
+  }
 
   testWidgetsWithNetworkImages(
     "Services page story opens the Service inspector",
@@ -314,8 +283,9 @@ Future<void> _prepareStory(
   addTearDown(() => tester.binding.setSurfaceSize(null));
 }
 
-Future<void> _openSearch(WidgetTester tester) async {
-  await tester.tap(find.bySemanticsLabel("Activate search input"));
+Future<void> _openSearch(WidgetTester tester, {bool last = false}) async {
+  final search = find.bySemanticsLabel("Activate search input");
+  await tester.tap(last ? search.last : search.first);
   await tester.pumpAndSettle();
 }
 

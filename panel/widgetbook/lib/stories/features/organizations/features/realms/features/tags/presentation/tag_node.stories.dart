@@ -25,7 +25,7 @@ Widget tagNodeUseCase(BuildContext context) {
 
   return FakeApp(
     overrides: [
-      ...authoringSessionMockOverrides(),
+      ...authoringSessionMockOverrides(tags: [previewTag, parentCandidate]),
       organizationIdProvider.overrideWithValue(
         recordId("organization:widgetbook"),
       ),
@@ -73,7 +73,7 @@ Widget mixedTagSelectionStory({bool initiallySelected = true}) {
 
   return FakeApp(
     overrides: [
-      ...authoringSessionMockOverrides(),
+      ...authoringSessionMockOverrides(tags: tags),
       organizationIdProvider.overrideWithValue(
         recordId("organization:widgetbook"),
       ),
@@ -140,7 +140,7 @@ Widget tagNodeColorsUseCase(BuildContext context) {
 
   return FakeApp(
     overrides: [
-      ...authoringSessionMockOverrides(),
+      ...authoringSessionMockOverrides(tags: tags),
       organizationIdProvider.overrideWithValue(
         recordId("organization:widgetbook"),
       ),

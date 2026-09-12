@@ -38,11 +38,13 @@ Book Function() generateRandomBook(List<Tag> tags) {
 }
 
 class BooksMock extends CanonicalBooks {
-  BooksMock(this.displayState);
+  BooksMock(this.displayState, {this.specificBooks});
   final DisplayState displayState;
+  final List<Book>? specificBooks;
 
   @override
   Future<List<Book>> build() async {
+    if (specificBooks != null) return specificBooks!;
     final tagsIds = await ref.watch(canonicalTagsProvider.future);
     return displayState.generate(generateRandomBook(tagsIds));
   }
@@ -88,4 +90,9 @@ class BooksMock extends CanonicalBooks {
 
 List<Override> booksProviderOverrides({
   DisplayState state = DisplayState.loading,
-}) => [canonicalBooksProvider.overrideWith(() => BooksMock(state))];
+  List<Book>? books,
+}) => [
+  canonicalBooksProvider.overrideWith(
+    () => BooksMock(state, specificBooks: books),
+  ),
+];

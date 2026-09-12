@@ -52,22 +52,27 @@ Widget pagePageStory({
     state: entriesState,
     overwriteElements: overwriteElements,
   );
+  final storyEntryIndex = {
+    for (final element in storyElements ?? const <PageElement>[])
+      if (element case PageElementEntry(
+        entry: DefinitionPageEntry(:final definition),
+      ))
+        definition.id: CachedPageEntry(
+          pageId: "example-page-id",
+          definition: definition,
+        ),
+  };
   return FakeApp(
     overrides: [
       ...authoringSessionMockOverrides(
         initial: pageStoryAuthoring(pageType, storyElements ?? const []),
       ),
+      authoringEntryIndexProvider.overrideWith(
+        (ref, scope) =>
+            AsyncData(AuthoringValue(value: storyEntryIndex, revision: 1)),
+      ),
       realmEntryIndexProvider.overrideWith(
-        (ref, scope) => AsyncData({
-          for (final element in storyElements ?? const <PageElement>[])
-            if (element case PageElementEntry(
-              entry: DefinitionPageEntry(:final definition),
-            ))
-              definition.id: CachedPageEntry(
-                pageId: "example-page-id",
-                definition: definition,
-              ),
-        }),
+        (ref, scope) => AsyncData(storyEntryIndex),
       ),
       realmInteractionProvider.overrideWith(
         (ref) => const RealmInteractionState(
@@ -86,6 +91,7 @@ Widget pagePageStory({
           pageStoryPageCatalog(pageType, storyElements ?? const []),
         ),
       ),
+      realmEditorCatalogLeaseProvider.overrideWith((ref, request) => null),
       pageDocumentHealthProvider.overrideWith((ref, argument) => null),
       ...entryProviderOverrides(),
       ...pageElementsProviderOverrides(

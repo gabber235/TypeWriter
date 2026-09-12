@@ -31,7 +31,10 @@ Widget bookUseCase(BuildContext context) {
 
   return FakeApp(
     overrides: [
-      ...authoringSessionMockOverrides(),
+      ...authoringSessionMockOverrides(
+        books: [book],
+        tags: [directTag, inheritedTag],
+      ),
       organizationIdProvider.overrideWithValue(
         recordId("organization:widgetbook"),
       ),
@@ -81,7 +84,7 @@ Widget mixedBookSelectionStory({bool initiallySelected = true}) {
 
   return FakeApp(
     overrides: [
-      ...authoringSessionMockOverrides(),
+      ...authoringSessionMockOverrides(books: books, tags: [lore, quest]),
       organizationIdProvider.overrideWithValue(
         recordId("organization:widgetbook"),
       ),
@@ -101,20 +104,19 @@ Widget mixedBookSelectionStory({bool initiallySelected = true}) {
 }
 
 class _BookStoryBooks extends CanonicalBooks {
-  _BookStoryBooks(this.books);
+  _BookStoryBooks(List<Book> books) : _initialBooks = List.unmodifiable(books);
 
-  List<Book> books;
+  final List<Book> _initialBooks;
 
   @override
-  Future<List<Book>> build() async => books;
+  Future<List<Book>> build() async => _initialBooks;
 
   @override
   Future<TypedMutationResult> updateBook(Book book, {Book? expected}) async {
-    books = [
-      for (final current in books)
+    state = AsyncData([
+      for (final current in state.requireValue)
         if (current.bookId == book.bookId) book else current,
-    ];
-    state = AsyncData(books);
+    ]);
     return TypedMutationResult.success(revision: 1, value: book.inspectorValue);
   }
 }

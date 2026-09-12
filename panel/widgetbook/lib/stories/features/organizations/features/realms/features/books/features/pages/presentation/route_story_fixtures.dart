@@ -83,6 +83,15 @@ RealmEditorCatalogState pageStoryPageCatalog(
   PageType pageType,
   List<PageElement> elements,
 ) {
+  final elementDefinitions = [
+    for (final element in elements)
+      switch (element) {
+        PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
+          definition.elementDefinition,
+        PageElementCue(:final cue) => cue.elementDefinition,
+        _ => null,
+      },
+  ].nonNulls;
   final editor = switch (pageType) {
     PageType.scene => const RealmTimelinePageEditor(
       trackTypes: [],
@@ -115,6 +124,24 @@ RealmEditorCatalogState pageStoryPageCatalog(
           ),
       ]),
       generation: const CatalogGeneration("widgetbook"),
+      elements: {
+        for (final definition in elementDefinitions)
+          definition.typeId.uuid: RealmElementCatalogEntry(
+            originArtifactId: "widgetbook",
+            sourcePart: "page-story",
+            definition: DiscoveredElementDefinition(
+              id: definition.typeId.uuid,
+              type: definition.rootType,
+              name: definition.name,
+              description: definition.description,
+              icon: definition.icon,
+              color: definition.color,
+              availability: const ElementAvailability.always(),
+            ),
+            eligible: true,
+            available: true,
+          ),
+      },
       pageCatalog: RealmPageCatalog(definitions: {pageType.kind: definition}),
     ),
   );
@@ -180,10 +207,10 @@ AuthoringSessionState pageStoryAuthoring(
     chapter: "",
     priority: 0,
   );
-  final catalog =
-      (pageStoryPageCatalog(pageType, elements) as RealmEditorCatalogReady)
-          .value
-          .catalog;
+  final catalog = (pageStoryPageCatalog(
+    pageType,
+    elements,
+  ) as RealmEditorCatalogReady).value.catalog;
   final codec = SkirEditorCodec(TypeRegistry(catalog));
   return AuthoringSessionState(
     sequence: 1,
@@ -231,7 +258,19 @@ AuthoringSessionState pageStoryAuthoring(
               _ => throw StateError("Unsupported story element"),
             },
         ],
-        references: const [],
+        references: [
+          for (final element in elements)
+            for (final link in switch (element) {
+              PageElementEntry(:final entry) => entry.links.$2,
+              PageElementCue(cue: Segment(:final outwardLinks)) => outwardLinks,
+              _ => const <ElementLink>[],
+            })
+              wire.PageReference(
+                source: recordId("element:${element.id}"),
+                slot: link.path,
+                target: recordId("element:${link.otherId}"),
+              ),
+        ],
         crossPageTargets: const [],
         crossPageSources: const [],
         diagnostics: const [],

@@ -38,7 +38,7 @@ Widget bookAndTagSelectionStory({required bool sharedColor}) {
 
   return FakeApp(
     overrides: [
-      ...authoringSessionMockOverrides(),
+      ...authoringSessionMockOverrides(books: [book], tags: [tag]),
       organizationIdProvider.overrideWithValue(
         recordId("organization:widgetbook"),
       ),

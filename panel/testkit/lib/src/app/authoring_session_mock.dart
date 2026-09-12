@@ -41,12 +41,24 @@ class AuthoringSessionMock extends AuthoringSession {
 
 List<Override> authoringSessionMockOverrides({
   AuthoringSessionState? initial,
+  Iterable<Book> books = const [],
+  Iterable<Tag> tags = const [],
   FutureOr<void> Function(List<wire.AuthoringOperation> operations)? onApply,
-}) => [
-  authoringSessionProvider.overrideWith2(
-    (_) => AuthoringSessionMock(
-      initial: initial ?? const AuthoringSessionState(sequence: 1),
-      onApply: onApply,
+}) {
+  assert(
+    initial == null || (books.isEmpty && tags.isEmpty),
+    "Use either an initial state or domain fixtures",
+  );
+  final state =
+      initial ??
+      AuthoringSessionState(
+        sequence: 1,
+        books: {for (final book in books) book.bookId: book.toWire()},
+        tags: {for (final tag in tags) tag.tagId: tag.toWire()},
+      );
+  return [
+    authoringSessionProvider.overrideWith2(
+      (_) => AuthoringSessionMock(initial: state, onApply: onApply),
     ),
-  ),
-];
+  ];
+}
