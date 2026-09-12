@@ -43,6 +43,9 @@ abstract class OrganizationMember with _$OrganizationMember {
 
 @riverpod
 class OrganizationMembers extends _$OrganizationMembers {
+  @protected
+  final sequencedCollection = SequencedCollection<List<OrganizationMember>>();
+
   @override
   Stream<List<OrganizationMember>> build() async* {
     final userId = await ref.watch(userIdProvider.future);
@@ -57,44 +60,34 @@ class OrganizationMembers extends _$OrganizationMembers {
     }
 
     final request = skir.WatchOrganizationMembersRequest();
-    yield* ref.watchRequest(
+    yield* ref.watchSequencedRequest(
       subject:
           "cloud.to.user.$userId.organization.${organizationId.id}.members.watch",
-      listenSubject:
-          "cloud.from.organization.${organizationId.id}.members.watch",
+      eventSubject:
+          "cloud.from.organization.${organizationId.id}.members.changed",
       requestBytes: skir.WatchOrganizationMembersRequest.serializer.toBytes(
         request,
       ),
-      serializer: skir.WatchOrganizationMembersResponse.serializer,
-      transformer: (previous, response) {
-        switch (response) {
-          case skir.WatchOrganizationMembersResponse_unknown():
-            throw ApiException.unknownResponseMessage();
-          case skir.WatchOrganizationMembersResponse_internalErrorWrapper():
-            throw ApiException.internalServerError();
-          case skir.WatchOrganizationMembersResponse_listWrapper(:final value):
-            return value.map(OrganizationMember.fromSkir).toList();
-          case skir.WatchOrganizationMembersResponse_addWrapper(:final value):
-            return previous.upsertByKey(
-              (member) => member.userId,
-              OrganizationMember.fromSkir(value),
-            );
-          case skir.WatchOrganizationMembersResponse_updateWrapper(
-            :final value,
-          ):
-            return previous.upsertByKey(
-              (member) => member.userId,
-              OrganizationMember.fromSkir(value),
-            );
-          case skir.WatchOrganizationMembersResponse_removeWrapper(
-            :final value,
-          ):
-            return previous
-                    ?.where((member) => member.userId != value)
-                    .toList() ??
-                [];
-        }
+      responseSerializer: skir.WatchOrganizationMembersResponse.serializer,
+      eventSerializer: skir.OrganizationMembersChanged.serializer,
+      snapshot: (response) {
+        return switch (response) {
+          skir.WatchOrganizationMembersResponse_unknown() =>
+            throw ApiException.unknownResponseMessage(),
+          skir.WatchOrganizationMembersResponse_internalErrorWrapper() =>
+            throw ApiException.internalServerError(),
+          skir.WatchOrganizationMembersResponse_snapshotWrapper(:final value) =>
+            SequencedSnapshot(
+              sequence: value.sequence,
+              value: value.values.map(OrganizationMember.fromSkir).toList(),
+            ),
+          skir.WatchOrganizationMembersResponse_changedWrapper() =>
+            throw StateError("Snapshot request returned a delta"),
+        };
       },
+      eventSequence: (event) => event.sequence,
+      reduce: _reduceMembers,
+      sequenceState: sequencedCollection,
     );
   }
 
@@ -155,13 +148,17 @@ class OrganizationMembers extends _$OrganizationMembers {
         "cloud.to.user.$userId.organization.${organizationId.id}.members.update",
         skir.UpdateOrganizationMemberRolesRequest.serializer.toBytes(request),
         skir.UpdateOrganizationMemberRolesResponse.serializer,
-        onResponse: (_) async {
+        onResponse: (response) async {
           if (!ref.mounted ||
               ref.read(organizationIdProvider) != organizationId) {
             return;
           }
-          ref.invalidateSelf();
-          await future;
+          if (response
+              case skir.UpdateOrganizationMemberRolesResponse_successWrapper(
+                :final value,
+              )) {
+            _applyEvent(value.event);
+          }
         },
         submissionId: request.operationId,
         replay: SubmissionReplay.identicalRequest,
@@ -236,13 +233,17 @@ class OrganizationMembers extends _$OrganizationMembers {
         "cloud.to.user.$userId.organization.${organizationId.id}.members.remove",
         skir.RemoveOrganizationMemberRequest.serializer.toBytes(request),
         skir.RemoveOrganizationMemberResponse.serializer,
-        onResponse: (_) async {
+        onResponse: (response) async {
           if (!ref.mounted ||
               ref.read(organizationIdProvider) != organizationId) {
             return;
           }
-          ref.invalidateSelf();
-          await future;
+          if (response
+              case skir.RemoveOrganizationMemberResponse_successWrapper(
+                :final value,
+              )) {
+            _applyEvent(value.event);
+          }
         },
         submissionId: request.operationId,
         replay: SubmissionReplay.identicalRequest,
@@ -287,11 +288,46 @@ class OrganizationMembers extends _$OrganizationMembers {
     }
   }
 
+  void _applyEvent(skir.OrganizationMembersChanged event) {
+    switch (sequencedCollection.apply(
+      sequence: event.sequence,
+      reduce: (members) => _reduceMembers(members, event),
+    )) {
+      case SequencedEventResult.duplicate:
+        return;
+      case SequencedEventResult.applied:
+        state = AsyncData(sequencedCollection.value);
+      case SequencedEventResult.gap:
+        ref.invalidateSelf();
+    }
+  }
+
   @override
   bool updateShouldNotify(
     AsyncValue<List<OrganizationMember>> previous,
     AsyncValue<List<OrganizationMember>> next,
   ) => true;
+}
+
+List<OrganizationMember> _reduceMembers(
+  List<OrganizationMember> members,
+  skir.OrganizationMembersChanged event,
+) {
+  return event.changes.fold(members, (current, change) {
+    return switch (change) {
+      skir.OrganizationMembersChange_unknown() =>
+        throw ApiException.unknownResponseMessage(),
+      skir.OrganizationMembersChange_addWrapper(:final value) ||
+      skir.OrganizationMembersChange_updateWrapper(
+        :final value,
+      ) => current.upsertByKey(
+        (member) => member.userId,
+        OrganizationMember.fromSkir(value),
+      ),
+      skir.OrganizationMembersChange_removeWrapper(:final value) =>
+        current.where((member) => member.userId != value).toList(),
+    };
+  });
 }
 
 /// Provider for the list of pending join requests to the current organization.

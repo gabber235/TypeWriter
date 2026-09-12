@@ -123,5 +123,10 @@ abstract interface class NatsClient {
 
   Future<NatsSubscription> subscribe(String subject);
 
+  Future<NatsSubscription> subscribeOrdered(
+    String stream,
+    String filterSubject,
+  );
+
   Future<void> close();
 }

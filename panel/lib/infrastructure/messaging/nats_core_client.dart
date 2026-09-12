@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:flutter/foundation.dart";
 import "package:nats_core/nats_core.dart" as core;
+import "package:nats_jetstream/nats_jetstream.dart" as jetstream;
 import "package:typewriter_panel/infrastructure/messaging/nats_client.dart";
 
 final class NatsCoreClient implements NatsClient {
@@ -196,6 +197,27 @@ final class NatsCoreClient implements NatsClient {
   }
 
   @override
+  Future<NatsSubscription> subscribeOrdered(
+    String stream,
+    String filterSubject,
+  ) async {
+    try {
+      final connection = await _readyConnection();
+      final consumer = jetstream.JetStreamContext(connection).consumers.ordered(
+        stream,
+        options: jetstream.JetStreamOrderedConsumerOptions(
+          filters: jetstream.JetStreamConsumerFilters.single(filterSubject),
+        ),
+      );
+      return _NatsJetStreamSubscription(consumer.consume());
+    } on NatsClientException {
+      rethrow;
+    } on Object catch (error, stackTrace) {
+      Error.throwWithStackTrace(_translate(error, stackTrace), stackTrace);
+    }
+  }
+
+  @override
   Future<void> close() => _closeOperation ??= _close();
 
   Future<void> _close() async {
@@ -254,6 +276,32 @@ final class _NatsCoreSubscription implements NatsSubscription {
       Error.throwWithStackTrace(_translate(error, stackTrace), stackTrace);
     }
   }
+}
+
+final class _NatsJetStreamSubscription implements NatsSubscription {
+  const _NatsJetStreamSubscription(this._subscription);
+
+  final jetstream.JetStreamOrderedConsumerStream _subscription;
+
+  @override
+  Stream<NatsMessage> get messages => _subscription.messages.transform(
+    StreamTransformer.fromHandlers(
+      handleData: (delivery, sink) => sink.add(
+        NatsMessage(
+          delivery.message.payload,
+          subject: delivery.message.subject,
+        ),
+      ),
+      handleError: (error, stackTrace, sink) =>
+          sink.addError(_translate(error, stackTrace), stackTrace),
+    ),
+  );
+
+  @override
+  Future<void> get done => _subscription.done;
+
+  @override
+  Future<void> unsubscribe() => _subscription.stop();
 }
 
 NatsClientException _translate(Object error, StackTrace stackTrace) {

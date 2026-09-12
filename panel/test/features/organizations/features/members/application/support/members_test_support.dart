@@ -2,6 +2,10 @@ import "dart:async";
 
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/kernel/v1/record_id.dart"
+    as skir_id;
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/organization/v1/member.dart"
+    as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
 const testUserId = "user1";
@@ -43,6 +47,27 @@ OrganizationMember createMember({
   avatarUrl: avatarUrl,
   roles: roles,
   joinedAt: joinedAt ?? testTimestamp,
+);
+
+skir.UpdateOrganizationMemberRolesResponse successfulMemberUpdate(
+  Iterable<skir.OrganizationMember> members,
+) => skir.UpdateOrganizationMemberRolesResponse.createSuccess(
+  members: members,
+  event: skir.OrganizationMembersChanged(
+    sequence: 1,
+    operationId: "test-operation",
+    changes: members.map(skir.OrganizationMembersChange.wrapUpdate),
+  ),
+);
+
+skir.RemoveOrganizationMemberResponse successfulMemberRemoval(
+  skir_id.RecordId userId,
+) => skir.RemoveOrganizationMemberResponse.createSuccess(
+  event: skir.OrganizationMembersChanged(
+    sequence: 1,
+    operationId: "test-operation",
+    changes: [skir.OrganizationMembersChange.wrapRemove(userId)],
+  ),
 );
 
 Future<T> readAsyncData<T>(
@@ -122,7 +147,12 @@ class MockMembersNotifier extends OrganizationMembers {
 
   @override
   Stream<List<OrganizationMember>> build() async* {
-    yield load?.call() ?? members;
+    final snapshot = load?.call() ?? members;
+    sequencedCollection.snapshot = SequencedSnapshot(
+      sequence: 0,
+      value: snapshot,
+    );
+    yield snapshot;
   }
 }
 

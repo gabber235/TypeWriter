@@ -72,7 +72,7 @@ void main() {
             .fromBytes(data);
         capturedRoleIds = request.roleIds.toList();
         return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+          successfulMemberUpdate([
             skir.OrganizationMember(
               userId: recordId("user:m1"),
               name: "Test",
@@ -142,7 +142,7 @@ void main() {
             .fromBytes(data);
         capturedRoleIds = request.roleIds.toList();
         return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+          successfulMemberUpdate([
             skir.OrganizationMember(
               userId: recordId("user:m1"),
               name: "Test",
@@ -215,7 +215,7 @@ void main() {
               .fromBytes(data);
           capturedRoleIds = request.roleIds.toList();
           return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-            skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+            successfulMemberUpdate([
               skir.OrganizationMember(
                 userId: recordId("user:m1"),
                 name: "Test",

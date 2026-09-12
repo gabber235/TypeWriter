@@ -78,7 +78,7 @@ void main() {
       mockNats.registerHandler(memberRemoveSubject, (data) {
         confirmed = [];
         return skir.RemoveOrganizationMemberResponse.serializer.toBytes(
-          skir.RemoveOrganizationMemberResponse.createSuccess(),
+          successfulMemberRemoval(recordId("user:m1")),
         );
       });
 
@@ -182,7 +182,7 @@ void main() {
       mockNats.registerHandler(memberUpdateSubject, (data) {
         confirmed = member.copyWith(roles: [newRole]);
         return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+          successfulMemberUpdate([
             skir.OrganizationMember(
               userId: recordId("user:m1"),
               name: "Test",

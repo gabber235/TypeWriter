@@ -21,7 +21,7 @@ void main() {
     });
 
     test(
-      "refreshes current membership instead of applying a historical receipt",
+      "ignores a historical receipt older than current membership",
       () async {
         final role = createRole(
           id: "member",
@@ -32,28 +32,20 @@ void main() {
 
         final member = OrganizationMember(
           userId: recordId("user:m1"),
-          name: "Original Name",
+          name: "Current Name",
           email: "test@test.com",
           avatarUrl: "",
           roles: [role],
           joinedAt: testTimestamp,
         );
 
-        var reads = 0;
         final container = ProviderContainer.test(
           overrides: [
             userIdProvider.overrideWith((ref) async => testUserId),
             organizationIdProvider.overrideWith((ref) => testOrganizationId),
             natsProvider.overrideWithValue(mockNats),
             organizationMembersProvider.overrideWith(
-              () => _RefreshingMembers(
-                () => [
-                  if (reads++ == 0)
-                    member
-                  else
-                    member.copyWith(name: "Current Name"),
-                ],
-              ),
+              () => _SequencedMembers([member], sequence: 2),
             ),
             organizationRolesProvider.overrideWith(
               () => MockRolesNotifier([role]),
@@ -67,7 +59,7 @@ void main() {
           memberUpdateSubject,
           (data) =>
               skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-                skir.UpdateOrganizationMemberRolesResponse.wrapSuccess([
+                successfulMemberUpdate([
                   skir.OrganizationMember(
                     userId: recordId("user:m1"),
                     name: "Historical Name",
@@ -86,18 +78,22 @@ void main() {
 
         final current = await readMembers(container);
         expect(current.single.name, "Current Name");
-        expect(reads, 2);
       },
     );
   });
 }
 
-class _RefreshingMembers extends OrganizationMembers {
-  _RefreshingMembers(this.load);
-  final List<OrganizationMember> Function() load;
+class _SequencedMembers extends OrganizationMembers {
+  _SequencedMembers(this.members, {required this.sequence});
+  final List<OrganizationMember> members;
+  final int sequence;
 
   @override
   Stream<List<OrganizationMember>> build() async* {
-    yield load();
+    sequencedCollection.snapshot = SequencedSnapshot(
+      sequence: sequence,
+      value: members,
+    );
+    yield members;
   }
 }

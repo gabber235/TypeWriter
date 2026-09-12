@@ -54,6 +54,8 @@ abstract class OrganizationJoinRequest with _$OrganizationJoinRequest {
 
 @riverpod
 class OrganizationJoinRequests extends _$OrganizationJoinRequests {
+  final _sequenceState = SequencedCollection<List<OrganizationJoinRequest>>();
+
   @override
   Stream<List<OrganizationJoinRequest>> build() async* {
     final userId = await ref.watch(userIdProvider.future);
@@ -68,37 +70,37 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
     }
 
     final request = skir.WatchOrganizationJoinRequestsRequest();
-    yield* ref.watchRequest(
+    yield* ref.watchSequencedRequest(
       subject:
           "cloud.to.user.$userId.organization.${organizationId.id}.members.join_requests.watch",
-      listenSubject:
-          "cloud.from.organization.${organizationId.id}.members.join_requests.watch",
+      eventSubject:
+          "cloud.from.organization.${organizationId.id}.join_requests.changed",
       requestBytes: skir.WatchOrganizationJoinRequestsRequest.serializer
           .toBytes(request),
-      serializer: skir.WatchOrganizationJoinRequestsResponse.serializer,
-      transformer: (previous, response) {
-        switch (response) {
-          case skir.WatchOrganizationJoinRequestsResponse_unknown():
-            throw ApiException.unknownResponseMessage();
-          case skir.WatchOrganizationJoinRequestsResponse_internalErrorWrapper():
-            throw ApiException.internalServerError();
-          case skir.WatchOrganizationJoinRequestsResponse_listWrapper(
+      responseSerializer: skir.WatchOrganizationJoinRequestsResponse.serializer,
+      eventSerializer: skir.OrganizationJoinRequestsChanged.serializer,
+      snapshot: (response) {
+        return switch (response) {
+          skir.WatchOrganizationJoinRequestsResponse_unknown() =>
+            throw ApiException.unknownResponseMessage(),
+          skir.WatchOrganizationJoinRequestsResponse_internalErrorWrapper() =>
+            throw ApiException.internalServerError(),
+          skir.WatchOrganizationJoinRequestsResponse_snapshotWrapper(
             :final value,
-          ):
-            return value.map(OrganizationJoinRequest.fromSkir).toList();
-          case skir.WatchOrganizationJoinRequestsResponse_addWrapper(
-            :final value,
-          ):
-            return previous.upsertByKey(
-              (request) => request.requestId,
-              OrganizationJoinRequest.fromSkir(value),
-            );
-          case skir.WatchOrganizationJoinRequestsResponse_removeWrapper(
-            :final value,
-          ):
-            return previous?.where((e) => e.requestId != value).toList() ?? [];
-        }
+          ) =>
+            SequencedSnapshot(
+              sequence: value.sequence,
+              value: value.values
+                  .map(OrganizationJoinRequest.fromSkir)
+                  .toList(),
+            ),
+          skir.WatchOrganizationJoinRequestsResponse_changedWrapper() =>
+            throw StateError("Snapshot request returned a delta"),
+        };
       },
+      eventSequence: (event) => event.sequence,
+      reduce: _reduceOrganizationJoinRequests,
+      sequenceState: _sequenceState,
     );
   }
 
@@ -129,14 +131,17 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
         "cloud.to.user.$userId.organization.${organizationId.id}.members.join_requests.approve",
         skir.ApproveOrganizationJoinRequestsRequest.serializer.toBytes(request),
         skir.ApproveOrganizationJoinRequestsResponse.serializer,
-        onResponse: (_) async {
+        onResponse: (response) async {
           if (!ref.mounted ||
               ref.read(organizationIdProvider) != organizationId) {
             return;
           }
-          ref
-            ..invalidate(organizationMembersProvider)
-            ..invalidateSelf();
+          if (response
+              case skir.ApproveOrganizationJoinRequestsResponse_successWrapper(
+                :final value,
+              )) {
+            _applyEvent(value.joinRequestsEvent);
+          }
         },
         submissionId: request.operationId,
         replay: SubmissionReplay.identicalRequest,
@@ -183,6 +188,20 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
     } catch (e) {
       ref.invalidateSelf();
       rethrow;
+    }
+  }
+
+  void _applyEvent(skir.OrganizationJoinRequestsChanged event) {
+    switch (_sequenceState.apply(
+      sequence: event.sequence,
+      reduce: (requests) => _reduceOrganizationJoinRequests(requests, event),
+    )) {
+      case SequencedEventResult.duplicate:
+        return;
+      case SequencedEventResult.applied:
+        state = AsyncData(_sequenceState.value);
+      case SequencedEventResult.gap:
+        ref.invalidateSelf();
     }
   }
 
@@ -263,6 +282,25 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
       state.requireValue.where((request) => !request.isExpired).toList(),
     );
   }
+}
+
+List<OrganizationJoinRequest> _reduceOrganizationJoinRequests(
+  List<OrganizationJoinRequest> requests,
+  skir.OrganizationJoinRequestsChanged event,
+) {
+  return event.changes.fold(requests, (current, change) {
+    return switch (change) {
+      skir.OrganizationJoinRequestsChange_unknown() =>
+        throw ApiException.unknownResponseMessage(),
+      skir.OrganizationJoinRequestsChange_addWrapper(:final value) =>
+        current.upsertByKey(
+          (request) => request.requestId,
+          OrganizationJoinRequest.fromSkir(value),
+        ),
+      skir.OrganizationJoinRequestsChange_removeWrapper(:final value) =>
+        current.where((request) => request.requestId != value).toList(),
+    };
+  });
 }
 
 /// Provider for the count of pending join requests.

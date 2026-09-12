@@ -88,6 +88,8 @@ abstract class JoinCodeOptions with _$JoinCodeOptions {
 /// Provider for the join codes in the current organization.
 @riverpod
 class OrganizationJoinCodes extends _$OrganizationJoinCodes {
+  final _sequenceState = SequencedCollection<List<OrganizationJoinCode>>();
+
   @override
   Stream<List<OrganizationJoinCode>> build() async* {
     final userId = await ref.watch(userIdProvider.future);
@@ -102,36 +104,36 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
     }
 
     final request = skir.WatchOrganizationJoinCodesRequest();
-    yield* ref.watchRequest(
+    yield* ref.watchSequencedRequest(
       subject:
           "cloud.to.user.$userId.organization.${organizationId.id}.members.join_codes.watch",
-      listenSubject:
-          "cloud.from.organization.${organizationId.id}.members.join_codes.watch",
+      eventSubject:
+          "cloud.from.organization.${organizationId.id}.join_codes.changed",
       requestBytes: skir.WatchOrganizationJoinCodesRequest.serializer.toBytes(
         request,
       ),
-      serializer: skir.WatchOrganizationJoinCodesResponse.serializer,
-      transformer: (previous, response) {
-        switch (response) {
-          case skir.WatchOrganizationJoinCodesResponse_unknown():
-            throw ApiException.unknownResponseMessage();
-          case skir.WatchOrganizationJoinCodesResponse_internalErrorWrapper():
-            throw ApiException.internalServerError();
-          case skir.WatchOrganizationJoinCodesResponse_listWrapper(
+      responseSerializer: skir.WatchOrganizationJoinCodesResponse.serializer,
+      eventSerializer: skir.OrganizationJoinCodesChanged.serializer,
+      snapshot: (response) {
+        return switch (response) {
+          skir.WatchOrganizationJoinCodesResponse_unknown() =>
+            throw ApiException.unknownResponseMessage(),
+          skir.WatchOrganizationJoinCodesResponse_internalErrorWrapper() =>
+            throw ApiException.internalServerError(),
+          skir.WatchOrganizationJoinCodesResponse_snapshotWrapper(
             :final value,
-          ):
-            return value.map(OrganizationJoinCode.fromSkir).toList();
-          case skir.WatchOrganizationJoinCodesResponse_addWrapper(:final value):
-            return previous.upsertByKey(
-              (code) => code.code,
-              OrganizationJoinCode.fromSkir(value),
-            );
-          case skir.WatchOrganizationJoinCodesResponse_removeWrapper(
-            :final value,
-          ):
-            return previous?.where((code) => code.code != value).toList() ?? [];
-        }
+          ) =>
+            SequencedSnapshot(
+              sequence: value.sequence,
+              value: value.values.map(OrganizationJoinCode.fromSkir).toList(),
+            ),
+          skir.WatchOrganizationJoinCodesResponse_changedWrapper() =>
+            throw StateError("Snapshot request returned a delta"),
+        };
       },
+      eventSequence: (event) => event.sequence,
+      reduce: _reduceJoinCodes,
+      sequenceState: _sequenceState,
     );
   }
 
@@ -206,9 +208,10 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
       case skir.GenerateOrganizationJoinCodeResponse_successWrapper(
         :final value,
       ):
+        _applyEvent(value.event);
         return SecretFieldRevealed(
-          value: value.code.id,
-          expiresAt: value.expiresAt,
+          value: value.code.code.id,
+          expiresAt: value.code.expiresAt,
         );
     }
   }
@@ -280,7 +283,10 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
           throw ApiException.invalidRecordId(value);
         case skir.RevokeOrganizationJoinCodeResponse_codeNotFoundErrorWrapper():
           throw ApiException.notFound("Join Code");
-        case skir.RevokeOrganizationJoinCodeResponse_successWrapper():
+        case skir.RevokeOrganizationJoinCodeResponse_successWrapper(
+          :final value,
+        ):
+          _applyEvent(value.event);
           debugPrint("Join code $codeId revoked successfully");
       }
     } catch (e) {
@@ -289,6 +295,39 @@ class OrganizationJoinCodes extends _$OrganizationJoinCodes {
       rethrow;
     }
   }
+
+  void _applyEvent(skir.OrganizationJoinCodesChanged event) {
+    switch (_sequenceState.apply(
+      sequence: event.sequence,
+      reduce: (codes) => _reduceJoinCodes(codes, event),
+    )) {
+      case SequencedEventResult.duplicate:
+        return;
+      case SequencedEventResult.applied:
+        state = AsyncData(_sequenceState.value);
+      case SequencedEventResult.gap:
+        ref.invalidateSelf();
+    }
+  }
+}
+
+List<OrganizationJoinCode> _reduceJoinCodes(
+  List<OrganizationJoinCode> codes,
+  skir.OrganizationJoinCodesChanged event,
+) {
+  return event.changes.fold(codes, (current, change) {
+    return switch (change) {
+      skir.OrganizationJoinCodesChange_unknown() =>
+        throw ApiException.unknownResponseMessage(),
+      skir.OrganizationJoinCodesChange_addWrapper(:final value) =>
+        current.upsertByKey(
+          (code) => code.code,
+          OrganizationJoinCode.fromSkir(value),
+        ),
+      skir.OrganizationJoinCodesChange_removeWrapper(:final value) =>
+        current.where((code) => code.code != value).toList(),
+    };
+  });
 }
 
 /// Provider for the count of active join codes.

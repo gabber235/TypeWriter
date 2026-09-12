@@ -817,9 +817,18 @@ packages:
     source: hosted
     version: "2.1.0"
   nats_core:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "packages/nats_core"
+      ref: "5c695ca2f0e46440dbd9e2afe618a20980673036"
+      resolved-ref: "5c695ca2f0e46440dbd9e2afe618a20980673036"
+      url: "https://github.com/gabber235/nats.dart.git"
+    source: git
+    version: "0.0.1"
+  nats_jetstream:
+    dependency: transitive
+    description:
+      path: "packages/nats_jetstream"
       ref: "5c695ca2f0e46440dbd9e2afe618a20980673036"
       resolved-ref: "5c695ca2f0e46440dbd9e2afe618a20980673036"
       url: "https://github.com/gabber235/nats.dart.git"

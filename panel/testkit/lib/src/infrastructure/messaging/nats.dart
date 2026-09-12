@@ -126,6 +126,12 @@ final class FakeNatsClient implements NatsClient {
     return subscription;
   }
 
+  @override
+  Future<FakeNatsSubscription> subscribeOrdered(
+    String stream,
+    String filterSubject,
+  ) => subscribe(filterSubject);
+
   void emitMessage(int id, Uint8List payload) {
     _subscriptions[id]?.add(payload);
   }

@@ -23,6 +23,11 @@ dependencies:
   pub_semver:
 
 dependency_overrides:
+  nats_core:
+    git:
+      url: https://github.com/gabber235/nats.dart.git
+      ref: 5c695ca2f0e46440dbd9e2afe618a20980673036
+      path: packages/nats_core
   riverpod: 3.4.3
   riverpod_annotation: 4.0.7
 

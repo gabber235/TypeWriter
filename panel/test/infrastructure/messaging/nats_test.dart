@@ -46,6 +46,12 @@ final class _PendingSubscribeNatsClient implements NatsClient {
   Future<NatsSubscription> subscribe(String subject) =>
       _pendingSubscription.future;
 
+  @override
+  Future<NatsSubscription> subscribeOrdered(
+    String stream,
+    String filterSubject,
+  ) => subscribe(filterSubject);
+
   void completeSubscription() => _pendingSubscription.complete(subscription);
 
   @override
@@ -99,6 +105,12 @@ final class _ControlledCloseNatsClient implements NatsClient {
   @override
   Future<NatsSubscription> subscribe(String subject) =>
       throw UnsupportedError("Not used by this test");
+
+  @override
+  Future<NatsSubscription> subscribeOrdered(
+    String stream,
+    String filterSubject,
+  ) => throw UnsupportedError("Not used by this test");
 
   @override
   Future<void> close() async {
@@ -446,6 +458,92 @@ void main() {
 
       expect(client.subscription.unsubscribed, isTrue);
       expect(client.requests, isZero);
+    });
+
+    test("sequenced watch ignores duplicates and refreshes one gap", () async {
+      var snapshotSequence = 1;
+      final sequenceState = SequencedCollection<int>();
+      mockClient.registerHandler(
+        "test.sequenced.watch",
+        (_) => skir.Duration.serializer.toBytes(
+          skir.Duration(milliseconds: snapshotSequence),
+        ),
+      );
+      final values = <int>[];
+      final subscription = container
+          .read(_testRefProvider)
+          .watchSequencedRequest<int, skir.Duration, skir.Duration>(
+            subject: "test.sequenced.watch",
+            eventSubject: "test.sequenced.changed",
+            requestBytes: Uint8List(0),
+            responseSerializer: skir.Duration.serializer,
+            eventSerializer: skir.Duration.serializer,
+            snapshot: (response) => SequencedSnapshot(
+              sequence: response.milliseconds,
+              value: response.milliseconds,
+            ),
+            eventSequence: (event) => event.milliseconds,
+            reduce: (_, event) => event.milliseconds,
+            sequenceState: sequenceState,
+          )
+          .listen(values.add);
+
+      while (values.isEmpty) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      mockClient
+        ..emitMessageOnSubject(
+          "test.sequenced.changed",
+          skir.Duration.serializer.toBytes(skir.Duration(milliseconds: 1)),
+        )
+        ..emitMessageOnSubject(
+          "test.sequenced.changed",
+          skir.Duration.serializer.toBytes(skir.Duration(milliseconds: 2)),
+        );
+      while (values.length < 2) {
+        await Future<void>.delayed(Duration.zero);
+      }
+
+      snapshotSequence = 4;
+      mockClient.emitMessageOnSubject(
+        "test.sequenced.changed",
+        skir.Duration.serializer.toBytes(skir.Duration(milliseconds: 4)),
+      );
+      while (values.length < 3) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      mockClient.emitMessageOnSubject(
+        "test.sequenced.changed",
+        skir.Duration.serializer.toBytes(skir.Duration(milliseconds: 5)),
+      );
+      while (values.length < 4) {
+        await Future<void>.delayed(Duration.zero);
+      }
+
+      expect(values, [1, 2, 4, 5]);
+      expect(mockClient.requests, hasLength(2));
+      await subscription.cancel();
+    });
+
+    test("sequenced collection rejects historical mutation responses", () {
+      final sequenceState = SequencedCollection<int>()
+        ..snapshot = const SequencedSnapshot(sequence: 3, value: 30);
+
+      expect(
+        sequenceState.apply(sequence: 2, reduce: (_) => 20),
+        SequencedEventResult.duplicate,
+      );
+      expect(sequenceState.value, 30);
+      expect(
+        sequenceState.apply(sequence: 5, reduce: (_) => 50),
+        SequencedEventResult.gap,
+      );
+      expect(sequenceState.value, 30);
+      expect(
+        sequenceState.apply(sequence: 4, reduce: (_) => 40),
+        SequencedEventResult.applied,
+      );
+      expect(sequenceState.value, 40);
     });
   });
 
