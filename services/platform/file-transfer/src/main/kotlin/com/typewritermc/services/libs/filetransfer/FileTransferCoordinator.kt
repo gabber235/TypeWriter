@@ -14,6 +14,12 @@ class FileTransferCoordinator(
         require(chunkSize in 1..MAXIMUM_CHUNK_SIZE) { "Chunk size is outside the supported range" }
     }
 
+    /**
+     * Names a transfer from the publishing side to the receiving side.
+     *
+     * The endpoint roles are semantic only. This delegates to [transfer], so resume, progress checks, and completion
+     * verification are identical to [download].
+     */
     suspend fun upload(
         transferId: TransferId,
         key: FileKey,
@@ -21,6 +27,12 @@ class FileTransferCoordinator(
         destination: FileTransferEndpoint,
     ): FileTransferResult<FileMetadata> = transfer(transferId, key, source, destination)
 
+    /**
+     * Names a transfer from the serving side to the receiving side.
+     *
+     * The endpoint roles are semantic only. This delegates to [transfer], so resume, progress checks, and completion
+     * verification are identical to [upload].
+     */
     suspend fun download(
         transferId: TransferId,
         key: FileKey,

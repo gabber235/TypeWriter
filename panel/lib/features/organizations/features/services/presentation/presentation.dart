@@ -1,3 +1,9 @@
+/// Widgets and deterministic graph layout for the organization services view.
+///
+/// [ServicesPage] coordinates the routed organization projections. The graph
+/// joins canonical service identities with separately observed topology records;
+/// [ServicesPackedLayout] turns that projection into the shared graph contract.
+/// No widget in this library owns service or topology state.
 library;
 
 export "registration_token_input.dart";

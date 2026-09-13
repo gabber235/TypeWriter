@@ -2,8 +2,10 @@ import "dart:math";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Extracts a candidate field used by [RankedSearchSource].
 typedef SearchRankText = String? Function(SearchResult result);
 
+/// Weighted result text used to calculate fuzzy relevance.
 final class SearchRankField {
   const SearchRankField({required this.text, required this.weight})
     : assert(weight > 0);
@@ -12,6 +14,11 @@ final class SearchRankField {
   final int weight;
 }
 
+/// Filters and orders result nodes by fuzzy relevance to the query text.
+///
+/// Fields are scored independently and combined by weight. Section scores are
+/// the highest score among their descendants, preserving the tree while moving
+/// stronger matches first. An empty query leaves the child ordering unchanged.
 final class RankedSearchSource extends DelegatingSearchSource {
   RankedSearchSource({required super.source, required this.fields})
     : assert(fields.isNotEmpty);
@@ -85,6 +92,9 @@ final class RankedSearchSource extends DelegatingSearchSource {
   }
 }
 
+/// Returns a nonnegative relevance score, or a negative value when unmatched.
+/// Exact, prefix, token, substring, acronym, subsequence, and bounded edit
+/// matches are considered in descending score bands.
 int scoreFuzzySearchMatch(String rawQuery, String rawCandidate) {
   final query = _normalize(rawQuery);
   final candidate = _normalize(rawCandidate);
@@ -154,6 +164,7 @@ int _boundedEditDistance(String left, String right, int maximum) {
   return previous.last;
 }
 
+/// Adds fuzzy ranking to a source.
 extension RankedSearchSourceX on SearchSource {
   SearchSource ranked(List<SearchRankField> fields) {
     return RankedSearchSource(source: this, fields: fields);

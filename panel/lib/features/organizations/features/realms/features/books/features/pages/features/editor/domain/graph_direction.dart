@@ -1,6 +1,10 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Direction for graph layout flow
+/// The axis and connection sides used when laying out a graph.
+///
+/// [main] returns the dimension along the flow axis. [cross] returns the
+/// perpendicular dimension. The side values let edge routing attach to the
+/// correct end of each node without duplicating direction checks.
 enum GraphDirection {
   leftToRight(EdgeSide.right, EdgeSide.left),
   rightToLeft(EdgeSide.left, EdgeSide.right),

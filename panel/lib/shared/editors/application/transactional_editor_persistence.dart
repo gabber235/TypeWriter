@@ -1,5 +1,12 @@
 part of "transactional_editor_source.dart";
 
+/// Keeps persistence separate from draft ownership and canonical reconciliation.
+///
+/// This boundary schedules and captures attempts. It never treats an outbound
+/// request as canonical merely because it was sent. Only the commit acceptance
+/// path can advance the document, and only for edits not superseded while the
+/// request was awaiting its typed outcome. Uncertain outcomes remain attached
+/// to the captured attempt so replay cannot accidentally target a newer draft.
 extension _EditorPersistence on TransactionalEditorSource {
   void _scheduleAutoFlush() {
     if (_disposed ||
@@ -28,6 +35,8 @@ extension _EditorPersistence on TransactionalEditorSource {
     await flush(paths: candidates);
   }
 
+  /// Serializes one captured persistence attempt and resumes autosave after it
+  /// settles.
   Future<TypedMutationResult> _runCommit(Set<DataPath> selected) async {
     final commit = _persist(selected);
     _activeCommit = commit;
@@ -42,6 +51,12 @@ extension _EditorPersistence on TransactionalEditorSource {
     }
   }
 
+  /// Validates, captures, submits, and interprets one persistence boundary.
+  ///
+  /// The loop handles version conflicts by using the server's observed
+  /// revision, while validation and availability failures remain typed and do
+  /// not advance canonical state. The generation check prevents asynchronous
+  /// results from a replaced or disposed owner from being accepted.
   Future<TypedMutationResult> _persist(Set<DataPath> paths) async {
     if (resource != null) return _persistResource(paths);
 
@@ -131,6 +146,10 @@ extension _EditorPersistence on TransactionalEditorSource {
     return diagnostics;
   }
 
+  /// Converts transport exceptions into an uncertain typed outcome.
+  ///
+  /// The cause and stack trace remain available to the caller, and replay is
+  /// retained only for the exact captured submission.
   Future<TypedMutationResult> _send(EditorCommit commit) async {
     try {
       return await _commit!(commit);
@@ -143,6 +162,11 @@ extension _EditorPersistence on TransactionalEditorSource {
     }
   }
 
+  /// Repeats an uncertain submission without creating a new commit.
+  ///
+  /// Replay is the recovery path for an outcome that cannot establish whether
+  /// the destination applied the original attempt. Its result is still subject
+  /// to lifecycle checks and may remain uncertain.
   Future<TypedMutationResult> _replayCommit(
     _UnresolvedCommit unresolved,
   ) async {
@@ -218,6 +242,11 @@ extension _EditorPersistence on TransactionalEditorSource {
         !_deleted;
   }
 
+  /// Builds the outbound value without changing either owned state.
+  ///
+  /// Autosave sends selected local paths over the canonical base. Apply
+  /// resource mode sends the complete draft, so its consistency boundary is
+  /// the whole resource.
   DataValue _commitValue(Set<DataPath> paths) {
     if (commitPolicy == EditorCommitPolicy.applyResource) return _draft;
     var value = _document.confirmedValue;

@@ -1,3 +1,17 @@
+//! NATS authorization callout for Typewriter identities.
+//!
+//! NATS first sends an authorization request containing the connecting user's NATS key and
+//! the presented external JWT. This crate validates the request envelope, validates the external
+//! JWT against configured issuer and JWKS trust anchors, and asks
+//! `auth-typewriter-permissions` for entity policy. The returned policy is translated into a
+//! signed NATS user JWT and sent back to NATS.
+//!
+//! The sentinel is only the bootstrap identity exposed before a NATS identity exists. It is
+//! separate from this callout. The callout trusts neither client supplied identity qualifiers nor
+//! external claims until the JWT has passed signature, issuer, audience, and time checks. The
+//! permission service owns publish and subscribe policy. Any permission resolution or signing
+//! failure fails the callout rather than granting an identity.
+
 wit_bindgen::generate!({
     with: {
         "wasmcloud:messaging/consumer@0.4.0": wasmcloud_utils::wasmcloud::messaging::consumer,
@@ -30,7 +44,9 @@ use wasmcloud_utils::{
     wasmcloud::messaging::{handler::Guest, reply, types},
 };
 
+/// Validated external issuer configuration used at the authentication boundary.
 pub mod config;
+/// JWT parsing, JWKS retrieval, signature verification, and claim validation.
 pub mod jwt;
 
 struct AuthCallout;
@@ -452,6 +468,11 @@ fn decode_auth_request(body: &[u8]) -> Result<Claims<AuthRequest>, otel_wasi::Er
 }
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
+/// Tolerant TLS representation for the NATS authorization request.
+///
+/// The upstream NATS JWT library requires fields that NATS omits when it sends verified certificate
+/// chains. This compatibility shape keeps request decoding at the boundary without weakening the
+/// subsequent authorization checks.
 pub struct FixedClientTLS {
     version: String,
     cipher: String,
@@ -460,9 +481,11 @@ pub struct FixedClientTLS {
     verified_chains: Option<Vec<Vec<String>>>,
 }
 
-/// In nats-jwt-rs the client tls has non optional cert and verified chains fields. The problem is that the server will only send either one of them.
-/// So when it doesn't include the certs, then it throws an error.
-/// Since we don't care about the certs, we just parse them without it and put them as none.
+/// Decodable form of the NATS authorization request.
+///
+/// NATS may omit one of the mutually exclusive TLS fields expected by `nats-jwt-rs`. This type
+/// accepts the wire shape, after which the callout validates the request issuer, server identity,
+/// and required audience before using any credentials from it.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "snake_case")]
 pub struct FixedAuthRequest {

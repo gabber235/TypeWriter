@@ -1,9 +1,16 @@
+//! Organization membership reads and mutations.
+//!
+//! Membership state is owned by the organization database projection. Role updates replace the
+//! assignable role selection for every selected member while preserving protected roles. Removal
+//! enforces the founder invariant. Successful mutations increment the organization member
+//! sequence and publish one organization event after the database transaction succeeds.
+
 use otel_wasi::ResultWithSlug;
 use serde::Deserialize;
 use std::collections::HashMap;
 use wasmcloud_utils::database::organization::projections::OrganizationMemberProjection;
 use wasmcloud_utils::{
-    database::{transaction_query, RecordId, TransactionOutcome},
+    database::{RecordId, TransactionOutcome, transaction_query},
     decode_skir, extract_params,
     skir::base::organization::v1::member::*,
     skir_transaction_outcome,
@@ -56,6 +63,11 @@ impl MemberUpdateOutcome {
     }
 }
 
+/// Returns the current organization membership snapshot.
+///
+/// The snapshot sequence is read with the member values, so a consumer can use it as its recovery
+/// point for the organization member change stream. The request body is decoded to reject malformed
+/// watch requests before the database read.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_watch(
     msg: BrokerMessage,
@@ -74,6 +86,12 @@ pub async fn handle_watch(
     .await
 }
 
+/// Applies one role selection to all requested members as one database transaction.
+///
+/// The database function rejects an empty or duplicated selection, unknown users or roles,
+/// protected roles, roleless results, and a result that would leave the organization without a
+/// founder. It also preserves the complete committed response for a repeated operation identity.
+/// The returned event describes the full updated member values and is published after commit.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_update(
     msg: BrokerMessage,
@@ -181,6 +199,11 @@ pub async fn handle_update(
     ))
 }
 
+/// Removes one member when doing so preserves the organization founder invariant.
+///
+/// The database transaction is idempotent by operation identity and returns a domain error when the
+/// user is not a member or is the protected founder. A successful removal advances both the
+/// organization member sequence and the user's organization sequence, then publishes both changes.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_remove(
     msg: BrokerMessage,

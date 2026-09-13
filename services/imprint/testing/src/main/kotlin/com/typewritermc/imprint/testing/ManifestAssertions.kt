@@ -6,7 +6,7 @@ import com.typewritermc.imprint.ImprintManifestCodec
 import java.io.File
 import java.util.zip.ZipFile
 
-/** Reads the single canonical Imprint manifest from an artifact JAR. */
+/** Reads the canonical Imprint manifest from an artifact JAR, requiring that the entry exists. */
 fun File.readImprintManifest(): ImprintManifest =
     ZipFile(this).use { archive ->
         val entry =
@@ -16,7 +16,7 @@ fun File.readImprintManifest(): ImprintManifest =
         ImprintManifestCodec.decode(archive.getInputStream(entry).readBytes())
     }
 
-/** Fails when a JAR does not contain exactly one canonical Imprint manifest. */
+/** Reads the canonical manifest after verifying that the JAR contains exactly one matching entry. */
 fun File.requireSingleImprintManifest(): ImprintManifest =
     ZipFile(this).use { archive ->
         val entries =

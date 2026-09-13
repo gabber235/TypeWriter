@@ -1,3 +1,17 @@
+//! Completes the operator mediated half of service registration.
+//!
+//! A service first receives a temporary registration lease through `handle_status`. Binding is
+//! separate because it is an organization scoped operator action: the caller presents that lease,
+//! the transaction verifies its expiry and organization ownership, then atomically replaces the
+//! lease with the durable organization binding. Metadata updates and unbinding have different
+//! authorization and consistency rules, so they remain separate operations.
+//!
+//! The transaction owns both the service mutation and its mutation receipt. `recall` makes a
+//! retried `operation_id` return the stored result, while `commit` records the request bytes with
+//! the committed result. Publications happen only after the transaction succeeds. They refresh
+//! the organization service view and notify the registrar, but they do not become part of the
+//! database transaction.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -21,6 +35,13 @@ struct BindResult {
     service: ServiceRecord,
 }
 
+/// Binds the service identified by a valid registration token to the addressed organization.
+///
+/// Invalid or expired tokens and missing organizations leave the lease untouched. A successful
+/// response is the canonical service returned by the binding transaction. After commit, this
+/// handler publishes the organization snapshot and a service bound notification. Those effects
+/// are deliberately outside the transaction, so a publication failure can report an error after
+/// the binding itself is durable and a later snapshot can converge the view.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_bind(
     msg: BrokerMessage,
@@ -106,6 +127,8 @@ LET $services = SELECT * FROM service
     let service_name = result.service.name.clone();
     let role = result.service.role.clone().try_into()?;
 
+    // The database commit is authoritative. Publications are recovery friendly projections and
+    // must not be performed inside the transaction because messaging cannot roll back the bind.
     wasmcloud_utils::skir_subjects::organization_services(org_id)
         .publish(crate::watch::snapshot(org_id).await?)
         .await?;

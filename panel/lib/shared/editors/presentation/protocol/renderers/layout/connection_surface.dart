@@ -1,5 +1,11 @@
 part of "../../layout_renderer.dart";
 
+/// Immutable anchor observation captured in a connection layer coordinate space.
+///
+/// The snapshot carries the scope and occurrence identity needed after the
+/// render tree has been traversed. A layer may consume local snapshots, while
+/// its parent receives only snapshots explicitly exported by its immediate
+/// child layer.
 final class _AnchorSnapshot {
   const _AnchorSnapshot({
     required this.id,
@@ -52,6 +58,11 @@ final class _PresentationAnchorSurface extends SingleChildRenderObjectWidget {
   }
 }
 
+/// Converts declared anchor points into coordinates for a connection layer.
+///
+/// This surface owns no anchor state beyond the current resolved declarations.
+/// It reads its child's size during paint traversal and applies the transform
+/// to the requesting layer when producing snapshots.
 final class _RenderAnchorSurface extends RenderProxyBox {
   _RenderAnchorSurface({
     required this._points,
@@ -127,6 +138,12 @@ final class _ConnectionMarkerBoundary extends SingleChildRenderObjectWidget {
   }
 }
 
+/// Positions one marker widget without giving it input or semantic ownership.
+///
+/// The connection layer hides every boundary before placing the markers in the
+/// current resolution. Hiding takes effect on the next paint, where the
+/// retained transform is cleared. Disposal also clears that layer so an old
+/// marker cannot survive the surface lifecycle.
 final class _RenderConnectionMarkerBoundary extends RenderProxyBox {
   _RenderConnectionMarkerBoundary(this._identity);
 
@@ -189,6 +206,10 @@ final class _ConnectionStrokeSurface extends LeafRenderObjectWidget {
       _RenderConnectionStrokeSurface();
 }
 
+/// Paint only surface for resolved connector strokes and endpoint markers.
+///
+/// It fills the available layer bounds, ignores hit testing because it has no
+/// hit test override, and receives geometry from its owning connection layer.
 final class _RenderConnectionStrokeSurface extends RenderBox {
   List<_ResolvedStrokePath> strokes = const [];
 

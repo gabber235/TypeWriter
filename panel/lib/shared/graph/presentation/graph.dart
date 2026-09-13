@@ -4,8 +4,17 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:vector_math/vector_math_64.dart" hide Colors;
 
+/// Receives an element identifier and its preview dimensions during resizing.
 typedef GraphResizeCallback = void Function(GraphIdentifier, int, int);
 
+/// Interactive graph surface backed by an immutable [GraphData] snapshot.
+///
+/// Selection is read from the shared selection provider. The primary focused
+/// element is added to the active keyboard target when it is not already in the
+/// selection, so focus and multi selection remain distinct. Pointer and
+/// keyboard edits are previews until the corresponding callback receives
+/// absolute grid values. Callers own persistence and rebuild the graph with the
+/// resulting snapshot.
 class Graph extends HookConsumerWidget {
   const Graph({
     required this.data,
@@ -14,8 +23,13 @@ class Graph extends HookConsumerWidget {
     super.key,
   });
 
+  /// Current canonical graph snapshot. Replacing it reconciles layout state.
   final GraphData data;
+
+  /// Receives completed move changes. Null disables moving.
   final GraphMoveCommit? onElementsMoved;
+
+  /// Receives completed resize changes. Null disables resizing.
   final GraphResizeCommit? onElementsResized;
 
   static const double kGraphMinScale = 0.1;

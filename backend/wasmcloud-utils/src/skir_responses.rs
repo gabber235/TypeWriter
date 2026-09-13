@@ -1,9 +1,9 @@
-// Central declarations for generated skir response enums.
-// Each declaration teaches wasmcloud-utils about success and domain-error
-// variants so dispatch_actions! can always reply with a typed response.
-//
-// The conventional `InternalError` variant is generated automatically by
-// skir_response! and must exist on every response enum declared here.
+//! Registry of the typed SKIR responses used by backend components.
+//!
+//! Each declaration binds a generated response enum to its successful variants and
+//! known domain errors. The dispatch macro uses this registry through the `SkirResponse`
+//! contract, so every handler can return a typed reply, including the generated
+//! `InternalError` fallback.
 
 use crate::skir::base::access::v1::sentinel::*;
 use crate::skir::base::organization::v1::join_codes::*;

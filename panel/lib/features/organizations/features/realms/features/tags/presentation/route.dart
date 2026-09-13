@@ -8,6 +8,12 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Hosts tag creation and the projected inheritance graph.
+///
+/// Creation starts from a validated identifier dialog, submits through
+/// [CanonicalTags], then selects the returned resource only after persistence
+/// succeeds. Existing tags are rendered by [TagGraph], which handles layout
+/// gestures through the same provider.
 @RoutePage()
 class TagsPage extends HookConsumerWidget {
   const TagsPage({super.key});
@@ -85,6 +91,11 @@ class TagsPage extends HookConsumerWidget {
     );
   }
 
+  /// Collects an identifier compatible with the inspector's name field.
+  ///
+  /// Cancellation and invalid submission return null. The route owns only this
+  /// transient dialog value; canonical creation remains in the application
+  /// provider.
   Future<String?> _showTagNameDialog(BuildContext context) async {
     return showAdvancedDialog<String>(
       context: context,

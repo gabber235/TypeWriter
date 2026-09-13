@@ -23,6 +23,8 @@ part "page_element_values.dart";
 part "page_elements.freezed.dart";
 part "page_elements.g.dart";
 
+/// Projects compile diagnostics for the selected page without hiding the last
+/// active manifest when a new document is blocked.
 @riverpod
 PageDocumentHealth? pageDocumentHealth(
   Ref ref,
@@ -54,6 +56,12 @@ PageDocumentHealth? pageDocumentHealth(
   );
 }
 
+/// Owns the page scoped editing coordinator.
+///
+/// The provider acquires the page lease, waits for the authoring session and
+/// catalog projection, then exposes mutations that submit through the shared
+/// editor owners. Callers should use [withReadyPageElements] when invoking it
+/// outside a widget that already holds the page lifecycle.
 @riverpod
 class PageElements extends _$PageElements
     with

@@ -1,3 +1,6 @@
+// Organization membership is the authoritative organization projection for member roles and profile data.
+// The snapshot and change stream share one organization sequence, allowing clients to recover from missed or repeated changes.
+
 import {
   InternalError,
   InvalidRecordIdError,
@@ -31,6 +34,7 @@ struct OrganizationMembersChanged {
   changes: [OrganizationMembersChange];
 }
 
+// Reads the current organization membership projection. Later committed changes are published separately.
 method WatchOrganizationMembers(
   struct {}
 ): enum {
@@ -40,8 +44,8 @@ method WatchOrganizationMembers(
   changed: OrganizationMembersChanged;
 } = 638484;
 
-// Applies one role selection to every selected member in one transaction.
-// Held protected roles remain assigned. Any invalid target rejects the complete selection.
+// Applies one assignable role selection to every selected member in one transaction.
+// Protected roles remain assigned. Any invalid target rejects the complete selection, so the response never describes a partial update.
 method UpdateOrganizationMemberRoles(
   struct {
     operation_id: string;
@@ -73,6 +77,8 @@ method UpdateOrganizationMemberRoles(
   invalid_record_id_error: InvalidRecordIdError;
 } = 813953;
 
+// Removes one membership and publishes the corresponding organization change.
+// The founder cannot be removed when that would violate the organization's founder invariant.
 method RemoveOrganizationMember(
   struct {
     operation_id: string;

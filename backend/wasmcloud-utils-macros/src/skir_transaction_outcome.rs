@@ -1,3 +1,9 @@
+//! Expand mappings from transaction outcome enums to typed SKIR responses.
+//!
+//! A committed outcome continues as a value. A rejected outcome becomes an early response whose
+//! payload is assembled from bindings in the matching pattern. This keeps database rejection
+//! handling at the component boundary while preserving the generated SKIR payload contract.
+
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
@@ -10,6 +16,7 @@ mod keyword {
     syn::custom_keyword!(success);
 }
 
+/// Parsed success and rejection mappings for a transaction outcome expression.
 pub(crate) struct SkirTransactionOutcomeInput {
     response_ty: Path,
     outcome: Expr,
@@ -114,6 +121,7 @@ impl Parse for FieldEntry {
     }
 }
 
+/// Emit exhaustive outcome matching with success continuation and early typed error returns.
 pub(crate) fn expand(input: SkirTransactionOutcomeInput) -> syn::Result<TokenStream> {
     let response_ty = &input.response_ty;
     let outcome = &input.outcome;
@@ -133,6 +141,7 @@ pub(crate) fn expand(input: SkirTransactionOutcomeInput) -> syn::Result<TokenStr
     })
 }
 
+/// Build one rejection arm and derive its generated payload type from the matched variant.
 fn error_arm(response_ty: &Path, entry: &ErrorEntry) -> syn::Result<TokenStream> {
     let pattern = &entry.pattern;
     let variant = pattern_variant(pattern)?;
@@ -153,6 +162,9 @@ fn error_arm(response_ty: &Path, entry: &ErrorEntry) -> syn::Result<TokenStream>
     })
 }
 
+/// Extract the variant identifier needed to locate the generated response payload type.
+///
+/// Unit and struct variant patterns are supported because both preserve a direct variant path.
 fn pattern_variant(pattern: &Pat) -> syn::Result<&Ident> {
     let path = match pattern {
         Pat::Path(pattern) => &pattern.path,

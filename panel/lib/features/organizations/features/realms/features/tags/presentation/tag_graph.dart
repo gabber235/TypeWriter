@@ -4,6 +4,13 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 const tagGraphCellSize = 50.0;
 
+/// Renders projected tags as an editable graph.
+///
+/// Node placement and direct parent IDs become graph elements and edges. Move
+/// and resize callbacks submit guarded updates through [CanonicalTags], using
+/// the projected tag as the expected observation. Missing parent records are
+/// omitted from edges, so malformed references do not block the rest of the
+/// graph.
 class TagGraph extends HookConsumerWidget {
   const TagGraph({super.key});
 
@@ -117,6 +124,7 @@ class TagGraph extends HookConsumerWidget {
   }
 }
 
+/// Empty state used when the projected Realm contains no tags.
 class EmptyTagsPage extends StatelessWidget {
   const EmptyTagsPage({required this.onCreateTag, super.key});
 

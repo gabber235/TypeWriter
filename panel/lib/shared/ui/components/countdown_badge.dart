@@ -4,6 +4,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Shows the time remaining until [endDate] and updates once per second.
+///
+/// A null end date represents a resource that does not expire. Once the timer
+/// reaches zero, [onExpired] is called and the timer stops. The callback is a
+/// notification only; ownership of expiry state remains with the caller.
 class CountdownBadge extends HookWidget {
   const CountdownBadge({
     required this.endDate,

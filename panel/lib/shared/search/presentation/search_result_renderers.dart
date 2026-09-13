@@ -5,6 +5,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "search_result_renderers.freezed.dart";
 
+/// Context passed to a result row renderer.
+///
+/// [selected] reflects controller selection. [focused] includes both keyboard
+/// focus and the active preview result. [loading] is true when an action
+/// currently affects this result. [onTap] applies the presentation's selection
+/// or single selection action behavior.
 @freezed
 abstract class SearchResultRowContext with _$SearchResultRowContext {
   const factory SearchResultRowContext({
@@ -17,6 +23,10 @@ abstract class SearchResultRowContext with _$SearchResultRowContext {
   }) = _SearchResultRowContext;
 }
 
+/// State supplied to a preview renderer while preview data is resolved.
+///
+/// Renderers should preserve the result identity in every state and provide a
+/// useful loading or error representation instead of assuming data is ready.
 @freezed
 sealed class SearchResultPreviewContext with _$SearchResultPreviewContext {
   const factory SearchResultPreviewContext.loading({
@@ -35,12 +45,18 @@ sealed class SearchResultPreviewContext with _$SearchResultPreviewContext {
   }) = SearchResultPreviewContextError;
 }
 
-typedef SearchResultRowBuilder =
-    Widget Function(SearchResultRowContext context);
+/// Builds one visible result row from its controller supplied context.
+typedef SearchResultRowBuilder = Widget Function(
+  SearchResultRowContext context,
+);
 
-typedef SearchResultPreviewBuilder =
-    Widget Function(SearchResultPreviewContext context);
+/// Builds the preview for one result and one preview loading state.
+typedef SearchResultPreviewBuilder = Widget Function(
+  SearchResultPreviewContext context,
+);
 
+/// Returns the Control plus digit shortcut for visible result positions one
+/// through nine. Other positions have no shortcut.
 ShortcutActivator? searchResultShortcutActivator(int? shortcutNumber) {
   if (shortcutNumber == null || shortcutNumber < 1 || shortcutNumber > 9) {
     return null;
@@ -60,6 +76,10 @@ ShortcutActivator? searchResultShortcutActivator(int? shortcutNumber) {
   return AdaptiveSingleActivator(key, control: true);
 }
 
+/// Fallback row shown when a source type has no registered row renderer.
+///
+/// Keeping the source identifier visible makes an incomplete renderer map
+/// diagnosable without dropping the result from the tree.
 class MissingSearchResultRendererRow extends StatelessWidget {
   const MissingSearchResultRendererRow({required this.result, super.key});
 

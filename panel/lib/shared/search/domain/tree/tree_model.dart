@@ -1,5 +1,9 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// A visible row in the flattened result tree.
+///
+/// Rows keep stable keys and source depth so animated list state can survive
+/// snapshot updates while presentation supplies the actual widgets.
 sealed class SearchTreeRow {
   const SearchTreeRow({required this.key, required this.depth});
 
@@ -7,6 +11,7 @@ sealed class SearchTreeRow {
   final int depth;
 }
 
+/// Visible projection of a section, including its expansion state and count.
 class SearchTreeSectionRow extends SearchTreeRow {
   const SearchTreeSectionRow({
     required super.key,
@@ -27,6 +32,7 @@ class SearchTreeSectionRow extends SearchTreeRow {
   final bool topLevel;
 }
 
+/// Visible projection of a search result with its keyboard shortcut number.
 class SearchTreeResultRow extends SearchTreeRow {
   const SearchTreeResultRow({
     required super.key,
@@ -39,6 +45,7 @@ class SearchTreeResultRow extends SearchTreeRow {
   final int? shortcutNumber;
 }
 
+/// One top level sliver group, with an optional pinned section header.
 class SearchTreeTopLevelGroup {
   const SearchTreeTopLevelGroup({required this.section, required this.rows});
 
@@ -46,6 +53,7 @@ class SearchTreeTopLevelGroup {
   final List<SearchTreeRow> rows;
 }
 
+/// Flattened tree projection consumed by the animated result list.
 class SearchTreeViewModel {
   const SearchTreeViewModel({required this.groups, required this.rowCount});
 
@@ -53,9 +61,17 @@ class SearchTreeViewModel {
   final int rowCount;
 }
 
+/// Builds the stable key used for a section row.
 String searchTreeSectionKey(String id) => "section:$id";
+
+/// Builds the stable key used for a result row.
 String searchTreeResultKey(String id) => "result:$id";
 
+/// Flattens [nodes] into visible rows while retaining nested section counts.
+///
+/// [isCollapsed] owns expansion state outside this pure projection. Collapsed
+/// sections keep their header and count descendants, but hide descendant rows.
+/// Result shortcut numbers follow visible depth first order and stop at nine.
 SearchTreeViewModel buildSearchTreeViewModel({
   required List<SearchNode> nodes,
   required bool Function(String sectionId) isCollapsed,

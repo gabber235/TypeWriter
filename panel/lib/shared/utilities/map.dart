@@ -3,71 +3,23 @@ import "package:typewriter_panel/typewriter_panel.dart";
 extension MapX on Map<dynamic, dynamic> {
   /// Merges this map with [other] using "mask" semantics.
   ///
-  /// Masking rules:
-  /// - Keys are combined from both maps.
-  /// - When a key exists in both:
-  ///   - If both values are `Map`, they are recursively masked.
-  ///   - If both values are `List`, they are masked element-wise using the list `mask` behavior.
-  ///   - If both values have the same `runtimeType`, the value from [other] wins (override).
-  ///   - If one value is `null` and the other is non-null, the non-null value wins.
-  ///   - If values have incompatible types, the value from this (left/base) map is kept.
-  /// - When a key exists in only one map, that value is kept as-is.
+  /// Keys from both maps are retained. Nested maps and lists are merged
+  /// recursively. When both values have the same runtime type, [other] wins.
+  /// A non null value wins over null. Incompatible values retain the value
+  /// from this map. Keys present in only one map are retained unchanged.
   ///
-  /// When/why to use:
-  /// - Apply user or environment overrides onto a default configuration without losing unspecified defaults.
-  /// - Merge server-provided patches into local data while preserving the existing shape and types.
-  /// - Combine nested structures (maps, lists, lists of maps) in a predictable way that prefers valid types.
+  /// Use this for partial configuration or server patches where omitted values
+  /// must preserve existing defaults. List masking is positional, and the
+  /// right hand list controls how many positions receive overrides. Passing
+  /// null on the right does not delete data.
   ///
-  /// Examples
-  /// Simple maps:
+  /// Example:
   /// ```dart
-  /// final base = {'a': 1, 'b': 2};
-  /// final patch = {'b': 3, 'c': 4};
+  /// final base = {"a": 1, "b": 2};
+  /// final patch = {"b": 3, "c": 4};
   /// final merged = base.mask(patch);
-  /// // { 'a': 1, 'b': 3, 'c': 4 }
+  /// // {"a": 1, "b": 3, "c": 4}
   /// ```
-  ///
-  /// Nested maps:
-  /// ```dart
-  /// final base = {
-  ///   'user': {'id': 1, 'name': 'base', 'flags': {'admin': false}},
-  /// };
-  /// final patch = {
-  ///   'user': {'name': 'patch', 'flags': {'beta': true}},
-  /// };
-  /// final merged = base.mask(patch);
-  /// // {
-  /// //   'user': {'id': 1, 'name': 'patch', 'flags': {'admin': false, 'beta': true}}
-  /// // }
-  /// ```
-  ///
-  /// Lists of maps:
-  /// ```dart
-  /// final base = {
-  ///   'items': [
-  ///     {'id': 1, 'name': 'a'},
-  ///     {'id': 2, 'name': 'b'},
-  ///   ],
-  /// };
-  /// final patch = {
-  ///   'items': [
-  ///     {'id': 1, 'name': 'a*'}, // same position -> masked with element
-  ///     {'id': 2, 'extra': true},
-  ///   ],
-  /// };
-  /// final merged = base.mask(patch);
-  /// // {
-  /// //   'items': [
-  /// //     {'id': 1, 'name': 'a*'},
-  /// //     {'id': 2, 'name': 'b', 'extra': true},
-  /// //   ]
-  /// // }
-  /// ```
-  ///
-  /// Notes:
-  /// - Masking is positional for lists; the right-hand side determines how far overrides apply.
-  /// - Passing `null` on the right does not delete data; it preserves the left value.
-  /// - To coerce to a typed map, use `stringMap(...)` or cast as needed.
   Map<dynamic, dynamic> mask(Map<dynamic, dynamic> other) {
     final result = <dynamic, dynamic>{};
     final keys = [...this.keys, ...other.keys];
@@ -84,6 +36,10 @@ extension MapX on Map<dynamic, dynamic> {
   }
 }
 
+/// Applies mask semantics to two dynamic values.
+///
+/// Nested maps and lists are merged recursively. When types conflict, the
+/// base value [a] is retained.
 dynamic maskObjects(dynamic a, dynamic b) {
   if (a is List && b is List) {
     return a.mask(b);
@@ -105,6 +61,10 @@ dynamic maskObjects(dynamic a, dynamic b) {
   return a;
 }
 
+/// Converts map keys to strings when [value] is a map.
+///
+/// Non map input produces an empty map. Existing string keyed maps are returned
+/// unchanged; other maps are copied with each key converted using `toString`.
 Map<String, dynamic> stringMap(dynamic value) {
   if (value is Map<String, dynamic>) {
     return value;

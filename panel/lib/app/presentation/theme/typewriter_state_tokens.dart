@@ -1,5 +1,10 @@
 import "package:flutter/material.dart";
 
+/// Opacity and focus tokens used to resolve interactive widget states.
+///
+/// Disabled states return no overlay from [layer], allowing the component's
+/// disabled colors to remain authoritative. Other states are resolved in
+/// priority order, from pressed through dragged, focused, and hovered.
 @immutable
 class TypewriterStateTokens extends ThemeExtension<TypewriterStateTokens> {
   const TypewriterStateTokens({
@@ -20,6 +25,11 @@ class TypewriterStateTokens extends ThemeExtension<TypewriterStateTokens> {
   final double disabledContainerOpacity;
   final Color focusRing;
 
+  /// Resolves the interaction layer for a set of [WidgetState] values.
+  ///
+  /// Returns `null` when no overlay should be painted, including disabled
+  /// controls. When several states are present, the strongest interaction
+  /// state wins according to the order documented on [TypewriterStateTokens].
   Color? layer(Color foreground, Set<WidgetState> states) {
     if (states.contains(WidgetState.disabled)) return null;
     if (states.contains(WidgetState.pressed)) {
@@ -37,6 +47,7 @@ class TypewriterStateTokens extends ThemeExtension<TypewriterStateTokens> {
     return null;
   }
 
+  /// Creates a Material state property backed by [layer].
   WidgetStateProperty<Color?> overlay(Color foreground) =>
       WidgetStateProperty.resolveWith((states) => layer(foreground, states));
 

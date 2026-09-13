@@ -17,6 +17,13 @@ part "book_editor_resource.dart";
 part "books.freezed.dart";
 part "books.g.dart";
 
+/// Owns the confirmed book collection for the selected organization and realm.
+///
+/// The realm authoring session remains the source of truth. This provider waits
+/// for the library scope to become ready, then projects session records into
+/// immutable [Book] values and listens for later session sequences. Consumers
+/// that render or edit immediately should choose [projectedBooksProvider] or
+/// [projectedBookProvider] when local editor values must be visible.
 @riverpod
 class CanonicalBooks extends _$CanonicalBooks {
   @override
@@ -38,6 +45,13 @@ class CanonicalBooks extends _$CanonicalBooks {
     return _projectBooks(ref.read(provider));
   }
 
+  /// Creates a book through the authoring session and returns its requested
+  /// local value after the server accepts the operation.
+  ///
+  /// The generated identifier is included in the request, so callers can
+  /// select the new book without waiting for a second lookup. A rejected
+  /// application raises the session mutation error, including the duplicate
+  /// book conflict message.
   Future<Book> createBook({
     required String title,
     String? icon,
@@ -59,6 +73,12 @@ class CanonicalBooks extends _$CanonicalBooks {
     return book;
   }
 
+  /// Applies the changed inspector fields of [book] against [expected].
+  ///
+  /// When [expected] is omitted, the current confirmed session value is used.
+  /// The editor owner converts the difference into a conditional patch, so a
+  /// concurrent change is reported instead of being silently overwritten.
+  /// The temporary owner is always disposed after submission.
   Future<TypedMutationResult> updateBook(Book book, {Book? expected}) async {
     state.ensureReady();
     final session = ref.readAuthoringSession();
@@ -101,6 +121,8 @@ List<Book> _projectBooks(AuthoringSessionState value) {
   return value.books.values.map(Book.fromWire).toList();
 }
 
+/// Reads one confirmed book together with the session sequence that confirms
+/// it. A missing book or uninitialized session produces no editable value.
 extension AuthoringBookValue on AuthoringSessionState {
   AuthoringValue<Book>? bookEditorValue(skir.RecordId bookId) {
     final value = books[bookId];

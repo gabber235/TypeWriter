@@ -194,6 +194,7 @@ class FileSystemFileTransferEndpoint(
             FileTransferResult.Success(Unit)
         }
 
+    /** Publishes bytes as an immutable revision, reusing the normal resumable publication path. */
     suspend fun import(
         key: FileKey,
         bytes: ByteArray,
@@ -212,6 +213,7 @@ class FileSystemFileTransferEndpoint(
         return complete(transferId)
     }
 
+    /** Reads a published revision into memory; oversized revisions return an unavailable failure. */
     suspend fun readAll(key: FileKey): FileTransferResult<ByteArray> {
         val metadata = metadata(key)
         if (metadata is FileTransferResult.Failure) return metadata

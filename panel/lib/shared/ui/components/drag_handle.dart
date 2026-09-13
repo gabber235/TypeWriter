@@ -5,18 +5,21 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Reads the dimension controlled by a [DragHandle].
 typedef SizeGetter = double Function();
+
+/// Receives each bounded dimension produced by a drag.
 typedef SizeChanged = void Function(double size);
+
+/// Converts the drag start dimension and logical pixel delta into a dimension.
 typedef SizeResolver = double Function(double startSize, double delta);
 
-/// A reusable drag handle for resizing layouts horizontally or vertically.
+/// Resizes an owner supplied dimension through horizontal or vertical dragging.
 ///
-/// - Supports both [Axis.horizontal] and [Axis.vertical].
-/// - Reports size changes via [onSizeChange], with optional [minSize]/[maxSize] clamping.
-/// - Reads the current size via [getSize] so the handle can compute deltas reliably.
-/// - Customizable hit area thickness ([hitThickness]) and visible handle thickness ([handleThickness]).
-/// - Shows the handle bar on hover or while dragging. Set [showOnHover] to false to always show the bar.
-/// - Use [sizeResolver] to customize how drag delta maps to size changes (e.g., invert direction).
+/// The handle owns only the gesture session and cursor override. The caller
+/// remains authoritative for the resized value through [getSize] and
+/// [onSizeChange]. Bounds are applied before each size update, and the cursor
+/// is reset when the drag ends.
 class DragHandle extends HookConsumerWidget {
   const DragHandle({
     required this.axis,
@@ -59,7 +62,7 @@ class DragHandle extends HookConsumerWidget {
   /// Maps the starting size and drag delta (in logical pixels along [axis]) to a new size.
   ///
   /// Defaults to `(start, delta) => start + delta`.
-  /// Provide a custom resolver to invert behavior or implement non-linear scaling.
+  /// Provide a custom resolver to invert behavior or implement nonlinear scaling.
   final SizeResolver? sizeResolver;
 
   /// Whether the handle is interactive and visible.

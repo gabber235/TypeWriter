@@ -2,6 +2,15 @@ import "dart:typed_data";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Builds the editor's starting value for a resolved type expression.
+///
+/// Initial values are used when a new typed resource or nested field needs a
+/// complete draft. The operation honors scalar bounds, collection minimums,
+/// record field defaults, nominal registry resolution, and the standard
+/// `none` representation for an abstract option. Unsupported unresolved types
+/// and structures that need caller supplied data return diagnostics. The
+/// result is validated against the original expression before success is
+/// returned.
 extension TypeExpressionInitialValue on TypeExpression {
   TypeResult<DataValue> createInitialValue({TypeRegistry? registry}) {
     final value = _createInitialValue(registry);
@@ -88,6 +97,7 @@ extension on TypeExpression {
   }
 }
 
+/// Creates the minimum required list contents recursively.
 extension on ListType {
   TypeResult<DataValue> _createListValue(TypeRegistry? registry) {
     final values = <DataValue>[];
@@ -100,6 +110,7 @@ extension on ListType {
   }
 }
 
+/// Creates an empty map when its type permits an empty initial value.
 extension on MapType {
   TypeResult<DataValue> _createMapValue() {
     if ((minimumLength ?? 0) > 0) {
@@ -109,6 +120,7 @@ extension on MapType {
   }
 }
 
+/// Creates record fields from explicit defaults or recursive type initializers.
 extension on RecordType {
   TypeResult<DataValue> _createRecordValue(TypeRegistry? registry) {
     final values = <String, DataValue>{};
@@ -125,6 +137,7 @@ extension on RecordType {
   }
 }
 
+/// Supplies the supported concrete representation for an abstract option.
 extension on ResolvedTypeRef {
   TypeResult<DataValue> _createAbstractValue(TypeRegistry registry) {
     if (id != const TypeId.option()) {

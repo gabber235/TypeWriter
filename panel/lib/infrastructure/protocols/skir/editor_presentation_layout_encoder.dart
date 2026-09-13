@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes layout structure while preserving the catalog's node identity model.
+///
+/// This boundary translates domain layout choices to wire variants. It does not
+/// resolve layout or mutate the child presentation tree.
 extension SkirPresentationLayoutEncoder on SkirPresentationEncoder {
   TypeResult<wire.PresentationElement> _children(PresentationElement value) {
     final children = switch (value) {

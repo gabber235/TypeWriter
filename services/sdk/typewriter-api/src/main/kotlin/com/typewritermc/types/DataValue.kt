@@ -60,6 +60,7 @@ sealed interface DataValue {
         val value: String,
     ) : DataValue
 
+    /** Stores bytes as a list so the value remains portable across serialization formats. */
     @Serializable
     @SerialName("bytes")
     data class Bytes(
@@ -67,6 +68,7 @@ sealed interface DataValue {
     ) : DataValue {
         constructor(value: ByteArray) : this(value.toList())
 
+        /** Returns a mutable byte array copy of the portable byte list. */
         fun toByteArray(): ByteArray = value.toByteArray()
     }
 
@@ -104,6 +106,7 @@ sealed interface DataValue {
         }
     }
 
+    /** Couples a concrete nominal type reference with that type's encoded payload. */
     @Serializable
     @SerialName("polymorphic")
     data class Polymorphic(

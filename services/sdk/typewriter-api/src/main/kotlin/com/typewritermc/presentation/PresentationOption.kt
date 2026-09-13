@@ -23,7 +23,11 @@ class PresentationOption<V : Any>
         ) = prototypes.dataFormat.encodeToDataValue(serializer, value, type)
     }
 
-/** Creates a literal choice with a stable identity and a display label independent of its value. */
+/**
+ * Creates a selector option whose stable [id] and display [label] are independent of [value].
+ *
+ * The value is serialized during catalog compilation using its inferred Kotlin serializer and presentation type.
+ */
 inline fun <reified V : Any> selectOption(
     id: String,
     label: String,

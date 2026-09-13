@@ -4,6 +4,12 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Lets the user switch the organization workspace to another realm.
+///
+/// The topology provider supplies the selectable projection and the route remains
+/// the selection authority. Choosing an item navigates first, so all dependent
+/// providers rebuild for the new realm and the old catalog and session can be
+/// disposed by Riverpod.
 class RealmSelector extends HookConsumerWidget {
   const RealmSelector({super.key});
 
@@ -42,6 +48,7 @@ class RealmSelector extends HookConsumerWidget {
   }
 }
 
+/// Searchable menu body for the current topology projection.
 class _RealmMenuContent extends HookConsumerWidget {
   const _RealmMenuContent({
     required this.realms,
@@ -94,6 +101,7 @@ class _RealmMenuContent extends HookConsumerWidget {
   }
 }
 
+/// Shows one realm's host identity and live topology status.
 class _RealmMenuItem extends HookConsumerWidget {
   const _RealmMenuItem({
     required this.realm,
@@ -131,10 +139,8 @@ class _RealmMenuItem extends HookConsumerWidget {
             ),
             title: Text(
               realm.ownerHost.name.formatted,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontSize: 14,
-                color: isSelected ? onColor : null,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(fontSize: 14, color: isSelected ? onColor : null),
             ),
             subtitle: StatusIndicator(
               isOnline: isOnline,

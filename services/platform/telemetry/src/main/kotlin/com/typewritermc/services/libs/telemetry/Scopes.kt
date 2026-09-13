@@ -17,14 +17,17 @@ import java.util.concurrent.ConcurrentHashMap
  * while retaining its own child span details.
  */
 interface MainSpanScope {
+    /** Adds operation attributes while this scope is active. */
     fun annotate(block: MainAttributes.() -> Unit)
 
+    /** Records an event on the operation and optionally projects it as a correlated log record. */
     fun event(
         name: String,
         projection: EventProjection = EventProjection.TraceOnly,
         block: TelemetryEventAttributes.() -> Unit = {},
     )
 
+    /** Records a recovered failure without changing the enclosing operation outcome. */
     fun recordDegraded(
         slug: ErrorSlug,
         cause: Throwable,
@@ -38,8 +41,10 @@ interface MainSpanScope {
  * receiver should escape its owning boundary.
  */
 interface ChildSpanScope {
+    /** Adds dependency attributes while this child scope is active. */
     fun annotate(block: ChildAttributes.() -> Unit)
 
+    /** Records an event on the child span and optionally projects it as a correlated log record. */
     fun event(
         name: String,
         projection: EventProjection = EventProjection.TraceOnly,
@@ -410,6 +415,7 @@ internal class ChildScope(
     private fun requireActive() = check(active) { "Child span scope is closed" }
 }
 
+/** Records a handled failure on the active main operation without failing that operation. */
 context(main: MainSpanScope)
 fun recordRecoveredFailure(
     slug: ErrorSlug,

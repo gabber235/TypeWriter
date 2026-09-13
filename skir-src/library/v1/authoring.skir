@@ -7,11 +7,11 @@ import { Color } from "kernel/v1/color.skir";
 import { PageKindRef } from "kernel/v1/page_kind.skir";
 import { RecordId } from "kernel/v1/record_id.skir";
 
-// Internal authoring protocol shared by the panel and Realm.
-// Resource snapshots and applied batches are authoritative; change notifications
-// are best effort and may be missing or repeated.
+// Realm backed authoring contract shared by the panel and Realm.
+// Snapshots and successful batch responses are authoritative. Change notifications
+// are best effort and can be missing or repeated, so consumers refresh on gaps.
 // Resource IDs use their matching table: book, tag, page, or element.
-// Element instance IDs use opaque string keys.
+// Element IDs are opaque keys and are not required to match their page or type.
 
 struct GraphPlacement(812200001) {
   x: int32 = 0;
@@ -150,6 +150,7 @@ enum AuthoringSnapshotSlice(812200019) {
   page: PageDocumentSnapshot = 3;
 }
 
+/// Provides authoritative slices read at one collaboration sequence.
 /// All requested slices describe one consistent point in the Realm sequence.
 /// A missing book or page is represented by a null resource in its slice.
 struct AuthoringSnapshot(812200020) {
@@ -175,9 +176,9 @@ enum AuthoringResourceChange(812200022) {
   remove_element: RecordId = 8;
 }
 
-/// One committed batch. Sequence numbers advance across the whole Realm,
-/// including resources outside the client's acquired scopes.
-/// Ignore already observed sequences and refresh snapshots when a gap appears.
+/// Announces the direct and indirect effects of one committed authoring batch.
+/// Sequence numbers advance across the whole Realm, including resources outside
+/// the client's acquired scopes. Ignore older sequences and refresh on a gap.
 struct AuthoringChanged(812200023) {
   sequence: int64 = 0;
   batch_id: string = 1;
@@ -278,8 +279,9 @@ enum ElementValueMutation(812200039) {
   replace_concrete_type: ReplaceConcreteTypeMutation = 8;
 }
 
-/// Compares the logical value at the mutation path before applying the mutation.
-/// Earlier value mutations in the same operation are visible to this comparison.
+/// Guards and applies one structural edit to an element value.
+/// The expected value is read at the mutation path immediately before the edit;
+/// earlier mutations in the same operation are visible to later comparisons.
 struct ExpectedElementValueMutation(812200040) {
   expected: TypedValue = 0;
   mutation: ElementValueMutation = 1;
@@ -402,8 +404,7 @@ struct PropertyConflict(812200057) {
   actual: AuthoringPropertyValue? = 3;
 }
 
-/// No operations from the rejected batch are committed.
-/// Refresh snapshots to obtain current resource values before retrying.
+/// No operation from the rejected batch is committed. Refresh snapshots to obtain current values before retrying.
 struct AuthoringConflict(812200058) {
   conflicts: [PropertyConflict] = 0;
 }
@@ -432,11 +433,8 @@ enum GetAuthoringSnapshotResponse(812200062) {
   } = 3;
 }
 
-/// Operations execute in order within one atomic transaction.
-/// A batch must be nonempty and contain at most one operation per target resource.
-/// Batch IDs must not be blank. Reuse an ID only for an identical request.
-/// Replaying a committed batch
-/// returns its original sequence and changes without applying its operations again.
+/// Operations execute in order within one atomic transaction. A batch must be nonempty and contain at most one operation per target resource.
+/// Batch IDs must not be blank. Reuse an ID only for an identical request. Replaying a committed batch returns its original sequence and changes without applying its operations again.
 struct ApplyAuthoringBatchRequest(812200063) {
   batch_id: string = 0;
   operations: [AuthoringOperation] = 1;

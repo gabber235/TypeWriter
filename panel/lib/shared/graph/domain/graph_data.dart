@@ -1,5 +1,12 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Immutable graph snapshot consumed by layout and interaction code.
+///
+/// Construction is the validation boundary. Element and edge lists, lookup
+/// maps, and adjacency lists are unmodifiable after construction. Element
+/// identifiers and edge identifiers must be nonempty and unique. Edge endpoint
+/// identifiers are checked for shape, but unresolved endpoints are retained so
+/// callers can assemble a graph incrementally.
 class GraphData {
   factory GraphData({
     required double cellSize,
@@ -85,10 +92,19 @@ class GraphData {
     required this.elementsConnectedEdges,
   });
 
+  /// Size of one graph grid cell in logical pixels.
   final double cellSize;
+
+  /// Nodes in source order, preserved for layout traversal.
   final List<GraphElement> elements;
+
+  /// Connections in source order.
   final List<GraphEdge> edges;
+
+  /// Element lookup used by interaction payload generation.
   final Map<GraphIdentifier, GraphElement> keyedElements;
+
+  /// Adjacency lookup containing each edge under both endpoint identifiers.
   final Map<GraphIdentifier, List<GraphEdge>> elementsConnectedEdges;
 
   @override

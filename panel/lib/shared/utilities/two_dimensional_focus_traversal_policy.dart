@@ -2,7 +2,14 @@ import "dart:math" as math;
 
 import "package:flutter/material.dart";
 
+/// Traverses focus through a two dimensional layout using node geometry.
+///
+/// Tab traversal follows [mainAxis]. Directional traversal scores candidates
+/// by forward distance, cross axis distance, angle, and overlap. Direction
+/// history stabilizes repeated movement within each focus scope and is cleared
+/// when scope data is invalidated.
 class TwoDFocusTraversalPolicy extends FocusTraversalPolicy {
+  /// Creates a policy with tunable geometry scoring weights.
   TwoDFocusTraversalPolicy({
     this.mainAxis = Axis.horizontal,
     this.crossAxisBandTolerance = 12.0,
@@ -170,9 +177,8 @@ class TwoDFocusTraversalPolicy extends FocusTraversalPolicy {
           return mainStart;
         }
 
-        final crossCenter = _crossCenter(
-          a.rect,
-        ).compareTo(_crossCenter(b.rect));
+        final crossCenter = _crossCenter(a.rect)
+            .compareTo(_crossCenter(b.rect));
         if (crossCenter != 0) {
           return crossCenter;
         }

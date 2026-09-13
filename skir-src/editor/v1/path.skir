@@ -1,5 +1,9 @@
 import { TypedValue } from "editor/v1/type_catalog.skir";
 
+// Data paths address nested values inside a typed editor value. The empty
+// segment list is the root. Paths are used consistently for binding targets,
+// diagnostics, conversions, and incremental editor changes.
+
 struct FieldPathSegment(810400001) {
   field_name: string = 0;
 }

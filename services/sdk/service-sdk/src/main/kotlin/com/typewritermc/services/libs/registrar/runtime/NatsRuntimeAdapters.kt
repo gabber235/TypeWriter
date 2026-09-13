@@ -11,6 +11,7 @@ import java.util.Base64
 
 internal class MissingNatsNonceException : IllegalStateException("NATS server nonce is required")
 
+/** Creates the NATS client settings tied to one issued service identity. */
 internal fun serviceNatsConfiguration(
     configuration: RegistrarConfiguration,
     credentials: IdentityCredentials,
@@ -51,6 +52,7 @@ internal fun serviceNatsAuthenticationProvider(
         }
     }
 
+/** Converts a NATS challenge into service authentication using cached credentials. */
 internal suspend fun authenticateService(
     challenge: NatsAuthenticationChallenge,
     accessToken: com.typewritermc.services.libs.registrar.RedactedSecret.AccessToken,
@@ -63,6 +65,7 @@ internal suspend fun authenticateService(
         sentinel,
     )
 
+/** Signs the Sentinel seed and packages the bearer token for NATS authentication. */
 internal suspend fun createServiceAuthentication(
     hasNonce: Boolean,
     signer: suspend (String) -> String?,

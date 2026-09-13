@@ -1,7 +1,13 @@
+// Preserves structured type diagnostics across the Skir boundary.
+//
+// Domain diagnostics carry paths and richer local enum names. This adapter
+// translates them to the shared wire vocabulary while retaining severity,
+// related type context, and details for panel presentation.
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/diagnostic.dart"
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes diagnostics produced by domain validation for transport.
 extension TypeDiagnosticWireEncoding on TypeDiagnostic {
   wire.TypeDiagnostic encodeWire(SkirDataPathCodec paths) {
     final value = this;
@@ -24,6 +30,7 @@ extension TypeDiagnosticWireEncoding on TypeDiagnostic {
   }
 }
 
+/// Decodes transport diagnostics into the panel's domain diagnostics.
 extension WireTypeDiagnosticDecoding on wire.TypeDiagnostic {
   TypeDiagnostic decodeWire(SkirDataPathCodec paths) {
     final value = this;

@@ -5,6 +5,12 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Overlays an asynchronous action button on the lower right of [child].
+///
+/// While [onPressed] runs, the button disables repeated activation and shows a
+/// progress indicator. Exceptions are surfaced through the button state and a
+/// snackbar when a scaffold messenger is available; the caller still owns the
+/// underlying operation and its durable state.
 class FloatingButton extends HookWidget {
   const FloatingButton({
     required this.child,

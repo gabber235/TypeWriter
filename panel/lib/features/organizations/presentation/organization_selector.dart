@@ -3,6 +3,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Workspace switcher backed by the user's organization projection.
+///
+/// Selecting an item changes the route. It does not mutate membership or keep a
+/// separate selected organization value; the route parameter remains the source
+/// of truth for [organizationProvider].
 class OrganizationSelector extends HookConsumerWidget {
   const OrganizationSelector({super.key});
 
@@ -39,6 +44,10 @@ class OrganizationSelector extends HookConsumerWidget {
   }
 }
 
+/// Searchable menu content for organization navigation and member actions.
+///
+/// Search text is transient UI state. Organization identity and selection remain
+/// supplied by the parent projection and route.
 class _OrganizationMenuContent extends HookConsumerWidget {
   const _OrganizationMenuContent({
     required this.organizations,
@@ -186,6 +195,7 @@ class _OrganizationActions extends HookConsumerWidget {
   }
 }
 
+/// Describes one contextual action rendered by [ActionList].
 class ActionItem {
   const ActionItem({
     required this.icon,
@@ -198,6 +208,7 @@ class ActionItem {
   final VoidCallback onTap;
 }
 
+/// Compact action group used below an organization selector.
 class ActionList extends StatelessWidget {
   const ActionList({required this.title, required this.actions, super.key});
 

@@ -4,6 +4,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "graph_element.freezed.dart";
 
+/// Renderable node in a [GraphData] snapshot.
+///
+/// Coordinates and dimensions are expressed in grid cells. [builder] creates
+/// the widget at the node's current placement. Equality is identity based on
+/// [id], so a node can be looked up and selected independently of its widget.
 @Freezed(equal: false, toStringOverride: false)
 abstract class GraphElement
     with _$GraphElement
@@ -20,6 +25,10 @@ abstract class GraphElement
 
   const GraphElement._();
 
+  /// Whether this element is fully contained by [other] in grid coordinates.
+  ///
+  /// This is used when a drag begins on a containing element to include nested
+  /// elements in the same move.
   bool inside(GraphElement other) {
     return x >= other.x &&
         x + width <= other.x + other.width &&

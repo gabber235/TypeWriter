@@ -1,6 +1,12 @@
 import "package:flutter/widgets.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders an overlay whose position and size are resolved from its child anchor.
+///
+/// The overlay is shown after layout when [visible] is true. Placement starts at
+/// [AnchoredOverlayConfig.preferredSide], then flips, shifts, and resizes to fit
+/// the configured boundary. Wrap the relevant part of the tree in
+/// [AnchoredOverlayScope] when the overlay must remain inside that region.
 class AnchoredOverlayPortal extends StatefulWidget {
   const AnchoredOverlayPortal({
     required this.visible,
@@ -66,9 +72,8 @@ class _AnchoredOverlayPortalState extends State<AnchoredOverlayPortal> {
       return overlayBounds;
     }
 
-    final overlayRenderObject = Overlay.maybeOf(
-      context,
-    )?.context.findRenderObject();
+    final overlayRenderObject = Overlay.maybeOf(context)?.context
+        .findRenderObject();
     if (overlayRenderObject is! RenderBox || !overlayRenderObject.hasSize) {
       return overlayBounds;
     }

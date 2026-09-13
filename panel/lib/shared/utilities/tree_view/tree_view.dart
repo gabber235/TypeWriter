@@ -5,11 +5,24 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "tree_view.freezed.dart";
 
+/// Immutable compressed tree used to present path based data hierarchically.
+///
+/// A [RootTreeNode] is the collection boundary and has no path. An
+/// [InnerTreeNode] stores one or more path segments in [InnerTreeNode.name],
+/// its complete dot separated path in [InnerTreeNode.path], and child nodes.
+/// A [LeafTreeNode] stores the source value. Children preserve input order;
+/// callers that need display ordering must sort them at the presentation
+/// boundary.
 @freezed
 class TreeNode<T> with _$TreeNode {
+  /// Creates the pathless collection boundary for a tree.
   const factory TreeNode.root({required List<TreeNode<T>> children}) =
       RootTreeNode;
 
+  /// Creates a compressed path node with nested [children].
+  ///
+  /// [name] contains the path segment or compressed segment represented by
+  /// this node. [path] is its complete path from the root.
   @Assert("name != \"\"", "Name must not be empty.")
   @Assert("path != \"\"", "Path must not be empty.")
   const factory TreeNode.inner({
@@ -18,23 +31,21 @@ class TreeNode<T> with _$TreeNode {
     required List<TreeNode<T>> children,
   }) = InnerTreeNode;
 
+  /// Creates a leaf containing one source [value].
   const factory TreeNode.leaf({required T value}) = LeafTreeNode;
 }
 
-/// Creates a tree node from a list of objects with paths.
-/// It nests objects to create the most common ancestor between paths.
+/// Creates a compressed path tree from [elements].
 ///
-/// Example, Lets say we have the following paths:
-/// - some.simple.path
-/// - some.other.path
-/// - some.other.path.too
+/// [pathFetcher] returns a dot separated path for each element. Shared path
+/// prefixes become one inner node, and each input element becomes one leaf.
+/// Empty paths are valid and produce leaves directly below the root. The
+/// resulting structure is independent of insertion order, although sibling
+/// order follows construction order and is not a display sorting guarantee.
 ///
-/// The result will be:
-/// - some
-///  - simple
-///    - path
-///  - other.path
-///    - too
+/// For example, `some.simple.path` and `some.other.path.too` share the inner
+/// node `some`; the remaining path segments stay compressed until another
+/// element requires a split.
 RootTreeNode<T> createTreeNode<T>(
   List<T> elements,
   String Function(T) pathFetcher,
@@ -88,7 +99,6 @@ List<TreeNode<T>> _createTreeNode<T>(
   final (overlappingNode, overlappingPath) =
       _findOverlappingPath(elements, path) ?? (null, null);
 
-  // Part does not exist yet, create it
   if (overlappingNode == null || overlappingPath == null) {
     final newPath = currentPath.join(path);
     return _applyModifications(elements, [
@@ -102,7 +112,6 @@ List<TreeNode<T>> _createTreeNode<T>(
     ]);
   }
 
-  // Full path exists, so we only need to add it to that node
   if (overlappingNode.name == overlappingPath) {
     final remainingPath = path.removePrefixPart(overlappingPath);
     final newPath = currentPath.join(overlappingPath);
@@ -123,9 +132,6 @@ List<TreeNode<T>> _createTreeNode<T>(
     ]);
   }
 
-  // Part of the path exists, so we need to remove the old node and add a new node with the partial path
-  // Then add the original node with the remaining path to the new node
-  // And finally add the new node with the new value
   final overlappingRemainingPath = overlappingNode.name.removePrefixPart(
     overlappingPath,
   );

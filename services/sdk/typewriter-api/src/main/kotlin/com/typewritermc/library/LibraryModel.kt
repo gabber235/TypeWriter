@@ -59,6 +59,12 @@ data class Page(
     val priority: Int,
 ) : Referenceable
 
+/**
+ * Stores the rectangular editor position of a library record in grid units.
+ *
+ * Coordinates identify the top left corner. The model does not validate bounds because the owning editor decides
+ * which placements are valid.
+ */
 @Serializable
 data class GridPlacement(
     val x: Int,
@@ -109,6 +115,12 @@ data class PageDocumentElement(
     val placement: ElementPlacement,
 )
 
+/**
+ * Connects an element slot to a resource and records the type expected by that slot.
+ *
+ * The target may be unresolved in an editable document. Resolution and diagnostic reporting belong to the
+ * repository that assembled the document.
+ */
 @Serializable
 data class PageReference(
     val source: ElementInstanceId,
@@ -132,6 +144,12 @@ data class ResourceSummary(
     val exists: Boolean,
 )
 
+/**
+ * Reports an authoring or reference problem without making the document unavailable to the editor.
+ *
+ * Optional locations let consumers focus the affected element, slot, or resource; a document level diagnostic
+ * leaves them absent.
+ */
 @Serializable
 data class PageDocumentDiagnostic(
     val code: String,

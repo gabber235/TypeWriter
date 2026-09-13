@@ -2,8 +2,14 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// A selectable calendar navigation item and its accessible label.
 typedef DateTimeCalendarChoice = ({int value, String label});
 
+/// Provides keyboard and pointer selection for calendar months or years.
+///
+/// [selectedValue] identifies the current item. Focus navigation is local to
+/// the grid, and [onSelected] reports the chosen item value without changing
+/// the supplied list.
 class DateTimeCalendarSelectionGrid extends StatefulWidget {
   const DateTimeCalendarSelectionGrid({
     required this.label,

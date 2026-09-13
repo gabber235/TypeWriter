@@ -1,5 +1,10 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes projections, scopes, and reusable presentation references.
+///
+/// These elements shape evaluation context rather than storing editor state. The
+/// adapter therefore validates binding and type references while leaving context
+/// ownership to the runtime that evaluates the presentation.
 extension SkirPresentationDataDecoder on SkirPresentationDecoder {
   TypeResult<PresentationElement> _typedField(wire.TypedFieldElement value) {
     final binding = expressions.binding(value.binding);

@@ -5,6 +5,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "data_value.freezed.dart";
 
+/// Tagged runtime data exchanged by the editor domain.
+///
+/// The variants preserve type information that JSON and Dart primitives do not
+/// carry reliably, such as arbitrary precision integers, map keys, timestamps,
+/// and nominal values. Editor owners use these values as the canonical payload
+/// for reading, validation, mutation, presentation, and persistence.
 @Freezed(map: FreezedMapOptions.none, when: FreezedWhenOptions.none)
 sealed class DataValue with _$DataValue {
   const DataValue._();
@@ -44,6 +50,10 @@ sealed class DataValue with _$DataValue {
   }) = PolymorphicValue;
 }
 
+/// A string keyed object value whose fields can be addressed by [DataPath].
+///
+/// Use [withField] and [withoutField] to derive edits. They return new values,
+/// so callers do not mutate the value currently owned by an editor.
 abstract interface class RecordValue implements DataValue {
   factory RecordValue(Map<String, DataValue> fields) =>
       DataValue.record(fields) as RecordValue;
@@ -51,6 +61,7 @@ abstract interface class RecordValue implements DataValue {
   Map<String, DataValue> get fields;
 }
 
+/// Byte data copied at construction so the value cannot share mutable input.
 @freezed
 class BytesValue extends DataValue with _$BytesValue {
   BytesValue(Uint8List value) : value = Uint8List.fromList(value), super._();
@@ -58,6 +69,7 @@ class BytesValue extends DataValue with _$BytesValue {
   final Uint8List value;
 }
 
+/// A timestamp normalized to UTC for stable equality and serialization.
 @freezed
 class TimestampValue extends DataValue with _$TimestampValue {
   TimestampValue(DateTime value) : value = value.toUtc(), super._();
@@ -65,6 +77,10 @@ class TimestampValue extends DataValue with _$TimestampValue {
   final DateTime value;
 }
 
+/// One ordered key and value pair in a [MapValue].
+///
+/// A list is used instead of a Dart map because typed data permits arbitrary
+/// [DataValue] keys and preserves entry order.
 @freezed
 abstract class DataMapEntry with _$DataMapEntry {
   const factory DataMapEntry({
@@ -73,6 +89,7 @@ abstract class DataMapEntry with _$DataMapEntry {
   }) = _DataMapEntry;
 }
 
+/// Copy on write operations for record values used by editor mutations.
 extension RecordValueMutation on RecordValue {
   RecordValue withField(String name, DataValue value) =>
       RecordValue({...fields, name: value});

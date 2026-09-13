@@ -1,5 +1,10 @@
 part of "../../content_renderer.dart";
 
+/// Renders protocol markdown as selectable themed content.
+///
+/// The expression supplies the document and an optional protocol color is
+/// propagated across the markdown style roles. Parsing and layout stay owned
+/// by the markdown widget; expression failures are rendered as diagnostics.
 extension MarkdownElementRendering on MarkdownElement {
   Widget render(PresentationRenderScope scope) => Builder(
     builder: (context) {

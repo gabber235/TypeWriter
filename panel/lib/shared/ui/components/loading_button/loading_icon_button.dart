@@ -11,7 +11,13 @@ import "package:typewriter_panel/shared/utilities/snackbar.dart";
 
 enum _LoadingIconButtonVariant { standard, filled, outlined }
 
-/// An icon button that manages async callbacks and reports failures.
+/// An icon button that serializes an asynchronous callback and reports
+/// failures through the shared [LoadingButtonController] contract.
+///
+/// While the callback runs, the icon is replaced by a progress indicator and
+/// further presses are disabled. Use [controller] to trigger the action or
+/// observe its state outside the button. The standard, filled, and outlined
+/// constructors choose the underlying Material icon button.
 class LoadingIconButton extends HookWidget {
   const LoadingIconButton({
     required this.icon,

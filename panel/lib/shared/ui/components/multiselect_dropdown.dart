@@ -12,14 +12,24 @@ part "multiselect_dropdown_view.dart";
 part "multiselect_text_controller.dart";
 part "multiselect_text_controller_hook.dart";
 
-/// Ripped straight from Flutter's [DropdownMenu]
+/// The minimum menu width used when the input has not been laid out yet.
 const double _kMinimumWidth = 112.0;
 
-/// A generic multiselect dropdown component that allows selecting multiple items
-/// from a list.
+/// Coordinates controlled multi selection with text search and keyboard
+/// navigation.
 ///
-/// This component displays a button that opens a menu with checkboxes for each
-/// item. Selected items are tracked and reported via [onSelectionChanged].
+/// [selectedItems] is authoritative. This widget derives its displayed labels
+/// and menu state from that value, then proposes replacements through
+/// [onSelectionChanged]. It does not mutate the caller's list. Editing the
+/// input removes or adds enabled entries by their labels, while selected
+/// disabled entries are retained.
+///
+/// The input keeps focus while arrow keys move a separate highlighted menu
+/// index. Enter toggles that entry, and Escape returns focus to the surrounding
+/// field through [inputFieldController] when one is supplied. Use
+/// [inputFieldController] when another control owns the input and surrounding
+/// focus lifecycle; [focusNode] is retained for callers using the older input
+/// only contract.
 class MultiselectDropdown<T extends Object> extends HookWidget {
   const MultiselectDropdown({
     required this.dropdownMenuEntries,
@@ -65,7 +75,10 @@ class MultiselectDropdown<T extends Object> extends HookWidget {
   /// Actions available when the surrounding has focus.
   final List<ActionShortcut>? surroundingActions;
 
-  /// Input decoration theme for the dropdown's input.
+  /// Legacy input decoration configuration retained for source compatibility.
+  ///
+  /// The component currently uses its own input decoration and does not apply
+  /// this value.
   final InputDecorationTheme? inputDecorationTheme;
 
   /// Style of the dropdown menu.
@@ -87,6 +100,11 @@ class MultiselectDropdown<T extends Object> extends HookWidget {
 
   static final RegExp _tagResolver = RegExp(r"\s*\[[^\]]*\]");
 
+  /// Returns a selector that reads only the free text from the input.
+  ///
+  /// Selected labels are encoded as bracketed tokens in the editing value.
+  /// Consumers that filter entries should use this parser rather than treating
+  /// those display tokens as search text.
   static String Function() searchTextParser(TextEditingController controller) =>
       () => controller.text.replaceAll(_tagResolver, "").trim();
 
@@ -97,6 +115,11 @@ class MultiselectDropdown<T extends Object> extends HookWidget {
   }
 }
 
+/// Displays one selected value for use inside a controlled multiselect field.
+///
+/// The chip does not own selection or remove itself. [onDelete] is the caller's
+/// opportunity to propose a new selection when its delete action is activated;
+/// pass null when the value must remain present.
 class SmallChip extends HookWidget {
   const SmallChip({
     required this.label,

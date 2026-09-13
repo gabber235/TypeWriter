@@ -1,3 +1,15 @@
+/// Realm application state and boundary adapters for the organization panel.
+///
+/// This library connects route selected realms to their authoritative catalogs,
+/// authoring projections, editor resources, capability invocation, and
+/// presentation search. Riverpod providers construct the graph only when an
+/// organization and an online realm exist. NATS adapters translate between
+/// those application contracts and the realm service wire protocols.
+///
+/// Canonical authoring data belongs to [AuthoringSession]. Catalog snapshots
+/// belong to [RealmEditorCatalogCache]. Editor drafts remain owned by the
+/// shared editor and mutation layers. The realm service remains authoritative
+/// for durable content and catalog generation.
 library;
 
 export "../features/books/features/pages/application/page_editing.dart";

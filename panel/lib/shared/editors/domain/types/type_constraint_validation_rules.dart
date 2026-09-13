@@ -1,6 +1,10 @@
 part of "type_constraint_validation.dart";
 
+/// Constraint checks for variants whose rules are easier to maintain apart
+/// from the expression tree traversal.
 extension DurationTypeConstraintValidation on DurationType {
+  /// Validates ordering and the millisecond precision required by the wire
+  /// representation.
   List<TypeDiagnostic> validateOwnConstraints(DataPath path) => [
     ..._comparableBounds(minimum, maximum, "Duration", path),
     if (minimum?.inMicroseconds.remainder(1000) case final remainder?
@@ -13,6 +17,10 @@ extension DurationTypeConstraintValidation on DurationType {
 }
 
 extension EnumTypeConstraintValidation on EnumType {
+  /// Validates that an enum has unique values and a nonempty domain.
+  ///
+  /// Values whose type is named or generic are deferred until resolution can
+  /// provide the required registry or substitution.
   List<TypeDiagnostic> validateOwnConstraints(DataPath path) => [
     if (values.isEmpty) _invalid("Enum must declare at least one value", path),
     if (values.toSet().length != values.length)
@@ -24,6 +32,11 @@ extension EnumTypeConstraintValidation on EnumType {
 }
 
 extension RecordTypeConstraintValidation on RecordType {
+  /// Validates field metadata and nested field expressions.
+  ///
+  /// Field initial values are checked here only when their type is concrete
+  /// enough to validate without a registry. Resolution performs the remaining
+  /// checks after generic substitution and nominal lookup.
   List<TypeDiagnostic> validateFieldConstraints(
     Set<String> allowedParameters, {
     DataPath path = DataPath.root,
@@ -74,6 +87,8 @@ extension on String {
   }
 }
 
+/// Validates inclusive collection or scalar length bounds shared by several
+/// type expressions.
 List<TypeDiagnostic> _lengthBounds(
   int? minimum,
   int? maximum,
@@ -88,6 +103,7 @@ List<TypeDiagnostic> _lengthBounds(
     _invalid("$label bounds are contradictory", path),
 ];
 
+/// Validates the ordering of two nullable comparable bounds.
 List<TypeDiagnostic> _comparableBounds<T extends Comparable<T>>(
   T? minimum,
   T? maximum,

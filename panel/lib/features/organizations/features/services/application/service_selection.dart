@@ -22,6 +22,10 @@ final _serviceInspectorType = TypeDefinition(
 
 final _serviceInspectorCatalog = TypeCatalog([_serviceInspectorType]);
 
+/// Stable selection identity for a canonical organization service.
+///
+/// Resolution waits for canonical and projected state, then builds an
+/// inspector with canonical mutation revision and projected display values.
 class ServiceIdentifier extends SelectableIdentifier {
   ServiceIdentifier(this.serviceId);
 
@@ -87,6 +91,10 @@ class ServiceIdentifier extends SelectableIdentifier {
   String toString() => "ServiceIdentifier(id: $serviceId)";
 }
 
+/// Inspector model joining service identity, runtime observation, and commands.
+///
+/// The identity editor owns rename commits. Unbind remains a separate service
+/// operation, so displaying a projected name cannot mutate canonical state.
 class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
   const ServiceSelectable({
     required this.editTarget,
@@ -154,6 +162,11 @@ class ServiceSelectable extends InspectableSelectable<ServiceIdentifier> {
       );
 }
 
+/// Projects service identity and connectivity into inspector fields.
+///
+/// Connectivity is an observation from the host heartbeat. It does not change
+/// the canonical service identity or imply that a runtime configuration is
+/// applied.
 extension ServiceInspectorValue on Service {
   RecordValue observationValue(bool connected) => RecordValue({
     "version": role.version.asValue,
@@ -166,7 +179,10 @@ final _serviceIdentityType = RecordType(
   fields: {"name": TypeField(name: "name", type: identifierStringType)},
 );
 
-/// Builds an identity editor from resolved service state and scoped commands.
+/// Creates the scoped editor target used to rename [service].
+///
+/// The target snapshot is canonical even when the inspector displays a local
+/// draft, preserving optimistic revision checks at commit time.
 ResourceEditorTarget serviceIdentityTarget({
   required ServiceIdentifier id,
   required Service service,

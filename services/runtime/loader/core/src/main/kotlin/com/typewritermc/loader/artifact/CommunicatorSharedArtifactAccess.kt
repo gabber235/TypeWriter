@@ -166,6 +166,7 @@ class ReconnectingSharedArtifactAccess(
 @Suppress("UNCHECKED_CAST")
 private fun <Value> BlobResult<*>.cast(): BlobResult<Value> = this as BlobResult<Value>
 
+/** Encodes shared artifact catalog and mutation operations for one Realm session. */
 private class CommunicatorSharedMetadataClient(
     private val communicator: Communicator,
     private val address: RealmArtifactAddress,

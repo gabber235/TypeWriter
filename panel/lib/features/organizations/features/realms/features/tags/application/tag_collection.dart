@@ -1,5 +1,12 @@
 part of "tags.dart";
 
+/// Shared presentation collection used by tag search and inheritance graphs.
+///
+/// Each row is keyed by a tag reference and exposes direct parent references.
+/// The collection is rebuilt from the current tag projection, so it is a read
+/// model rather than an owner of tag state. Search matches names case
+/// insensitively. During parent editing, [selectable] marks candidates that
+/// pass the local graph safety rules.
 const tagCollectionSourceId = PresentationCollectionSourceId("realm.tags");
 const tagInheritsRelationId = PresentationCollectionRelationId("inherits");
 const tagCollectionRowBindingId = BindingId(40);
@@ -34,6 +41,7 @@ final tagCollectionSchema = PresentationCollectionSchema(
   ],
 );
 
+/// Builds the read model consumed by inspector reference controls and graphs.
 extension TagPresentationCollection on Iterable<Tag> {
   PresentationCollectionSource presentationCollection({
     skir.RecordId? editingTagId,
@@ -78,6 +86,11 @@ extension on Tag {
   });
 }
 
+/// Explains why this tag cannot be selected as a direct parent.
+///
+/// A null result means selectable. Existing parents remain selectable because
+/// the same gesture removes their link. Missing ancestry is rejected rather
+/// than guessed safe, matching the mutation decision used by graph drops.
 extension TagParentCandidate on Tag {
   String? unavailableParentReason(
     Iterable<Tag> tags, {
@@ -109,5 +122,5 @@ TypedExpression _tagRowField(String name, TypeExpression type) =>
       ),
     );
 
-// TODO: Replace this eager Tag collection with a Realm backed collection
-// source when Realm Tag counts make local enumeration unsuitable.
+// This source is intentionally eager. The Realm session currently exposes the
+// complete tag set, which keeps search and graph validation consistent.

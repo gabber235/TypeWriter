@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders an organization logo with a stable placeholder recovery path.
+///
+/// Network failures and absent URLs are intentionally presentation failures. The
+/// organization projection remains intact while the widget falls back to the
+/// business icon, preventing a broken image from disrupting navigation.
 class OrganizationLogo extends StatelessWidget {
   const OrganizationLogo({
     super.key,

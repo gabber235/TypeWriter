@@ -27,6 +27,12 @@ data class DeploymentSelection(
  * resolver does not repair malformed graphs.
  */
 object SourcePartEligibilityResolver {
+    /**
+     * Produces one eligibility entry for every source part in deterministic artifact order.
+     *
+     * The returned entries are consumed by discovery assembly to suppress executable bindings while preserving
+     * structural definitions. Manifests are expected to have valid include references.
+     */
     fun resolve(
         selection: DeploymentSelection,
         manifests: Collection<ExtensionManifest>,

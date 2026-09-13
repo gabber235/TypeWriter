@@ -1,6 +1,17 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Evaluates conversion rules that are self contained in the panel.
+///
+/// Rules that need a graph, target validation, or realm execution return an
+/// explicit failure or unavailable result instead of guessing. This keeps
+/// local expression evaluation deterministic and leaves remote ownership with
+/// the realm provider.
 extension ConversionRuleEvaluation on ConversionRule {
+  /// Applies this rule to [input] and preserves diagnostics as a result.
+  ///
+  /// Composite local rules stop at the first failure or unavailable child.
+  /// Rules carrying references to other conversions are intentionally not
+  /// resolved here; use [ConversionGraph.apply] after selecting their path.
   ConversionResult evaluate(DataValue input) {
     return switch (this) {
       InputConversionRule() => ConversionResult.success(input),

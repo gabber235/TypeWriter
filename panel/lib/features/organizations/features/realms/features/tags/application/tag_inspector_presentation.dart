@@ -5,6 +5,11 @@ const _tagSearchSummaryBindingId = BindingId(42);
 const _tagSearchResultBindingId = BindingId(43);
 const _tagSummaryItemBindingId = BindingId(44);
 
+/// Renders direct parent references with searchable, multi select input.
+///
+/// Results come from the tag collection built for the current projection.
+/// Disallowed rows are filtered before selection, and selected references are
+/// resolved again in the summary so missing tags have an explicit fallback.
 PresentationNode tagReferenceSearch({
   required String id,
   required String label,

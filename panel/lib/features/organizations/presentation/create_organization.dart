@@ -1,5 +1,10 @@
 part of "route.dart";
 
+/// Form for creating an organization and entering its workspace.
+///
+/// Validation protects the local identifier format before the provider performs
+/// the authenticated mutation. The provider owns server errors and membership
+/// reconciliation; this widget only reports them and navigates on success.
 class _CreateOrganization extends HookConsumerWidget {
   const _CreateOrganization();
 
@@ -126,6 +131,7 @@ class _CreateOrganization extends HookConsumerWidget {
   }
 }
 
+/// Presents the generated logo preview and lets the user choose another seed.
 class _OrganizationIconPicker extends StatelessWidget {
   const _OrganizationIconPicker({
     required this.iconUrl,

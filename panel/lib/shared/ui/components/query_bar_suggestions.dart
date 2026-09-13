@@ -174,9 +174,8 @@ Widget _buildHelperBadge(BuildContext context, String label, {Key? key}) {
     ),
     child: Text(
       label,
-      style: Theme.of(
-        context,
-      ).textTheme.labelSmall?.copyWith(color: colors.onSurfaceVariant),
+      style: Theme.of(context).textTheme.labelSmall
+          ?.copyWith(color: colors.onSurfaceVariant),
     ),
   );
 }

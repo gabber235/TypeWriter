@@ -5,6 +5,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "timeline_data.g.dart";
 
+/// Canonical input for one timeline view and indexes used during interaction.
+///
+/// Callers build this projection from editor data. The timeline never owns the
+/// source document. The constructor recursively indexes nested segment
+/// children, allowing selection and resize resolution to use stable IDs while
+/// preserving the track and parent relationships needed for constraints.
 class TimelineData {
   TimelineData({required this.tracks}) {
     void collect(TimelineElement element, TimelineIdentifier trackId) {
@@ -96,6 +102,7 @@ class TimelineData {
   }
 }
 
+/// Stable identity shared by timeline projections, focus, and commit payloads.
 class TimelineIdentifier {
   const TimelineIdentifier(this.id);
 
@@ -118,6 +125,10 @@ class TimelineIdentifier {
 
 @JsonSerializable(createFactory: false)
 @TimelineIdentifierJsonConverter()
+/// One independently labelled row containing top level timeline elements.
+///
+/// [header] is a presentation callback. [elements] is the immutable projection
+/// consumed by layout; edits are reported through the enclosing [Timeline].
 class TimelineTrack {
   TimelineTrack({
     required this.id,
@@ -133,9 +144,21 @@ class TimelineTrack {
   Map<String, dynamic> toJson() => _$TimelineTrackToJson(this);
 }
 
-typedef TimelineElementBuilder =
-    Widget Function(BuildContext context, TimelineElementBuildData data);
+/// Builds one timeline element from its projected geometry and interaction data.
+///
+/// The timeline owns placement and gesture state. Builders render the supplied
+/// projection and must not mutate timeline state directly.
+typedef TimelineElementBuilder = Widget Function(
+  BuildContext context,
+  TimelineElementBuildData data,
+);
 
+/// A frame positioned item rendered by a caller supplied builder.
+///
+/// Segments occupy an inclusive frame range and may contain nested items.
+/// Keyframes are points represented by equal start and end frames. Preview
+/// application returns a new element, leaving the caller's source projection
+/// unchanged until its commit callback succeeds.
 sealed class TimelineElement {
   const TimelineElement({
     required this.id,
@@ -168,6 +191,7 @@ sealed class TimelineElement {
 @JsonSerializable(createFactory: false)
 @TimelineIdentifierJsonConverter()
 @ColorConverter()
+/// A resizable interval whose children are constrained to its duration.
 class TimelineSegment extends TimelineElement {
   TimelineSegment({
     required this.startFrame,
@@ -217,6 +241,7 @@ class TimelineSegment extends TimelineElement {
 @JsonSerializable(createFactory: false)
 @TimelineIdentifierJsonConverter()
 @ColorConverter()
+/// A point cue that can move but cannot be resized.
 class TimelineKeyframe extends TimelineElement {
   const TimelineKeyframe({
     required this.frame,
@@ -259,6 +284,7 @@ class TimelineKeyframe extends TimelineElement {
 
 @JsonSerializable(createFactory: false)
 @TimelineIdentifierJsonConverter()
+/// Layout input that retains an element's nested lane structure and preview state.
 class TimelineTrackBlock {
   const TimelineTrackBlock({
     required this.trackId,
@@ -298,6 +324,7 @@ class TimelineTrackBlockPlacement {
 @JsonSerializable(createFactory: false)
 @TimelineIdentifierJsonConverter()
 @RectConverter()
+/// A visible element with pixel geometry derived from layout and viewport state.
 class TimelinePlacedElement {
   const TimelinePlacedElement({
     required this.trackId,
@@ -325,8 +352,14 @@ class TimelinePlacedElement {
   Map<String, dynamic> toJson() => _$TimelinePlacedElementToJson(this);
 }
 
+/// Visual relationship to the element currently being edited.
 enum TimelinePreviewState { none, active, related }
 
+/// Context passed to an element builder at render time.
+///
+/// It exposes derived placement and interaction resolvers, not mutable source
+/// data. Builders use the callbacks to start previews and send the resulting
+/// values to the owner that can persist them.
 class TimelineElementBuildData {
   const TimelineElementBuildData({
     required this.placed,
@@ -355,6 +388,7 @@ class TimelineElementBuildData {
   bool get isRelatedPreview => placed.isRelatedPreview;
 }
 
+/// Serializes timeline identifiers as their stable string ids.
 class TimelineIdentifierJsonConverter
     extends JsonConverter<TimelineIdentifier, String> {
   const TimelineIdentifierJsonConverter();

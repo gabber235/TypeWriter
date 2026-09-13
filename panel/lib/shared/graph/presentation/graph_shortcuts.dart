@@ -4,6 +4,11 @@ import "package:iconify_flutter_plus/icons/ion.dart";
 import "package:iconify_flutter_plus/icons/lucide.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Builds graph specific mode, zoom, and reset shortcuts.
+///
+/// Move and resize activation shortcuts are omitted when their callbacks are
+/// unavailable or that mode is already active. Zoom shortcuts remain available
+/// independently of edit permissions.
 List<ActionShortcut> buildGraphShortcuts({
   required bool canMove,
   required bool canResize,

@@ -8,6 +8,12 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Presents one moderation request and its transient interaction state.
+///
+/// The card owns expansion and per request role selection. List selection is
+/// owned by [JoinRequestsList], while durable approval and decline operations
+/// belong to [OrganizationJoinRequests]. Expiry only removes the local row;
+/// the provider remains responsible for authoritative reconciliation.
 class JoinRequestCard extends HookConsumerWidget {
   const JoinRequestCard({
     required this.request,
@@ -197,10 +203,8 @@ class JoinRequestCard extends HookConsumerWidget {
               if (request.userName != null)
                 Text(
                   request.userName!,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontVariations: [.weight(600)],
-                    fontSize: 16,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium!
+                      .copyWith(fontVariations: [.weight(600)], fontSize: 16),
                 ),
               if (request.userEmail != null)
                 Text(
@@ -251,6 +255,7 @@ class JoinRequestCard extends HookConsumerWidget {
     );
   }
 
+  /// Confirms a destructive action before delegating it to the provider.
   Future<void> _confirmDeclineRequest(
     BuildContext context,
     WidgetRef ref,

@@ -3,7 +3,13 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Utilities for surfacing expected panel operation failures at a widget boundary.
 extension FutureExt<T> on Future<T> {
+  /// Shows an error snackbar for known API and mutation failures.
+  ///
+  /// The future keeps its original result or failure. A failure is ignored when
+  /// [context] has been unmounted, which prevents a completed operation from
+  /// updating a dead widget tree.
   Future<T> catchApiExceptionsAndDisplay(BuildContext context) {
     return catchError(
       (error, stackTrace) {
@@ -18,7 +24,11 @@ extension FutureExt<T> on Future<T> {
   }
 }
 
+/// Adds a named operation to the standard [Future.wait] contract.
 extension IterableFutureExt<T> on Iterable<Future<T>> {
+  /// Completes with results in the same order as this iterable.
+  ///
+  /// [eagerError] and [cleanUp] retain the semantics of [Future.wait].
   Future<List<T>> awaitAll({
     bool eagerError = false,
     void Function(T)? cleanUp,
@@ -27,6 +37,7 @@ extension IterableFutureExt<T> on Iterable<Future<T>> {
   }
 }
 
+/// Adds a first emission timeout without limiting later stream events.
 extension FirstValueTimeoutStreamExtension<T> on Stream<T> {
   /// Throws a [TimeoutException] if the first value is not emitted within
   /// [duration].

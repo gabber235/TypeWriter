@@ -1,3 +1,9 @@
+//! Database records and view conversions for organization service topology.
+//!
+//! Topology state has separate desired and applied revisions. Database mutations advance desired
+//! state, while host execution reports applied state. View records join related storage records
+//! for reads and publication without changing ownership of the underlying state.
+
 use serde::{Deserialize, Serialize};
 use surrealdb_component_sdk::{Datetime, RecordId};
 
@@ -7,6 +13,10 @@ use crate::skir::base::service::v1::topology::{
     SupportedEngine,
 };
 
+/// Stored desired and applied topology revisions.
+///
+/// Desired state is what configuration requests require. Applied state is what host execution
+/// has reported as completed; callers must not treat the two values as interchangeable.
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct ReconciledRevisionRecord {
     pub desired: i64,
@@ -23,6 +33,7 @@ impl From<ReconciledRevisionRecord> for ReconciledRevision {
     }
 }
 
+/// Stored engine selection and version constraint.
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct EngineTargetRecord {
     pub engine_id: String,
@@ -48,6 +59,7 @@ impl From<EngineTargetRecord> for EngineTarget {
     }
 }
 
+/// Stored engine capability advertised by a host.
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct SupportedEngineRecord {
     pub engine_id: String,
@@ -62,6 +74,7 @@ impl From<SupportedEngineRecord> for SupportedEngine {
     }
 }
 
+/// Stored lifecycle state for a service host.
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum HostRuntimeStatusRecord {
@@ -84,6 +97,7 @@ impl From<HostRuntimeStatusRecord> for HostRuntimeStatus {
     }
 }
 
+/// Stored host lifecycle state and its last update time.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct HostRuntimeStateRecord {
     pub status: HostRuntimeStatusRecord,
@@ -102,6 +116,7 @@ impl From<HostRuntimeStateRecord> for HostRuntimeState {
     }
 }
 
+/// Stored lifecycle state for a realm or engine instance.
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum ChildRuntimeStatusRecord {
@@ -128,6 +143,7 @@ impl From<ChildRuntimeStatusRecord> for ChildRuntimeStatus {
     }
 }
 
+/// Stored child runtime state and its last update time.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ChildRuntimeStateRecord {
     pub status: ChildRuntimeStatusRecord,
@@ -171,6 +187,7 @@ impl TryFrom<&ChildRuntimeState> for ChildRuntimeStateRecord {
     }
 }
 
+/// Stored service host and the topology state it owns.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ServiceHostRecord {
     pub id: RecordId,
@@ -203,6 +220,7 @@ impl From<ServiceHostRecord> for ServiceHost {
     }
 }
 
+/// Stored realm instance before related host data is joined into a view.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RealmInstanceRecord {
     pub id: RecordId,
@@ -228,6 +246,7 @@ impl From<OwnerHostRecord> for OwnerHost {
     }
 }
 
+/// Read projection of a realm instance with its owning host.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RealmInstanceViewRecord {
     pub id: RecordId,
@@ -250,6 +269,7 @@ impl From<RealmInstanceViewRecord> for RealmInstance {
     }
 }
 
+/// Stored engine instance before related host and realm data is joined into a view.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EngineInstanceRecord {
     pub id: RecordId,
@@ -260,6 +280,7 @@ pub struct EngineInstanceRecord {
     pub state: ChildRuntimeStateRecord,
 }
 
+/// Minimal realm and owner information embedded in an engine view.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RealmInfoRecord {
     pub realm_id: RecordId,
@@ -276,6 +297,7 @@ impl From<RealmInfoRecord> for RealmInfo {
     }
 }
 
+/// Read projection of an engine instance with its owning host and realm.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EngineInstanceViewRecord {
     pub id: RecordId,

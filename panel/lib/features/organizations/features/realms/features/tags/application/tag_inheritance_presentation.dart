@@ -3,6 +3,12 @@ part of "tags.dart";
 const _tagChildrenBindingId = BindingId(45);
 const _tagChildBindingId = BindingId(46);
 
+/// Presents the effective inheritance graph for selected direct parents.
+///
+/// The collection graph follows the tag relation forward from the bound parent
+/// references. Leaf and unary paths stay compact, while branching paths become
+/// expandable sections. Graph diagnostics remain owned by the presentation
+/// collection rather than being hidden by this layout.
 PresentationNode effectiveTagGraph({
   required String id,
   required String title,

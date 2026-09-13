@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes display only elements without taking ownership of value evaluation.
+///
+/// The panel sends the expression tree defined by the catalog. Evaluation stays
+/// on the receiving presentation runtime rather than being reproduced here.
 extension SkirPresentationContentEncoder on SkirPresentationEncoder {
   TypeResult<wire.PresentationElement> _text(TextElement value) {
     final text = expressions.encode(value.value);

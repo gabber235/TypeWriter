@@ -4,6 +4,12 @@ import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 import "package:flutter_animate/flutter_animate.dart";
 
+/// Presents optional supporting text as a label followed by a message.
+///
+/// Either value may be omitted. When both are absent or empty, the widget
+/// contributes no layout space. Changes between those states are animated so
+/// validation and contextual help can appear without abruptly moving nearby
+/// content.
 class LabeledMessage extends StatelessWidget {
   const LabeledMessage({
     this.label,

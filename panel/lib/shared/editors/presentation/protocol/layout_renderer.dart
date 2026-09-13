@@ -30,6 +30,12 @@ part "renderers/layout/stack_renderer.dart";
 part "renderers/layout/tabs_renderer.dart";
 part "renderers/layout/wrap_renderer.dart";
 
+/// Converts a standard children layout into Flutter widgets.
+///
+/// The presentation model owns layout intent, while this extension owns its
+/// Flutter projection. Children are already rendered by their node renderers;
+/// this method only arranges them. Grid cells derive their width from the
+/// incoming maximum width, so the result follows the containing surface.
 extension PresentationChildrenLayoutRendering on PresentationChildrenLayout {
   Widget renderWidgets(BuildContext context, List<Widget> children) =>
       switch (this) {
@@ -91,6 +97,12 @@ extension PresentationChildrenLayoutRendering on PresentationChildrenLayout {
       };
 }
 
+/// Projects a sequence layout after each item has received its own scope.
+///
+/// Standard layouts arrange the supplied widgets directly. Hierarchy layouts
+/// additionally receive [scope] and [itemScopes] because their connector and
+/// selection presentation needs the binding context of each item. This method
+/// does not create or own item state.
 extension PresentationSequenceLayoutRendering on PresentationSequenceLayout {
   Widget renderSequence(
     BuildContext context, {

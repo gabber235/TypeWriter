@@ -67,6 +67,13 @@ import kotlin.time.Duration.Companion.seconds
  * failure releases resources already acquired.
  */
 class DefaultRealmRuntimeFactory : RealmRuntimeFactory {
+    /**
+     * Reads the deployment package once, builds all Realm catalogs, and returns an inactive runtime.
+     *
+     * Discovery and catalog assembly happen before storage or messaging activation. Koin owns the assembled
+     * resources after success; construction failure closes the application, discovery deployment, logging bridge,
+     * and application scope acquired during staging.
+     */
     override suspend fun stage(context: HostedDeploymentContext): ManagedRealmRuntime {
         val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         var logback: AutoCloseable? = null
@@ -218,6 +225,12 @@ class DefaultRealmRuntimeFactory : RealmRuntimeFactory {
     }
 }
 
+/**
+ * Owns the staged Realm composition and maps loader lifecycle calls to the live Realm owner.
+ *
+ * Quiescing stops active database and messaging work but retains the staged graph. Stop is terminal and releases the
+ * graph, discovery deployment, and logging bridge exactly once.
+ */
 private class DefaultManagedRealmRuntime(
     private val application: KoinApplication,
     private val telemetry: ServiceTelemetry,
@@ -229,6 +242,7 @@ private class DefaultManagedRealmRuntime(
     private val closed = AtomicBoolean()
     private var active = false
 
+    /** Starts Realm resources and rejects activation after terminal cleanup. */
     override suspend fun activate() {
         check(!closed.get()) { "Realm runtime is closed." }
         if (active) return
@@ -236,6 +250,7 @@ private class DefaultManagedRealmRuntime(
         active = true
     }
 
+    /** Stops live Realm work while retaining the staged composition for resume. */
     override suspend fun quiesce() {
         if (active) {
             stopRealm(telemetry, realm)
@@ -243,8 +258,10 @@ private class DefaultManagedRealmRuntime(
         }
     }
 
+    /** Reenters the active state using the retained staged composition. */
     override suspend fun resume() = activate()
 
+    /** Permanently releases active work and all resources acquired during staging. */
     override suspend fun stop() {
         if (!closed.compareAndSet(false, true)) return
         try {

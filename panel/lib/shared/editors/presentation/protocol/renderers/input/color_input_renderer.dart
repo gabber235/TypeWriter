@@ -1,5 +1,9 @@
 part of "../../simple_input_renderer.dart";
 
+/// Renders a nominal unsigned 32 bit color value through the shared color
+/// picker. The nominal binding is resolved here because the picker edits the
+/// encoded integer representation while the presentation contract names the
+/// domain value as a color.
 extension ColorInputElementRendering on ColorInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

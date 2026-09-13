@@ -28,6 +28,7 @@ import kotlinx.serialization.cbor.Cbor
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+/** Names the organization and Realm scope used by rollout scatter and event routes. */
 data class RealmBroadcastAddress(
     val organizationId: String,
     val realmId: RealmId,
@@ -55,6 +56,7 @@ private val commandPolicy =
         }
     }
 
+/** Scatter contract used to discover hosts currently answering for a Realm. */
 val ProbeRealmHostsContract =
     ScatterContract(
         OperationName.of("realm.hosts.probe"),
@@ -65,6 +67,7 @@ val ProbeRealmHostsContract =
         ErrorSlug.of("realm-host-probe-failed"),
     )
 
+/** Scatter contract used to deliver stage, commit, abort, and rollback commands. */
 val RolloutCommandContract =
     ScatterContract(
         OperationName.of("realm.rollout.command"),
@@ -75,6 +78,7 @@ val RolloutCommandContract =
         ErrorSlug.of("realm-rollout-command-failed"),
     )
 
+/** Event contract used for durable participant observations, separate from status probes. */
 val ParticipantStateChangedContract =
     EventContract(
         OperationName.of("realm.rollout.state"),
@@ -83,6 +87,7 @@ val ParticipantStateChangedContract =
         ErrorSlug.of("realm-rollout-state-failed"),
     )
 
+/** Scatter contract used to read current participant state for one attempt. */
 val ParticipantStatusContract =
     ScatterContract(
         OperationName.of("realm.hosts.status"),

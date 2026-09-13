@@ -1,5 +1,13 @@
 part of "header_renderer.dart";
 
+/// Runtime header state after evaluating declarative labels, conditions,
+/// icons, confirmations, and action targets.
+///
+/// Resolution is deliberately separate from widget construction. It gathers
+/// diagnostics, applies scope and read only policy, and captures the list
+/// location needed by reorder commands. The header renderer can then sort,
+/// place, and expose the same resolved item through buttons, menus, and
+/// keyboard shortcuts.
 @freezed
 sealed class _ResolvedHeaderItem with _$ResolvedHeaderItem {
   const factory _ResolvedHeaderItem.button({
@@ -112,6 +120,9 @@ abstract class _ResolvedPresentationHeader with _$ResolvedPresentationHeader {
 }
 
 extension on PresentationHeader {
+  /// Evaluates the header once for the current render scope. Invalid item data
+  /// stays visible with diagnostic text so a malformed presentation explains
+  /// its own recovery surface instead of silently losing the action.
   _ResolvedPresentationHeader resolve(PresentationRenderScope scope) {
     return _ResolvedPresentationHeader(
       title: title,
@@ -159,6 +170,8 @@ extension on _ResolvedHeaderReorderHandleItem {
   }
 }
 
+/// Computes a valid destination for a reorder command, returning null when
+/// the requested move would leave the list unchanged or outside its bounds.
 int? _reorderDestination(HeaderItemCommand command, int index, int itemCount) =>
     switch (command) {
       HeaderItemCommand.moveBefore when index > 0 => index - 1,

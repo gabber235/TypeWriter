@@ -1,3 +1,21 @@
+// Authoring state and commands for one organization and realm.
+//
+// AuthoringSession is the owner of the canonical authoring read model. It
+// keeps one sequence aligned with the server change stream, routes commands
+// through the authoring batch protocol, and reconciles gaps or conflicts from
+// authoritative snapshots. Editors keep unsubmitted values in
+// LocalWorkCommands, not in this session.
+//
+// The session is keyed by organization and realm through Riverpod. It starts
+// its watches when a scope is acquired or the provider is observed, and
+// releases subscriptions when its provider is disposed. Library, book, and
+// page leases determine which snapshot slices are retained and whether the
+// session should stay alive.
+//
+// AuthoringResourceRepository owns editor resource requests and their mutation
+// combiner. SkirMutationClient owns request transport and local submission
+// integration. RealmServiceAddress only maps the organization and realm
+// identifiers to service subjects. The realm service owns durable persistence.
 import "dart:async";
 
 import "package:freezed_annotation/freezed_annotation.dart";
@@ -22,6 +40,25 @@ part "authoring_operation_resources.dart";
 part "authoring_operation_label.dart";
 
 @riverpod
+/// Owns the canonical authoring state for one organization and realm.
+///
+/// Canonical state contains only server accepted books, tags, pages, and page
+/// documents. Local editor drafts belong to [LocalWorkCommands] and are
+/// projected over this state by editor resources. A state [sequence] couples
+/// every canonical projection to the server revision that produced it. The
+/// session applies only the next sequence, buffers future changes, and fetches
+/// a snapshot when a gap, conflict, reconnect, or indirect page dependency
+/// makes incremental reconciliation unsafe.
+///
+/// Use a scope lease before reading a resource that needs an authoritative
+/// snapshot. The lease keeps this provider alive, waits for subscriptions and
+/// its initial refresh through [AuthoringScopeLease.ready], and must be
+/// released when the resource stops being used.
+///
+/// Direct create and delete commands are routed through [prepare] and
+/// [apply]. Editor updates normally enter through
+/// [AuthoringResourceRepository.combiner], so several editor intents can share
+/// one authoring batch without the session owning editor presentation state.
 class AuthoringSession extends _$AuthoringSession
     with _AuthoringSessionSnapshots, _AuthoringSessionSync {
   @override
@@ -50,20 +87,51 @@ class AuthoringSession extends _$AuthoringSession
     return const AuthoringSessionState();
   }
 
+  /// Returns the current canonical read model without creating a copy.
+  ///
+  /// The model may be empty before a held scope has completed [refresh]. It
+  /// never includes local editor drafts.
   AuthoringSessionState get snapshot => state;
 
-  /// Fetches an authoritative snapshot of the scopes held by the caller.
+  /// Fetches authoritative snapshots for all currently held scopes.
+  ///
+  /// The operation updates [snapshot] and sequence state when the response is
+  /// current enough to reconcile. It is safe to call while another refresh is
+  /// running because refresh requests coalesce.
   Future<void> refresh() => _refresh();
 
+  /// Retains the library scope and returns its lifecycle lease.
+  ///
+  /// Await [AuthoringScopeLease.ready] before using library collections, then
+  /// call [AuthoringScopeLease.release] exactly once when finished.
   AuthoringScopeLease acquireLibrary() =>
       _acquire(const _AuthoringScope.library());
 
+  /// Retains the book scope and returns its lifecycle lease.
+  ///
+  /// The first lease for [bookId] fetches the book and its pages. Await
+  /// [AuthoringScopeLease.ready] before reading the resulting canonical state.
+  /// Release the lease when the book is no longer in use.
   AuthoringScopeLease acquireBook(skir.RecordId bookId) =>
       _acquire(_AuthoringScope.book(bookId));
 
+  /// Retains the page scope and returns its lifecycle lease.
+  ///
+  /// The first lease for [pageId] fetches the page and its document. Await
+  /// [AuthoringScopeLease.ready] before reading the resulting canonical state.
+  /// Release the lease when the page is no longer in use.
   AuthoringScopeLease acquirePage(skir.RecordId pageId) =>
       _acquire(_AuthoringScope.page(pageId));
 
+  /// Prepares one authoring batch for the shared local mutation owner.
+  ///
+  /// The caller supplies operations that already contain their expected values.
+  /// [batchId] may identify a retry; an omitted value creates a new id. The
+  /// returned commit captures the request, reserves every affected resource,
+  /// and classifies applied, rejected, and unconfirmed responses. Integration
+  /// advances canonical state from the applied event and refreshes after a
+  /// conflict. The caller must submit the returned commit through
+  /// [LocalWorkCommands], not send it directly.
   PreparedCommit<wire.ApplyAuthoringBatchResponse> prepare(
     Iterable<wire.AuthoringOperation> operations, {
     String? batchId,
@@ -106,6 +174,12 @@ class AuthoringSession extends _$AuthoringSession
     );
   }
 
+  /// Applies one authoring batch through the shared local mutation owner.
+  ///
+  /// Each operation must carry the expected server value required by the
+  /// authoring protocol. On success, the applied change is integrated into
+  /// canonical state. A conflict triggers authoritative refresh before the
+  /// failure returns to the caller.
   Future<wire.ApplyAuthoringBatchResponse> apply(
     Iterable<wire.AuthoringOperation> operations, {
     String? batchId,
@@ -144,6 +218,8 @@ class AuthoringSession extends _$AuthoringSession
   }
 }
 
+/// Pairs the session command owner with the canonical state read for one
+/// organization and realm.
 @freezed
 abstract class AuthoringSessionAccess with _$AuthoringSessionAccess {
   const factory AuthoringSessionAccess({
@@ -152,7 +228,11 @@ abstract class AuthoringSessionAccess with _$AuthoringSessionAccess {
   }) = _AuthoringSessionAccess;
 }
 
+/// Adds provider helpers for acquiring the selected authoring session.
 extension AuthoringSessionRef on Ref {
+  /// Resolves the selected organization and realm session for a provider.
+  ///
+  /// Throws when no organization or realm is selected.
   AuthoringSessionAccess readAuthoringSession() {
     final organizationId = read(organizationIdProvider);
     final realmId = read(realmIdProvider);
@@ -166,7 +246,11 @@ extension AuthoringSessionRef on Ref {
   }
 }
 
+/// Adds the selected authoring session helper to widget references.
 extension AuthoringSessionWidgetRef on WidgetRef {
+  /// Resolves the selected organization and realm session for a widget.
+  ///
+  /// Throws when no organization or realm is selected.
   AuthoringSessionAccess readAuthoringSession() {
     final organizationId = read(organizationIdProvider);
     final realmId = read(realmIdProvider);
@@ -180,6 +264,7 @@ extension AuthoringSessionWidgetRef on WidgetRef {
   }
 }
 
+/// Converts authoring validation diagnostics into the panel's API error type.
 extension AuthoringInvalidFailure on wire.AuthoringInvalid {
   String get message =>
       diagnostics.map((diagnostic) => diagnostic.message).join("; ");
@@ -187,6 +272,7 @@ extension AuthoringInvalidFailure on wire.AuthoringInvalid {
   ApiException toApiException() => ApiException.badRequest(message);
 }
 
+/// Converts non applied authoring batch responses into caller visible errors.
 extension AuthoringBatchFailure on wire.ApplyAuthoringBatchResponse {
   void requireApplied({required String conflictMessage}) {
     switch (this) {
@@ -225,6 +311,7 @@ extension AuthoringBatchFailure on wire.ApplyAuthoringBatchResponse {
       };
 }
 
+/// Keeps the library projection and its session alive while observed.
 @riverpod
 AuthoringScopeLease authoringLibraryScope(
   Ref ref,
@@ -237,6 +324,7 @@ AuthoringScopeLease authoringLibraryScope(
   return lease;
 }
 
+/// Keeps a book projection and its session alive while observed.
 @riverpod
 AuthoringScopeLease authoringBookScope(
   Ref ref,
@@ -250,6 +338,7 @@ AuthoringScopeLease authoringBookScope(
   return lease;
 }
 
+/// Keeps a page projection and its session alive while observed.
 @riverpod
 AuthoringScopeLease authoringPageScope(
   Ref ref,

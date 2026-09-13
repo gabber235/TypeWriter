@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Renders a section's depth surface and optional directional border.
+///
+/// Border expressions are evaluated at the decoration boundary. Invalid border
+/// data replaces the decoration with a presentation diagnostic, while the
+/// section's child rendering and scope remain owned by [PresentationNodeRenderer].
 extension SectionElementRendering on SectionElement {
   Widget render(PresentationRenderScope scope) =>
       PresentationNodeRenderer(node: child, scope: scope);
@@ -129,6 +134,10 @@ extension on PresentationBorderSide {
   }
 }
 
+/// Border sides after color expressions have been resolved.
+///
+/// Null sides are meaningful. They let the painter leave a side open while
+/// still using the same rounded clipping geometry for the remaining sides.
 class _ResolvedPresentationBorder {
   const _ResolvedPresentationBorder({
     this.top,

@@ -1,5 +1,9 @@
 part of "../../simple_input_renderer.dart";
 
+/// Renders integer, float, and decimal values through one validated text
+/// boundary. The type parser and validator preserve the binding's numeric
+/// representation before [BoundControlField.update] forwards a value to its
+/// owner.
 extension NumericInputElementRendering on NumericInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

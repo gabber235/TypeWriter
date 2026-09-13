@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Shows the icon or loading state that identifies a search result.
+///
+/// Use the string constructor for an Iconify name and [SearchResultIconTile.value] when the
+/// domain already provides an [IconValue]. [focused] changes contrast for the keyboard focused
+/// row, while [loading] replaces the icon without changing the result identity.
 class SearchResultIconTile extends StatelessWidget {
   const SearchResultIconTile({
     required this.color,
@@ -66,6 +71,10 @@ class SearchResultIconTile extends StatelessWidget {
   }
 }
 
+/// Displays the primary result label, truncating it to one line.
+///
+/// Deprecated definitions remain discoverable but receive a wavy strike through. The widget
+/// does not decide whether a result is deprecated; its caller maps domain metadata to [deprecated].
 class SearchResultTitle extends StatelessWidget {
   const SearchResultTitle({
     required this.title,
@@ -155,9 +164,8 @@ class SearchResultSoftChip extends StatelessWidget {
         shape: StadiumBorder(),
       ),
       child: AnimatedDefaultTextStyle(
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall!.copyWith(fontSize: 10, color: foregroundColor),
+        style: Theme.of(context).textTheme.bodySmall!
+            .copyWith(fontSize: 10, color: foregroundColor),
         duration: 300.ms,
         child: Text(label),
       ),
@@ -165,6 +173,10 @@ class SearchResultSoftChip extends StatelessWidget {
   }
 }
 
+/// Displays a result's tags using colors that reflect selection and focus.
+///
+/// Tags are decorative metadata. The parent result remains responsible for interaction and
+/// navigation, so this widget has no callback or mutable state.
 class SearchResultTags extends StatelessWidget {
   const SearchResultTags({
     required this.tags,
@@ -258,6 +270,10 @@ class SearchResultTypeLabel extends StatelessWidget {
   }
 }
 
+/// Displays result type metadata and its optional keyboard shortcut.
+///
+/// [selected] chooses the shortcut style so the key hint remains legible in the selected row.
+/// Shortcut dispatch is owned by the surrounding search controller, not this widget.
 class SearchResultSuffix extends StatelessWidget {
   const SearchResultSuffix({
     required this.label,

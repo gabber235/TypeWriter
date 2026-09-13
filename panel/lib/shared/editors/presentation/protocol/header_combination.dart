@@ -3,6 +3,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "header_combination.freezed.dart";
 
+/// The effective header and the nested headers it replaces during rendering.
+///
+/// [header] is the merged outer header. [suppressed] contains the node and
+/// canonical binding pairs that [PresentationNodeRenderer] must not render a
+/// second time. A missing header means the chain had no usable header at its
+/// starting node.
 @freezed
 abstract class ResolvedHeaderChain with _$ResolvedHeaderChain {
   const factory ResolvedHeaderChain({
@@ -11,6 +17,15 @@ abstract class ResolvedHeaderChain with _$ResolvedHeaderChain {
   }) = _ResolvedHeaderChain;
 }
 
+/// Resolves header chrome across presentation wrappers that are transparent
+/// to the rendered value.
+///
+/// The outer header supplies the anchor binding. Traversal continues through
+/// typed fields, aliases, conditionals, delegated defaults, invocations, and
+/// sections only while the next header resolves to that same canonical
+/// binding. Matching inner headers merge into the outer header and are returned
+/// as suppressed locations. A different binding or an unresolvable branch
+/// ends composition, so the node renderer can keep the boundary visible.
 extension PresentationNodeHeaderCombination on PresentationNode {
   ResolvedHeaderChain resolveHeaderChain(PresentationRenderScope scope) {
     final own = _ownHeader(scope);

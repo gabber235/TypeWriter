@@ -1,3 +1,18 @@
+//! Typewriter's policy owner for NATS authentication.
+//!
+//! The auth callout sends validated external claims and an
+//! `EntityPermissionQualifier` here through the Skir permission contract. This crate selects the
+//! policy route, resolves the user's organization membership or the service's registration and
+//! messaging scope, and returns NATS subject permissions plus identity tags. The callout then
+//! signs those results into the NATS user claim.
+//!
+//! The callout owns token authenticity and the NATS signing keys. This crate owns authorization
+//! policy and the database and service lookups required to derive it. Qualifiers are untrusted
+//! routing context. A user organization is accepted only after membership verification, and a
+//! service receives organization and Realm permissions only from authoritative service state.
+//! Decode errors, unknown subjects, missing identities, lookup failures, and scope mismatches
+//! propagate as failures. They never degrade into an empty or broader authorization grant.
+
 wit_bindgen::generate!({
     with: {
         "wasmcloud:messaging/consumer@0.4.0": wasmcloud_utils::wasmcloud::messaging::consumer,
@@ -33,6 +48,11 @@ impl Guest for TypewriterPermissions {
     }
 }
 
+/// Route one authenticated policy request and return its complete policy response.
+///
+/// Only the two configured policy subjects are valid. The response is serialized using the Skir
+/// contract consumed by the auth callout, which preserves the ownership boundary between policy
+/// calculation and NATS claim signing.
 async fn handle_message_async(msg: types::BrokerMessage) -> Result<(), otel_wasi::Error> {
     main_attribute!("messaging.destination.name" = msg.subject.clone());
 
@@ -75,6 +95,7 @@ async fn handle_message_async(msg: types::BrokerMessage) -> Result<(), otel_wasi
 }
 
 #[tracing::instrument(skip(request))]
+/// Resolve policy for a panel identity after the callout has authenticated its JWT.
 async fn handle_panel_subject(
     request: GetEntityPermissionRequest,
 ) -> Result<(Permissions, Vec<String>), otel_wasi::Error> {
@@ -101,6 +122,7 @@ async fn handle_panel_subject(
 }
 
 #[tracing::instrument(skip(request))]
+/// Resolve policy for a service identity after the callout has authenticated its JWT.
 async fn handle_services_subject(
     request: GetEntityPermissionRequest,
 ) -> Result<(Permissions, Vec<String>), otel_wasi::Error> {

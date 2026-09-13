@@ -43,22 +43,28 @@ import skirout.editor.v1.type_catalog.TypeVariance as SkirTypeVariance
  * diagnostics; this adapter does not load runtime prototypes or verify deployment availability.
  */
 object SkirTypeCodec {
+    /** Encodes a catalog and reports the first unsupported nested representation with its path. */
     fun encode(catalog: TypeCatalog): SkirConversionResult<SkirTypeCatalog> =
         captureSkirConversion {
             SkirTypeCatalog(definitions = catalog.definitions.mapIndexed { index, value -> at("definition $index") { encode(value) } })
         }
 
+    /** Decodes a Skir catalog without resolving runtime prototypes. */
     fun decode(catalog: SkirTypeCatalog): SkirConversionResult<TypeCatalog> =
         captureSkirConversion {
             TypeCatalog(catalog.definitions.mapIndexed { index, value -> at("definition $index") { decode(value) } })
         }
 
+    /** Encodes one structural expression and reports unsupported features as diagnostics. */
     fun encode(expression: TypeExpression): SkirConversionResult<SkirTypeExpression> = captureSkirConversion { encode(expression) }
 
+    /** Decodes one structural expression and reports unknown Skir variants as diagnostics. */
     fun decode(expression: SkirTypeExpression): SkirConversionResult<TypeExpression> = captureSkirConversion { decode(expression) }
 
+    /** Encodes a nominal reference, including its revision and generic arguments. */
     fun encode(reference: ResolvedTypeRef): SkirConversionResult<SkirResolvedTypeRef> = captureSkirConversion { encode(reference) }
 
+    /** Decodes a nominal reference, including its revision and generic arguments. */
     fun decode(reference: SkirResolvedTypeRef): SkirConversionResult<ResolvedTypeRef> = captureSkirConversion { decode(reference) }
 }
 

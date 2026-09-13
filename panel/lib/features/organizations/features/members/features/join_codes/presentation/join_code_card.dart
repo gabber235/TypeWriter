@@ -8,6 +8,11 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Expandable mobile card for one invitation code.
+///
+/// The code URL is deliberately blurred until the user chooses to copy or
+/// inspect it. Selection, copy, and revoke callbacks connect the card to the
+/// route level coordination and provider owned mutation.
 class JoinCodeCard extends HookConsumerWidget {
   const JoinCodeCard({
     required this.code,
@@ -244,8 +249,7 @@ class JoinCodeCard extends HookConsumerWidget {
     await showConfirmationDialogue(
       context: context,
       title: "Revoke this join code?",
-      content:
-          "Are you sure you want to revoke this join code? It will no longer work for new members.",
+      content: "Are you sure you want to revoke this join code? It will no longer work for new members.",
       confirmText: "Revoke",
       confirmIcon: Fa6Solid.link_slash,
       onConfirm: () async {

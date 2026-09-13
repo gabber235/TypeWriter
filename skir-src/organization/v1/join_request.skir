@@ -1,3 +1,6 @@
+// Join requests have two read models for one pending request. The organization view supports moderation, while the user view supports tracking and cancellation.
+// Both views expose only unexpired requests. Their sequences belong to their respective owners and must be reconciled independently.
+
 import {
   InternalError,
   InvalidRecordIdError,
@@ -9,7 +12,8 @@ import {
 } from "organization/v1/member.skir";
 import { OrganizationRole } from "organization/v1/role.skir";
 
-// OrganizationJoinRequest represents a pending request from a user to join an organization.
+// OrganizationJoinRequest is the moderation view of one unexpired request.
+// Profile fields are optional because the organization may not have every user profile attribute.
 struct OrganizationJoinRequest {
   request_id: RecordId;
   user_id: RecordId;
@@ -20,8 +24,8 @@ struct OrganizationJoinRequest {
   expires_at: timestamp;
 }
 
-// UserJoinRequest represents a user's own pending request to join an organization.
-// This is from the user's perspective, showing which organizations they've requested to join.
+// UserJoinRequest is the requesting user's view of one unexpired request.
+// It carries organization display data because this view is not scoped to one organization.
 struct UserJoinRequest {
   request_id: RecordId;
   organization_id: RecordId;
@@ -31,6 +35,7 @@ struct UserJoinRequest {
   expires_at: timestamp;
 }
 
+// Current unexpired requests for one organization and that organization's request sequence.
 struct OrganizationJoinRequestsSnapshot {
   sequence: int64;
   values: [OrganizationJoinRequest];
@@ -41,12 +46,14 @@ enum OrganizationJoinRequestsChange {
   remove: RecordId;
 }
 
+// Organization request changes. Consumers apply them in sequence order and refresh when a sequence gap appears.
 struct OrganizationJoinRequestsChanged {
   sequence: int64;
   operation_id: string;
   changes: [OrganizationJoinRequestsChange];
 }
 
+// Current unexpired requests for one user and that user's request sequence.
 struct UserJoinRequestsSnapshot {
   sequence: int64;
   values: [UserJoinRequest];
@@ -57,6 +64,7 @@ enum UserJoinRequestsChange {
   remove: RecordId;
 }
 
+// User request changes. This sequence is independent from the organization request sequence for the same request.
 struct UserJoinRequestsChanged {
   sequence: int64;
   operation_id: string;
@@ -70,6 +78,7 @@ struct AutoAcceptedMember {
   roles: [OrganizationRole];
 }
 
+// Reads the organization moderation view. Pending request changes are published on the organization stream.
 method WatchOrganizationJoinRequests(
   struct {}
 ): enum {
@@ -84,8 +93,9 @@ struct ApprovedOrganizationJoinRequest {
   member: OrganizationMember;
 }
 
-// Creates all memberships and removes all selected requests atomically.
-// A single approval uses one request ID. Any invalid request rejects the selection.
+// Approves all selected requests in one transaction, creates their memberships, and removes the requests.
+// The selected role set is applied to every approved request. Any invalid request or role rejects the complete selection.
+// Success includes the organization request and member changes so consumers can reconcile both projections.
 method ApproveOrganizationJoinRequests(
   struct {
     operation_id: string;
@@ -117,6 +127,8 @@ method ApproveOrganizationJoinRequests(
   invalid_record_id_error: InvalidRecordIdError;
 } = 167357;
 
+// Declines one request and removes it from both the organization and user pending request views.
+// The response event is the organization event; the user stream also receives its corresponding removal.
 method DeclineOrganizationJoinRequest(
   struct {
     operation_id: string;

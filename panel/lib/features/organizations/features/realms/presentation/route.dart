@@ -3,6 +3,11 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Nested route that activates the authoring session for the selected realm.
+///
+/// Route identity comes from [realmId]. The session is watched only when the
+/// typed organization and realm providers agree with that route, preventing a
+/// stale provider value from opening authoring state for another destination.
 @RoutePage()
 class RealmPage extends HookConsumerWidget {
   const RealmPage({@PathParam("realmId") required this.realmId, super.key});

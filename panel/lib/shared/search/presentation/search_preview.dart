@@ -20,6 +20,12 @@ final _previewData = FutureProvider<SearchPreviewRequestResult>(
   },
 );
 
+/// Requests and renders the preview for the controller's current result.
+///
+/// Preview data is keyed by the active result and query context through
+/// [_previewData]. A renderer receives an explicit loading, data, or error
+/// context, so source failures remain visible without changing controller
+/// ownership.
 class SearchPreview extends HookConsumerWidget {
   const SearchPreview({required this.previewRenderers, super.key});
 

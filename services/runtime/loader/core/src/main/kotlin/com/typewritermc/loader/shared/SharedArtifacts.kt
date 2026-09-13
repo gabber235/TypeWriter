@@ -1,5 +1,9 @@
 package com.typewritermc.loader.shared
 
+/**
+ * Keeps shared artifact domain names available inside the loader implementation while the API package remains the
+ * ownership boundary for hosted runtimes and wire adapters.
+ */
 typealias ProducerMetadata = com.typewritermc.loader.api.artifact.ProducerMetadata
 typealias PublishSharedArtifact = com.typewritermc.loader.api.artifact.PublishSharedArtifact
 typealias SharedArtifactCatalog = com.typewritermc.loader.api.artifact.SharedArtifactCatalog

@@ -1,3 +1,8 @@
+// Translates domain values to the tagged Skir value union.
+//
+// This boundary enforces transport precision and numeric limits. It keeps
+// domain values independent from generated wire classes while retaining
+// diagnostics for values that cannot be represented without loss.
 import "dart:typed_data";
 
 import "package:skir_client/skir_client.dart";
@@ -12,11 +17,13 @@ import "package:typewriter_panel/shared/editors/domain/types/type_diagnostic.dar
 import "package:typewriter_panel/shared/editors/domain/types/type_id.dart";
 import "package:typewriter_panel/shared/editors/domain/values/data_value.dart";
 
+/// Encodes and decodes scalar, collection, record, and polymorphic values.
 final class SkirDataValueCodec {
   const SkirDataValueCodec(this.typeCodec);
 
   final SkirTypeCodec typeCodec;
 
+  /// Encodes a domain value using the narrowest valid wire representation.
   TypeResult<wire.TypedValue> encode(DataValue value) => switch (value) {
     UnitValue() => const TypeResult.success(wire.TypedValue.unit),
     BooleanValue(:final value) => TypeResult.success(
@@ -54,6 +61,7 @@ final class SkirDataValueCodec {
     ),
   };
 
+  /// Decodes a tagged wire value and validates its payload constraints.
   TypeResult<DataValue> decode(wire.TypedValue? value) {
     if (value == null) return invalidWire("Wire typed value is null");
     return switch (value) {

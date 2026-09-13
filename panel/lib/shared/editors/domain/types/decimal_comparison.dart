@@ -1,5 +1,14 @@
+/// Accepted lexical form for decimal bounds and values.
+///
+/// Decimal values stay as strings in the editor type model so comparisons do
+/// not lose precision when values exceed the range of a Dart numeric type.
 final RegExp decimalPattern = RegExp(r"^-?(0|[1-9][0-9]*)(\.[0-9]+)?$");
 
+/// Compares two values that match [decimalPattern] without converting them to
+/// a floating point representation.
+///
+/// Callers use the result for bound validation, constraint intersection, and
+/// subtype checks. Both inputs must use the accepted decimal syntax.
 int compareDecimalStrings(String left, String right) {
   final leftParts = left._decimalParts;
   final rightParts = right._decimalParts;
@@ -12,6 +21,7 @@ int compareDecimalStrings(String left, String right) {
 }
 
 extension DecimalStringProperties on String {
+  /// Number of digits after the decimal point, or zero for an integer form.
   int get decimalScale {
     final separator = indexOf(".");
     return separator < 0 ? 0 : length - separator - 1;

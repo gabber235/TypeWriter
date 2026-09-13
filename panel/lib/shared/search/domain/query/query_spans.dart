@@ -4,6 +4,11 @@ import "dart:math";
 
 import "package:petitparser/petitparser.dart";
 
+/// Half open source range used by parsing and editor replacement.
+///
+/// [start] is inclusive and [end] is exclusive. Cursor containment also
+/// accepts [end] so a cursor immediately after a token remains associated
+/// with that token.
 class QueryRange {
   final int start;
   final int end;
@@ -12,9 +17,13 @@ class QueryRange {
     : assert(start >= 0),
       assert(end >= start);
 
+  /// Number of source code units in the range.
   int get length => end - start;
 
+  /// Whether [offset] lies inside the range or at its editing boundary.
   bool containsOffset(int offset) => offset >= start && offset <= end;
+
+  /// Whether [offset] is exactly the range's exclusive end.
   bool isAtEnd(int offset) => offset == end;
 
   @override
@@ -39,6 +48,7 @@ class QueryRange {
   }
 }
 
+/// Converts a PetitParser token range to the query range model.
 extension TokenX<T> on Token<T> {
   QueryRange get range => QueryRange(start, stop);
 }

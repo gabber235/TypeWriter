@@ -2,6 +2,14 @@ import "dart:async";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adapts a live presentation collection to the editor search contract.
+///
+/// Collection rows are evaluated and mapped in the query context before they
+/// become search nodes. A new query invalidates the previous stream generation,
+/// so late snapshots cannot repopulate results for an older query. Diagnostics
+/// remain attached to the source snapshot as warnings, allowing usable rows to
+/// render alongside invalid rows. Call [dispose] when the owning search session
+/// ends; this closes the observation and prevents further emissions.
 final class CollectionPresentationSearchSource implements SearchSource {
   CollectionPresentationSearchSource({
     required this.provider,
@@ -148,6 +156,12 @@ final class CollectionPresentationSearchSource implements SearchSource {
   }
 }
 
+/// Keeps the search surface explicit when its collection cannot be observed.
+///
+/// The source emits one error snapshot instead of silently producing an empty
+/// result set. This distinguishes an unavailable collection from a valid query
+/// with no matching rows and lets the caller present the provider's selectors
+/// while reporting the unavailable source.
 final class UnavailableCollectionPresentationSearchSource
     implements SearchSource {
   const UnavailableCollectionPresentationSearchSource({required this.provider});

@@ -1,7 +1,13 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Applies or discards the complete draft of an explicitly submitted resource.
+/// Exposes apply and cancel for an owner whose draft is committed explicitly.
+///
+/// The [EditorSource] owns the draft and performs persistence. This widget
+/// only enables apply when work is present, the draft has no diagnostics, and
+/// the owner is writable. Cancel discards the whole draft, not one field.
+/// When the owner is saving or unavailable, its own state remains authoritative
+/// and the controls follow that state on the next rebuild.
 class EditorCommitControls extends StatelessWidget {
   const EditorCommitControls({
     required this.owner,

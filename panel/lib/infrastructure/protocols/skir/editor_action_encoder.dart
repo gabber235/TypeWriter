@@ -1,3 +1,8 @@
+// Encodes panel actions and domain mutation outcomes for Skir transport.
+//
+// Encoding is deliberately diagnostic producing. A local domain result such
+// as transport uncertainty is not a server response and is rejected here,
+// keeping transport state from being misrepresented on the wire.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/action.dart"
     as wire;
@@ -11,12 +16,14 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire_type;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes editor actions and typed mutation responses.
 final class SkirActionEncoder {
   const SkirActionEncoder(this.expressions, this.values);
 
   final SkirExpressionEncoder expressions;
   final SkirDataValueCodec values;
 
+  /// Encodes a local edit or realm command action.
   TypeResult<wire.EditorAction> encode(EditorAction value) => switch (value) {
     LocalEditorAction(:final action) => _local(
       action,
@@ -26,6 +33,7 @@ final class SkirActionEncoder {
     ).mapValue(wire.EditorAction.wrapRealm),
   };
 
+  /// Encodes a server mutation outcome, rejecting client only uncertainty.
   TypeResult<wire.TypedMutationResult> encodeMutation(
     TypedMutationResult value,
   ) => switch (value) {

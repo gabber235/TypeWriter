@@ -10,11 +10,11 @@ const _defaultMaxLaunchDuration = Duration(milliseconds: 700);
 const _defaultCurve = Curves.easeOutCubic;
 const _defaultSlideOffset = 0.05;
 
-/// Coordinates a one-shot entrance animation for the [StaggerEntrance]
+/// Coordinates a single run entrance animation for the [StaggerEntrance]
 /// widgets in [child].
 ///
 /// The descendants present during the scope's first completed layout are
-/// ordered by their rendered position (top-to-bottom, then left-to-right).
+/// ordered by their rendered position, top to bottom, then left to right.
 /// Descendants mounted after that initial snapshot appear immediately.
 ///
 /// A nested scope is treated as one contiguous group in its parent's schedule.
@@ -30,6 +30,7 @@ class StaggerScope extends HookWidget {
     super.key,
   }) : assert(slideOffset == null || slideOffset >= 0);
 
+  /// Descendants containing [StaggerEntrance] registrations.
   final Widget child;
 
   /// Duration of each descendant's fade and slide.
@@ -64,7 +65,7 @@ class StaggerScope extends HookWidget {
   }
 }
 
-/// Coordinates a one-shot entrance animation for slivers in [sliver].
+/// Coordinates a single run entrance animation for slivers in [sliver].
 ///
 /// The descendants present during the scope's first completed layout are
 /// ordered by their rendered position. Descendants mounted after that initial
@@ -86,6 +87,7 @@ class SliverStaggerScope extends HookWidget {
     super.key,
   }) : assert(slideOffset == null || slideOffset >= 0);
 
+  /// Sliver containing [SliverStaggerEntrance] registrations.
   final Widget sliver;
 
   /// Duration of each descendant's fade and slide.
@@ -182,10 +184,14 @@ Widget _buildScope(
   return _StaggerScopeMarker(coordinator: coordinator, child: geometryMarker);
 }
 
-/// Animates [child] as part of the nearest [StaggerScope]'s initial epoch.
+/// Registers [child] in the nearest scope's initial entrance schedule.
+///
+/// The child is measured before translation, so its position determines order.
+/// Without a scope, the child is returned unchanged in release builds.
 class StaggerEntrance extends HookWidget {
   const StaggerEntrance({required this.child, super.key});
 
+  /// Content revealed immediately or according to the scope schedule.
   final Widget child;
 
   @override
@@ -233,10 +239,13 @@ class StaggerEntrance extends HookWidget {
   }
 }
 
-/// Animates [sliver] as part of the nearest stagger scope's initial epoch.
+/// Registers [sliver] in the nearest sliver capable stagger schedule.
+///
+/// Without a scope, the sliver is returned unchanged in release builds.
 class SliverStaggerEntrance extends HookWidget {
   const SliverStaggerEntrance({required this.sliver, super.key});
 
+  /// Sliver revealed immediately or according to the scope schedule.
   final Widget sliver;
 
   @override

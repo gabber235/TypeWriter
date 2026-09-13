@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Paints resolved strokes first, then their endpoint markers.
+///
+/// Resolution has already validated values and selected the coordinate space.
+/// This painter therefore stays deterministic and has no binding evaluation or
+/// diagnostic ownership.
 void _paintResolvedConnectorPaths(
   Canvas canvas,
   List<_ResolvedStrokePath> strokes,
@@ -78,6 +83,10 @@ void _paintEndpointMarker(
   );
 }
 
+/// Builds a filled arrow with softened corners for a connector endpoint.
+///
+/// [direction] points outward from the path endpoint. The extent is the full
+/// arrow length, matching the endpoint marker contract used by resolution.
 Path _roundedArrowPath(Offset tip, Offset direction, double extent) {
   const cornerFraction = 0.18;
   final baseCenter = tip - direction * extent;

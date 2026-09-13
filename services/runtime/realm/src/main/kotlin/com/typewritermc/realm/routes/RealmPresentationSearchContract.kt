@@ -90,6 +90,7 @@ private fun realmPresentationSearchResponseClassifier(): ResponseClassifier<Real
         ResponseClassification(outcome, ResponseVariant.of(variant))
     }
 
+/** Keeps initial and asynchronous updates isolated when several searches share one event subject. */
 private fun matchesRealmPresentationSearch(
     request: RealmPresentationSearchRequest,
     response: RealmPresentationSearchUpdate,

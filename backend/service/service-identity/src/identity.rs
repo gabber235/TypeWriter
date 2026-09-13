@@ -7,6 +7,11 @@ use wasmcloud_utils::{
     skir_variant,
 };
 
+/// Credentials and provider identifier returned after an external account is provisioned.
+///
+/// The provider owns these values. The workflow uses `user_uid` as the durable service
+/// identifier and retains `user_pk` only to address compensation if database persistence
+/// fails.
 pub struct ProvisionedAccount {
     pub username: String,
     pub token: String,
@@ -14,17 +19,31 @@ pub struct ProvisionedAccount {
     pub user_pk: i64,
 }
 
+/// The service record to persist after role validation and account provisioning succeed.
+///
+/// This value carries the provider UID, generated display name, and validated role into
+/// the repository boundary. It does not represent organization membership or liveness.
 pub struct NewIdentity {
     pub service_id: String,
     pub display_name: String,
     pub role: ServiceRoleRecord,
 }
 
+/// Failure categories exposed by the external account boundary.
+///
+/// `Unavailable` means the provider could not serve the operation. `Internal` covers
+/// configuration, protocol, parsing, and other failures that cannot be returned as a
+/// domain response. A successful create call may have caused an account side effect even
+/// when a later operation fails.
 #[derive(Debug)]
 pub enum ProviderError {
     Unavailable,
     Internal,
 }
+/// Infrastructure failure while talking to the identity repository.
+///
+/// Database domain rejections are kept separate from this error so the workflow can map
+/// their known slugs into the public Skir response.
 #[derive(Debug)]
 pub struct RepositoryError(pub String);
 
@@ -34,34 +53,71 @@ impl std::fmt::Display for RepositoryError {
     }
 }
 
+/// Failure to obtain enough random input for generated account names.
 #[derive(Debug)]
 pub struct NamingError;
 
+/// Boundary for creating an external account and compensating for failed persistence.
+///
+/// Creation happens before the service record exists. Deletion is therefore a best effort
+/// compensation operation, and its failure is recorded without replacing the original
+/// persistence failure.
 pub trait AccountProvider {
+    /// Creates the provider account whose UID becomes the service identity.
     async fn create_account(&self, username: &str) -> Result<ProvisionedAccount, ProviderError>;
+
+    /// Attempts to remove an account that this workflow provisioned but could not persist.
     async fn delete_account(&self, user_pk: i64) -> Result<(), ProviderError>;
 }
 
+/// Boundary for role policy evaluation and durable service record creation.
+///
+/// The implementation keeps database domain rejection distinct from repository
+/// infrastructure failure. Record creation is atomic within the database transaction,
+/// but it is not atomic with the external account provider.
 pub trait IdentityRepository {
+    /// Applies database role policy before any account is provisioned.
     async fn validate_role(
         &self,
         role: &ServiceRoleRecord,
     ) -> Result<Result<bool, String>, RepositoryError>;
 
+    /// Atomically creates the service record inside the repository database.
     async fn create_identity(
         &self,
         identity: &NewIdentity,
     ) -> Result<Result<RecordId, String>, RepositoryError>;
 }
 
+/// Boundary for obtaining the names used by the provider and service record.
+///
+/// Implementations supply nondeterminism. The workflow does not use a generated name
+/// until role validation has succeeded.
 pub trait NameSource {
+    /// Produces a provider username and a human readable service name.
     fn generate(&self) -> Result<crate::names::GeneratedNames, NamingError>;
 }
 
+/// Converts a contract role into the repository representation accepted by policy checks.
+///
+/// Unknown contract variants are rejected before name generation or any external side
+/// effect occurs.
 pub fn role_record(role: ServiceRole) -> Result<ServiceRoleRecord, ()> {
     role.try_into().map_err(|_| ())
 }
 
+/// Coordinates issuance of a service identity across policy, naming, provider, and storage boundaries.
+///
+/// Role validation runs first. After valid names are generated, the workflow provisions an
+/// external account and then creates the service record. Known policy and persistence
+/// rejection slugs are returned through the contract. Infrastructure failures become
+/// `internal_error`, and provider creation unavailability becomes
+/// `identity_provider_unavailable_error`.
+///
+/// The database create transaction is atomic only inside the repository. If it rejects or
+/// fails after account creation, this function attempts provider deletion before mapping
+/// the original failure. Compensation failure does not prove the account was deleted and
+/// does not replace the original domain or infrastructure result.
 #[tracing::instrument(skip_all)]
 pub async fn issue_identity<P: AccountProvider, R: IdentityRepository, N: NameSource>(
     provider: &P,

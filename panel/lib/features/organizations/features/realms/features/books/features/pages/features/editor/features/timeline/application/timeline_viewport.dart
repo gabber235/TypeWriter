@@ -3,6 +3,11 @@ import "dart:math" as math;
 import "package:flutter/widgets.dart";
 
 @immutable
+/// Immutable coordinate conversion and overscan state for the timeline plane.
+///
+/// Offsets are content coordinates, not widget coordinates. Conversion methods
+/// therefore account for [horizontalOffset], while [visibleBounds] expands
+/// the viewport to keep nearby elements available during scrolling.
 class TimelineViewport {
   const TimelineViewport({
     required this.headerWidth,

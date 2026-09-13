@@ -16,6 +16,7 @@ import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
+/** Identifies a host participating in one Realm topology. */
 @JvmInline
 @Serializable
 value class HostId(
@@ -48,6 +49,7 @@ data class RealmTopology(
     fun factsFor(hostId: HostId): Map<String, String> = factsByHost[hostId].orEmpty()
 }
 
+/** Assigns one selected artifact to the role it performs on a host. */
 @Serializable
 data class ProjectedRuntime(
     val placement: RuntimePlacement,
@@ -62,12 +64,14 @@ data class ProjectedRuntime(
     }
 }
 
+/** Records the source part decision made for one projected extension. */
 @Serializable
 data class ProjectedSourcePart(
     val name: String,
     val disposition: SourcePartDisposition,
 )
 
+/** Carries one extension and its host specific source part decisions. */
 @Serializable
 data class ProjectedExtension(
     val artifact: DeploymentArtifact,

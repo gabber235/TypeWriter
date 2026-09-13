@@ -1,5 +1,9 @@
 part of "services.dart";
 
+/// Creates the confirmed editor snapshot for a service identity.
+///
+/// Only the editable name enters the document. Revision remains attached to
+/// the snapshot so the eventual rename cannot silently overwrite newer data.
 EditorSnapshot serviceEditorSnapshot(Service service) => DocumentEditorSnapshot(
   EditorDocument(
     rootType: _serviceIdentityType,
@@ -9,6 +13,11 @@ EditorSnapshot serviceEditorSnapshot(Service service) => DocumentEditorSnapshot(
   ),
 );
 
+/// Bridges service identity editing to the organization resource session.
+///
+/// The resource refreshes canonical service data, validates the drafted name,
+/// and translates backend success, conflict, deletion, and validation outcomes
+/// into editor results. It never edits runtime topology.
 final class ServiceEditorResource implements EditableResource {
   const ServiceEditorResource(this.repository, this.serviceId);
   final ServiceResourceRepository repository;

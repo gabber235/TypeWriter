@@ -1,6 +1,9 @@
 import "package:flutter/material.dart";
 
-/// Fades and slides a message with an elastic entrance.
+/// Applies the message transition used by [ElasticMessageSwitcher].
+///
+/// The supplied animation is owned by the enclosing switcher. This transition
+/// does not alter the child's lifecycle or identity.
 class ElasticMessageTransition extends StatelessWidget {
   const ElasticMessageTransition({
     required this.child,

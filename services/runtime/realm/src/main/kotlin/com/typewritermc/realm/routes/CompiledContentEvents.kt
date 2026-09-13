@@ -15,6 +15,12 @@ class CompiledContentEvents {
     @Volatile
     private var publisher: Publisher? = null
 
+    /**
+     * Retargets future publications to the communicator for the currently active Realm router.
+     *
+     * Replacement is atomic for publishers. Events emitted before the first configuration are dropped, and events
+     * are not replayed when the communicator changes.
+     */
     internal fun configure(
         contracts: LibraryContracts,
         address: RealmAddress,
@@ -23,10 +29,12 @@ class CompiledContentEvents {
         publisher = Publisher(communicator, contracts, address)
     }
 
+    /** Publishes the newly active compiled manifest and its shard locations to current watchers. */
     suspend fun publishActivated(activation: CompiledContentActivation) {
         publish(WatchCompiledContentResponse.ActivatedWrapper(activation.toSkir()))
     }
 
+    /** Publishes that no new compiled activation is available because compilation is blocked. */
     suspend fun publishBlocked() {
         publish(WatchCompiledContentResponse.createBlocked())
     }

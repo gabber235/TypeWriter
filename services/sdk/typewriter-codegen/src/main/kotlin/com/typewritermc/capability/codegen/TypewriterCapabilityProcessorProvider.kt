@@ -56,10 +56,12 @@ import com.typewritermc.types.TypePrototypeRegistry
 import java.security.MessageDigest
 
 /**
- * KSP entrypoint generating capability invocation bindings and discovery contributions from annotated Kotlin
- * declarations. Each compiler environment receives a fresh processor. Processing defers unresolved symbols,
- * validates supported declaration shapes, and generates its output once for the compilation. Generated resources
- * feed manifest discovery so runtime consumers do not scan source annotations.
+ * KSP entrypoint generating capability references, typed invocation providers, and discovery contributions from
+ * annotated members of [RealmCapabilities] classes. Generated providers decode transport values through the runtime
+ * prototype registry, invoke the owner with its capability context, and encode results for the caller. Manifest
+ * discovery supplies the contribution to [com.typewritermc.discovery.runtime.DiscoveryModuleLoader], which installs
+ * providers in the realm runtime. Processing defers unresolved symbols, validates capability shapes, and writes once
+ * per compilation.
  */
 class TypewriterCapabilityProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =

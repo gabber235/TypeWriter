@@ -112,9 +112,8 @@ _MultiselectDropdownController<T> _useMultiselectDropdownController<
     if (entry?.labelWidget != null) return entry!.labelWidget!;
     return Text(
       label,
-      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-        color: Theme.of(context).colorScheme.primary,
-      ),
+      style: Theme.of(context).textTheme.bodyMedium!
+          .copyWith(color: Theme.of(context).colorScheme.primary),
     );
   }
 

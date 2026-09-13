@@ -8,6 +8,11 @@ TextStyle _style(String family, double size, double height, double weight) =>
       fontVariations: [FontVariation("wght", weight)],
     );
 
+/// Builds the complete text hierarchy used by the panel.
+///
+/// Display, heading, title, and label roles use JetBrains Mono for the
+/// product's technical visual language. Body roles use Lilex for readable
+/// prose. Line heights are explicit so dense editor layouts remain stable.
 TextTheme buildTypewriterTextTheme() => TextTheme(
   displayLarge: _style("JetBrainsMono", 40, 48, 700),
   displayMedium: _style("JetBrainsMono", 36, 44, 700),

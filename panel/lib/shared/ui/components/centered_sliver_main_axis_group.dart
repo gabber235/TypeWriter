@@ -3,8 +3,10 @@ import "dart:math" as math;
 import "package:flutter/rendering.dart";
 import "package:flutter/widgets.dart";
 
-/// Centers its slivers as one block when they are shorter than the available
-/// viewport, while retaining normal lazy scrolling when they overflow.
+/// Centers a sliver group when its content is shorter than the viewport.
+///
+/// Padding is derived during sliver layout, so overflowing content keeps normal
+/// scrolling and the child remains a single lazy sliver group.
 class CenteredSliverMainAxisGroup extends SingleChildRenderObjectWidget {
   CenteredSliverMainAxisGroup({required List<Widget> slivers, super.key})
     : super(child: SliverMainAxisGroup(slivers: slivers));

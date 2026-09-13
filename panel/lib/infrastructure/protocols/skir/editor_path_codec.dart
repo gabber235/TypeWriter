@@ -1,13 +1,21 @@
+// Translates nested domain locations to the Skir path union.
+//
+// Paths are validated at this boundary because field names, indexes, and map
+// keys are later used to address mutable authoring state. A partial path is
+// never returned with diagnostics, preventing callers from applying an
+// ambiguous mutation.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/path.dart"
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes and decodes paths into typed editor data.
 final class SkirDataPathCodec {
   const SkirDataPathCodec(this.valueCodec);
 
   final SkirDataValueCodec valueCodec;
 
+  /// Encodes every segment, including recursively typed map keys.
   TypeResult<wire.DataPath> encode(DataPath path) {
     final segments = <wire.DataPathSegment>[];
     final diagnostics = <TypeDiagnostic>[];
@@ -20,6 +28,7 @@ final class SkirDataPathCodec {
     return TypeResult.success(wire.DataPath(segments: segments));
   }
 
+  /// Decodes every segment and rejects unknown or invalid wire variants.
   TypeResult<DataPath> decode(wire.DataPath? path) {
     if (path == null) return invalidWire("Wire data path is null");
     final segments = <DataPathSegment>[];

@@ -1,5 +1,10 @@
 part of "element_definition_search_preview.dart";
 
+/// Projects preview payloads into the small metadata view supported by this feature.
+///
+/// Preview payloads cross the shared search boundary as [Object], so this adapter accepts maps
+/// and objects exposing the expected fields. Unsupported payloads become a visible status
+/// message instead of being treated as an empty successful preview.
 class _PreviewData extends StatelessWidget {
   const _PreviewData({required this.data, this.subtitle});
 
@@ -32,6 +37,7 @@ class _PreviewData extends StatelessWidget {
   }
 }
 
+/// Renders normalized preview fields in the order provided by the payload map.
 class _FieldsTable extends StatelessWidget {
   const _FieldsTable({required this.fields});
 
@@ -101,15 +107,15 @@ class _StatusMessage extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Text(
           message,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: color ?? colors.onSurface),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: color ?? colors.onSurface),
         ),
       ),
     );
   }
 }
 
+/// Converts dynamic field maps to display strings at the preview boundary.
 extension on Object? {
   Map<String, String> get _normalizedFields {
     final value = this;
@@ -120,6 +126,10 @@ extension on Object? {
   }
 }
 
+/// Reads preview metadata from map payloads or compatible typed objects.
+///
+/// Dynamic property access is intentionally limited to this presentation boundary. A payload
+/// that exposes none of the expected properties is reported as unsupported by returning null.
 extension on Object {
   Map<String, dynamic>? get _previewMap {
     if (this case final Map<String, dynamic> value) return value;

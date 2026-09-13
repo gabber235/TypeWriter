@@ -2,7 +2,7 @@ package com.typewritermc.services.libs.communicator.result
 
 import com.typewritermc.services.libs.telemetry.ErrorSlug
 
-/** Explicit communication success or infrastructure failure. */
+/** Explicit result of a typed communication operation. Domain responses are carried as successful values. */
 sealed interface CommunicationResult<out Value> {
     data class Success<Value>(
         val value: Value,
@@ -13,7 +13,11 @@ sealed interface CommunicationResult<out Value> {
     ) : CommunicationResult<Nothing>
 }
 
-/** Typed communication failures. Cancellation is never represented as a value. */
+/**
+ * Typed failures at the codec or transport boundary.
+ *
+ * [cause] preserves the underlying failure when one exists. Cancellation is never represented as a value.
+ */
 sealed interface CommunicationError {
     val slug: ErrorSlug
     val cause: Throwable?

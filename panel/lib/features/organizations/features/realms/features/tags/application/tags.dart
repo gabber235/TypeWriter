@@ -16,6 +16,13 @@ part "tag_collection.dart";
 part "tag_inspector_presentation.dart";
 part "tag_inheritance_presentation.dart";
 
+/// Owns the current Realm tag projection and its authoring mutations.
+///
+/// The provider waits for the library scope before reading the session, then
+/// follows session revisions through [ref.listen]. Creation and deletion use
+/// direct guarded operations. Editing is delegated to the shared editor owner
+/// so drafts, validation, and response reconciliation follow the same path as
+/// other Realm resources.
 @riverpod
 class CanonicalTags extends _$CanonicalTags {
   @override
@@ -37,6 +44,11 @@ class CanonicalTags extends _$CanonicalTags {
     return _projectTags(ref.read(provider));
   }
 
+  /// Creates a tag in the selected Realm and returns the requested value.
+  ///
+  /// The server assigns the operation result to canonical state. A conflict is
+  /// surfaced as an exception, so callers must not select or display the new
+  /// resource as persisted until this future succeeds.
   Future<Tag> createTag({
     required String name,
     Color? color,
@@ -61,6 +73,12 @@ class CanonicalTags extends _$CanonicalTags {
     return tag;
   }
 
+  /// Saves a tag through the shared editor mutation boundary.
+  ///
+  /// [expected] is the caller's observed value, normally the projected value
+  /// used for a graph gesture. The patch compares each changed field against
+  /// that observation. Applied responses refresh the editor from authoritative
+  /// content, including fields changed remotely in the same revision.
   Future<TypedMutationResult> updateTag(Tag tag, {Tag? expected}) async {
     state.ensureReady();
     final session = ref.readAuthoringSession();
@@ -97,6 +115,11 @@ class CanonicalTags extends _$CanonicalTags {
     }
   }
 
+  /// Applies the graph drop action for [childId] and [parentId].
+  ///
+  /// Invalid links are ignored. A valid existing link is removed; a valid new
+  /// link is added. The resulting patch uses the supplied projected collection
+  /// and expected child, preserving the graph's cycle and missing node checks.
   Future<void> toggleTagParent(
     List<Tag> tags,
     skir.RecordId childId,
@@ -119,6 +142,10 @@ class CanonicalTags extends _$CanonicalTags {
     await updateTag(child.copyWith(parentIds: parents), expected: child);
   }
 
+  /// Deletes [tagId] from the selected Realm.
+  ///
+  /// The authoring response is required to apply. A conflict reports that the
+  /// tag changed before deletion and leaves reconciliation to session refresh.
   Future<void> deleteTag(skir.RecordId tagId) async {
     state.ensureReady();
     final response = await ref.readAuthoringSession().notifier.deleteTag(tagId);
@@ -126,6 +153,7 @@ class CanonicalTags extends _$CanonicalTags {
   }
 }
 
+/// Reads one tag from the canonical Realm projection.
 @riverpod
 Future<Tag?> canonicalTag(Ref ref, skir.RecordId tagId) async {
   final tags = await ref.watch(canonicalTagsProvider.future);
@@ -136,6 +164,7 @@ List<Tag> _projectTags(AuthoringSessionState value) {
   return value.tags.values.map(Tag.fromWire).toList();
 }
 
+/// Converts one canonical wire tag and its session revision into editor input.
 extension AuthoringTagValue on AuthoringSessionState {
   AuthoringValue<Tag>? tagEditorValue(skir.RecordId tagId) {
     final value = tags[tagId];
@@ -145,6 +174,11 @@ extension AuthoringTagValue on AuthoringSessionState {
   }
 }
 
+/// Combines canonical tags with local editor values for UI consumers.
+///
+/// Canonical state remains the authority. A local value is only a temporary
+/// projection keyed by organization, realm, and tag identity, and disappears
+/// when the shared editor owner releases it or canonical state catches up.
 @riverpod
 AsyncValue<List<Tag>> projectedTags(Ref ref) {
   final canonicalTags = ref.watch(canonicalTagsProvider);
@@ -172,6 +206,7 @@ AsyncValue<List<Tag>> projectedTags(Ref ref) {
   ]);
 }
 
+/// Projects one tag for graph nodes that rebuild independently.
 @riverpod
 AsyncValue<Tag?> projectedTag(Ref ref, skir.RecordId tagId) {
   final canonical = ref.watch(canonicalTagProvider(tagId));

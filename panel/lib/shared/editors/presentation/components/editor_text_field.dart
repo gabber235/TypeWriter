@@ -3,8 +3,14 @@ import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Selects which focus boundary receives focus when the field is built.
 enum EditorTextFieldAutoFocus { none, textField, surroundingField }
 
+/// Provides the shared text editing behavior used by presentation controls.
+///
+/// The optional surrounding focus boundary lets keyboard actions address the
+/// field and its container separately. Completion callbacks run when editing
+/// ends, while [onEditingComplete] can override the default focus transfer.
 class EditorTextField extends HookWidget {
   const EditorTextField({
     this.focusNode,
@@ -42,7 +48,8 @@ class EditorTextField extends HookWidget {
   final FocusNode? focusNode;
   final InputFieldController? inputFieldController;
 
-  /// Determines if the field auto‑focuses when built.
+  /// Determines whether the field or its surrounding focus boundary receives
+  /// focus automatically when built.
   final EditorTextFieldAutoFocus autofocus;
 
   /// The initial text to display in the field. If provided, it will be used to
@@ -57,24 +64,25 @@ class EditorTextField extends HookWidget {
   /// Called any time the text changes.
   final ValueChanged<String>? onChanged;
 
-  /// Called when the user is done editing. Either by pressing done, or by losing focus.
+  /// Called when the user is done editing, either by pressing done or losing
+  /// focus.
   final ValueChanged<String>? onDone;
 
-  /// Called when the users is done editing. It is responsible for what happens with focus.
-  /// Prefer [onDone] or [onSubmitted] for handling the completion of editing.
-  /// If left null, then the focus will go to the surrounding focus node when done editing.
+  /// Called when editing completes to control the next focus transition.
+  /// Prefer [onDone] or [onSubmitted] when only the value needs handling. If
+  /// null, focus moves to the surrounding focus node.
   final VoidCallback? onEditingComplete;
 
   /// Called when the user presses done.
   final ValueChanged<String>? onSubmitted;
 
-  /// Actions that can be performed when either the text field or the surrounding is focused.
+  /// Actions available while either focus boundary is active.
   final List<ActionShortcut>? actions;
 
-  /// Actions that can be performed when the text field is focused.
+  /// Actions available while the text field has focus.
   final List<ActionShortcut>? textFieldActions;
 
-  /// Actions that can be performed when the surrounding of the text field is focused.
+  /// Actions available while the surrounding focus boundary has focus.
   final List<ActionShortcut>? surroundingActions;
 
   final TextStyle? style;

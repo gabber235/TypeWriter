@@ -1,5 +1,9 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Wraps nonempty child results in one top level section.
+///
+/// Empty snapshots pass through unchanged so loading, idle, and error states do
+/// not create an empty heading in the result tree.
 final class SectionSearchSource extends DelegatingSearchSource {
   SectionSearchSource({
     required super.source,
@@ -35,6 +39,7 @@ final class SectionSearchSource extends DelegatingSearchSource {
   }
 }
 
+/// Adds a presentation section around a source's results.
 extension SectionSearchSourceX on SearchSource {
   SearchSource inSection({
     required String id,

@@ -12,6 +12,11 @@ part "create_organization.dart";
 part "join_organization.dart";
 part "organizations.dart";
 
+/// Entry route for selecting an organization, joining one, or creating one.
+///
+/// This page waits on the user scoped organization and join request projections,
+/// then composes their ready values into the three entry actions. It does not
+/// mutate either projection directly; child forms call their provider owners.
 @RoutePage()
 class IndexPage extends ConsumerWidget {
   const IndexPage({super.key});
@@ -79,6 +84,10 @@ class IndexPage extends ConsumerWidget {
   }
 }
 
+/// Layout for the organization entry actions once their projections are ready.
+///
+/// The list, join form, and create form share one scroll surface so loading and
+/// error handling stay at the provider boundary above this widget.
 class _IndexPageContent extends StatelessWidget {
   const _IndexPageContent({
     required this.organizations,

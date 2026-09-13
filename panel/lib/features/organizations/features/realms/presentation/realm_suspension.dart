@@ -3,6 +3,12 @@ import "dart:ui";
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Keeps realm content visible while blocking interaction when its connection
+/// gate is not online.
+///
+/// The application provider owns connection truth. This widget owns only the
+/// presentation response: existing content remains mounted, interaction is
+/// excluded, and the veil offers retry only when the caller provides it.
 class RealmSuspensionBarrier extends StatelessWidget {
   const RealmSuspensionBarrier({
     required this.interaction,
@@ -45,6 +51,7 @@ class RealmSuspensionBarrier extends StatelessWidget {
   }
 }
 
+/// Dims a noncritical control while the selected realm is suspended.
 class RealmSuspensionInline extends StatelessWidget {
   const RealmSuspensionInline({
     required this.suspended,
@@ -71,6 +78,7 @@ class RealmSuspensionInline extends StatelessWidget {
   }
 }
 
+/// Accessible blocking surface describing the current connection outcome.
 class _RealmSuspensionVeil extends StatelessWidget {
   const _RealmSuspensionVeil({
     required this.connectionState,
@@ -210,8 +218,7 @@ class _ConnectionCard extends StatelessWidget {
     ),
     RealmConnectionState.unavailable => (
       title: "Realm unavailable",
-      description:
-          "We could not confirm this realm is available. Check again or choose another realm.",
+      description: "We could not confirm this realm is available. Check again or choose another realm.",
     ),
     RealmConnectionState.notSelected || RealmConnectionState.online => (
       title: "Realm online",

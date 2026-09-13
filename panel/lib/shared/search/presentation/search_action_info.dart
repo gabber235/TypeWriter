@@ -5,6 +5,11 @@ import "package:iconify_flutter_plus/icons/ic.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Shows the current action outcome for the selected search result.
+///
+/// The controller owns action state. This widget only resolves the action
+/// metadata from the current snapshot and renders running, completed, or
+/// failed feedback.
 class SearchActionInfo extends HookConsumerWidget {
   const SearchActionInfo({super.key});
 

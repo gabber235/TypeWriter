@@ -3,7 +3,17 @@ import "package:flutter/widgets.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Composes selections while retaining drafts by resource identity.
+/// Composes the selected resources into one inspector presentation graph.
+///
+/// [EditorOwnerRegistry] is the authority for resource editor owners and keeps
+/// those owners, drafts, and persistence state across graph refreshes. This
+/// session owns only the current composite graph. Refreshes stage a new owner
+/// set and graph, then commit both together; failed builds roll back staged
+/// owners and preserve the installed graph.
+///
+/// Selection is read from [selectedProvider]. Focus is deliberately unrelated:
+/// selectable surfaces own focus, while this session reacts only to selection
+/// resolution and resource availability.
 final class InspectionSession extends ChangeNotifier {
   InspectionSession(this.ref)
     : owners = EditorOwnerRegistry(
@@ -207,6 +217,12 @@ final class InspectionSession extends ChangeNotifier {
     );
   }
 
+  /// Flushes resource owners retained by the current graph.
+  ///
+  /// This persists the owners' local drafts according to their commit policy;
+  /// it does not change selection or rebuild the presentation graph. When
+  /// [failedOnly] is true, only resources reporting a retryable save state are
+  /// submitted.
   Future<Map<Object, TypedMutationResult>> flush({bool failedOnly = false}) =>
       owners.flush(failedOnly: failedOnly);
 
@@ -220,6 +236,10 @@ final class InspectionSession extends ChangeNotifier {
 }
 
 /// Restores a resource selection and its route without retaining an inspector.
+///
+/// Editor resources use this destination after the inspector graph is rebuilt
+/// or closed. It observes route and selection state, but owns neither; closing
+/// it releases only those listeners.
 final class InspectorDestination extends EditorDestination {
   InspectorDestination({
     required this.container,
@@ -246,6 +266,7 @@ final class InspectorDestination extends EditorDestination {
       (identity is! SelectableIdentifier ||
           container.read(selectionProvider).contains(identity));
 
+  /// Navigates to the saved route and selects the saved resource, if any.
   @override
   Future<void> open() async {
     if (router.currentPath != path) await router.navigatePath(path);

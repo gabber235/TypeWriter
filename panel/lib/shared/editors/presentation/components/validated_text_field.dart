@@ -30,6 +30,13 @@ class _Valid<T> extends _State {
   final String message;
 }
 
+/// Edits a value through a text representation while retaining the last
+/// valid value during invalid drafts.
+///
+/// [deserialize] and [serialize] define the representation boundary. Invalid
+/// input is shown locally and is not sent to [onChanged]. Set [mixed] when
+/// there is no single starting value; the first valid edit then replaces the
+/// selected values.
 class ValidatedTextField<T> extends HookConsumerWidget {
   const ValidatedTextField({
     required this.value,
@@ -86,12 +93,13 @@ class ValidatedTextField<T> extends HookConsumerWidget {
   /// Called any time the text changes.
   final ValueChanged<T>? onChanged;
 
-  /// Called when the user is done editing. Either by pressing done, or by losing focus.
+  /// Called when the user is done editing, either by pressing done or losing
+  /// focus.
   final ValueChanged<T>? onDone;
 
-  /// Called when the users is done editing. It is responsible for what happens with focus.
-  /// Prefer [onDone] or [onSubmitted] for handling the completion of editing.
-  /// If left null, then the focus will go to the surrounding focus node when done editing.
+  /// Called when editing completes to control the next focus transition.
+  /// Prefer [onDone] or [onSubmitted] when only the value needs handling. If
+  /// null, focus moves to the surrounding focus node.
   final VoidCallback? onEditingComplete;
 
   /// Called when the user presses done.
@@ -101,13 +109,13 @@ class ValidatedTextField<T> extends HookConsumerWidget {
   final VoidCallback? onDismiss;
   final VoidCallback? onCancel;
 
-  /// Actions that can be performed when either the text field or the surrounding is focused.
+  /// Actions available while either focus boundary is active.
   final List<ActionShortcut>? actions;
 
-  /// Actions that can be performed when the text field is focused.
+  /// Actions available while the text field has focus.
   final List<ActionShortcut>? textFieldActions;
 
-  /// Actions that can be performed when the surrounding of the text field is focused.
+  /// Actions available while the surrounding focus boundary has focus.
   final List<ActionShortcut>? surroundingActions;
 
   final InputDecoration? decoration;

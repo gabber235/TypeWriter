@@ -6,6 +6,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Nested workspace route for one organization.
+///
+/// The route parameter is resolved by [organizationIdProvider]. The page keeps
+/// child navigation inside the organization scaffold while the application layer
+/// verifies membership through the user's organization projection.
 @RoutePage()
 class OrganizationPage extends HookConsumerWidget {
   const OrganizationPage({
@@ -21,6 +26,11 @@ class OrganizationPage extends HookConsumerWidget {
   }
 }
 
+/// Shared workspace shell for organization and realm child routes.
+///
+/// It owns navigation chrome and the suspension barrier around realm content. A
+/// connection retry invalidates topology state, leaving resource repositories and
+/// editor sessions owned by their respective application providers.
 class OrganizationScaffold extends HookConsumerWidget {
   const OrganizationScaffold({required this.child, super.key});
 
@@ -95,6 +105,10 @@ class OrganizationScaffold extends HookConsumerWidget {
   }
 }
 
+/// Builds organization and realm navigation from the active route selections.
+///
+/// Pending request count is a derived projection used only for the sidebar badge;
+/// link construction remains pure and keeps route identity explicit.
 class OrganizationSidebarContent extends HookConsumerWidget {
   const OrganizationSidebarContent({required this.suspended, super.key});
 

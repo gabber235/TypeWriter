@@ -1,5 +1,9 @@
+// Empty typed failure used when an operation cannot expose a recoverable domain cause.
+// It is the protocol marker for internal failure, not a message or diagnostic payload.
 struct InternalError {}
 
+// Reports a record table mismatch at a typed boundary.
+// expected_table names the required table. given_tables names the distinct tables found in the input.
 struct InvalidRecordIdError {
   expected_table: string;
   given_tables: [string];

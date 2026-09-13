@@ -1,3 +1,7 @@
+/// Application state and transformations for the shared graph capability.
+///
+/// This layer turns transient pointer and keyboard interaction into immutable
+/// layout previews and caller owned commit payloads.
 library;
 
 export "graph_commit.dart";

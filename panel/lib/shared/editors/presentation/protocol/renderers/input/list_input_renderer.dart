@@ -1,5 +1,8 @@
 part of "../../composite_input_renderer.dart";
 
+/// Renders each list element with a stable local identity for expansion and
+/// reorder animations. Item presentations receive aliases for the item and
+/// its index, while all mutations still target the list binding in the scope.
 extension ListInputElementRendering on ListInputElement {
   Widget render({
     required ResolvedBinding binding,
@@ -33,6 +36,8 @@ class _ListInputRenderer extends StatefulWidget {
 }
 
 class _ListInputRendererState extends State<_ListInputRenderer> {
+  // Widget keys cannot use list indexes because insertion, removal, and
+  // reordering would transfer expansion state to another item.
   late List<DataValue> _previousValues;
   late List<_ListItemIdentity> _identities;
 
@@ -285,6 +290,8 @@ class _ListInputRendererState extends State<_ListInputRenderer> {
   void _ignoreReorder(int source, int destination) {}
 }
 
+/// Identity belongs to the rendered item instance, not to its current value.
+/// Values can repeat, and values do not carry presentation lifecycle state.
 final class _ListItemIdentity {}
 
 void _removeExpansionState(

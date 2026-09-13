@@ -3,6 +3,10 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Creates the theme derived gradient used by [Shimmer].
+///
+/// Explicit colors override the corresponding theme colors. The gradient is
+/// translated by [ShimmerState] while at least one descendant is registered.
 LinearGradient createShimmerGradient(
   BuildContext context, {
   Color? baseColor,
@@ -39,20 +43,34 @@ class _SlidingGradientTransform extends GradientTransform {
 ///
 /// Wrap this around a section of your UI where you want to apply
 /// shimmer effects to loading states.
+/// Owns one shimmer timeline shared by registered loading descendants.
+///
+/// Wrap a loading region with this widget, then use [ShimmerLoading] for each
+/// placeholder that should move with the same gradient. The animation stops
+/// when no loading descendant remains registered.
 class Shimmer extends StatefulWidget {
   const Shimmer({super.key, this.linearGradient, this.child});
 
+  /// Finds the nearest shimmer owner without creating a dependency.
   static ShimmerState? of(BuildContext context) {
     return context.findAncestorStateOfType<ShimmerState>();
   }
 
+  /// Gradient to translate. When absent, [createShimmerGradient] is used.
   final LinearGradient? linearGradient;
+
+  /// Loading subtree whose descendants may register with this shimmer.
   final Widget? child;
 
   @override
   ShimmerState createState() => ShimmerState();
 }
 
+/// State and geometry registry for a [Shimmer] owner.
+///
+/// Registered descendants contribute their bounds so separate placeholders
+/// share one coordinate space. The state also owns the animation controller
+/// and disposes it with the widget.
 class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
   late AnimationController _shimmerController;
   int _listenerCount = 0;
@@ -85,6 +103,7 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     }
   }
 
+  /// Current gradient, translated to the shared animation position.
   LinearGradient get gradient {
     final baseGradient =
         widget.linearGradient ?? createShimmerGradient(context);
@@ -125,6 +144,7 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     return Rect.fromLTRB(left, top, right, bottom);
   }
 
+  /// Bounds covering all registered descendants, or the owner size.
   Size get effectiveSize {
     final computedBounds = _computedBounds;
     if (computedBounds != null) {
@@ -133,6 +153,7 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     return size;
   }
 
+  /// Top left of the shared descendant bounds, or zero without registrations.
   Offset get effectiveOffset {
     final computedBounds = _computedBounds;
     if (computedBounds != null) {
@@ -141,11 +162,14 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     return Offset.zero;
   }
 
+  /// Whether the owner render object has completed layout.
   bool get isSized =>
       (context.findRenderObject() as RenderBox?)?.hasSize ?? false;
 
+  /// The laid out size of the owner render object.
   Size get size => (context.findRenderObject()! as RenderBox).size;
 
+  /// Converts [descendant]'s local [offset] into shimmer coordinates.
   Offset getDescendantOffset({
     required RenderBox? descendant,
     Offset offset = Offset.zero,
@@ -155,6 +179,7 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
     return descendant.localToGlobal(offset, ancestor: shimmerBox);
   }
 
+  /// Notifies consumers whenever the shared shimmer position changes.
   Listenable get shimmerChanges => _shimmerController;
 
   @override
@@ -163,13 +188,14 @@ class ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
   }
 }
 
-/// Applies shimmer effect to its child widget.
+/// Applies the nearest [Shimmer] gradient to [child].
 ///
 /// The child should contain shapes with solid colors that will be
 /// replaced by the shimmer gradient.
 class ShimmerLoading extends HookWidget {
   const ShimmerLoading({required this.child, super.key});
 
+  /// Placeholder subtree whose solid colors receive the animated gradient.
   final Widget child;
 
   @override
@@ -237,7 +263,7 @@ class ShimmerLoading extends HookWidget {
   }
 }
 
-/// A convenient shimmer box that displays a simple colored shape.
+/// A convenient shimmer placeholder for a simple shaped loading region.
 ///
 /// Use this as a quick placeholder for content that is loading.
 class ShimmerBox extends HookWidget {
@@ -264,7 +290,7 @@ class ShimmerBox extends HookWidget {
   const ShimmerBox.circle({super.key, this.width, this.height, this.color})
     : shape = const CircleBorder();
 
-  /// Creates a stadium-shaped shimmer box.
+  /// Creates a stadium shaped shimmer box.
   const ShimmerBox.stadium({super.key, this.width, this.height, this.color})
     : shape = const StadiumBorder();
 

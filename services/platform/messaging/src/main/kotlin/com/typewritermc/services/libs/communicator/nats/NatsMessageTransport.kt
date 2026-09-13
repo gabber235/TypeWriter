@@ -43,6 +43,7 @@ class NatsMessageTransport(
 ) : MessageTransport {
     override val system: MessagingSystem = MessagingSystem.of("nats")
 
+    /** Opens a temporary subscription at a transport owned inbox for scatter replies. */
     override suspend fun openReplyChannel(): TransportResult<ReplyChannel> {
         val prefix = connection.connectedInboxPrefix() ?: return disconnectedFailure()
         val address = MessageAddress.of(prefix + UUID.randomUUID().toString().replace("-", ""))
@@ -52,6 +53,7 @@ class NatsMessageTransport(
         }
     }
 
+    /** Publishes [message] when the connection is currently usable. */
     override suspend fun publish(message: OutboundMessage): TransportResult<Unit> {
         val client = connection.connectedClient() ?: return disconnectedFailure()
         return transportCall { client.publish(message.toNatsMessage()) }
@@ -78,6 +80,12 @@ class NatsMessageTransport(
         }
     }
 
+    /**
+     * Creates and activates a NATS subscription for [pattern].
+     *
+     * The adapter flushes before returning, so a caller can issue a request immediately after subscription. A
+     * failure during activation rolls the native subscription back.
+     */
     override suspend fun subscribe(
         pattern: AddressPattern,
         options: SubscriptionOptions,

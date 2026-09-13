@@ -1,3 +1,4 @@
+// Responsive invitation code controls and route presentation.
 export "join_code_actions.dart";
 export "join_code_badges.dart";
 export "join_code_card.dart";

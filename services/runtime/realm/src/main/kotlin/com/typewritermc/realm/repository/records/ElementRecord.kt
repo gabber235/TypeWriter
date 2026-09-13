@@ -31,6 +31,12 @@ internal data class StoredPageElements(
 internal object ElementRecordParser {
     private val json = Json
 
+    /**
+     * Parses element rows and their outgoing reference rows as one ownership view.
+     *
+     * The page map is kept beside elements because callers need containment while assembling authoring documents and
+     * applying element mutations. This parser does not resolve referenced targets.
+     */
     fun parse(
         elementsValue: Value,
         referencesValue: Value,

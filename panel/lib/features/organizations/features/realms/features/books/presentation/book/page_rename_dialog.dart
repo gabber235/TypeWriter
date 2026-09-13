@@ -1,5 +1,11 @@
 part of "route.dart";
 
+/// Renames a page through the authoring session.
+///
+/// The submitted name is checked against the value shown when the dialog
+/// opened. A conflict remains visible to the shared dialog error handling. If
+/// the renamed page is not the active route, the dialog opens the new route so
+/// the selection follows the resource.
 class RenamePageDialogue extends HookConsumerWidget {
   const RenamePageDialogue({
     required this.pageId,
@@ -23,8 +29,7 @@ class RenamePageDialogue extends HookConsumerWidget {
     unawaited(router.push(RouteRoute(pageId: pageId.id)));
   }
 
-  /// Validates the proposed name for a page.
-  /// A name is invalid if it is empty or if it already exists.
+  /// Rejects empty names and a no op rename.
   String? _validateName(String text) {
     if (text.isEmpty) {
       return "Name cannot be empty";

@@ -1,8 +1,20 @@
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/shared/utilities/collection.dart";
 
+/// The reconciled collection and the value accepted as canonical.
+///
+/// [values] is safe to publish as the current collection. [canonical] is the
+/// value callers must use for revision sensitive decisions, including mutation
+/// conflict expectations.
 typedef CanonicalReconciliation<T> = ({List<T> values, T canonical});
 
+/// Reconciles one incoming value into a revisioned canonical collection.
+///
+/// Values are matched by [keyOf]. An older or equal revision cannot replace the
+/// existing value. Equal revisions with unequal values report a
+/// [FlutterError], because the same canonical revision has diverged, then keep
+/// the existing value. A newer revision replaces the matching value through
+/// [upsertByKey]. A null collection is treated as empty.
 CanonicalReconciliation<T> reconcileCanonicalRevision<T extends Object, K>({
   required List<T>? values,
   required T incoming,

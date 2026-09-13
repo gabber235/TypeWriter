@@ -10,6 +10,10 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "tag_editor_resource.dart";
 part "tag_inspector_definition.dart";
 
+/// Stable selection and graph drag identity for one tag record.
+///
+/// The record ID is also the editor resource identity, so selection, graph
+/// nodes, local drafts, and authoring reservations address the same resource.
 class TagIdentifier extends SelectableIdentifier implements GraphDragData {
   const TagIdentifier(this.tagId);
 
@@ -78,6 +82,12 @@ class TagIdentifier extends SelectableIdentifier implements GraphDragData {
   String toString() => "TagIdentifier(tagId: $tagId)";
 }
 
+/// Binds one tag snapshot to shared inspector and selection infrastructure.
+///
+/// This object is a read model assembled from the canonical session revision.
+/// Its editor resource owns persistence, while the selectable exposes the
+/// presentation, collection, deletion capability, and snapshot needed by
+/// selection consumers.
 class TagSelectable extends EditableSelectable<TagIdentifier> {
   const TagSelectable({
     required this.resource,

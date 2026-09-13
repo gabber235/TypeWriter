@@ -35,9 +35,11 @@ data class ResourceId(
 
     constructor(table: String, key: String) : this(table, RecordIdKey.String(key))
 
+    /** Returns the stable table and key form used by resource fields and transport values. */
     fun referenceString(): String = "$table:${key.referenceString()}"
 
     companion object {
+        /** Parses the complete reference form, preserving nonstring key identity. */
         fun parse(value: String): ResourceId {
             val separator = value.indexOf(':')
             require(separator > 0) { "Resource references must contain a table and key." }

@@ -4,6 +4,13 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Creates the editor target for a loaded element on [pageId].
+///
+/// The page document in [state] is the lookup boundary. The target captures
+/// the element's typed value together with its page specific placement, so the
+/// shared editor can own local changes while [ElementEditorResource] refreshes
+/// and saves the canonical resource. Throws when the element is not retained
+/// by the session, because an unloaded element has no safe authoritative base.
 EditorTarget authoringElementTarget({
   required AuthoringResourceRepository repository,
   required AuthoringSessionState state,
@@ -25,6 +32,12 @@ EditorTarget authoringElementTarget({
   );
 }
 
+/// Embeds an element value and its placement in one editor document.
+///
+/// Placement is a sibling field rather than part of the element's typed value.
+/// The merge policy therefore treats placement as one record while value edits
+/// remain path based. This shape lets the editor preserve placement changes and
+/// typed content changes in the same authoring commit.
 EditorSnapshot elementEditorSnapshot(
   wire.PageElement element,
   EditorDocument value,
@@ -47,12 +60,21 @@ EditorSnapshot elementEditorSnapshot(
   ),
 );
 
+/// Projects and patches one element within its owning page document.
+///
+/// Element values are decoded with the catalog revision carried by the
+/// authoritative snapshot or applied change. A catalog that cannot resolve the
+/// element type is unavailable, not an invitation to decode with a stale
+/// definition. The page identifier stays fixed for this retained resource and
+/// is included in placement and value operation routing.
 final class ElementEditorResource extends AuthoringEditorResource {
   const ElementEditorResource(super.repository, super.id, this.pageId);
   final skir.RecordId pageId;
   @override
   wire.AuthoringSnapshotScope get scope =>
       wire.AuthoringSnapshotScope.createPage(pageId: pageId);
+
+  /// Finds this element in the requested page snapshot and decodes its value.
   @override
   Future<EditorSnapshot?> project(wire.AuthoringSnapshot snapshot) async {
     wire.PageElement? element;
@@ -69,6 +91,11 @@ final class ElementEditorResource extends AuthoringEditorResource {
     return _projectElement(element, snapshot.sequence);
   }
 
+  /// Projects this element directly from an applied resource change.
+  ///
+  /// The submitted type catalog is retained as decoding context for the change.
+  /// If the change is unrelated, malformed, or references an unavailable type,
+  /// null asks the caller to perform the authoritative refresh fallback.
   @override
   EditorSnapshot? projectApplied(
     wire.AuthoringChanged change,
@@ -153,6 +180,7 @@ final class ElementEditorResource extends AuthoringEditorResource {
     );
   }
 
+  /// Builds guarded value and placement mutations for this element.
   @override
   wire.AuthoringOperation operation(
     EditorSnapshot snapshot,

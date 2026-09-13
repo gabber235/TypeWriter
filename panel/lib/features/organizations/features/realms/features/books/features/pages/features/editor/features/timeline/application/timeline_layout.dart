@@ -4,6 +4,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "timeline_layout.g.dart";
 
+/// Assigns timeline blocks to nonoverlapping lanes.
+///
+/// Layout is pure derived state. Nested children consume lanes below their
+/// parent, and active previews reserve their original lanes when possible so a
+/// drag does not make unrelated elements jump. The result is later converted
+/// to pixels by [TimelinePlacementEngine].
 class TimelineLayoutEngine {
   const TimelineLayoutEngine();
 
@@ -385,6 +391,7 @@ class _FrameRange {
   }
 }
 
+/// Lane assignments for all tracks, indexed by element ID for focus lookup.
 class TimelineLayoutResult {
   TimelineLayoutResult({required this.tracks}) {
     void collect(TimelineTrackBlockPlacement placement) {
@@ -408,6 +415,7 @@ class TimelineLayoutResult {
 }
 
 @JsonSerializable(createFactory: false)
+/// Lane geometry inputs for one track before viewport culling.
 class TimelineTrackLayout {
   const TimelineTrackLayout({
     required this.track,

@@ -1,10 +1,20 @@
 part of "../../layout_renderer.dart";
 
+/// Projects protocol tabs while retaining the selected tab locally.
+///
+/// The element supplies tab identity, labels, and child content. This state
+/// owns only transient selection and the [TabController]. Selection falls back
+/// to the first current tab when an update removes the selected identifier.
 extension TabsElementRendering on TabsElement {
   Widget render(PresentationRenderScope scope) =>
       _TabsRenderer(element: this, scope: scope);
 }
 
+/// Stateful tab projection whose controller follows the element's tab order.
+///
+/// The controller is recreated when identity order changes because Flutter's
+/// controller length and index mapping are no longer compatible. Unchanged
+/// order preserves the current controller and its animation lifecycle.
 class _TabsRenderer extends StatefulWidget {
   const _TabsRenderer({required this.element, required this.scope});
 
@@ -99,6 +109,8 @@ class _TabsRendererState extends State<_TabsRenderer>
     );
   }
 
+  /// Applies a user selection, using immediate movement when animations are
+  /// disabled and the normal panel transition otherwise.
   void _select(String? selection) {
     if (selection == null || selection == _selected) return;
     final index = widget.element.tabs.indexWhere((tab) => tab.id == selection);

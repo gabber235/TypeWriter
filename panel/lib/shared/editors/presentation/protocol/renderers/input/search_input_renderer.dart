@@ -1,5 +1,8 @@
 part of "../../input_renderer.dart";
 
+/// Resolves the configured result extent before constructing the search
+/// control. Invalid expressions become presentation diagnostics, preventing a
+/// child search surface from receiving an unusable layout constraint.
 extension SearchInputElementRendering on SearchInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

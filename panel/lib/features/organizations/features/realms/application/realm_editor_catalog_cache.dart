@@ -5,6 +5,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "realm_editor_catalog_cache.freezed.dart";
 
+/// Observable lifecycle of the cached realm editor catalog.
+///
+/// Loading and unavailable states retain the last snapshot when one exists.
+/// Consumers can therefore keep rendering known definitions while showing the
+/// current recovery state.
 @freezed
 sealed class RealmEditorCatalogState with _$RealmEditorCatalogState {
   const RealmEditorCatalogState._();
@@ -27,6 +32,10 @@ sealed class RealmEditorCatalogState with _$RealmEditorCatalogState {
   };
 }
 
+/// Keeps one catalog request in the cache's merged demand until [close].
+///
+/// The provider that acquired the lease owns its release. Releasing is
+/// idempotent, so disposal paths can safely call it more than once.
 final class RealmEditorCatalogLease {
   RealmEditorCatalogLease._(this._close);
 
@@ -40,6 +49,13 @@ final class RealmEditorCatalogLease {
   }
 }
 
+/// Owns one realm catalog snapshot, its invalidation watch, and consumer leases.
+///
+/// Each lease contributes requested types, presentations, or subtype queries.
+/// The cache merges those requests into fetches, rejects stale responses after
+/// invalidation or disposal, retries generation mismatches, and publishes a
+/// previous snapshot with diagnostics when recovery fails. It is created by
+/// the online realm provider and must be disposed with that provider.
 final class RealmEditorCatalogCache {
   RealmEditorCatalogCache({required this.source, required this.route});
 
@@ -71,6 +87,7 @@ final class RealmEditorCatalogCache {
     controller.onCancel = subscription.cancel;
   }, isBroadcast: true);
 
+  /// Starts the invalidation watch and schedules the initial fetch once.
   void start() {
     if (_started || _disposed) return;
     _started = true;
@@ -84,6 +101,10 @@ final class RealmEditorCatalogCache {
     unawaited(_refresh());
   }
 
+  /// Retains [request] in the merged fetch scope until the returned lease closes.
+  ///
+  /// A new request triggers a refresh only after the cache has started. The
+  /// request is not removed until its consumer releases the lease.
   RealmEditorCatalogLease acquire(RealmEditorCatalogRequest request) {
     if (_disposed) return RealmEditorCatalogLease._(() {});
     final previous = _requested;
@@ -95,9 +116,11 @@ final class RealmEditorCatalogCache {
     return RealmEditorCatalogLease._(() => _requests.remove(id));
   }
 
+  /// Reconciles current demand against the latest known catalog generation.
   Future<void> refresh() =>
       _refresh(expectedGeneration: _state.snapshot?.generation);
 
+  /// Stops watches and prevents pending fetches from publishing state.
   Future<void> dispose() async {
     if (_disposed) return;
     _disposed = true;

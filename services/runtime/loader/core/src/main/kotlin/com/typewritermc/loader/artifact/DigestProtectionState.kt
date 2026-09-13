@@ -17,6 +17,7 @@ data class DigestProtectionState(
     val acceptedCandidateDigests: Set<ArtifactDigest>,
     val rolloutProjectionDigests: Set<ArtifactDigest>,
 ) {
+    /** Returns the union of all caller supplied retention roots without inspecting storage. */
     fun protectedDigests(): Set<ArtifactDigest> =
         buildSet {
             currentDeployment?.content?.digests()?.let(::addAll)

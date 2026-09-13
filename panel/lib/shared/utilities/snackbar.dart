@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/app/presentation/theme/typewriter_theme_access.dart";
 
+/// Shows a dismissible message through the nearest [ScaffoldMessenger].
 void showSnackBar(
   BuildContext context, {
   required String message,
@@ -20,6 +21,7 @@ void showSnackBar(
   );
 }
 
+/// Shows [message] using the theme's error colors.
 void showErrorSnackBar(BuildContext context, String message) {
   final colorScheme = Theme.of(context).colorScheme;
   showSnackBar(
@@ -30,6 +32,7 @@ void showErrorSnackBar(BuildContext context, String message) {
   );
 }
 
+/// Shows [message] using the panel's success colors.
 void showSuccessSnackBar(BuildContext context, String message) {
   showSnackBar(
     context,

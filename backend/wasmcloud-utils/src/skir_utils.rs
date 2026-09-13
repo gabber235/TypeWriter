@@ -1,3 +1,9 @@
+//! Conversion and formatting boundaries between generated SKIR values and SurrealDB.
+//!
+//! The conversions preserve the supported record ID shapes in both directions. Values
+//! that the target representation cannot express are mapped to its closest explicit
+//! unknown or null form, according to the existing conversion contract.
+
 use opentelemetry::Value;
 
 use crate::skir_client::KeyedVec;
@@ -51,7 +57,12 @@ fn fmt_string_value(s: &str, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 // Skir → Surreal
 // =============================================================================
 
+/// Supplies table names that do not match a required record ID table.
+///
+/// Implementations preserve all invalid table names for one ID and sort and deduplicate
+/// collection results. This is the validation source used by `validate_record_ids!`.
 pub trait RecordIdTableInput {
+    /// Return invalid table names for the expected table.
     fn invalid_tables(&self, expected_table: &str) -> Vec<String>;
 }
 
@@ -119,8 +130,9 @@ impl From<&RecordId> for surrealdb_types::RecordId {
     }
 }
 
-/// Converts Skir record ID collections into SurrealDB record IDs.
+/// Converts owned or borrowed SKIR record ID collections to component SDK IDs.
 pub trait IntoSurrealRecordIds {
+    /// Convert every record ID while preserving collection order.
     fn into_surreal_record_ids(self) -> Vec<surrealdb_component_sdk::RecordId>;
 }
 
@@ -270,8 +282,9 @@ impl From<&surrealdb_types::RecordId> for RecordId {
     }
 }
 
-/// Converts SurrealDB record ID collections into Skir record IDs.
+/// Converts component SDK record ID collections to generated SKIR IDs.
 pub trait IntoSkirRecordIds {
+    /// Convert every record ID while preserving collection order.
     fn into_skir_record_ids(self) -> Vec<RecordId>;
 }
 

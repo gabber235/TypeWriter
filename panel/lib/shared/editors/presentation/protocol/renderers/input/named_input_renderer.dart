@@ -1,5 +1,11 @@
 part of "../../simple_input_renderer.dart";
 
+/// Renders the concrete representation behind a nominal binding without
+/// exposing that representation as the control's public type contract.
+///
+/// The projected payload binding is local to this presentation. Updates still
+/// target the original binding, so the enclosing scope retains ownership of
+/// persistence and editability.
 extension NamedInputElementRendering on NamedInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

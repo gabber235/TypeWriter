@@ -5,6 +5,14 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "scene.freezed.dart";
 
+/// A decoded timeline element backed by a page authoring element.
+///
+/// Segments occupy an inclusive frame range and expose outward links for
+/// nested cues. Keyframes occupy one frame and have no timeline children in
+/// this projection. Both variants retain decoded value data and incoming
+/// links for the inspector and surrounding editor views. Instances are read
+/// model values; placement and value persistence remain with the page element
+/// coordinator.
 @freezed
 abstract class Cue with _$Cue {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -31,6 +39,13 @@ abstract class Cue with _$Cue {
   }) = Keyframe;
 }
 
+/// Stable selection identity for a cue on a specific page.
+///
+/// The page is part of identity because element IDs are resolved in page
+/// context here. Resolving this identifier reads the projected page, then
+/// creates the same authoring target used by entry editing. The target carries
+/// the projection revision so the shared editor can reconcile changes without
+/// treating the scene projection as persistence authority.
 class CueIdentifier extends SelectableIdentifier {
   const CueIdentifier({required this.pageId, required this.id});
 
@@ -42,6 +57,12 @@ class CueIdentifier extends SelectableIdentifier {
   @override
   Object get resourceId => recordId("element:$id");
 
+  /// Resolves the current projected cue into an editable inspector selection.
+  ///
+  /// Loading and catalog failures are returned as [AsyncValue] states. A cue
+  /// absent from the selected page becomes [SelectableNotFoundException].
+  /// Missing organization or realm context is a bad request rather than a
+  /// lookup against an ambient default.
   @override
   AsyncValue<Selectable<CueIdentifier>> create(Ref ref) {
     final organizationId = ref.watch(organizationIdProvider);
@@ -121,6 +142,11 @@ class CueIdentifier extends SelectableIdentifier {
   String toString() => "CueIdentifier($pageId, $id)";
 }
 
+/// Selection adapter that exposes a cue through the shared editor pipeline.
+///
+/// [target] owns the mutation route and editor snapshot. This adapter supplies
+/// the cue identity, catalog, presentation choices, and inspector header; it
+/// does not copy or independently persist cue data.
 class CueSelection extends EditableSelectable<CueIdentifier> {
   const CueSelection({
     required this.target,
@@ -171,6 +197,7 @@ class CueSelection extends EditableSelectable<CueIdentifier> {
   String toString() => "CueSelection($id)";
 }
 
+/// Compact inspector header showing a cue name, identifier, and color.
 class CueHeader extends StatelessWidget {
   const CueHeader({
     required this.id,

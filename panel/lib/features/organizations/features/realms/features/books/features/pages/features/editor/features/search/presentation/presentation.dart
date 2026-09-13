@@ -1,3 +1,4 @@
+/// Public widgets used to render editor search results and element definition previews.
 library;
 
 export "preview/element_definition_search_preview.dart";

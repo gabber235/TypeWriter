@@ -1,6 +1,11 @@
 package com.typewritermc.services.libs.communicator.nats
 
-/** Authentication values supported by a NATS CONNECT operation. */
+/**
+ * Authentication values supplied to a NATS CONNECT operation.
+ *
+ * Values are immutable and never exposed by [toString], because this object may contain credentials or signing
+ * material. The provider decides which supported values are populated for each handshake.
+ */
 class NatsAuthentication(
     val authToken: String? = null,
     val username: String? = null,
@@ -32,7 +37,7 @@ class NatsAuthentication(
     override fun toString(): String = "NatsAuthentication([REDACTED])"
 }
 
-/** Safe access to the current server nonce challenge. */
+/** Provides controlled access to the current server nonce challenge during authentication. */
 class NatsAuthenticationChallenge internal constructor(
     val hasNonce: Boolean,
     private val signer: suspend (String) -> String?,
@@ -44,7 +49,7 @@ class NatsAuthenticationChallenge internal constructor(
     }
 }
 
-/** Supplies fresh CONNECT authentication for every NATS handshake. */
+/** Supplies fresh CONNECT authentication for every NATS handshake, including reconnects. */
 fun interface NatsAuthenticationProvider {
     suspend fun authenticate(challenge: NatsAuthenticationChallenge): NatsAuthentication
 }

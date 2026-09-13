@@ -2,7 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/shared/ui/components/loading_button/loading_button_controller.dart";
 
-/// Hook for creating and managing a LoadingButtonController.
+/// Creates a [LoadingButtonController] owned by the current widget.
+///
+/// The controller is stable across rebuilds and disposed when the hook is
+/// removed. Its action rejects overlapping triggers while an earlier action is
+/// loading; use the controller's state to render progress and errors.
 LoadingButtonController useLoadingButtonController() {
   return use(_LoadingButtonControllerHook());
 }

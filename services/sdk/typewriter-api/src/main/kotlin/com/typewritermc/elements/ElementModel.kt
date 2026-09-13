@@ -115,6 +115,7 @@ annotation class TypewriterElementFacet(
  */
 @Serializable
 sealed interface AvailabilityExpression {
+    /** Evaluates this catalog expression against the facts reported by the current deployment. */
     fun evaluate(facts: DeploymentFacts): Boolean
 
     @Serializable
@@ -189,9 +190,11 @@ data class ElementDescriptor(
  * Generated implementations let authoring and runtime consumers share the same structural type identity.
  */
 interface ElementPrototype<E : Element> : ConcreteTypePrototype<E> {
+    /** Metadata used to expose this prototype in the deployment element catalog. */
     val descriptor: ElementDescriptor
 }
 
+/** Evaluates the descriptor's deployment availability expression against the supplied facts. */
 fun ElementDescriptor.isAvailable(facts: DeploymentFacts): Boolean = availability.evaluate(facts)
 
 /**

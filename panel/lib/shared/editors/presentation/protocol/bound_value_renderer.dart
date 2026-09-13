@@ -4,6 +4,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "renderers/data/default_presentation_renderer.dart";
 part "renderers/data/presentation_invocation_renderer.dart";
 
+/// Renders a binding with the type system's generated default presentation.
+///
+/// This is the fallback for typed fields without an explicit presentation.
+/// It reports binding inspection failures through the same diagnostic surface
+/// as explicit controls and delegates the resulting node back through the
+/// protocol renderer, preserving normal scope routing and header behavior.
 class ProtocolBoundValueEditor extends StatelessWidget {
   const ProtocolBoundValueEditor({
     required this.control,
@@ -32,6 +38,8 @@ class ProtocolBoundValueEditor extends StatelessWidget {
   }
 }
 
+/// Builds a default presentation for an inspected binding without changing
+/// the binding owner or its value state.
 extension InspectedBindingDefaultPresentationRendering on InspectedBinding {
   Widget renderDefaultPresentation(
     PresentationRenderScope scope, {
@@ -49,6 +57,8 @@ extension InspectedBindingDefaultPresentationRendering on InspectedBinding {
   );
 }
 
+/// Builds a default presentation when a concrete value is already required by
+/// the caller, such as a nested collection or record renderer.
 extension ResolvedBindingDefaultPresentationRendering on ResolvedBinding {
   Widget renderDefaultPresentation(
     PresentationRenderScope scope, {
@@ -66,6 +76,11 @@ extension ResolvedBindingDefaultPresentationRendering on ResolvedBinding {
   );
 }
 
+/// Adds declarative label, description, and semantic labeling to a control.
+///
+/// The wrapper evaluates text through the render scope and does not own the
+/// control's value or interaction. Controls can omit it when an enclosing
+/// header or composite surface provides the visible label.
 class LabeledControl extends StatelessWidget {
   const LabeledControl({
     required this.control,
@@ -111,6 +126,8 @@ class LabeledControl extends StatelessWidget {
   }
 }
 
+/// Resolves the accessible name, preferring an explicit semantic label over
+/// the visible label.
 String? resolveControlSemanticLabel(
   BoundControl control,
   PresentationRenderScope scope,
@@ -119,6 +136,8 @@ String? resolveControlSemanticLabel(
   return expression == null ? null : scope.expressionText(expression);
 }
 
+/// Renders a control prefix and removes duplicate semantics when the control
+/// already supplies an accessible name.
 Widget? renderControlPrefix(
   BuildContext context,
   BoundControl control,

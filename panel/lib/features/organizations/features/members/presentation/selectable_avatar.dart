@@ -1,6 +1,12 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/app/presentation/theme/theme.dart";
 
+/// Avatar treatment that makes membership selection visible without relying
+/// on row background color alone.
+///
+/// Unselected members use the supplied network image. Selection intentionally
+/// replaces the image with a check state, giving the same semantic signal in
+/// the desktop table and touch card layouts.
 class SelectableAvatar extends StatelessWidget {
   const SelectableAvatar({
     required this.avatarUrl,

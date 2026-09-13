@@ -1,5 +1,11 @@
 part of "../../simple_input_renderer.dart";
 
+/// Renders a boolean control only for mixed bindings, where the ordinary
+/// labeled control is supplied by the surrounding presentation path.
+///
+/// A checked value replaces the mixed state through the field owner. A
+/// uniform value needs no local widget because its header or parent chrome
+/// already represents that state.
 extension ToggleInputElementRendering on ToggleInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

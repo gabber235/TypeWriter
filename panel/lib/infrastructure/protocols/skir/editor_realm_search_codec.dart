@@ -1,14 +1,22 @@
+// Translates realm presentation search requests and live updates.
+//
+// Search execution belongs to the realm, while the panel owns query input
+// and rendering. This boundary carries typed payloads into that remote
+// owner and converts snapshot or unavailable updates into domain states that
+// preserve diagnostics and subscription identity.
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/search.dart"
     as wire;
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/type_catalog.dart"
     as wire_type;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes search requests and decodes realm search updates.
 final class SkirRealmPresentationSearchCodec {
   const SkirRealmPresentationSearchCodec(this.editor);
 
   final SkirEditorCodec editor;
 
+  /// Encodes a typed search request for the realm owner.
   TypeResult<wire.RealmPresentationSearchRequest> encodeRequest(
     RealmPresentationSearchRequest request,
   ) {
@@ -40,6 +48,7 @@ final class SkirRealmPresentationSearchCodec {
     );
   }
 
+  /// Decodes a snapshot or unavailable update without losing diagnostics.
   RealmPresentationSearchUpdate decodeUpdate(
     wire.RealmPresentationSearchUpdate update,
   ) => switch (update) {

@@ -1,27 +1,23 @@
 import "package:flutter/rendering.dart";
 import "package:flutter/widgets.dart";
 
-/// Slots used by [OutlineDecorator] to build separate subtrees per layer.
+/// Layers built by [OutlineDecorator].
 enum OutlineSlot { base, outer, inner }
 
-/// Builder used to construct the content once per slot.
+/// Builds the content used by each outline layer.
 typedef OutlineContentBuilder = WidgetBuilder;
 
-/// Draws outlines (outer and optional inner) around content by repainting
-/// separately built slot subtrees with a color filter and a center-anchored
-/// scale transform. This avoids reusing the same child across multiple passes.
+/// Paints a base subtree with optional outer and inner outline layers.
 ///
-/// Public API exposes a single [builder] that is invoked per slot:
-/// - [OutlineSlot.base]   → unmodified content (painted on top)
-/// - [OutlineSlot.outer]  → content for the outer halo
-/// - [OutlineSlot.inner]  → content for the inner halo (optional)
+/// [builder] is invoked separately for the base and each enabled outline so
+/// the same conceptual content can be painted more than once without reusing a
+/// widget instance. The base layer owns layout and hit testing; outline layers
+/// are painted only and do not determine the widget's size. [show] disables both
+/// outline layers while retaining the base subtree.
 ///
-/// Notes:
-/// - Set [show] to false to paint only the base layer (no halos).
-/// - Inner outline is painted only when [innerColor] is non-null and
-///   [innerThickness] > 0.
-/// - Scaling is anchored at the child's center so the outline thickness is
-///   uniform on all sides regardless of aspect ratio.
+/// Use this instead of a separate foreground overlay when the outlined content
+/// must remain the single layout and interaction owner. The builder must be
+/// safe to invoke once per enabled layer.
 class OutlineDecorator
     extends SlottedMultiChildRenderObjectWidget<OutlineSlot, RenderBox> {
   const OutlineDecorator({

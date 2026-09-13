@@ -128,6 +128,7 @@ class EngineContentAssembler(
     private val catalog: ElementCatalog,
     private val prototypes: TypePrototypeRegistry,
 ) {
+    /** Decodes every shard in [content] into an atomically usable element snapshot. */
     fun assemble(content: CompiledContentBundle): EngineContentSnapshot {
         require(content.manifest.formatRevision == 1) {
             "Unsupported compiled content format ${content.manifest.formatRevision}."
@@ -182,16 +183,19 @@ class AssemblingEngineContentGateway(
  * Ignored reports the current activation and manifest, not the rejected incoming revision.
  */
 sealed interface ContentApplicationResult {
+    /** The gateway accepted the incoming activation and it became the current content. */
     data class Applied(
         val activationRevision: Long,
         val manifest: ContentDigest,
     ) : ContentApplicationResult
 
+    /** The activation was stale or repeated; the current content remains authoritative. */
     data class Ignored(
         val activationRevision: Long,
         val currentManifest: ContentDigest,
     ) : ContentApplicationResult
 
+    /** No content gateway is configured, so the activation could not be applied. */
     data object Unsupported : ContentApplicationResult
 }
 

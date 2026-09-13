@@ -6,6 +6,9 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Desktop row control for revoking one invitation code.
+/// It hides itself while its asynchronous revoke operation is in flight; the
+/// provider performs optimistic removal and restores state on failure.
 class JoinCodeRowActions extends HookConsumerWidget {
   const JoinCodeRowActions({required this.code, super.key});
 
@@ -38,8 +41,7 @@ class JoinCodeRowActions extends HookConsumerWidget {
     await showConfirmationDialogue(
       context: context,
       title: "Revoke this join code?",
-      content:
-          "Are you sure you want to revoke this join code? It will no longer work for new members.",
+      content: "Are you sure you want to revoke this join code? It will no longer work for new members.",
       confirmText: "Revoke",
       confirmIcon: Fa6Solid.link_slash,
       onConfirm: () async {

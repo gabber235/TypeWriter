@@ -1,3 +1,6 @@
+/// Widgets that render page editor values and provide the shared selection
+/// controls used by graph and timeline consumers. These widgets consume
+/// application projections; they do not own canonical authoring state.
 library;
 
 export "dropdown.dart";

@@ -1,5 +1,9 @@
 part of "route.dart";
 
+/// Builds the chapter tree from the sidebar page projection.
+///
+/// The tree is a view model only. Page identity and mutation ownership remain
+/// with the page rows and their authoring commands.
 class _PagesTree extends HookConsumerWidget {
   const _PagesTree({required this.expanded, required this.pages});
 
@@ -68,6 +72,10 @@ class _TreeItem extends HookWidget {
   }
 }
 
+/// Renders one chapter node and its subtree interactions.
+///
+/// Chapter expansion is local display state. Renaming and moving a chapter
+/// delegate to the page mutation path so every descendant is updated together.
 class _TreeCategory extends HookConsumerWidget {
   const _TreeCategory({required this.node, required this.expanded});
 
@@ -276,17 +284,15 @@ class _TreeCategory extends HookConsumerWidget {
               Expanded(
                 child: Text(
                   node.name.formatted,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: color),
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: color),
                 ),
               )
             else
               Text(
                 node.name.formatted,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: color),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: color),
               ),
           ],
         ],

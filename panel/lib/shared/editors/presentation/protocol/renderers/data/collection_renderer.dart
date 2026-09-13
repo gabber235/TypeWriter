@@ -1,5 +1,10 @@
 part of "../../data_renderer.dart";
 
+/// Resolves one key from a collection source and selects found, missing, or
+/// loading content without taking ownership of the source subscription.
+///
+/// The source snapshot is authoritative for availability and diagnostics. The
+/// render scope remains authoritative for the key expression and row binding.
 extension CollectionLookupRendering on CollectionLookupElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final source = scope.collections[sourceId];
@@ -39,6 +44,12 @@ extension CollectionLookupRendering on CollectionLookupElement {
   }
 }
 
+/// Renders a bounded collection relationship as nested sequence presentations.
+///
+/// The collection source owns query state and row data. This renderer validates
+/// the template shape, derives occurrence specific scopes, and exposes child
+/// rows through the declared bindings. Graph paths, rather than row keys alone,
+/// preserve identity when one row is reachable through multiple parents.
 extension CollectionGraphRendering on CollectionGraphElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final source = scope.collections[sourceId];
@@ -244,6 +255,10 @@ extension CollectionGraphRendering on CollectionGraphElement {
   }
 }
 
+/// Groups graph edges by parent occurrence while preserving source order.
+///
+/// Duplicate edges are collapsed within an occurrence. The full path is part of
+/// the key because the same row key can represent different rendered nodes.
 Map<_GraphOccurrencePath, List<DataValue>> _orderedOccurrenceChildren(
   Iterable<PresentationCollectionPath> paths,
 ) {
@@ -259,6 +274,10 @@ Map<_GraphOccurrencePath, List<DataValue>> _orderedOccurrenceChildren(
   return childrenByOccurrence;
 }
 
+/// Adds the collection schema's row binding as a non writable projection.
+///
+/// Row edits must travel through an explicit binding owned by the enclosing
+/// editor. Collection rendering only supplies the value used to render a row.
 PresentationRenderScope _rowScope(
   PresentationRenderScope scope,
   PresentationCollectionSchema schema,

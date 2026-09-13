@@ -3,6 +3,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "realm_editor_catalog_request.freezed.dart";
 
+/// Names one subtype lookup within a merged catalog request.
 @freezed
 abstract class RealmEditorSubtypeQuery with _$RealmEditorSubtypeQuery {
   @Assert("id != \"\"", "Query ID must not be empty.")
@@ -12,6 +13,11 @@ abstract class RealmEditorSubtypeQuery with _$RealmEditorSubtypeQuery {
   }) = _RealmEditorSubtypeQuery;
 }
 
+/// Demand declared by one catalog consumer.
+///
+/// The cache merges requests from active leases, so these sets describe what
+/// must be present in the next snapshot rather than an exclusive fetch scope.
+/// Empty sets are valid and represent no additional demand.
 @freezed
 abstract class RealmEditorCatalogRequest with _$RealmEditorCatalogRequest {
   const factory RealmEditorCatalogRequest({
@@ -33,6 +39,7 @@ abstract class RealmEditorCatalogRequest with _$RealmEditorCatalogRequest {
       );
 }
 
+/// Decoded matches for one [RealmEditorSubtypeQuery].
 @freezed
 abstract class RealmEditorSubtypeResult with _$RealmEditorSubtypeResult {
   @Assert("queryId != \"\"", "Query ID must not be empty.")

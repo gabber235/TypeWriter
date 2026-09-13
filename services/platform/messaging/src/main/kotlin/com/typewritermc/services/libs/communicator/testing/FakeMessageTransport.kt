@@ -18,7 +18,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.time.Duration
 
-/** Deterministic in-memory transport for communicator and downstream tests. */
+/**
+ * Deterministic in memory transport for communicator and downstream tests.
+ *
+ * It records requests, publications, subscriptions, and closures, while configured failures and responders are
+ * consumed once. [deliver] broadcasts terminal deliveries to matching active subscriptions.
+ */
 class FakeMessageTransport(
     override val system: MessagingSystem = MessagingSystem.of("fake"),
     private val deliveryBufferCapacity: Int = Channel.UNLIMITED,
@@ -76,7 +81,7 @@ class FakeMessageTransport(
     /** Configures the next subscription to return [error]. */
     fun failNextSubscribe(error: TransportError) = synchronized(lock) { subscribeFailures.addLast(error) }
 
-    /** Delivers [delivery] to every currently matching subscription. */
+    /** Delivers [delivery] to every currently matching active subscription. Terminal deliveries close those subscriptions. */
     fun deliver(delivery: TransportDelivery) {
         val targets =
             synchronized(lock) {
@@ -151,7 +156,7 @@ class FakeMessageTransport(
 
     private fun ensureOpen() = check(!closed) { "Fake transport is closed" }
 
-    /** An operation observed by the fake transport. */
+    /** An operation observed by the fake transport in the order it occurred. */
     sealed interface Action {
         data class Subscribe(
             val pattern: AddressPattern,

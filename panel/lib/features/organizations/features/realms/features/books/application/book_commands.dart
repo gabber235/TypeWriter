@@ -5,6 +5,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Book mutations expressed in the shared authoring session boundary.
+///
+/// These methods do not update local state directly. The session submits the
+/// wire operation, validates its application, and later publishes the
+/// confirmed resource change to its listeners.
 extension BookCommands on AuthoringSession {
   Future<wire.ApplyAuthoringBatchResponse> createBook(wire.Book book) =>
       apply([wire.AuthoringOperation.createCreateBook(book: book)]);
@@ -17,6 +22,11 @@ extension BookCommands on AuthoringSession {
   }
 }
 
+/// Builds a conditional patch containing only fields changed from [expected].
+///
+/// Null patch fields mean no requested change. Non null fields carry the
+/// expected old value, allowing the authoring boundary to detect stale editor
+/// state and reject the write instead of overwriting a concurrent update.
 wire.AuthoringOperation bookPatchOperation(
   Book book, {
   required Book expected,

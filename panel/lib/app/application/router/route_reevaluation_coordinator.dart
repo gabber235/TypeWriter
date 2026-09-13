@@ -6,6 +6,7 @@ import "package:typewriter_panel/app/application/router/access/route_access_coor
 
 part "route_reevaluation_coordinator.freezed.dart";
 
+/// Lifecycle of serialized route guard reevaluation.
 @freezed
 sealed class RouteReevaluationState with _$RouteReevaluationState {
   const factory RouteReevaluationState.idle() = RouteReevaluationIdle;
@@ -15,6 +16,12 @@ sealed class RouteReevaluationState with _$RouteReevaluationState {
   const factory RouteReevaluationState.disposed() = RouteReevaluationDisposed;
 }
 
+/// Serializes router reevaluation requests caused by access changes.
+///
+/// A burst of access notifications produces at most one active reevaluation
+/// and one follow up request. This prevents concurrent guard runs while still
+/// ensuring a change observed during an active run is not lost. Failures are
+/// reported to Flutter and do not stop later requests.
 final class RouteReevaluationCoordinator {
   RouteReevaluationCoordinator({
     required this._access,

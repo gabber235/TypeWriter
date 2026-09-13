@@ -1,5 +1,10 @@
 part of "../../data_renderer.dart";
 
+/// Chooses one branch after evaluating the condition in the current scope.
+///
+/// A failed evaluation, or a value other than [BooleanValue], becomes a
+/// presentation diagnostic. A missing false branch intentionally renders no
+/// content rather than inventing a fallback node.
 extension ConditionalElementRendering on ConditionalElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final result = scope.evaluate(condition);

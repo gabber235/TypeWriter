@@ -1,3 +1,10 @@
+//! User scoped organization operations for the authenticated messaging surface.
+//!
+//! The component owns organization creation and user views for memberships and pending join
+//! requests. Organization records and membership edges are canonical database state. Watch
+//! handlers expose snapshots, while successful mutations persist sequenced changes on the user
+//! or organization stream that owns each projection.
+
 wit_bindgen::generate!({
     with: {
         "wasmcloud:messaging/consumer@0.4.0": wasmcloud_utils::wasmcloud::messaging::consumer,

@@ -5,6 +5,10 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 enum _OperationButtonVariant { filled, outlined }
 
+/// Renders a shortcut aware loading button for a selection operation.
+///
+/// The operation supplies shortcut availability. This widget only chooses the
+/// visual variant and delegates execution to [onPressed].
 class OperationButton extends StatelessWidget {
   const OperationButton.filledIcon({
     required this.operation,
@@ -24,6 +28,7 @@ class OperationButton extends StatelessWidget {
     super.key,
   }) : _variant = _OperationButtonVariant.outlined;
 
+  /// Operation whose shortcut is shown when it can currently invoke.
   final ShortcutableOperation operation;
   final Widget icon;
   final Widget label;

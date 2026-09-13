@@ -1,3 +1,6 @@
+// Presence is an ephemeral panel collaboration signal. It is not durable organization state and has no snapshot or recovery method.
+// Panels publish active heartbeats with a session sequence and publish left when a session closes. Consumers may expire stale sessions when heartbeats stop.
+
 import { RecordId } from "kernel/v1/record_id.skir";
 
 struct OrganizationPresence(812400001) {}
@@ -56,16 +59,19 @@ enum PresenceLocation(812400012) {
   page: PagePresence = 10;
 }
 
+// One active panel heartbeat. Sequence increases within a session so consumers can ignore repeated or out of order messages.
 struct PanelPresence(812400013) {
   session_id: string = 0;
   sequence: int64 = 1;
   location: PresenceLocation = 2;
 }
 
+// Explicit end of a panel session. Missing this event is handled by consumer expiry.
 struct PresenceLeft(812400014) {
   session_id: string = 0;
 }
 
+// Best effort session lifecycle event. Unknown events are safe to ignore for forward compatibility.
 enum PresenceEvent(812400015) {
   active: PanelPresence = 1;
   left: PresenceLeft = 2;

@@ -1,6 +1,10 @@
 package com.typewritermc.services.libs.communicator.address
 
-/** A validated concrete transport address. */
+/**
+ * A concrete transport address with no wildcard or placeholder segments.
+ *
+ * Create instances through [of] so transport subjects cannot contain empty segments, whitespace, or wildcard syntax.
+ */
 @JvmInline
 value class MessageAddress private constructor(
     val value: String,
@@ -13,7 +17,11 @@ value class MessageAddress private constructor(
     }
 }
 
-/** A validated transport subscription pattern containing literal and `*` segments. */
+/**
+ * A validated transport subscription pattern containing literal segments and single segment wildcards.
+ *
+ * The pattern is used for subscriptions, not publication. It never accepts the multi segment `>` wildcard.
+ */
 @JvmInline
 value class AddressPattern private constructor(
     val value: String,
@@ -55,7 +63,7 @@ class AddressValues private constructor(
     }
 }
 
-/** Creates immutable typed-address values. */
+/** Creates immutable typed-address values for the placeholders of an [AddressTemplate]. */
 fun addressValuesOf(vararg values: Pair<String, String>): AddressValues = AddressValues.of(*values)
 
 /**
@@ -122,7 +130,12 @@ class AddressTemplate<Address : Any> internal constructor(
     }
 }
 
-/** Creates a typed address template. */
+/**
+ * Creates a typed address template whose braces identify values supplied to [render] and recovered by [match].
+ *
+ * Literal segments and placeholder names are validated immediately. [render] must return exactly one value for each
+ * placeholder, and [parse] receives only values from a structurally matching address.
+ */
 fun <Address : Any> addressTemplate(
     pattern: String,
     render: (Address) -> AddressValues,

@@ -8,6 +8,14 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire_type;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Invokes realm owned command and computation capabilities over NATS.
+///
+/// The active catalog provider supplies the registry and generation used to
+/// encode payloads and correlate the request with the catalog that described
+/// it. This adapter translates wire outcomes, diagnostics, and panel
+/// instructions into editor results. It does not evaluate expressions, check
+/// command payload types, or own catalog refresh; the runtime and provider do
+/// those jobs.
 final class NatsRealmCapabilityTransport {
   NatsRealmCapabilityTransport({
     required this.ref,
@@ -29,6 +37,11 @@ final class NatsRealmCapabilityTransport {
   RealmServiceAddress get _address =>
       RealmServiceAddress(organizationId: organizationId, realmId: realmId);
 
+  /// Executes a command or handles the local realm reload action.
+  ///
+  /// Payload encoding failures are returned as invalid results. Remote stale
+  /// generation, permission, unavailable, and malformed responses remain
+  /// distinct so the caller can choose reload, correction, or retry.
   Future<RealmCommandResult> execute(
     RealmAction action,
     DataValue? payload,
@@ -73,6 +86,11 @@ final class NatsRealmCapabilityTransport {
     return _decode(response, editor, invocationId);
   }
 
+  /// Evaluates a realm computation with the active catalog generation.
+  ///
+  /// Both payload and result type must encode before a request is sent. The
+  /// decoded result is validated by the wire codec and protocol failures are
+  /// returned as explicit computation outcomes.
   Future<RealmComputationResult> compute({
     required CapabilityId capabilityId,
     required DataValue payload,

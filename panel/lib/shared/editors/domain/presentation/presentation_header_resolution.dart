@@ -1,6 +1,11 @@
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Combines generated collection controls with a declared header.
+///
+/// The receiver is the outer header and wins for fields it supplies. Its item
+/// IDs also shadow inner items, which lets an explicit declaration replace a
+/// standard action without changing the renderer that consumes the result.
 extension PresentationHeaderComposition on PresentationHeader {
   PresentationHeader mergeInner(PresentationHeader inner) {
     final outerIds = items.map((item) => item.id).toSet();
@@ -21,6 +26,12 @@ extension PresentationHeaderComposition on PresentationHeader {
   }
 }
 
+/// Derives standard header actions from input element state.
+///
+/// List and map controls contribute add actions only when insertion is enabled
+/// and an initial value can be constructed. A toggle contributes a state aware
+/// action only when its binding resolves to a boolean. Missing or non ready
+/// bindings return no contribution, leaving the declared presentation intact.
 extension PresentationElementHeaderContribution on PresentationElement {
   PresentationHeader? contributeHeader(
     ExpressionContext context, {
@@ -60,9 +71,8 @@ extension on ToggleInputElement {
               resultType: const BooleanType(),
               expression: BindingExpression(control.binding),
             ),
-            priority: IntegerValue(
-              BigInt.parse("9223372036854775807"),
-            ).asLiteral(const IntegerType(width: IntegerWidth.signed64)),
+            priority: IntegerValue(BigInt.parse("9223372036854775807"))
+                .asLiteral(const IntegerType(width: IntegerWidth.signed64)),
             enabledIf: writable.asBooleanLiteral,
             placement: HeaderActionPlacement.beforeTitle,
             action: LocalEditorAction(

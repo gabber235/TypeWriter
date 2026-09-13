@@ -1,8 +1,13 @@
+// Canonical entity identity is the pair of a table name and a typed key.
+// The table selects the identity namespace. The key remains typed through transport and database adapters.
+// A string key is the opaque application identity used by resource routes. Query formatting is a separate concern.
 struct RecordId {
   table: string;
   key: RecordIdKey;
 }
 
+// Record identity keys support scalar and compound forms.
+// Arrays and objects are key structures, not interchangeable string encodings.
 enum RecordIdKey {
   number: int64;
   string: string;
@@ -11,11 +16,13 @@ enum RecordIdKey {
   object: [ObjectRecordIdKey|key];
 }
 
+// One named member of an object key. The keyed list preserves the member name beside its typed value.
 struct ObjectRecordIdKey {
   key: string;
   value: RecordIdValue;
 }
 
+// Values nested inside compound record keys. This is broader than RecordIdKey because nested values can be null or boolean.
 enum RecordIdValue {
   null;
   boolean: bool;
@@ -26,6 +33,7 @@ enum RecordIdValue {
   object: [ObjectRecordIdValue|key];
 }
 
+// One named member of an object value. Its value may recursively contain arrays and objects.
 struct ObjectRecordIdValue {
   key: string;
   value: RecordIdValue;

@@ -1,9 +1,17 @@
+//! Configuration that defines which external identity issuers the NATS callout trusts.
+//!
+//! Configuration is part of the trust boundary, not application metadata. Each issuer binds an
+//! exact issuer URL to its JWKS endpoint, accepted audiences, temporal policy, and NATS account.
+//! Invalid or ambiguous configuration stops authentication setup instead of producing a broader
+//! trust decision.
+
 use std::{collections::HashSet, time::Duration};
 
 use serde::Deserialize;
 use url::Url;
 
 #[derive(Debug)]
+/// One complete external issuer trust declaration used during authentication.
 pub struct IssuerConfig {
     pub(crate) id: String,
     pub(crate) issuer_url: Url,
@@ -25,6 +33,11 @@ struct RawIssuerConfig {
     nats_account_key: String,
 }
 
+/// Parse and reject issuer configuration before it can influence authentication.
+///
+/// Duplicate issuer identifiers and duplicate audiences are rejected so selection remains
+/// deterministic. URL, scheme, authority, and temporal checks reject unsafe or unusable trust
+/// anchors as configuration errors.
 pub fn parse_issuer_configs(config: &str) -> Result<Vec<IssuerConfig>, String> {
     let raw_configs: Vec<RawIssuerConfig> =
         serde_json::from_str(config).map_err(|error| error.to_string())?;

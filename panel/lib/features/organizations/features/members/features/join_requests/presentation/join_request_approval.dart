@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Collects the roles required before one request can be approved.
+///
+/// Role data comes from the organization role catalog. This widget owns no
+/// membership state and does not submit directly. It enables confirmation only
+/// after a role selection and lets the card owner perform the mutation.
 class JoinRequestApproval extends StatelessWidget {
   const JoinRequestApproval({
     required this.request,

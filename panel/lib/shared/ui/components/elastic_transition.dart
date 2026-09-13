@@ -4,6 +4,10 @@ import "package:flutter/material.dart";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Applies the standard elastic entrance and exit transition to [child].
+///
+/// The [Animation] is supplied and owned by the parent transition system. This
+/// widget is suitable as an [AnimatedSwitcher.transitionBuilder] result.
 class ElasticTransition extends StatelessWidget {
   const ElasticTransition({
     required this.child,

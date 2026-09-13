@@ -1,6 +1,7 @@
 import "package:dart_casing/dart_casing.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// String transformations used for authored names and display labels.
 extension StringX on String {
   String titleCase() {
     if (isEmpty) return this;
@@ -39,6 +40,7 @@ extension StringX on String {
     return this;
   }
 
+  /// Replaces [prefix] only when it occurs at the start of this string.
   String replacePrefix(
     String prefix,
     String replacement, {
@@ -51,6 +53,7 @@ extension StringX on String {
     return replaceRange(0, prefix.length, replacement);
   }
 
+  /// Replaces [suffix] only when it occurs at the end of this string.
   String replaceSuffix(
     String suffix,
     String replacement, {
@@ -64,6 +67,7 @@ extension StringX on String {
   }
 }
 
+/// Generates a lowercase alphanumeric code using the shared random source.
 String generateCode([int length = 20]) {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
   return List.generate(

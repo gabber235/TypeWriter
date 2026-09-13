@@ -1,3 +1,4 @@
+/// State, immutable models, geometry, and interaction modes for the timeline.
 library;
 
 export "timeline_controller.dart";

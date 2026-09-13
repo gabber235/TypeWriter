@@ -10,23 +10,47 @@ import "package:typewriter_panel/infrastructure/observability/telemetry.dart";
 const _requestTimeout = Duration(seconds: 10);
 const _membershipStream = "TYPEWRITER_MEMBERSHIP";
 
+/// A value paired with the server sequence that produced it.
+///
+/// Sequencing is application consistency state, not transport state. The
+/// snapshot lets a watcher distinguish a duplicate event from a missing event
+/// and recover from a gap without asking the NATS adapter to understand Skir.
 final class SequencedSnapshot<T> {
   const SequencedSnapshot({required this.sequence, required this.value});
 
+  /// Server sequence represented by [value].
   final int sequence;
+
+  /// Snapshot or projection at [sequence].
   final T value;
 }
 
+/// Outcome of applying one event against the current authoritative sequence.
 enum SequencedEventResult { duplicate, applied, gap }
 
+/// Applies ordered events to one authoritative snapshot.
+///
+/// Historical events are ignored. A future event reports a gap so its owner can
+/// reload a snapshot before continuing. The reducer remains supplied by the
+/// feature because this boundary owns sequence safety, not resource policy or
+/// domain merging.
 final class SequencedCollection<T> {
   SequencedSnapshot<T>? _current;
 
+  /// Current value. Throws until [snapshot] has been assigned.
   T get value => _current!.value;
+
+  /// The latest accepted snapshot, or null before the first load.
   SequencedSnapshot<T>? get snapshot => _current;
 
+  /// Replaces the authoritative baseline after a snapshot reload.
   set snapshot(SequencedSnapshot<T> value) => _current = value;
 
+  /// Applies [sequence] only when it is the immediate successor.
+  ///
+  /// An older or equal sequence is a duplicate. A future sequence is a gap and
+  /// leaves the current value unchanged. [reduce] runs only for an applied
+  /// event, so callers can safely retry gap recovery without double applying.
   SequencedEventResult apply({
     required int sequence,
     required T Function(T current) reduce,
@@ -46,14 +70,27 @@ final class SequencedCollection<T> {
   }
 }
 
+/// Reports an event that remained ahead of the reloaded snapshot.
 final class CollectionSequenceGap implements Exception {
   const CollectionSequenceGap({required this.expected, required this.received});
 
+  /// Sequence required to continue from the reloaded snapshot.
   final int expected;
+
+  /// Sequence carried by the event that could not be applied.
   final int received;
 }
 
+/// Provides typed Skir request and watch adapters for a Riverpod scope.
+///
+/// This is the protocol boundary above [NatsClient]. It performs serialization,
+/// initial snapshot loading, event reduction, and cancellation cleanup, while
+/// the transport abstraction retains ownership of NATS readiness, failures,
+/// subscriptions, and connection lifetime.
 extension RefNatsExtension on Ref {
+  /// Sends one Skir request through the current transport and decodes its
+  /// typed response. Request adaptation stays here so callers never couple
+  /// feature code to payload bytes or NATS package types.
   Future<TResponse> requestSkir<TResponse>(
     String subject,
     Uint8List requestBytes,
@@ -75,7 +112,12 @@ extension RefNatsExtension on Ref {
     return serializer.fromBytes(response.payload);
   }
 
-  /// Reduces at delivery so each result reaches its listener before the next reduction.
+  /// Combines an initial typed response with subsequent subscription messages.
+  ///
+  /// Reduction happens at delivery, so each result reaches its listener before
+  /// the next reduction. Cancellation unsubscribes even when subscription
+  /// setup is still pending, which keeps the Riverpod scope from retaining a
+  /// transport resource after its consumer leaves.
   Stream<TData> watchRequest<TData, TResponse>({
     required String subject,
     required String listenSubject,
@@ -156,6 +198,12 @@ extension RefNatsExtension on Ref {
     );
   }
 
+  /// Watches a sequenced snapshot and its ordered event stream.
+  ///
+  /// The snapshot is loaded before events are reduced. Duplicates are ignored;
+  /// a gap triggers one snapshot reload, after which an irreconcilable gap is
+  /// surfaced as [CollectionSequenceGap]. Cancellation owns the subscription
+  /// cleanup, while feature supplied functions own Skir decoding and merging.
   Stream<TData> watchSequencedRequest<TData, TResponse, TEvent>({
     required String subject,
     required String eventSubject,

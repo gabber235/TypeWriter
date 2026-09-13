@@ -1,5 +1,14 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Turns one provider value into the typed result consumed by presentation
+/// search.
+///
+/// The candidate is bound under [SearchResultMapping.bindingId], then key,
+/// selected value, and optional label expressions are evaluated in that same
+/// context. A result is emitted only when its key is nonempty and its label is
+/// either absent or a nonempty string. The candidate context is retained in
+/// the payload so rendering, ranking, and history can evaluate related
+/// expressions without refetching the source value.
 final class PresentationSearchMapper {
   const PresentationSearchMapper({
     required this.mapping,

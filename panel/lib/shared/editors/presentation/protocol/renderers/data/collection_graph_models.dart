@@ -1,5 +1,9 @@
 part of "../../data_renderer.dart";
 
+/// Identifies one occurrence in the expanded graph, not merely one row key.
+///
+/// A row can appear beneath multiple parents. Keeping the full path prevents
+/// those occurrences from sharing child lists or expansion state accidentally.
 final class _GraphOccurrencePath {
   _GraphOccurrencePath(Iterable<DataValue> values)
     : values = List.unmodifiable(values);
@@ -22,6 +26,10 @@ final class _GraphOccurrencePath {
   int get hashCode => Object.hashAll(values);
 }
 
+/// Gives repeated graph nodes stable identity for transient presentation state.
+///
+/// The source and relation distinguish graph instances, while [path]
+/// distinguishes repeated occurrences of the same row within that graph.
 final class _GraphOccurrenceIdentity {
   _GraphOccurrenceIdentity({
     required this.sourceId,

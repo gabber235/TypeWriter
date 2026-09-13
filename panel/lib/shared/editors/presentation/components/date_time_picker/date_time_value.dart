@@ -1,3 +1,9 @@
+/// Formats the enabled timestamp parts as the editor's canonical text form.
+///
+/// The formatter reads the value's calendar and clock components and omits
+/// disabled parts. Subsecond precision is intentionally not displayed because
+/// the editor format has second precision. Callers should provide the UTC
+/// timestamp used by the editor contract.
 String formatDateTimeEditorValue(
   DateTime value, {
   required bool includeDate,
@@ -21,6 +27,7 @@ String formatDateTimeEditorValue(
   return parts.join(" ");
 }
 
+/// Returns the input hint and validation format for the enabled timestamp parts.
 String dateTimeEditorFormat({
   required bool includeDate,
   required bool includeTime,
@@ -31,6 +38,12 @@ String dateTimeEditorFormat({
   return "";
 }
 
+/// Parses canonical editor text while preserving disabled and subsecond parts.
+///
+/// Date values must be real calendar dates and time values must fit their
+/// component ranges. The returned timestamp is UTC. Invalid drafts throw
+/// [FormatException], allowing [ValidatedTextField] to retain the last valid
+/// value and show recovery guidance.
 DateTime parseDateTimeEditorValue(
   String draft, {
   required DateTime current,
@@ -99,6 +112,8 @@ DateTime parseDateTimeEditorValue(
   return parsed;
 }
 
+/// Replaces only the calendar date components and returns a UTC timestamp,
+/// preserving time and subsecond precision.
 DateTime replaceDatePart(DateTime current, DateTime date) => DateTime.utc(
   date.year,
   date.month,
@@ -110,6 +125,8 @@ DateTime replaceDatePart(DateTime current, DateTime date) => DateTime.utc(
   current.microsecond,
 );
 
+/// Replaces selected time components and returns a UTC timestamp, preserving
+/// date and subsecond precision.
 DateTime replaceTimePart(
   DateTime current, {
   int? hour,
@@ -126,8 +143,13 @@ DateTime replaceTimePart(
   current.microsecond,
 );
 
+/// Returns the number of days in a Gregorian calendar month.
 int daysInMonth(int year, int month) => DateTime.utc(year, month + 1, 0).day;
 
+/// Moves a UTC calendar date by [delta] months and clamps its day.
+///
+/// Clamping keeps dates such as January 31 valid when moving into February and
+/// makes repeated calendar navigation deterministic across leap years.
 DateTime moveMonth(DateTime value, int delta) {
   final monthIndex = value.year * 12 + value.month - 1 + delta;
   final year = monthIndex ~/ 12;

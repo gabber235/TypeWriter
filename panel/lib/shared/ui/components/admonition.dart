@@ -6,6 +6,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 enum _AdmonitionKind { custom, info, warning, danger }
 
+/// Presents an informational, warning, danger, or custom message surface.
+///
+/// The optional tap callback makes the whole surface interactive. It does not
+/// own the action represented by the message, so callers remain responsible
+/// for navigation, dismissal, or recovery.
 class Admonition extends StatelessWidget {
   const Admonition({
     required Color this._color,

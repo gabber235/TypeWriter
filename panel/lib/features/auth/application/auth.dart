@@ -30,6 +30,11 @@ bool _usesLoopbackRedirect() {
   };
 }
 
+/// Identity claims exposed to the panel after the identity provider validates a session.
+///
+/// This is the panel's normalized read model for account display and authenticated
+/// transport setup. The claims remain optional because providers may omit profile
+/// fields; [sub] is the stable identity used by user scoped backend subjects.
 class UserInfo {
   const UserInfo({
     required this.sub,
@@ -54,6 +59,10 @@ class UserInfo {
   final DiscordInfo? discord;
 }
 
+/// Optional Discord profile claims attached to [UserInfo].
+///
+/// Discord data is descriptive only. Authorization still comes from the identity
+/// provider session and backend responses.
 class DiscordInfo {
   const DiscordInfo({
     required this.id,
@@ -70,6 +79,11 @@ class DiscordInfo {
   final List<String>? roles;
 }
 
+/// The bearer token and its provider supplied expiry, when known.
+///
+/// Transport adapters consume this value at the authentication boundary. The
+/// identity provider manager, owned by [Auth], refreshes credentials before they
+/// expire; a missing expiry means the provider supplied no lifetime.
 class AccessToken {
   const AccessToken({required this.token, this.expiresAt});
 
@@ -77,6 +91,12 @@ class AccessToken {
   final DateTime? expiresAt;
 }
 
+/// Owns the panel's identity provider session for the application lifetime.
+///
+/// Construction selects the redirect flow required by the current platform,
+/// initializes the OIDC manager, and restores any persisted session. Sign in and
+/// sign out invalidate this provider so all consumers observe the new session
+/// through Riverpod rather than retaining their own authentication state.
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
   @override
@@ -132,6 +152,8 @@ class Auth extends _$Auth {
     return manager;
   }
 
+  /// Starts authorization in the configured identity provider and refreshes
+  /// dependent session consumers after the callback completes.
   Future<void> signIn() async {
     debugPrint("Signing in");
     final manager = await future;
@@ -142,6 +164,11 @@ class Auth extends _$Auth {
     ref.invalidateSelf();
   }
 
+  /// Ends the provider session and removes its locally stored credentials.
+  ///
+  /// A missing manager is treated as an already ended session. Mutation
+  /// instrumentation owns the visible operation status; provider invalidation
+  /// makes the signed out state observable to routes and transport clients.
   Future<void> signOut() async {
     debugPrint("Signing out");
     final manager = await future;
@@ -156,6 +183,10 @@ class Auth extends _$Auth {
   }
 }
 
+/// Reports whether the initialized identity provider has a current user.
+///
+/// Initialization failure remains an async provider failure. A missing manager or
+/// user produces false so route guards can keep unauthenticated users on sign in.
 @Riverpod(keepAlive: true)
 Future<bool> isAuthenticated(Ref ref) async {
   final manager = await ref.watch(authProvider.future);
@@ -166,6 +197,10 @@ Future<bool> isAuthenticated(Ref ref) async {
   return user != null;
 }
 
+/// Returns the authenticated provider subject used for user scoped backend calls.
+///
+/// Returns null when no session exists. This keeps unauthenticated consumers from
+/// constructing subjects with an invented identity.
 @Riverpod(keepAlive: true)
 Future<String?> userId(Ref ref) async {
   final isAuthenticated = await ref.watch(isAuthenticatedProvider.future);
@@ -176,6 +211,11 @@ Future<String?> userId(Ref ref) async {
   return info.sub;
 }
 
+/// Projects the current provider token for transport adapters.
+///
+/// Returns null when the manager, user, or access token is unavailable. Expiry is
+/// derived from the provider token timestamps and is absent when the provider
+/// does not supply a lifetime.
 @Riverpod(keepAlive: true)
 Future<AccessToken?> accessToken(Ref ref) async {
   final manager = await ref.watch(authProvider.future);
@@ -197,6 +237,11 @@ Future<AccessToken?> accessToken(Ref ref) async {
   return AccessToken(token: token, expiresAt: expiresAt);
 }
 
+/// Normalizes provider claims into the account model consumed by the panel.
+///
+/// This provider is intentionally strict about session presence. Callers that can
+/// render signed out state should use [isAuthenticatedProvider] first; callers
+/// that need identity setup should surface its failure instead of guessing claims.
 @Riverpod(keepAlive: true)
 Future<UserInfo> authUserInfo(Ref ref) async {
   final manager = await ref.watch(authProvider.future);

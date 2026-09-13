@@ -1,3 +1,11 @@
+/// Fallback presentation construction for types without a named presentation.
+///
+/// The generated tree binds its root to binding zero, recursively maps record
+/// fields to child bindings, and chooses controls from the resolved type. It
+/// is a safe editing fallback, not a replacement for domain specific catalog
+/// presentations.
+library;
+
 import "package:typewriter_panel/typewriter_panel.dart";
 
 const builtinStringSingleLinePresentationId = PresentationId(
@@ -61,6 +69,7 @@ List<PresentationDefinition> builtinPresentationDefinitions() => [
   ),
 ];
 
+/// Builds the fallback editor tree used when no catalog presentation is selected.
 extension TypeExpressionDefaultPresentation on TypeExpression {
   PresentationNode generateDefaultPresentation({
     BindingReference binding = const BindingReference(bindingId: BindingId(0)),

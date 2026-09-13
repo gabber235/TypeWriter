@@ -8,6 +8,13 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Presents an asynchronous confirmation action inside an [AlertDialog].
+///
+/// The dialog owns the countdown and transient loading state. [onConfirm] is
+/// awaited before the route returns `true`; cancellation returns `false` and
+/// invokes [onCancel] after dismissing the route. Supply exactly one of
+/// [body] or [content]. Use [showConfirmationDialogue] for the normal route
+/// integration, including the panel's keyboard and provider context.
 class ConfirmationDialogue extends HookWidget {
   const ConfirmationDialogue({
     required this.title,
@@ -35,26 +42,32 @@ class ConfirmationDialogue extends HookWidget {
   /// The color for the title text.
   final Color? titleColor;
 
-  /// The body of the dialogue. This can be a widget that provides more information about the action being confirmed.
+  /// Rich content explaining the action being confirmed.
+  ///
+  /// Mutually exclusive with [content].
   final Widget? body;
 
-  /// The content of the dialogue. This can be a small piece of text to explain what the user is confirming.
+  /// Plain text explaining the action being confirmed.
+  ///
+  /// Mutually exclusive with [body].
   final String? content;
 
-  /// The text of the confirm button
+  /// Label for the action that commits the confirmation.
   final String confirmText;
 
-  /// An icon to display on the confirm button
+  /// Icon identifier displayed beside [confirmText].
   final String confirmIcon;
 
-  /// The color of the confirm button
+  /// Background color for the confirm action.
   final Color confirmColor;
 
-  /// The color of the text on the confirm button
+  /// Foreground color for the confirm action.
   final Color onConfirmColor;
 
-  /// When [delayConfirm] is larger than 0, the confirm button will be disabled for [delayConfirm] seconds.
-  /// This may be useful when the user is about to perform an irreversible action.
+  /// Prevents confirmation until this duration has elapsed.
+  ///
+  /// The countdown is displayed in the confirm label. This is useful before
+  /// an irreversible action.
   final Duration delayConfirm;
 
   /// The text of the cancel button
@@ -63,10 +76,12 @@ class ConfirmationDialogue extends HookWidget {
   /// An icon to display on the cancel button
   final String cancelIcon;
 
-  /// The action to perform when the user confirms the action.
+  /// The asynchronous operation to run after confirmation.
+  ///
+  /// The route is dismissed only after this future completes successfully.
   final FutureOr<void> Function()? onConfirm;
 
-  /// An optional action to perform when the user cancels the action.
+  /// Optional notification that the user cancelled the dialog.
   final Function? onCancel;
 
   @override
@@ -120,9 +135,8 @@ class ConfirmationDialogue extends HookWidget {
       child: AlertDialog(
         title: Text(
           title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge!.copyWith(color: titleColor),
+          style: Theme.of(context).textTheme.titleLarge!
+              .copyWith(color: titleColor),
         ),
         content: body ?? Text(content!),
         actions: [
@@ -157,6 +171,12 @@ class ConfirmationDialogue extends HookWidget {
   }
 }
 
+/// Shows a confirmation dialog and returns whether confirmation completed.
+///
+/// The caller's [onConfirm] is awaited. Holding either Shift key bypasses the
+/// dialog when [delayConfirm] is zero, which supports deliberate expert
+/// workflows without bypassing a configured safety delay. A dismissed dialog
+/// returns `false`.
 Future<bool> showConfirmationDialogue({
   required BuildContext context,
   String title = "Are you sure?",
@@ -173,8 +193,7 @@ Future<bool> showConfirmationDialogue({
   FutureOr<void> Function()? onConfirm,
   Function? onCancel,
 }) async {
-  // If the user has its shift key pressed, we skip the confirmation dialogue.
-  // But only if the delay is 0.
+  // Shift is an explicit expert shortcut, but never bypasses a safety delay.
   final hasShiftDown =
       HardwareKeyboard.instance.isLogicalKeyPressed(
         LogicalKeyboardKey.shiftLeft,
@@ -209,6 +228,11 @@ Future<bool> showConfirmationDialogue({
       false;
 }
 
+/// Shows a dialog with Typewriter's provider, responsive, and keyboard context.
+///
+/// Unlike calling [showDialog] directly, the builder can access the existing
+/// Riverpod container and the panel's global shortcuts. The returned future
+/// carries the route result, or null when no result was supplied.
 Future<T?> showAdvancedDialog<T>({
   required BuildContext context,
   required WidgetBuilder builder,

@@ -15,7 +15,9 @@ import kotlinx.serialization.encodeToByteArray
 object TypeDiscoveryContributionCodec {
     private val cbor = Cbor { encodeDefaults = true }
 
+    /** Encodes a contribution for storage in an Imprint generated contribution payload. */
     fun encode(contribution: TypeDiscoveryContribution): ByteArray = cbor.encodeToByteArray(contribution)
 
+    /** Decodes and validates an Imprint generated contribution payload. */
     fun decode(payload: ByteArray): TypeDiscoveryContribution = cbor.decodeFromByteArray(payload)
 }

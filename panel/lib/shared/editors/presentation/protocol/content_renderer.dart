@@ -14,6 +14,12 @@ part "renderers/content/status_renderer.dart";
 part "renderers/content/text_renderer.dart";
 part "renderers/content/time_renderer.dart";
 
+/// Evaluates an optional content color and preserves expression diagnostics.
+///
+/// Content renderers use this boundary so malformed protocol data becomes a
+/// presentation diagnostic instead of an exception or an arbitrary Flutter
+/// color. A missing expression intentionally means the theme chooses the
+/// color.
 TypeResult<Color?> resolvePresentationColor(
   TypedExpression? expression,
   PresentationRenderScope scope,
@@ -35,6 +41,9 @@ TypeResult<Color?> resolvePresentationColor(
       : TypeResult.success(color);
 }
 
+/// Evaluates an optional content size and accepts only finite, nonnegative
+/// numeric values. Invalid protocol expressions remain typed diagnostics for
+/// the caller to render; an absent expression leaves sizing to the widget.
 TypeResult<double?> resolvePresentationSize(
   TypedExpression? expression,
   PresentationRenderScope scope,

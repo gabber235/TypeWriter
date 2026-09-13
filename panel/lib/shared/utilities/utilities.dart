@@ -1,3 +1,7 @@
+/// Shared panel utilities exported through one stable library boundary.
+///
+/// The exports cover presentation helpers, asynchronous coordination, build
+/// configuration, canonical reconciliation, and small framework adapters.
 library;
 
 export "adaptive_single_activator.dart";

@@ -1,6 +1,11 @@
 import "package:flutter/material.dart" hide Page;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders a page result together with its chapter and containing book.
+///
+/// [fromPage] adapts the domain page while preserving the caller's navigation and visual state.
+/// An empty icon falls back to the page glyph, so domain data cannot produce a blank result
+/// identity. The widget only presents the supplied values and forwards [onTap].
 class PageSearchResultItem extends StatelessWidget {
   const PageSearchResultItem({
     required this.name,
@@ -92,9 +97,8 @@ class PageSearchResultItem extends StatelessWidget {
               children: [
                 TextSpan(
                   text: chapter.formatted,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: descriptionColor.withValues(alpha: 0.8),
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall!
+                      .copyWith(color: descriptionColor.withValues(alpha: 0.8)),
                 ),
                 TextSpan(
                   text: " ◀ ",
@@ -105,15 +109,12 @@ class PageSearchResultItem extends StatelessWidget {
                 ),
                 TextSpan(
                   text: bookName.formatted,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: descriptionColor.withValues(alpha: 0.7),
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall!
+                      .copyWith(color: descriptionColor.withValues(alpha: 0.7)),
                 ),
               ],
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: descriptionColor,
-                fontSize: 11,
-              ),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: descriptionColor, fontSize: 11),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

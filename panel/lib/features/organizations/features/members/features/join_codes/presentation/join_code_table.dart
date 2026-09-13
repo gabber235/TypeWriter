@@ -7,6 +7,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Desktop table presentation of active invitation codes.
+///
+/// Rows expose pointer and keyboard operations through
+/// [JoinCodeTableRowShortcuts]. This widget owns focus and selection visuals,
+/// while the route and application provider own the actions and data.
 class JoinCodesTable extends HookConsumerWidget {
   const JoinCodesTable({
     required this.codes,

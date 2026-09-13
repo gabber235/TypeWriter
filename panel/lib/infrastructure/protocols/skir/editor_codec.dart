@@ -1,3 +1,9 @@
+// Entry point for the editor protocol codecs.
+//
+// A single registry is shared by type, value, path, expression, action, and
+// presentation codecs. That shared context is required because wire values
+// contain references whose meaning comes from the catalog, not from transport
+// decoding alone.
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/path.dart"
     as wire_path;
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/type_catalog.dart"
@@ -20,6 +26,7 @@ export "package:typewriter_panel/infrastructure/protocols/skir/editor_realm_sear
 export "package:typewriter_panel/infrastructure/protocols/skir/editor_type_codec.dart";
 export "package:typewriter_panel/infrastructure/protocols/skir/editor_value_codec.dart";
 
+/// Coordinates codecs that decode and encode the editor's typed vocabulary.
 final class SkirEditorCodec {
   factory SkirEditorCodec(TypeRegistry registry) {
     final typeCodec = SkirTypeCodec(registry);
@@ -37,21 +44,27 @@ final class SkirEditorCodec {
   final SkirDataValueCodec valueCodec;
   final SkirDataPathCodec pathCodec;
 
+  /// Encodes a domain value while preserving its wire type tag.
   TypeResult<wire_type.TypedValue> encodeValue(DataValue value) =>
       valueCodec.encode(value);
 
+  /// Decodes a wire value and reports malformed input as diagnostics.
   TypeResult<DataValue> decodeValue(wire_type.TypedValue? value) =>
       valueCodec.decode(value);
 
+  /// Encodes a domain path used to locate nested editor data.
   TypeResult<wire_path.DataPath> encodePath(DataPath path) =>
       pathCodec.encode(path);
 
+  /// Decodes a wire path, validating every segment and embedded map key.
   TypeResult<DataPath> decodePath(wire_path.DataPath? path) =>
       pathCodec.decode(path);
 
+  /// Encodes a catalog resolved type reference.
   TypeResult<wire_type.ResolvedTypeRef> encodeType(ResolvedTypeRef type) =>
       typeCodec.encodeReference(type);
 
+  /// Decodes a resolved type reference against this codec's catalog context.
   TypeResult<ResolvedTypeRef> decodeType(wire_type.ResolvedTypeRef? type) =>
       typeCodec.decodeReference(type);
 }

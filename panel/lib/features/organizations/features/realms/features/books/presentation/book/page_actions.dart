@@ -1,5 +1,10 @@
 part of "route.dart";
 
+/// Moves every page in a chapter subtree to a new chapter path.
+///
+/// The canonical page snapshot is read before building the batch so descendants
+/// move together. Expected chapter values make a concurrent edit visible as a
+/// conflict instead of silently overwriting it.
 Future<void> _changePagesChapter(
   WidgetRef ref,
   String chapter,
@@ -96,6 +101,11 @@ class _AddPageButton extends HookConsumerWidget {
   }
 }
 
+/// Dialog for changing one chapter path.
+///
+/// The callback owns the actual mutation because page and chapter callers have
+/// different scopes. This widget normalizes input, prevents duplicate
+/// submission, and closes after the callback completes.
 class ChangeChapterDialogue extends HookConsumerWidget {
   const ChangeChapterDialogue({
     required this.title,

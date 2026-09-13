@@ -2,8 +2,22 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// The scene scale used when converting entry placement cells to graph space.
+///
+/// Entry placement dimensions remain integer grid values in the authoring
+/// model. The shared graph interprets this value as the logical size of one
+/// such cell when laying out, painting, and interacting with the scene.
 const entryGraphCellSize = 50.0;
 
+/// Renders the graph view for one page and routes committed layout changes
+/// back to that page's element coordinator.
+///
+/// The input is the projected page element read model. It can therefore show
+/// local edits before persistence completes, while [pageElementsProvider]
+/// remains the owner of move and resize mutations. Entry definitions contribute
+/// nodes and outward links. References, nonexistent targets, and missing
+/// catalog definitions remain visible as nodes when possible, but do not invent
+/// edges or editable data that the projection does not provide.
 class EntryGraph extends HookConsumerWidget {
   const EntryGraph({
     required this.pageId,
@@ -11,9 +25,18 @@ class EntryGraph extends HookConsumerWidget {
     super.key,
   });
 
+  /// Identifier of the page whose projected elements are rendered.
   final String pageId;
+
+  /// Direction used to choose the source and target sides of each connection.
   final GraphDirection graphDirection;
 
+  /// Converts a page element into its renderable node and connections.
+  ///
+  /// Only locally owned entry definitions have enough information to emit
+  /// outward edges. Other element variants still receive a placeholder node so
+  /// the graph snapshot preserves identity without claiming relationships it
+  /// cannot verify.
   (GraphElement, List<GraphEdge>) _graphFromElement(PageElement element) {
     return switch (element) {
       PageElementEntry(:final entry) => _graphFromEntry(entry),
@@ -31,6 +54,12 @@ class EntryGraph extends HookConsumerWidget {
     };
   }
 
+  /// Converts one entry projection while preserving degraded catalog states.
+  ///
+  /// A missing element definition keeps its saved placement but suppresses
+  /// links because the target and source semantics are no longer authoritative.
+  /// Other nondefinition variants use a small fallback node until their full
+  /// page projection is available.
   (GraphElement, List<GraphEdge>) _graphFromEntry(PageEntry entry) {
     return entry.maybeWhen(
       definition: (definition) => (
@@ -86,6 +115,11 @@ class EntryGraph extends HookConsumerWidget {
     );
   }
 
+  /// Builds the immutable shared graph snapshot from the page projection.
+  ///
+  /// Conversion is deliberately separate from persistence. This lets the
+  /// shared graph preview interaction against the current projection and lets
+  /// the page coordinator decide how a completed batch is reconciled.
   GraphData _graphFromElements(List<PageElement> elements) {
     final graphElements = <GraphElement>[];
     final edges = <GraphEdge>[];
@@ -103,6 +137,13 @@ class EntryGraph extends HookConsumerWidget {
     );
   }
 
+  /// Subscribes to the selected realm and page projection.
+  ///
+  /// Missing organization or realm context produces no surface. Loading uses
+  /// a full size placeholder. An empty page delegates creation guidance to the
+  /// editor's empty state. Once data is ready, move and resize callbacks pass
+  /// absolute placement values to the page element owner, while diagnostics
+  /// and creation remain adjacent actions in the same surface.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final organizationId = ref.watch(organizationIdProvider);

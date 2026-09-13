@@ -19,6 +19,7 @@ import kotlinx.serialization.cbor.Cbor
 
 /** Exchanges one encoded file transfer request and response through an authenticated messaging adapter. */
 fun interface FileTransferMessageChannel {
+    /** Sends one complete request payload and returns the complete response payload or transport failure. */
     suspend fun exchange(payload: ByteArray): MessageChannelResult
 }
 
@@ -128,6 +129,7 @@ class MessagingFileTransferEndpoint(
 class FileTransferMessageHandler(
     private val endpoint: FileTransferEndpoint,
 ) {
+    /** Handles one encoded request and returns an encoded response without leaking endpoint internals. */
     suspend fun handle(payload: ByteArray): MessageChannelResult =
         try {
             val request = codec.decodeFromByteArray(WireRequest.serializer(), payload)

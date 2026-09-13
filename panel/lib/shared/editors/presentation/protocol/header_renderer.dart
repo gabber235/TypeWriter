@@ -12,6 +12,15 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "header_action_resolution.dart";
 part "header_renderer.freezed.dart";
 
+/// Renders resolved header metadata around one presentation subtree.
+///
+/// This is the visual and interaction boundary for a header. It evaluates
+/// labels and action state through [scope], routes actions back through that
+/// scope, and uses the scope's [HeaderExpansionStore] as the sole owner of
+/// transient expansion state. Collapsible bodies keep their state while hidden;
+/// disabling a node also marks the body inactive without discarding it. End
+/// actions that do not fit are exposed through the overflow menu, while
+/// reorder handles remain inline because they need drag geometry.
 class PresentationHeaderChrome extends StatefulWidget {
   const PresentationHeaderChrome({
     required this.nodeId,

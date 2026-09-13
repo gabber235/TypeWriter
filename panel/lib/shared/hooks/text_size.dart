@@ -1,7 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
-/// Returns the size of the text with the given [style] in the given [context].
+/// Measures [text] as one left to right line using [context]'s text scale and
+/// default text style merged with [style].
+///
+/// The result is memoized by [text] and [style]. Rebuild the hook with a new
+/// dependency when other inherited text metrics must invalidate the cached
+/// measurement.
 Size useTextSize(BuildContext context, String text, [TextStyle? style]) {
   return useMemoized(() {
     final defaultTextStyle = DefaultTextStyle.of(context).style;

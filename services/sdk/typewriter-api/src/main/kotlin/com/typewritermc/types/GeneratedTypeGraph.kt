@@ -12,6 +12,7 @@ import kotlin.io.encoding.Base64
  * advertised reference.
  */
 interface TypePrototypeProvider {
+    /** Returns the generated prototype and its embedded structural definition. */
     fun prototype(): ConcreteTypePrototype<*>
 }
 
@@ -23,5 +24,6 @@ interface TypePrototypeProvider {
  */
 @OptIn(ExperimentalSerializationApi::class)
 object GeneratedTypeGraph {
+    /** Decodes one generated graph from its Base64 encoded CBOR representation. */
     fun decode(encoded: String): TypeGraph = Cbor.Default.decodeFromByteArray(Base64.decode(encoded))
 }

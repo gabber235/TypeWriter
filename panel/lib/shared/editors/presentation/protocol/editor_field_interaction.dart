@@ -4,11 +4,13 @@ import "package:flutter/widgets.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// The editing session of a single input field.
+/// Coordinates one rendered field with the editor owner's interaction gate.
 ///
-/// Begins on focus and always ends in a commit: on blur, on dismiss, and on
-/// unmount. Only [cancel] discards the typed value, and it must come from an
-/// intentional user action such as [CancelIntent].
+/// The coordinator owns only whether this field has started a session. The
+/// owner still owns the draft, commit policy, and persistence. Normal exits
+/// commit on blur, dismiss, or unmount; only an intentional cancel, such as
+/// [CancelIntent], restores the owner's pre interaction boundary. Repeated
+/// begin, commit, and cancel calls are safe for widget callbacks.
 final class EditorFieldInteraction {
   EditorInteractionSession? _session;
   EditorInteractionSession? Function()? _start;

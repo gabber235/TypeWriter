@@ -10,6 +10,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "inspector.g.dart";
 
+/// Minimum desktop width and the lower bound used by keyboard resizing.
 const double kInspectorMinSize = 200;
 const double kInspectorDefaultSize = 400;
 const double kInspectorMaxFactor = 3 / 8;
@@ -17,6 +18,10 @@ const double kInspectorMaxFactor = 3 / 8;
 const double kInspectorResizeSmallStep = 10;
 const double kInspectorResizeLargeStep = 50;
 
+/// Owns the inspector width used by desktop layout and keyboard resizing.
+///
+/// The provider clamps requested sizes to [kInspectorMinSize]. It does not own
+/// inspector visibility, selection, or the resize gesture itself.
 @riverpod
 class InspectorSize extends _$InspectorSize {
   @override
@@ -29,6 +34,10 @@ class InspectorSize extends _$InspectorSize {
   }
 }
 
+/// Places the inspector beside or below [child] according to available width.
+///
+/// The scaffold creates the inspector's provider scope, including the optional
+/// realm runtime used by editor actions. It does not own selection or focus.
 class InspectorScaffold extends HookConsumerWidget {
   const InspectorScaffold({
     required this.child,
@@ -57,6 +66,10 @@ class InspectorScaffold extends HookConsumerWidget {
   }
 }
 
+/// Renders the inspector as a draggable bottom sheet on narrow layouts.
+///
+/// Closing the sheet clears selection. Resizing or opening the sheet never
+/// changes focus on the underlying selectable surface.
 class MobileInspector extends HookConsumerWidget {
   const MobileInspector({required this.child, super.key});
   final Widget child;
@@ -182,6 +195,10 @@ class MobileInspector extends HookConsumerWidget {
   }
 }
 
+/// Renders the inspector as a resizable pane on wide layouts.
+///
+/// The pane is visible only when the inspector has a selection. Its size is
+/// retained in [InspectorSize] and clamped to the current layout constraints.
 class DesktopInspector extends HookConsumerWidget {
   const DesktopInspector({
     required this.child,
@@ -406,6 +423,11 @@ class _InspectorContent extends HookConsumerWidget {
   }
 }
 
+/// Shows operations available for every currently inspected selectable.
+///
+/// Operations use the inspected selection, not the focused selectable. An
+/// operation is omitted unless its capability contract accepts the full
+/// selection.
 class InspectorOperations extends HookConsumerWidget {
   const InspectorOperations({super.key});
 

@@ -1,3 +1,11 @@
+//! Parsers and expansions for compile time SurrealDB query declarations.
+//!
+//! These checks establish the result position once, before the runtime query wrapper is built.
+//! Read queries reject mutation keywords. Transaction queries require an explicit transaction
+//! envelope and a final top level `RETURN`, because the runtime decoder uses that position after
+//! execution. File based queries are resolved against the calling crate's manifest and embedded
+//! in the expansion.
+
 use std::{fs, path::Path};
 
 use proc_macro2::TokenStream;
@@ -6,6 +14,8 @@ use syn::{LitStr, Token, Type, parse::Parse, parse::ParseStream};
 
 const MUTATION_TOKENS: &[&str] = &["CREATE", "DELETE", "INSERT", "RELATE", "UPDATE", "UPSERT"];
 
+/// Parsed input for a read query literal. The expansion supplies its final result index to the
+/// runtime `ReadQuery` wrapper.
 pub(crate) struct ReadQueryInput {
     query: LitStr,
 }
@@ -23,11 +33,13 @@ impl Parse for ReadQueryInput {
     }
 }
 
+/// Parsed input for an inline transaction literal and its decoded outcome type.
 pub(crate) struct TransactionQueryInput {
     outcome: Type,
     query: LitStr,
 }
 
+/// Parsed input for a manifest relative transaction file and its decoded outcome type.
 pub(crate) struct TransactionQueryFileInput {
     outcome: Type,
     path: LitStr,
@@ -154,6 +166,10 @@ fn read_query_file(path: &LitStr) -> syn::Result<LitStr> {
     Ok(LitStr::new(&query, path.span()))
 }
 
+/// Validate the transaction envelope and locate the final top level outcome statement.
+///
+/// Nested `RETURN` statements are ignored by the statement scanner. Keeping this rule here makes
+/// inline and file based transaction macros agree on the index passed to runtime decoding.
 fn transaction_outcome_index(query: &LitStr) -> syn::Result<usize> {
     let query_value = query.value();
     let statements = top_level_statements(&query_value).map_err(|message| {
@@ -247,6 +263,11 @@ fn top_level_statements(query: &str) -> Result<Vec<String>, &'static str> {
     Ok(statements)
 }
 
+/// Mask quoted literals and comments while preserving delimiters and statement boundaries.
+///
+/// The query is not parsed as full SurrealQL. This narrow scanner prevents words such as
+/// `UPDATE` in data or comments from being mistaken for mutations, and lets validation report
+/// malformed quoting or delimiters before code generation.
 fn code_without_literals_and_comments(query: &str) -> Result<String, &'static str> {
     let bytes = query.as_bytes();
     let mut code = bytes.to_vec();

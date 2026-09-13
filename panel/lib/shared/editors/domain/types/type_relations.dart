@@ -1,5 +1,11 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Answers whether every value described by this expression is accepted by `target`.
+///
+/// Structural checks cover bounds and nested shapes. Nominal checks use the
+/// registry for inheritance and generic variance. A false result is a relation
+/// answer only; callers needing a user facing reason should use refinement or
+/// validation instead.
 extension TypeExpressionAssignability on TypeExpression {
   bool isStructurallyAssignableTo(
     TypeExpression target,
@@ -202,6 +208,11 @@ bool _comparableRangeContained<T extends Comparable<T>>(
     (targetMaximum == null ||
         sourceMaximum != null && sourceMaximum.compareTo(targetMaximum) <= 0);
 
+/// Derives the fields that several values can safely edit together.
+///
+/// Identical types remain intact. Record types retain only shared fields with
+/// identical types, and conflicting defaults are removed. Other incompatible
+/// shapes return diagnostics rather than inventing a projection.
 extension TypeExpressionProjection on Iterable<TypeExpression> {
   TypeResult<TypeExpression> commonEditableProjection() {
     final values = toList();

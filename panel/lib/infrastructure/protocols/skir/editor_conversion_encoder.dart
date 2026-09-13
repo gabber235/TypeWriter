@@ -1,3 +1,8 @@
+// Encodes the domain conversion graph for catalog publication.
+//
+// The panel can describe conversions that are evaluated locally or by a
+// realm. This adapter preserves that ownership metadata and rejects inline
+// rules that cannot be represented as shared conversion identities.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/conversion.dart"
     as wire;
@@ -5,12 +10,14 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire_type;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes conversion definitions and their nested rules.
 final class SkirConversionEncoder {
   const SkirConversionEncoder(this.types, this.paths);
 
   final SkirTypeCodec types;
   final SkirDataPathCodec paths;
 
+  /// Encodes all definitions while retaining diagnostics from every item.
   TypeResult<List<wire.ConversionDefinition>> encode(
     Iterable<ConversionDefinition> values,
   ) {

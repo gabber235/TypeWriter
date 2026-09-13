@@ -11,6 +11,12 @@ part "entries.freezed.dart";
 part "entries.g.dart";
 part "entry_selection.dart";
 
+/// Loads one entry definition from the realm entry index and coordinates entry
+/// edits with the page element owner.
+///
+/// The index is the current location authority. Mutations recheck that
+/// location before submission, so a stale inspector cannot write to a page
+/// after the entry has moved or the selected realm has changed.
 @riverpod
 class Entry extends _$Entry {
   @override
@@ -72,10 +78,13 @@ class Entry extends _$Entry {
   }
 }
 
-/// Top-level union used by pages/graph/views to render entries.
-/// - definition: an entry fully defined on the current page
-/// - reference: a reference to an entry defined on a different page
-/// - nonexistent: a dangling reference (entry no longer exists)
+/// Read model consumed by page and graph views for local and related entries.
+///
+/// A definition owns editable data on the current page. A reference describes
+/// a valid entry owned by another page and is not locally editable. A
+/// nonexistent value represents a dangling cross page target. A missing
+/// element definition preserves placement and links while making catalog loss
+/// visible to the UI.
 @Freezed(unionKey: "_kind")
 abstract class PageEntry with _$PageEntry {
   const factory PageEntry.definition({required EntryDefinition definition}) =
@@ -106,6 +115,8 @@ abstract class PageEntry with _$PageEntry {
   }) = MissingElementDefinitionPageEntry;
 }
 
+/// The editable local entry projection, including its typed data, placement,
+/// catalog definition, and both link directions.
 @freezed
 abstract class EntryDefinition with _$EntryDefinition {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -121,6 +132,10 @@ abstract class EntryDefinition with _$EntryDefinition {
   }) = _EntryDefinition;
 }
 
+/// Position and size of an entry in its owning page projection.
+///
+/// Graph values use x and y coordinates with width and height. Timeline entry
+/// values use x as the track index and retain a normalized one by one shape.
 @freezed
 abstract class EntryPlacement with _$EntryPlacement {
   @Assert("width >= 0", "Width must not be negative.")
@@ -137,6 +152,7 @@ abstract class EntryPlacement with _$EntryPlacement {
       _$EntryPlacementFromJson(json);
 }
 
+/// The page surface whose placement rules apply to an entry.
 enum EntryPlacementKind { graph, timelineEntry }
 
 @Freezed(unionKey: "_kind")
@@ -175,6 +191,7 @@ extension PageEntryExtension on PageEntry {
       };
 }
 
+/// Derives geometry used to position and compare entry placements.
 extension EntryPlacementExtension on EntryPlacement {
   Offset get center {
     return Offset(x + width / 2, y + height / 2);

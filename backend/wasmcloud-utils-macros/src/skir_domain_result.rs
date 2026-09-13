@@ -1,3 +1,9 @@
+//! Expand conversion from runtime domain slugs to typed SKIR response values.
+//!
+//! Database helpers expose expected domain failures as slugs. This macro keeps the success path
+//! as the expression result and turns known slugs into an early `Ok(response)`. Callers can add
+//! constructors for payloadful variants; the runtime response contract handles payloadless ones.
+
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::quote;
@@ -6,6 +12,7 @@ use syn::{
     parse::{Parse, ParseStream},
 };
 
+/// Parsed response type, domain result expression, and optional payload constructors.
 pub(crate) struct SkirDomainResultInput {
     response_ty: Path,
     result: Expr,
@@ -73,6 +80,7 @@ impl Parse for OverrideEntry {
     }
 }
 
+/// Emit the value or early response branch used inside a handler returning a typed result.
 pub(crate) fn expand(input: SkirDomainResultInput) -> syn::Result<TokenStream> {
     let utils_path = crate::paths::utils_path();
     let response_ty = &input.response_ty;
@@ -103,6 +111,8 @@ fn override_arms(input: &SkirDomainResultInput) -> syn::Result<Vec<TokenStream>>
         .collect()
 }
 
+/// Build a payloadful response for one stable domain slug. The generated payload type follows
+/// the naming convention shared by the SKIR generator and `skir_variant!`.
 fn override_arm(response_ty: &Path, entry: &OverrideEntry) -> syn::Result<TokenStream> {
     let slug_value = entry.slug.value();
     let variant_ident = Ident::new(&slug_value.to_case(Case::Pascal), entry.slug.span());

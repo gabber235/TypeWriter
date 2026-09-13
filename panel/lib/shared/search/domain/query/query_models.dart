@@ -3,8 +3,10 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "query_models.freezed.dart";
 
+/// Placement of an operator in the query grammar.
 enum QueryOperatorType { prefix, group, postfix }
 
+/// Supported textual and symbolic query operators.
 enum QueryOperator {
   and(["AND", "&&"], type: .group),
   or(["OR", "||"], type: .group),
@@ -31,8 +33,10 @@ enum QueryOperator {
   static List<String> get postfixTokens => tokensForType(.postfix);
 }
 
+/// Severity presented to the query editor.
 enum QuerySeverity { warning, error }
 
+/// Stable categories for parse and validation diagnostics.
 enum QueryIssueCode {
   missingSelectorValue,
   invalidSelectorValue,
@@ -44,6 +48,7 @@ enum QueryIssueCode {
   unknownSelector,
 }
 
+/// A diagnostic tied to a query range when the parser can identify one.
 class QueryParseIssue {
   const QueryParseIssue({
     required this.code,
@@ -59,6 +64,7 @@ class QueryParseIssue {
 }
 
 @freezed
+/// Describes which query grammar element owns the editor cursor.
 sealed class QueryCursorContext with _$QueryCursorContext {
   const factory QueryCursorContext.selectorKey({
     required int cursorOffset,
@@ -89,9 +95,11 @@ sealed class QueryCursorContext with _$QueryCursorContext {
   }) = UnknownCursorContext;
 }
 
+/// Position of the cursor relative to the parsed selector expression.
 enum QuerySide { before, expression, after }
 
 @freezed
+/// An edit the query bar can apply to the active cursor range.
 sealed class QuerySuggestion with _$QuerySuggestion {
   const factory QuerySuggestion.selectorKey({
     required String label,
@@ -114,11 +122,17 @@ sealed class QuerySuggestion with _$QuerySuggestion {
 }
 
 extension QuerySuggestionListX on List<QuerySuggestion> {
+  /// Stable concatenated label used to identify a suggestion set.
   String get key => fold("", (previousValue, element) {
     return "$previousValue${element.label}";
   });
 }
 
+/// Complete parse output shared by search execution and query editing.
+///
+/// [query] is the free text sent to sources. [expression] and [selectors]
+/// retain structured selector semantics. [issues] reports recoverable input
+/// problems without preventing the editor from showing partial results.
 class QueryParseResult {
   const QueryParseResult({
     required this.query,
@@ -156,10 +170,19 @@ class QueryParseResult {
   /// Original raw input string before parsing.
   final String raw;
 
+  /// Structured selector expression, if the input contains one.
   final QueryLexerToken? expression;
+
+  /// Flattened tokens in source order, including operator nodes.
   final List<QueryLexerToken> tokens;
+
+  /// Selector occurrences extracted from [tokens].
   final List<QueryLexerSelectorToken> selectors;
+
+  /// Syntax and selector validation diagnostics.
   final List<QueryParseIssue> issues;
+
+  /// Cursor semantics, omitted when parsing without a cursor offset.
   final QueryCursorContext? cursorContext;
 
   @override

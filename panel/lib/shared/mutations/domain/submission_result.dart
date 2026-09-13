@@ -25,4 +25,5 @@ sealed class SubmissionResult<T> with _$SubmissionResult<T> {
   }) = SubmissionUncertain<T>;
 }
 
+/// Declares whether an uncertain attempt may send the same captured request.
 enum SubmissionReplay { unsupported, identicalRequest }

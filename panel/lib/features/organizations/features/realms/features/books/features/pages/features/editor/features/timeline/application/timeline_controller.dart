@@ -6,8 +6,13 @@ import "package:flutter/scheduler.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// The edit operation represented by an active timeline preview.
 enum TimelineInteractionMode { move, resizeStart, resizeEnd }
 
+/// Inclusive frame bounds used to constrain a preview.
+///
+/// Infinite bounds still clamp frames to zero, because timeline coordinates
+/// cannot be negative.
 class FrameRange {
   const FrameRange(this.startFrame, this.endFrame);
 
@@ -22,6 +27,7 @@ class FrameRange {
   }
 }
 
+/// One side of a frame range, either fixed or bounded only by zero.
 sealed class FrameConstraint {
   const FrameConstraint();
 
@@ -35,6 +41,7 @@ sealed class FrameConstraint {
   int coerceAtMost(int frame);
 }
 
+/// A frame bound fixed to one exact coordinate.
 class ExactFrameConstraint implements FrameConstraint {
   const ExactFrameConstraint(this.frame);
 
@@ -55,6 +62,7 @@ class ExactFrameConstraint implements FrameConstraint {
   String toString() => "ExactFrameConstraint($frame)";
 }
 
+/// A frame bound with no upper limit and a zero lower limit.
 class InfiniteFrameConstraint implements FrameConstraint {
   const InfiniteFrameConstraint();
 
@@ -73,6 +81,11 @@ class InfiniteFrameConstraint implements FrameConstraint {
   String toString() => "InfiniteFrameConstraint";
 }
 
+/// Immutable draft of one element's frame change during an edit session.
+///
+/// [originalStartFrame] and [originalEndFrame] remain stable across updates so
+/// pointer movement is interpreted from the gesture origin. The controller
+/// owns these drafts temporarily. Committing or cancelling clears that state.
 sealed class TimelinePreview {
   const TimelinePreview({
     required this.id,
@@ -93,6 +106,7 @@ sealed class TimelinePreview {
   TimelinePreview update(int frameDelta);
 }
 
+/// Draft move that preserves duration within an optional parent boundary.
 class MoveTimelinePreview implements TimelinePreview {
   MoveTimelinePreview({
     required this.id,
@@ -148,6 +162,7 @@ class MoveTimelinePreview implements TimelinePreview {
   }
 }
 
+/// Draft change to a segment start, retaining its current end frame.
 class ResizeStartTimelinePreview implements TimelinePreview {
   ResizeStartTimelinePreview({
     required this.id,
@@ -189,6 +204,7 @@ class ResizeStartTimelinePreview implements TimelinePreview {
   }
 }
 
+/// Draft change to a segment end, never allowing it before its start.
 class ResizeEndTimelinePreview implements TimelinePreview {
   ResizeEndTimelinePreview({
     required this.id,
@@ -233,6 +249,12 @@ class ResizeEndTimelinePreview implements TimelinePreview {
   }
 }
 
+/// Owns the timeline's transient viewport animation and edit previews.
+///
+/// [Timeline] is the lifecycle owner and disposes this controller through the
+/// hook. The controller does not mutate [TimelineData] or persist changes. It
+/// clamps pan and zoom to nonnegative coordinates, converts pixel movement to
+/// frame deltas, and notifies listeners for every visible state transition.
 class TimelineController extends ChangeNotifier {
   TimelineController({
     required TickerProvider tickerProvider,
@@ -412,6 +434,11 @@ class TimelineController extends ChangeNotifier {
     }
   }
 
+  /// Starts a replacement draft session for the selected elements.
+  ///
+  /// Existing previews are discarded. Call [finishInteractionSession] to hand
+  /// drafts to the persistence owner, or [cancelInteraction] to restore the
+  /// source projection without a commit.
   void startInteractionSession({required List<TimelinePreview> previews}) {
     _previewsById
       ..clear()
@@ -429,6 +456,11 @@ class TimelineController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Returns the current drafts and clears the session before persistence.
+  ///
+  /// An empty result means no active edit exists. The caller must handle any
+  /// persistence failure because this controller has already discarded the
+  /// transient session.
   List<TimelinePreview> finishInteractionSession() {
     if (_previewsById.isEmpty) return const [];
     final sessionPreviews = previews;
@@ -437,6 +469,7 @@ class TimelineController extends ChangeNotifier {
     return sessionPreviews;
   }
 
+  /// Drops the active drafts without producing a commit payload.
   void cancelInteraction() {
     if (_previewsById.isEmpty) return;
     _previewsById.clear();
@@ -466,6 +499,7 @@ class TimelineController extends ChangeNotifier {
   }
 }
 
+/// Creates and disposes a controller with the widget's ticker lifecycle.
 TimelineController useTimelineController({
   required TickerProvider tickerProvider,
   double headerWidth = 200,

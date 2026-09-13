@@ -8,6 +8,8 @@ import "package:typewriter_panel/typewriter_panel.dart";
 /// The supplied sender must capture an immutable request and destination.
 /// Repeated attempts reuse that sender. Only protocols with verified replay
 /// support may retry an uncertain result. Concurrent attempts share one Future.
+/// A confirmed response is integrated once; integration failure is reported
+/// separately because resending could duplicate an already accepted mutation.
 final class MutationSubmission<T> extends ChangeNotifier {
   MutationSubmission({
     required this.id,
@@ -41,6 +43,11 @@ final class MutationSubmission<T> extends ChangeNotifier {
           (_result is SubmissionUncertain<T> &&
               replay == SubmissionReplay.identicalRequest));
 
+  /// Starts delivery or returns the active or settled attempt.
+  ///
+  /// Calls made while sending share the same future. An uncertain result is
+  /// replayable only when [replay] explicitly permits an identical request.
+  /// Integration may be retried without sending again.
   Future<SubmissionResult<T>> run() {
     if (_disposed) throw StateError("Submission is disposed");
     final active = _active;
@@ -92,6 +99,7 @@ final class MutationSubmission<T> extends ChangeNotifier {
     return result;
   }
 
+  /// Stops notifications and releases the prepared commit's owned resources.
   @override
   void dispose() {
     if (_disposed) return;

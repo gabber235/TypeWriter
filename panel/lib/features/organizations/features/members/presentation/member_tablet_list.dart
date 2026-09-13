@@ -5,6 +5,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Touch oriented member projection with one expandable card per member.
+///
+/// It shares selection semantics with [MembersTable], but delegates row detail
+/// and role editing to [MemberTabletCard]. Animated removal temporarily ignores
+/// pointer input so a disappearing row cannot submit another action.
 class MembersTabletList extends HookConsumerWidget {
   const MembersTabletList({
     required this.members,
@@ -74,9 +79,8 @@ class MembersTabletList extends HookConsumerWidget {
                     ),
                     Text(
                       "Select all",
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!
+                          .copyWith(color: theme.colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),

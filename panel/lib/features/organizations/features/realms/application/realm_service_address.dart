@@ -1,6 +1,12 @@
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 
+/// Derives the request and event subjects for one organization realm pair.
+///
+/// Subject identity includes both identifiers so messages from different
+/// realms or organizations cannot share an application route accidentally.
+/// This value only maps addresses. It does not open connections, subscribe,
+/// or own transport lifetime.
 final class RealmServiceAddress {
   const RealmServiceAddress({
     required this.organizationId,

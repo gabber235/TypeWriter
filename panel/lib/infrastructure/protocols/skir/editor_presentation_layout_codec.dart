@@ -1,5 +1,9 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes layout structure and its renderer independent constraints.
+///
+/// Layout is separate from content so a node tree can arrange, wrap, anchor,
+/// and decorate child nodes without changing the values those nodes consume.
 extension SkirPresentationLayoutDecoder on SkirPresentationDecoder {
   TypeResult<PresentationElement> _children(wire.ChildrenElement value) =>
       _childrenLayout(value.layout).mapValue(
@@ -34,9 +38,8 @@ extension SkirPresentationLayoutDecoder on SkirPresentationDecoder {
       value,
     ).mapValue(PresentationSequenceLayout.children),
     wire.SequenceLayout_hierarchyWrapper(:final value) =>
-      _hierarchySequenceLayout(
-        value,
-      ).mapValue(PresentationSequenceLayout.hierarchy),
+      _hierarchySequenceLayout(value)
+          .mapValue(PresentationSequenceLayout.hierarchy),
     wire.SequenceLayout_unknown() => invalidWire("Unknown sequence layout"),
   };
 

@@ -1,5 +1,10 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes controls that edit values through explicit bindings.
+///
+/// Controls describe intent and validation constraints. Persistence, transaction
+/// policy, and authorization remain with the editor owner rather than this wire
+/// adapter.
 extension SkirPresentationInputDecoder on SkirPresentationDecoder {
   TypeResult<BoundControl> _bound(wire.BoundControl value) {
     final binding = expressions.binding(value.binding);

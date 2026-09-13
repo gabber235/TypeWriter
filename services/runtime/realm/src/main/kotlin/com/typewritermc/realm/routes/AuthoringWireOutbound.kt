@@ -52,7 +52,10 @@ import skirout.library.v1.authoring.ResourceSummary as WireSummary
 import skirout.library.v1.authoring.Tag as WireTag
 
 /**
- * Encodes consistent snapshot slices with their collaboration sequence for editor reconciliation.
+ * Encodes repository snapshot slices without changing their authoritative sequence.
+ *
+ * The sequence belongs to the whole Realm, not to an individual requested slice. The panel uses it to reconcile
+ * snapshots with change notifications and to detect gaps.
  */
 internal fun AuthoringSnapshotResult.toWireResponse(): GetAuthoringSnapshotResponse =
     GetAuthoringSnapshotResponse.SuccessWrapper(
@@ -60,7 +63,10 @@ internal fun AuthoringSnapshotResult.toWireResponse(): GetAuthoringSnapshotRespo
     )
 
 /**
- * Preserves applied, conflict, and invalid outcomes at the wire boundary.
+ * Preserves the repository's applied, conflict, and invalid outcomes at the panel boundary.
+ *
+ * Applied changes retain their sequence and indirect resource effects. Conflicts retain property level expected and
+ * actual values, allowing the client to reconcile without treating a conflict as a transport failure.
  *
  * Conflict details and diagnostics remain structured rather than collapsed to a generic error.
  */

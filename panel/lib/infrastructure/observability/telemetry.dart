@@ -5,7 +5,17 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "telemetry.g.dart";
 
+/// Observability boundary for outbound panel calls.
+///
+/// Implementations add trace context to the headers passed to [operation]. The
+/// operation remains responsible for the actual request, so telemetry cannot
+/// change payload ownership or transport lifecycle. The no op implementation
+/// preserves the same callback contract when tracing is disabled.
 abstract interface class PanelTelemetry {
+  /// Traces one NATS request or publication and injects its context headers.
+  ///
+  /// [payloadSize] is recorded as metadata only. The callback receives headers
+  /// for the current attempt and its result or error is returned unchanged.
   Future<T> traceNats<T>({
     required String subject,
     required int payloadSize,
@@ -13,6 +23,8 @@ abstract interface class PanelTelemetry {
     required Future<T> Function(Map<String, String> headers) operation,
   });
 
+  /// Traces one HTTP operation and injects its context headers. HTTP status
+  /// handling remains with the caller because status is response data here.
   Future<http.Response> traceHttp({
     required String method,
     required Uri uri,
@@ -21,6 +33,7 @@ abstract interface class PanelTelemetry {
   });
 }
 
+/// Preserves outbound call behavior when telemetry is disabled.
 final class NoopPanelTelemetry implements PanelTelemetry {
   const NoopPanelTelemetry();
 
@@ -41,6 +54,10 @@ final class NoopPanelTelemetry implements PanelTelemetry {
   }) => operation(const {});
 }
 
+/// Emits outbound panel spans and W3C trace context through OpenTelemetry.
+///
+/// This adapter owns span attributes and propagation only. NATS and HTTP
+/// clients still own connection, response, and retry semantics.
 final class OpenTelemetryPanelTelemetry implements PanelTelemetry {
   OpenTelemetryPanelTelemetry()
     : _tracer = OTel.tracer(),
@@ -112,6 +129,11 @@ final class _MapTextMapSetter implements TextMapSetter<String> {
 }
 
 @Riverpod(keepAlive: true)
+/// Initializes the process wide tracing exporter and exposes the panel tracer.
+///
+/// Disabled tracing returns [NoopPanelTelemetry] without validating or opening
+/// an exporter. Enabled tracing requires an absolute endpoint because an
+/// exporter cannot deliver spans to a relative browser or server path.
 Future<PanelTelemetry> panelTelemetry(Ref ref) async {
   final config = AppConfig.telemetry;
   if (!config.enabled) return const NoopPanelTelemetry();

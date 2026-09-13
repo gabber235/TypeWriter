@@ -1,5 +1,17 @@
 part of "services.dart";
 
+/// Owns the live organization topology projection.
+///
+/// The projection combines the topology watch with committed configuration
+/// changes from [ServiceResourceRepository]. [TopologyHost] contains desired
+/// and applied configuration revisions alongside host runtime observations;
+/// child realm and engine entries describe the resources currently reported by
+/// that host. A topology entry is therefore not another service identity.
+///
+/// Consumers may use the projection to display current backend knowledge and
+/// to choose configuration targets. They must not treat desired configuration
+/// as proof that runtime resources are active, or infer service identity fields
+/// from a host without resolving its service identifier.
 @riverpod
 class OrganizationTopologyController extends _$OrganizationTopologyController {
   @override
@@ -35,11 +47,15 @@ class OrganizationTopologyController extends _$OrganizationTopologyController {
     );
   }
 
-  /// Applies one complete execution configuration with optimistic concurrency.
+  /// Applies one complete host execution configuration with optimistic
+  /// concurrency.
   ///
-  /// The canonical backend result is returned so editor callers can adopt its
-  /// revision immediately. Protocol failures are translated to [ApiException].
-  /// Conflicts also adopt the canonical configuration before being reported.
+  /// The backend result is the canonical configuration result. On success it
+  /// is integrated into this projection before being returned. On conflict,
+  /// the actual backend configuration is integrated before the conflict is
+  /// reported, allowing the editor to refresh its revision. A successful
+  /// result describes desired configuration and observed resources; it does
+  /// not guarantee that reconciliation has completed.
   Future<TopologyConfigurationResult> configureHost({
     required TopologyHost host,
     required skir.HostExecutionConfiguration execution,

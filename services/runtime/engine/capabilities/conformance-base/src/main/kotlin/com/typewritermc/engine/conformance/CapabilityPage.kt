@@ -18,6 +18,7 @@ interface CapabilityElement : Element {
     override val id: ElementInstanceId
 }
 
+/** Declares the conformance page used to verify capability supplied editor roles. */
 @TypewriterPage(id = "019d3a87002070008000000000000020", revision = 1)
 fun capabilityPage(): PageSpec =
     page(

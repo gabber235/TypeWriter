@@ -7,6 +7,12 @@ import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:responsive_framework/responsive_framework.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Book library route.
+///
+/// The library reads the canonical book collection, applies local search for
+/// title and tag projections, and delegates creation to the books application
+/// provider. Selection is updated after creation so the new book follows the
+/// shared selectable and editor flow.
 @RoutePage()
 class LibraryPage extends HookConsumerWidget {
   const LibraryPage({super.key});

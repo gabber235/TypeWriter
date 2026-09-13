@@ -2,8 +2,15 @@ import "package:flutter/material.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// The navigation level currently shown by [DateTimeCalendar].
 enum DateTimeCalendarView { days, months, years }
 
+/// Displays the active calendar period and changes its granularity.
+///
+/// The navigation callbacks move the period at the active granularity, while
+/// the picker callbacks switch between day, month, and year views. The header
+/// does not select a date or own the calendar value; [DateTimeCalendar]
+/// coordinates those decisions.
 class DateTimeCalendarHeader extends StatelessWidget {
   const DateTimeCalendarHeader({
     required this.visibleMonth,

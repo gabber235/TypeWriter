@@ -6,17 +6,31 @@ package com.typewritermc.types
  * independently generated graphs agree on standard type identity and representation.
  */
 object StandardTypes {
+    /** The generic nominal type used to represent Kotlin nullable values. */
     val option = ResolvedTypeRef(TypeId.Option, revision = 1)
+
+    /** The concrete nominal type used for a present option value. */
     val some = ResolvedTypeRef(TypeId.Some, revision = 1)
+
+    /** The concrete nominal type used for an absent option value. */
     val none = ResolvedTypeRef(TypeId.None, revision = 1)
+
+    /** The qualified identity for the platform color type. */
     val color = ResolvedTypeRef(TypeId.Qualified("kernel/v1", "Color"), revision = 1)
+
+    /** The qualified identity for the platform date time type. */
     val dateTime = ResolvedTypeRef(TypeId.Qualified("kernel/v1", "DateTime"), revision = 1)
+
+    /** The qualified identity for the platform duration type. */
     val duration = ResolvedTypeRef(TypeId.Qualified("kernel/v1", "Duration"), revision = 1)
 
+    /** Applies one value expression to the generic option identity. */
     fun optionOf(type: TypeExpression) = option.withArguments(listOf(type))
 
+    /** Applies one value expression to the present option identity. */
     fun someOf(type: TypeExpression) = some.withArguments(listOf(type))
 
+    /** Applies one value expression to the absent option identity. */
     fun noneOf(type: TypeExpression) = none.withArguments(listOf(type))
 
     val definitions =

@@ -8,6 +8,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "roles.freezed.dart";
 part "roles.g.dart";
 
+/// Role metadata used by membership editors.
+///
+/// [assignable] is the client visible permission boundary for ordinary role
+/// changes. Roles that are not assignable remain visible because they are part
+/// of a member's authoritative projection, but the controls cannot edit them.
 @freezed
 abstract class OrganizationRole with _$OrganizationRole {
   @Assert("name != \"\"", "Name must not be empty.")
@@ -42,6 +47,11 @@ abstract class OrganizationRole with _$OrganizationRole {
   );
 }
 
+/// Streams the role catalog for the selected organization.
+///
+/// The initial list and later add, update, and remove messages are folded into
+/// one provider value. Membership editors consume this catalog to render both
+/// available choices and the protected roles that must remain visible.
 @riverpod
 class OrganizationRoles extends _$OrganizationRoles {
   @override

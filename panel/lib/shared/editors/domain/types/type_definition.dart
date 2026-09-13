@@ -3,10 +3,13 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "type_definition.freezed.dart";
 
+/// Controls how a nominal type argument participates in assignability.
 enum TypeVariance { invariant, covariant, contravariant }
 
+/// Declares whether a nominal type can be instantiated or extended.
 enum NominalTypeKind { concrete, openAbstract, sealedAbstract }
 
+/// A generic parameter, including the values permitted for its argument.
 @freezed
 abstract class TypeParameter with _$TypeParameter {
   @Assert("name != \"\"", "Parameter name must not be empty.")
@@ -17,6 +20,11 @@ abstract class TypeParameter with _$TypeParameter {
   }) = _TypeParameter;
 }
 
+/// The catalog declaration from which a nominal type is resolved.
+///
+/// The representation is the editable structural view. Parents add inherited
+/// constraints. The registry owns resolution, substitution, inheritance
+/// checks, and the resulting ancestor set; this value remains immutable input.
 @freezed
 abstract class TypeDefinition with _$TypeDefinition {
   const factory TypeDefinition({
@@ -30,11 +38,17 @@ abstract class TypeDefinition with _$TypeDefinition {
   }) = _TypeDefinition;
 }
 
+/// The serialized set of nominal declarations available to an editor.
 @freezed
 abstract class TypeCatalog with _$TypeCatalog {
   const factory TypeCatalog(List<TypeDefinition> definitions) = _TypeCatalog;
 }
 
+/// A validated declaration with generic arguments and inherited structure.
+///
+/// `representation` is the effective editable shape after parent refinement.
+/// `directParents` and `ancestors` are derived lookup data, not independent
+/// sources of type authority.
 @freezed
 abstract class ResolvedType with _$ResolvedType {
   const factory ResolvedType({

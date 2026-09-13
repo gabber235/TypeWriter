@@ -1,5 +1,10 @@
 part of "../../content_renderer.dart";
 
+/// Renders an absolute protocol timestamp using the active locale.
+///
+/// The protocol value must be a timestamp and its format must pass the shared
+/// pattern validation. UTC or local conversion occurs only at display time;
+/// malformed values and patterns become presentation diagnostics.
 extension DateTimeElementRendering on DateTimeElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final source = scope.evaluate(value);
@@ -57,11 +62,20 @@ extension DateTimeElementRendering on DateTimeElement {
   }
 }
 
+/// Renders a timestamp relative to the current time and refreshes at the next
+/// boundary supplied by the relative time description.
+///
+/// The widget owns only refresh scheduling. The presentation scope remains the
+/// source of the timestamp, and focusable tooltip text preserves an exact date
+/// for users who need more precision than the relative label provides.
 extension RelativeTimeElementRendering on RelativeTimeElement {
   Widget render(BuildContext context, PresentationRenderScope scope) =>
       _RelativeTimeContent(element: this, scope: scope);
 }
 
+/// Owns the short lived timer subscription needed by relative time display.
+/// Rebuilding reevaluates the source and schedules the next refresh from the
+/// current description, so no timer outlives this widget.
 class _RelativeTimeContent extends HookWidget {
   const _RelativeTimeContent({
     required this.element,
@@ -122,6 +136,7 @@ class _RelativeTimeContent extends HookWidget {
   }
 }
 
+/// Makes the exact timestamp available both on hover and keyboard focus.
 class _FocusableTooltip extends StatefulWidget {
   const _FocusableTooltip({required this.message, required this.child});
 

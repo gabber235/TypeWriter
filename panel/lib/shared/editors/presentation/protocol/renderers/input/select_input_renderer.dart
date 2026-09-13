@@ -1,5 +1,8 @@
 part of "../../scalar_input_renderer.dart";
 
+/// Resolves expression backed options into a choice control and routes the
+/// selected value through the bound field. A custom value adds the ordinary
+/// bound editor below the choices, preserving one source of truth.
 extension SelectInputElementRendering on SelectInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

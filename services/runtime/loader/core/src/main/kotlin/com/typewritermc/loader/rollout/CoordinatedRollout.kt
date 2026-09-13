@@ -91,6 +91,7 @@ class CoordinatedRollout(
     private val telemetry: ServiceTelemetry? = null,
     private val timeSource: TimeSource = TimeSource.Monotonic,
 ) {
+    /** Starts a new attempt for [snapshot] and commits only after every participating host is stable and healthy. */
     suspend fun rollOut(snapshot: DeploymentSnapshot) =
         telemetry.artifactSpan(
             "artifact.rollout.coordinate",
@@ -176,6 +177,7 @@ class CoordinatedRollout(
         }
     }
 
+    /** Records failure and drives abort or exact baseline rollback before rethrowing the original failure. */
     private suspend fun compensate(
         rollout: PersistedRollout,
         failure: Throwable,
@@ -218,6 +220,7 @@ class CoordinatedRollout(
         }
     }
 
+    /** Uses a fresh probe to define the responding participant set for this attempt. */
     private suspend fun discover(): Map<HostId, RealmHostPresence> {
         val probe = ProbeRealmHosts(realmId)
         val assigned = topology.assignedHosts()
@@ -256,6 +259,7 @@ class CoordinatedRollout(
         require(expected.all { byHost.getValue(it).accepted }) { "A rollout participant rejected the command." }
     }
 
+    /** Requires every participant to report the requested projection as healthy continuously for [healthyDuration]. */
     private suspend fun awaitStableHealthy(
         attempt: RolloutAttempt,
         references: Map<HostId, ProjectionReference>,

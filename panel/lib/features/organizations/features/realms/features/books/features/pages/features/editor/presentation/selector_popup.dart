@@ -3,10 +3,19 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Builds one item in a selector content surface.
 typedef SelectorItemBuilder<T> = Widget Function(T item);
-typedef SelectorContentBuilder<T> =
-    Widget Function(List<T> items, T? selected, void Function(T) onSelect);
 
+/// Builds selector contents and closes the owning popup through [onSelect].
+typedef SelectorContentBuilder<T> = Widget Function(
+  List<T> items,
+  T? selected,
+  void Function(T) onSelect,
+);
+
+/// Displays asynchronous choices in an anchored desktop popup or a mobile
+/// bottom sheet. Loading and failure states stay visible at the selector
+/// boundary instead of being interpreted as an empty choice list.
 class SelectorPopup<T> extends ConsumerWidget {
   const SelectorPopup({
     required this.asyncValue,
@@ -41,6 +50,8 @@ class SelectorPopup<T> extends ConsumerWidget {
   }
 }
 
+/// Selector variant that waits for both choices and the current selection
+/// before opening the shared content surface.
 class SelectorPopupWithSelection<T> extends ConsumerWidget {
   const SelectorPopupWithSelection({
     required this.itemsAsync,
@@ -172,6 +183,7 @@ class _MobileMenu<T> extends StatelessWidget {
   }
 }
 
+/// Search input whose value is owned by the surrounding selector content.
 class SelectorSearchField extends HookWidget {
   const SelectorSearchField({
     required this.searchQuery,
@@ -204,6 +216,7 @@ class SelectorSearchField extends HookWidget {
   }
 }
 
+/// Label for a grouped selector section.
 class SelectorSectionHeader extends StatelessWidget {
   const SelectorSectionHeader({required this.title, super.key});
 
@@ -220,9 +233,8 @@ class SelectorSectionHeader extends StatelessWidget {
       ),
       child: Text(
         title.toUpperCase(),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+        style: Theme.of(context).textTheme.labelSmall
+            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
       ),
     );
   }

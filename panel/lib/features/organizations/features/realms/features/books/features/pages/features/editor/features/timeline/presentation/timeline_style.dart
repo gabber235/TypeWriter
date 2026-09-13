@@ -2,6 +2,11 @@ import "dart:math";
 
 import "package:flutter/material.dart";
 
+/// Shared geometry, zoom limits, grid policy, and colors for one timeline.
+///
+/// Keep this value consistent across layout, placement, ruler, and render
+/// layers. [fallback] derives a complete palette and scale from the active
+/// Flutter theme.
 @immutable
 class TimelineStyle {
   const TimelineStyle({
@@ -106,7 +111,7 @@ class TimelineStyle {
   /// The number of frames to keep rendered after the visible range.
   final int trailingFrames;
 
-  /// The minimum width of a segment before it snaps or displays differently.
+  /// The minimum visual width assigned to a segment, even at low zoom.
   final double minSegmentWidth;
 
   /// The width of keyframe indicators on the timeline.

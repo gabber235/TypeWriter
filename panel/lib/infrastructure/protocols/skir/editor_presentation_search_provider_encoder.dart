@@ -1,5 +1,10 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes composable search provider policies for catalog transport.
+///
+/// Provider configuration crosses this boundary as declarations. Query
+/// execution, caching, ranking, and cancellation remain owned by search runtime
+/// collaborators.
 extension SkirPresentationSearchProviderEncoder on SkirPresentationEncoder {
   TypeResult<wire.SearchProvider> _searchProvider(SearchProvider value) =>
       switch (value) {

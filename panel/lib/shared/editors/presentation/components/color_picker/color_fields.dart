@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Switches between hexadecimal, RGB, and HSL editors for one color.
+///
+/// The caller owns the selected format and color. Channel edits preserve the
+/// channels not being edited, and the alpha channel is exposed only when
+/// [includeAlpha] is true.
 class ColorFields extends StatelessWidget {
   const ColorFields({
     required this.color,

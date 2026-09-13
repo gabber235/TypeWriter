@@ -36,7 +36,7 @@ class _MultiSelectTextEditingController extends TextEditingController {
       final labelText = text.substring(range.start + 1, range.end - 1);
       children.add(WidgetSpan(child: labelWidgetBuilder(context, labelText)));
 
-      // Add zero-width spaces to account for the remaining characters.
+      // Add zero width spaces to account for the remaining characters.
       // WidgetSpan counts as 1 character, but the original text (including brackets)
       // is longer. We need to pad with invisible characters to fix cursor positioning.
       // See: https://github.com/flutter/flutter/issues/107432

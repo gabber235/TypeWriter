@@ -1,7 +1,13 @@
 import "package:flutter/widgets.dart";
 
+/// Clips a rectangle while optionally extending both vertical edges.
+///
+/// The extension is useful when a translated or overflowing child must remain
+/// visible without changing the clip's height.
 class VerticalClipper extends CustomClipper<Path> {
   const VerticalClipper({this.additionalWidth = 0});
+
+  /// Extra width added symmetrically beyond the left and right edges.
   final double additionalWidth;
 
   @override

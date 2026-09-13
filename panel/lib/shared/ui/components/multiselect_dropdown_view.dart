@@ -105,9 +105,8 @@ class _MultiselectDropdownView<T extends Object> extends StatelessWidget {
                 contentPadding: EdgeInsets.all(context.spacing.space3),
               ),
               keyboardType: TextInputType.text,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium!.copyWith(height: 1.7),
+              style: Theme.of(context).textTheme.bodyMedium!
+                  .copyWith(height: 1.7),
               maxLines: null,
               onEditingComplete: controller.enter,
               onChanged: (_) => controller.menuController.open(),

@@ -32,12 +32,22 @@ fun KSAnnotated.annotation(type: KClass<out Annotation>): KSAnnotation? {
 /** Reads a named string argument without coercing values of another annotation type. */
 fun KSAnnotation.stringArgument(name: String): String? = arguments.singleOrNull { it.name?.asString() == name }?.value as? String
 
-/** Converts an open identifier into the stable upper camel form used by generated declaration names. */
+/**
+ * Converts an open identifier into the stable upper camel form used by generated declaration names.
+ *
+ * Separators and other non alphanumeric characters are discarded, so the result is suitable for a generated
+ * Kotlin declaration when the input contains human supplied names.
+ */
 fun String.toUpperCamelIdentifier(): String =
     split(Regex("[^A-Za-z0-9]+"))
         .filter(String::isNotEmpty)
         .joinToString("") { it.replaceFirstChar(Char::uppercase) }
 
+/**
+ * Emits deterministic KotlinPoet source for a string map.
+ *
+ * Sorting keys keeps generated source stable across KSP runs and makes generated diffs reflect semantic changes.
+ */
 fun Map<String, String>.stringMapCode(): CodeBlock {
     val builder = CodeBlock.builder().add("mapOf(\n").indent()
     toSortedMap().forEach { (key, value) -> builder.add("%S to %S,\n", key, value) }

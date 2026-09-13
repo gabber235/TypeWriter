@@ -34,6 +34,13 @@ import com.typewritermc.types.TypeVariance
 class KspTypeGraphConverter(
     private val identityPolicy: KspTypeIdentityPolicy = QualifiedKotlinTypeIdentityPolicy,
 ) {
+    /**
+     * Converts [type] and every reachable nominal declaration into one self contained graph.
+     *
+     * Recursive visits become named references. Nullable values become the standard Option representation. A
+     * failure never returns a partial graph, and diagnostics identify the path through fields, aliases, supertypes,
+     * and generic arguments that led to the unsupported compiler state.
+     */
     fun convert(type: KSType): KspTypeConversionResult {
         val context = ConversionContext(identityPolicy)
         val root = context.expression(type, listOf(type.displayName))

@@ -1,6 +1,6 @@
 package com.typewritermc.services.libs.registrar
 
-/** A role advertised by a service identity. */
+/** A service role sent to identity issuance and retained with the issued identity. */
 sealed interface ServiceRole {
     val version: String
 
@@ -24,7 +24,7 @@ sealed interface ServiceRole {
     }
 }
 
-/** Durable public identity attributes. */
+/** Durable public attributes issued by the identity service and reused across restarts. */
 class ServiceIdentity(
     val serviceId: String,
     val displayName: String,
@@ -54,7 +54,7 @@ class ServiceIdentity(
     override fun toString(): String = "ServiceIdentity(serviceId=$serviceId, displayName=$displayName, username=$username, role=$role)"
 }
 
-/** Organization associated with a service. */
+/** Organization confirmed by the service binding protocol; the name may be absent in older responses. */
 data class OrganizationBinding(
     val organizationId: String,
     val organizationName: String?,
@@ -126,7 +126,7 @@ class IdentityCredentials(
     override fun toString(): String = "IdentityCredentials(identity=$identity, appPassword=[REDACTED])"
 }
 
-/** Short-lived operator registration token. */
+/** Short lived token that an operator enters in the Typewriter Panel to bind a service. */
 class RegistrationToken(
     private val value: String,
 ) {

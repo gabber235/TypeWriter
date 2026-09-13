@@ -7,6 +7,12 @@ use wit_bindgen::spawn_local;
 const PATH: &str = "/service/identity/issue";
 const MAX_BODY: usize = 64 * 1024;
 
+/// Adapts the identity issuance contract to the HTTP boundary.
+///
+/// This adapter validates the route, method, media headers, body size, and Skir
+/// serialization before invoking the domain workflow. It maps the workflow response
+/// variants to HTTP status codes and serializes the same typed response for callers.
+/// Transport failures are kept at this boundary and do not describe domain behavior.
 pub async fn handle(request: Request) -> Result<Response, otel_wasi::Error<ErrorCode>> {
     let method = request.get_method();
     let path = request

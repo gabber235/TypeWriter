@@ -2,7 +2,13 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Creates and disposes an [InputFieldController].
+/// Creates an [InputFieldController] and disposes its owned focus nodes.
+///
+/// If [inputFocusNode] is supplied, the controller uses it without taking
+/// ownership, while it always owns the surrounding focus node. The controller
+/// is recreated when the supplied focus node or [keys] change, and the prior
+/// controller is disposed as part of that hook transition. Keep the returned
+/// controller paired with the [InputFieldContainer] that consumes it.
 InputFieldController useInputFieldController({
   FocusNode? inputFocusNode,
   String? inputDebugLabel,

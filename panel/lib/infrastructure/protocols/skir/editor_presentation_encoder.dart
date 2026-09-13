@@ -1,3 +1,9 @@
+/// Encodes the panel presentation model into the canonical editor protocol.
+///
+/// Catalog producers own presentation meaning and the panel owns rendering, so
+/// this boundary carries declarations without transferring persistence or edit
+/// ownership. Nested expression, action, and type values are delegated to their
+/// codecs instead of being reinterpreted here.
 library;
 
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
@@ -22,13 +28,25 @@ part "editor_presentation_layout_encoder.dart";
 part "editor_presentation_search_encoder.dart";
 part "editor_presentation_search_provider_encoder.dart";
 
+/// Encodes panel presentation nodes while validating nested protocol values.
+///
+/// A failed nested conversion makes the whole node conversion fail. That keeps
+/// invalid catalog declarations out of the wire contract, unlike decoding where
+/// diagnostics can be rendered to explain a bad received node.
 final class SkirPresentationEncoder {
+  /// Creates an encoder with the codecs needed by nested presentation values.
   const SkirPresentationEncoder(this.expressions, this.actions, this.types);
 
+  /// Encodes expressions used by presentation properties and elements.
   final SkirExpressionEncoder expressions;
+
+  /// Encodes actions exposed by interactive presentation elements.
   final SkirActionEncoder actions;
+
+  /// Encodes type references used by typed fields and polymorphic controls.
   final SkirTypeCodec types;
 
+  /// Encodes one recursive presentation node for catalog transport.
   TypeResult<wire.PresentationNode> encodeNode(PresentationNode value) {
     final element = _element(value.element);
     final enabled = _optional(value.properties.enabledIf);

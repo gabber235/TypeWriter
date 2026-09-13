@@ -42,6 +42,7 @@ object RealmCapability {
     annotation class Command
 }
 
+/** Stable identifier shared by the authored reference, catalog descriptor, and runtime provider. */
 @JvmInline
 value class CapabilityId(
     val value: String,
@@ -61,28 +62,31 @@ sealed interface RealmCapabilityRef<Request : Any> {
     val requestType: KClass<Request>
 }
 
+/** Typed reference to a search that may return multiple result updates. */
 data class RealmSearchCapabilityRef<Request : Any, Result : Any>(
     override val id: CapabilityId,
     override val requestType: KClass<Request>,
     val resultType: KClass<Result>,
 ) : RealmCapabilityRef<Request>
 
+/** Typed reference to a computation that returns one result value. */
 data class RealmComputationCapabilityRef<Request : Any, Result : Any>(
     override val id: CapabilityId,
     override val requestType: KClass<Request>,
     val resultType: KClass<Result>,
 ) : RealmCapabilityRef<Request>
 
+/** Typed reference to a command that returns panel instructions instead of a result value. */
 data class RealmCommandCapabilityRef<Request : Any>(
     override val id: CapabilityId,
     override val requestType: KClass<Request>,
 ) : RealmCapabilityRef<Request>
 
 /**
- * Carries normalized search text and parsed selector structure to a search capability.
+ * Carries the search text and selector expression supplied by the editor invocation protocol.
  *
- * Selector expression leaves refer to selector ids. This data class does not normalize text or validate those
- * references; the invocation boundary supplies validated input.
+ * [selectors] contains the parsed selector values. [selectorExpression] combines their ids, and may be null when
+ * no selector filter was requested. This data class does not normalize text or validate selector references.
  */
 data class RealmSearchQuery(
     val normalizedQuery: String,
@@ -90,12 +94,14 @@ data class RealmSearchQuery(
     val selectorExpression: RealmSearchSelectorExpression? = null,
 )
 
+/** One parsed selector value available to a [RealmSearchSelectorExpression]. */
 data class RealmSearchSelector(
     val id: String,
     val key: String,
     val value: String?,
 )
 
+/** Boolean expression over selector ids supplied with a [RealmSearchQuery]. */
 sealed interface RealmSearchSelectorExpression {
     data class Selector(
         val id: String,
@@ -116,6 +122,7 @@ sealed interface RealmSearchSelectorExpression {
     ) : RealmSearchSelectorExpression
 }
 
+/** Combines the typed request payload with the query passed to a search handler. */
 data class RealmSearchRequest<Request : Any>(
     val payload: Request,
     val query: RealmSearchQuery,
@@ -128,11 +135,13 @@ data class RealmSearchRequest<Request : Any>(
  * not automatically append a completion update.
  */
 sealed interface RealmSearchUpdate<out Result : Any> {
+    /** A batch of results and optional presentation guidance. */
     data class Partial<Result : Any>(
         val values: List<Result>,
         val guidance: List<String> = emptyList(),
     ) : RealmSearchUpdate<Result>
 
+    /** Explicit successful completion marker emitted by the handler. */
     data object Complete : RealmSearchUpdate<Nothing>
 }
 
@@ -189,10 +198,13 @@ interface RealmInvocationContext {
     val invocationId: String
 }
 
+/** Context available while a search handler is invoked. */
 interface RealmSearchContext : RealmInvocationContext
 
+/** Context available while a computation handler is invoked. */
 interface RealmComputationContext : RealmInvocationContext
 
+/** Context available while a command handler is invoked. */
 interface RealmCommandContext : RealmInvocationContext
 
 /**
@@ -204,11 +216,13 @@ class RealmCapabilityPermissionDeniedException(
     message: String,
 ) : RuntimeException(message)
 
+/** Identifies a resource affected by a panel instruction. */
 data class ResourceAddress(
     val type: ResolvedTypeRef,
     val identity: DataValue,
 )
 
+/** Severity rendered by the panel for a command notification. */
 enum class NotificationSeverity {
     INFO,
     SUCCESS,
@@ -223,14 +237,17 @@ enum class NotificationSeverity {
  * display anything on its own.
  */
 sealed interface PanelInstruction {
+    /** Requests a refresh of the identified resource in the panel. */
     data class InvalidateResource(
         val resource: ResourceAddress,
     ) : PanelInstruction
 
+    /** Requests that the panel open the identified resource. */
     data class OpenResource(
         val resource: ResourceAddress,
     ) : PanelInstruction
 
+    /** Requests a user facing notification with the supplied severity and message. */
     data class Notify(
         val severity: NotificationSeverity,
         val message: String,
@@ -247,6 +264,12 @@ data class RealmCommandOutcome(
     val instructions: List<PanelInstruction> = emptyList(),
 )
 
+/**
+ * Transforms each partial result while preserving completion updates and flow cancellation behavior.
+ *
+ * The transform runs during collection, so failures propagate to the collector and each collection evaluates it
+ * independently.
+ */
 fun <Source : Any, Target : Any> RealmSearch<Source>.mapValues(transform: (Source) -> Target): RealmSearch<Target> =
     RealmSearch(
         updates.map { update ->

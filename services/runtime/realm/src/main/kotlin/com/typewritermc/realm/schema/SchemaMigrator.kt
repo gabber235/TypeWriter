@@ -18,6 +18,12 @@ internal class SchemaMigrator(
     private val db: Surreal,
     private val resources: MigrationResources = MigrationResources(),
 ) {
+    /**
+     * Reconciles database migration state with the bundled schema and patch catalog.
+     *
+     * This operation is repeatable after a successful run. A failure may leave earlier patch transactions applied,
+     * so the next run validates their history before continuing.
+     */
     context(_: MainSpanScope)
     fun migrate() =
         childSpanBlocking("realm.schema.migrate") {

@@ -8,18 +8,23 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
+/// Schema version consumed by the component test runner.
 pub const RUN_MANIFEST_SCHEMA_VERSION: u32 = 1;
+/// Target used when building fixture components.
 pub const COMPONENT_TARGET: &str = "wasm32-wasip2";
+/// Cargo profile used for fixture component artifacts.
 pub const COMPONENT_PROFILE: &str = "release";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
+/// Role of a component in a fixture workload.
 pub enum ComponentRole {
     Primary,
     Dependency,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+/// Build identity and workload role for one fixture component.
 pub struct ComponentBuild {
     pub package: &'static str,
     pub target: &'static str,
@@ -27,6 +32,7 @@ pub struct ComponentBuild {
 }
 
 impl ComponentBuild {
+    /// Declares the component under test.
     pub const fn primary(package: &'static str, target: &'static str) -> Self {
         Self {
             package,
@@ -35,6 +41,7 @@ impl ComponentBuild {
         }
     }
 
+    /// Declares a component required by the primary workload.
     pub const fn dependency(package: &'static str, target: &'static str) -> Self {
         Self {
             package,
@@ -45,6 +52,7 @@ impl ComponentBuild {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+/// Static fixture catalog entry used for builds, selection, and runtime assembly.
 pub struct FixtureDescriptor {
     pub id: &'static str,
     pub primary: ComponentBuild,
@@ -53,17 +61,20 @@ pub struct FixtureDescriptor {
 }
 
 impl FixtureDescriptor {
+    /// Iterates over the primary component followed by its dependencies.
     pub fn components(&self) -> impl Iterator<Item = ComponentBuild> + '_ {
         std::iter::once(self.primary).chain(self.dependencies.iter().copied())
     }
 }
 
 #[derive(Clone, Copy, Debug)]
+/// Inventory record registering one fixture descriptor.
 pub struct FixtureRegistration {
     pub descriptor: &'static FixtureDescriptor,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+/// Static identity of one component test case.
 pub struct TestDescriptor {
     pub fixture_id: &'static str,
     pub module_path: &'static str,
@@ -73,6 +84,7 @@ pub struct TestDescriptor {
 }
 
 impl TestDescriptor {
+    /// Returns the name portion displayed by libtest.
     pub fn libtest_name(&self) -> &str {
         self.exact_name
             .split_once("::")
@@ -81,6 +93,7 @@ impl TestDescriptor {
 }
 
 #[derive(Clone, Copy, Debug)]
+/// Inventory record registering one test descriptor.
 pub struct TestRegistration {
     pub descriptor: &'static TestDescriptor,
 }
@@ -89,6 +102,7 @@ inventory::collect!(FixtureRegistration);
 inventory::collect!(TestRegistration);
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+/// Artifact manifest produced for one component test run.
 pub struct RunManifest {
     pub schema_version: u32,
     pub run_id: String,
@@ -104,6 +118,7 @@ pub struct RunManifest {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+/// Built artifact identity and digest recorded in a run manifest.
 pub struct ArtifactRecord {
     pub fixture_id: String,
     pub role: OwnedComponentRole,
@@ -117,6 +132,7 @@ pub struct ArtifactRecord {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+/// Component role serialized into an artifact manifest.
 pub enum OwnedComponentRole {
     Primary,
     Dependency,
@@ -159,6 +175,7 @@ pub enum ModelError {
     MissingArtifact { fixture: String, package: String },
 }
 
+/// Validates fixture and test uniqueness and cross references before execution.
 pub fn validate_catalog<'a>(
     fixtures: impl IntoIterator<Item = &'a FixtureDescriptor>,
     tests: impl IntoIterator<Item = &'a TestDescriptor>,
@@ -210,6 +227,7 @@ pub fn validate_catalog<'a>(
 }
 
 impl RunManifest {
+    /// Validates manifest compatibility with the current test workspace.
     pub fn validate_for(&self, workspace_root: &Path) -> Result<(), ModelError> {
         if self.schema_version != RUN_MANIFEST_SCHEMA_VERSION {
             return Err(ModelError::ManifestSchema {
@@ -238,6 +256,7 @@ impl RunManifest {
         Ok(())
     }
 
+    /// Finds the artifact for one fixture package or reports the missing artifact contract error.
     pub fn artifact(&self, fixture_id: &str, package: &str) -> Result<&ArtifactRecord, ModelError> {
         self.artifacts
             .iter()
@@ -250,6 +269,7 @@ impl RunManifest {
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
+/// Fixtures selected by changed paths, with reasons for each selection.
 pub struct AffectedSelection {
     pub all: bool,
     pub fixture_ids: BTreeSet<String>,
@@ -257,6 +277,7 @@ pub struct AffectedSelection {
 }
 
 impl AffectedSelection {
+    /// Selects every fixture and records the global reason.
     pub fn select_all(reason: impl Into<String>) -> Self {
         let mut selection = Self {
             all: true,
@@ -270,6 +291,7 @@ impl AffectedSelection {
         selection
     }
 
+    /// Adds one fixture and records the path or rule that selected it.
     pub fn include(&mut self, fixture_id: &str, reason: impl Into<String>) {
         self.fixture_ids.insert(fixture_id.to_string());
         self.reasons
@@ -279,6 +301,7 @@ impl AffectedSelection {
     }
 }
 
+/// Selects fixtures affected by source, schema, or global component test changes.
 pub fn select_affected(
     fixtures: &[&FixtureDescriptor],
     changed_paths: impl IntoIterator<Item = impl AsRef<Path>>,

@@ -1,3 +1,10 @@
+/// Bridges the canonical presentation protocol and the panel domain model.
+///
+/// The encoder is used when a catalog definition crosses into the wire contract.
+/// The decoder is used when catalog data returns from that contract. Keeping this
+/// boundary explicit prevents generated wire variants and transport diagnostics
+/// from leaking into renderer and editor code. Expressions, actions, and types
+/// remain owned by their respective codecs and are injected into this boundary.
 library;
 
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
@@ -20,13 +27,25 @@ part "editor_presentation_layout_codec.dart";
 part "editor_presentation_search_codec.dart";
 part "editor_presentation_search_provider_codec.dart";
 
+/// Decodes wire presentation nodes into the panel presentation model.
+///
+/// This is a validation boundary, not a field copier. It aggregates malformed
+/// nested values into diagnostic elements so the panel can represent a broken
+/// catalog node without accepting invalid protocol variants as domain state.
 final class SkirPresentationDecoder {
+  /// Creates a decoder with the codecs needed by nested presentation values.
   const SkirPresentationDecoder(this.expressions, this.actions, this.types);
 
+  /// Decodes expressions referenced by presentation properties and elements.
   final SkirExpressionDecoder expressions;
+
+  /// Decodes actions exposed by interactive presentation elements.
   final SkirActionDecoder actions;
+
+  /// Decodes type references used by typed fields and polymorphic controls.
   final SkirTypeCodec types;
 
+  /// Decodes one recursive presentation node and preserves nested diagnostics.
   PresentationNode decodeNode(wire.PresentationNode value) {
     final enabled = _optionalExpression(value.properties.enabledIf);
     final header = value.header == null

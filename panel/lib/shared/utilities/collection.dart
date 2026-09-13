@@ -3,17 +3,23 @@ import "dart:math";
 import "package:collection/collection.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Collection operations used by panel presentation and data assembly.
 extension ListX<T> on List<T> {
+  /// Picks a random element, or returns `null` when this list is empty.
   T? randomOrNull() {
     if (isEmpty) return null;
     return elementAt(random.nextInt(length));
   }
 
+  /// Picks a random element and throws when this list is empty.
   T randomElement() {
     if (isEmpty) throw Exception("List is empty");
     return elementAt(random.nextInt(length));
   }
 
+  /// Returns [count] distinct elements in random order.
+  ///
+  /// Invalid counts return an empty list rather than partially sampling.
   List<T> randomSubset(int count) {
     if (count <= 0 || count > length) return [];
     final indices = List.generate(length, (index) => index);
@@ -27,6 +33,7 @@ extension ListX<T> on List<T> {
 
   List<int> get indices => List.generate(length, (index) => index);
 
+  /// Inserts a newly created separator between every adjacent element.
   List<T> joinWith(T Function() separator) {
     final result = <T>[];
     for (var i = 0; i < length; i++) {
@@ -36,6 +43,7 @@ extension ListX<T> on List<T> {
     return result;
   }
 
+  /// Combines two lists positionally, recursively masking shared values.
   List<dynamic> mask(List<dynamic> other) {
     final result = <dynamic>[];
     for (var i = 0; i < max(length, other.length); i++) {
@@ -50,12 +58,17 @@ extension ListX<T> on List<T> {
     return result;
   }
 
+  /// Yields elements also present in [other], preserving this list's order.
   Iterable<T> intersection(List<T> other) {
     return where((e) => other.contains(e));
   }
 }
 
+/// Immutable updates for nullable list projections.
 extension NullableListX<T> on List<T>? {
+  /// Replaces the first item with the same key, or appends [updated].
+  ///
+  /// A `null` list becomes a one item list.
   List<T> upsertByKey<TKey>(TKey Function(T) keySelector, T updated) {
     if (this == null) return [updated];
 
@@ -74,13 +87,17 @@ extension NullableListX<T> on List<T>? {
   }
 }
 
+/// Ordering and type filtering operations for iterables.
 extension IterableX<T> on Iterable<T> {
+  /// Returns the item with the smallest projected value, or `null` when empty.
   T? minByOrNull<S>(S Function(T) orderBy, {int Function(S, S)? compare}) =>
       minBy(this, orderBy, compare: compare);
 
+  /// Returns the item with the largest projected value, or `null` when empty.
   T? maxByOrNull<S>(S Function(T) orderBy, {int Function(S, S)? compare}) =>
       maxBy(this, orderBy, compare: compare);
 
+  /// Yields items whose runtime types are absent from [types].
   Iterable<T> excluding(List<Type> types) {
     return where((element) => !types.contains(element.runtimeType));
   }
@@ -89,6 +106,7 @@ extension IterableX<T> on Iterable<T> {
   bool allAre<S extends T>() => isNotEmpty && every((t) => t is S);
 }
 
+/// Converts an iterable of entries into a map.
 extension EntryMapIterable<K, V> on Iterable<MapEntry<K, V>> {
   Map<K, V> toMap() => Map.fromEntries(this);
 }

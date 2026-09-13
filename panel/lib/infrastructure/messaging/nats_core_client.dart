@@ -5,7 +5,15 @@ import "package:nats_core/nats_core.dart" as core;
 import "package:nats_jetstream/nats_jetstream.dart" as jetstream;
 import "package:typewriter_panel/infrastructure/messaging/nats_client.dart";
 
+/// Owns the concrete NATS connection for the panel transport boundary.
+///
+/// The connection is created once and remains private to this adapter. This
+/// class translates package errors, maps package events to the panel lifecycle,
+/// and closes the connection and its event stream together. Higher layers only
+/// see [NatsClient], which keeps Skir serialization, mutation identity, and
+/// resource coordination independent from transport implementation details.
 final class NatsCoreClient implements NatsClient {
+  /// Starts a client whose connection and subscriptions are owned by this instance.
   factory NatsCoreClient.connect(NatsClientConfiguration configuration) {
     try {
       return NatsCoreClient._(
@@ -33,6 +41,8 @@ final class NatsCoreClient implements NatsClient {
     unawaited(_initialize());
   }
 
+  /// Injects a connection future so lifecycle and failure behavior can be
+  /// tested without a live server.
   @visibleForTesting
   factory NatsCoreClient.fromConnectionFuture(
     Future<core.NatsConnection> connection,
@@ -54,6 +64,11 @@ final class NatsCoreClient implements NatsClient {
   Stream<NatsConnectionState> get connectionStateChanges =>
       _connectionStateController.stream;
 
+  /// Attaches one event listener and publishes the initial connection result.
+  ///
+  /// A close racing with connection establishment still closes the eventual
+  /// connection. That keeps this object as the sole owner of transport
+  /// lifetime, including a connection that completes after local shutdown.
   Future<void> _initialize() async {
     try {
       final connection = await _connection;
@@ -217,6 +232,9 @@ final class NatsCoreClient implements NatsClient {
     }
   }
 
+  /// Closes the transport exactly once and completes after owned resources are
+  /// released. A failed initial connection remains a terminal transport event;
+  /// it does not prevent explicit local closure from becoming [NatsClosed].
   @override
   Future<void> close() => _closeOperation ??= _close();
 

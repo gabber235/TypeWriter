@@ -2,6 +2,10 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Signs out the current user and reports failure without exposing its cause.
+///
+/// This action is also used by authentication and connection error screens, so
+/// it remains usable outside the normal sidebar context.
 class SignOutButton extends HookConsumerWidget {
   const SignOutButton({super.key});
 

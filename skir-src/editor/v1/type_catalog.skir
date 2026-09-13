@@ -1,3 +1,8 @@
+// The editor type catalog is the shared vocabulary for declarations, resolved references, typed values, and
+// constraints.
+// Catalog consumers validate references and values locally, then use the same definitions to decode presentations,
+// capabilities, and conversions. A resolved reference identifies a declaration revision plus its type arguments.
+
 import { Duration } from "kernel/v1/duration.skir";
 
 enum BuiltinTypeId(810100001) {

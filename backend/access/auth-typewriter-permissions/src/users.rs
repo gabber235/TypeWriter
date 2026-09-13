@@ -1,3 +1,11 @@
+//! Authorization policy for panel users.
+//!
+//! The auth callout supplies authenticated claims and an optional organization qualifier. This
+//! route persists current profile data, grants baseline user subjects, and grants organization
+//! subjects only after checking the user's membership against the database. The qualifier selects
+//! which organization is evaluated, but it is never trusted as proof of membership. Database
+//! failures and missing user identity fail the request rather than producing partial policy.
+
 use otel_wasi::{ResultWithSlug, main_attribute, wasi_error};
 use wasmcloud_utils::database::{
     RecordId as DatabaseRecordId, TransactionOutcome, read_query, transaction_query,
@@ -9,7 +17,11 @@ use wasmcloud_utils::skir::base::{
 
 use crate::common::{AuthentikClaims, User, build_permissions};
 
-/// Handle permission request for panel users
+/// Derive NATS policy and tags for one authenticated panel user.
+///
+/// Organization policy is conditional on a current membership edge. The returned tags describe
+/// the identity and any verified organization context; the auth callout attaches them to the
+/// signed NATS user claim.
 #[tracing::instrument]
 pub async fn handle_panel_user(
     claims: jose::jwt::Claims<AuthentikClaims>,
@@ -133,7 +145,10 @@ fn extract_user_details(claims: &AuthentikClaims) -> (String, Option<String>, Op
     (name, email, avatar_url)
 }
 
-/// Upsert user into the database.
+/// Persist the latest trusted profile projection without making it an authorization decision.
+///
+/// The user record supports later application behavior. Organization authorization remains the
+/// separate membership query below, so a successful upsert alone grants no organization scope.
 #[tracing::instrument]
 async fn upsert_user(
     user_id: &str,
@@ -176,7 +191,10 @@ async fn upsert_user(
     Ok(())
 }
 
-/// Checks if the user is a member of the organization.
+/// Verify the qualifier's organization against the user's authoritative membership edge.
+///
+/// This check is the policy gate for organization subjects. A false result is a normal denial;
+/// database failure is an authentication failure because the route cannot safely resolve scope.
 #[tracing::instrument]
 async fn is_member_of_organization(
     user_id: &str,

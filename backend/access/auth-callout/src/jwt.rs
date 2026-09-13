@@ -1,3 +1,14 @@
+//! External JWT validation for the NATS authorization callout.
+//!
+//! Validation proceeds from untrusted token metadata to trusted identity claims: decode the
+//! compact token, require a supported asymmetric algorithm and key identifier, select the issuer
+//! by exact URL, fetch its configured JWKS, verify the matching key and signature, then enforce
+//! issuer, audience, and time policy. A failed check returns no identity. JWKS transport or parse
+//! failures are harder failures because the callout cannot safely decide.
+//!
+//! This module authenticates an external principal only. NATS account mapping and entity policy
+//! remain owned by the callout and permission service respectively.
+
 use crate::config::IssuerConfig;
 use jose::{
     JoseHeader, JsonWebSignature, UntypedAdditionalProperties,
@@ -22,7 +33,7 @@ use wasmcloud_component::wasi::http::{
     types::{Fields, Method, Scheme},
 };
 
-/// TODO: remove when https://github.com/minkan-chat/jose/pull/144 is merged
+/// JWKS document fetched from the issuer configured for a candidate token.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Jwks {
     pub keys: Vec<jose::Jwk>,
@@ -113,10 +124,13 @@ impl FlexibleClaims {
     }
 }
 
+/// Clock abstraction that makes temporal claim validation deterministic for callers and tests.
 pub trait ValidationClock {
+    /// Return the current time used for temporal claim checks.
     fn now(&self) -> SystemTime;
 }
 
+/// Production clock for validating `iat`, `nbf`, and `exp` claims.
 pub struct SystemValidationClock;
 
 impl ValidationClock for SystemValidationClock {
@@ -125,6 +139,11 @@ impl ValidationClock for SystemValidationClock {
     }
 }
 
+/// Validate an external identity token against the configured issuer trust boundary.
+///
+/// Returns no identity when decoding, key selection, signature verification, issuer matching,
+/// audience matching, or temporal validation fails. It performs no authorization decision. The
+/// caller must still resolve policy and sign a NATS user claim before returning success.
 pub fn validate_jwt<'c>(
     token: &str,
     configs: &'c [IssuerConfig],

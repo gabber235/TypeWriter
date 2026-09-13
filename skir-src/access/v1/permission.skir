@@ -1,7 +1,9 @@
 import { Duration } from "kernel/v1/duration.skir";
 import { RecordId } from "kernel/v1/record_id.skir";
 
-// Who is asking for permission?
+// Access policy boundary for NATS identities. The auth callout validates the presented JWT, then
+// delegates entity specific publish and subscribe policy to the permission service. That service
+// owns the policy and returns the result for inclusion in signed NATS user claims.
 enum EntityPermissionQualifier {
   user: struct {
     organization_id: RecordId?;
@@ -19,14 +21,19 @@ struct ResponsePermission {
   ttl: Duration?;
 }
 
+// Policy output owned by the permission service. The auth callout converts this result into NATS
+// permissions and preserves its tags when it signs the authenticated identity.
 struct Permissions {
   publish: Permission;
   subscribe: Permission;
   response: ResponsePermission?;
 }
 
-// Internal method between the auth-callout and the permission service to determine
-// the permissions of a entity.
+// Internal authenticated resolution between the auth callout and the permission service. The
+// callout invokes it after JWT validation and supplies serialized claims plus an entity qualifier;
+// the permission service resolves user and service policy, including dependent organization or
+// service data, and returns permissions and tags. Resolution errors propagate instead of becoming
+// an authorization grant.
 method GetEntityPermission(
   struct {
     qualifier: EntityPermissionQualifier;

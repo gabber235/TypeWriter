@@ -7,6 +7,12 @@ import "package:iconify_flutter_plus/icons/ion.dart";
 import "package:iconify_flutter_plus/icons/lucide.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Builds context sensitive navigation, zoom, and edit mode shortcuts.
+///
+/// Edit mode activation requires [canCommit] and a focused selectable element.
+/// The returned actions start previews or change viewport state; committing is
+/// routed through [TimelineCommitIntent] so pointer and keyboard edits share
+/// one owner and one persistence boundary.
 List<ActionShortcut> buildTimelineShortcuts({
   required bool canCommit,
   required Object currentInteractionMode,
@@ -201,6 +207,7 @@ List<ActionShortcut> buildTimelineShortcuts({
   ];
 }
 
+/// Converts the editor's primary focused selectable into a timeline ID.
 TimelineIdentifier? _focusedTimelineId() {
   final primaryFocusedId = SelectableScope.primaryFocusedId();
   if (primaryFocusedId == null) return null;

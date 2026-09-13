@@ -1,3 +1,8 @@
+//! Database records, read projections, and snapshots for organizations.
+//!
+//! Record types preserve storage shapes. Projections and snapshots assemble read models for
+//! callers and watches, then convert them into public SKIR values at the boundary.
+
 pub mod projections;
 pub mod snapshots;
 
@@ -13,6 +18,7 @@ use crate::{
     skir_utils::IntoSkirRecordIds,
 };
 
+/// Stored organization identity and display data.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OrganizationRecord {
     pub id: RecordId,
@@ -20,6 +26,7 @@ pub struct OrganizationRecord {
     pub logo_url: Option<String>,
 }
 
+/// Stored user fields embedded in organization projections.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct UserRecord {
     pub id: RecordId,
@@ -28,6 +35,7 @@ pub struct UserRecord {
     pub avatar_url: Option<String>,
 }
 
+/// Stored organization role data.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OrganizationRoleRecord {
     pub id: RecordId,
@@ -38,6 +46,7 @@ pub struct OrganizationRoleRecord {
     pub deletable: bool,
 }
 
+/// Stored join code data, including its optional expiry and accepted roles.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JoinCodeRecord {
     pub id: RecordId,
@@ -47,6 +56,7 @@ pub struct JoinCodeRecord {
     pub auto_accept_roles: Vec<RecordId>,
 }
 
+/// Converts a stored organization into the public organization value.
 impl From<OrganizationRecord> for Organization {
     fn from(value: OrganizationRecord) -> Self {
         Self {
@@ -58,6 +68,7 @@ impl From<OrganizationRecord> for Organization {
     }
 }
 
+/// Converts stored role data into the public organization role value.
 impl From<OrganizationRoleRecord> for OrganizationRole {
     fn from(value: OrganizationRoleRecord) -> Self {
         Self {
@@ -72,6 +83,7 @@ impl From<OrganizationRoleRecord> for OrganizationRole {
     }
 }
 
+/// Converts stored join code data into the public join code value.
 impl From<JoinCodeRecord> for JoinCode {
     fn from(value: JoinCodeRecord) -> Self {
         Self {

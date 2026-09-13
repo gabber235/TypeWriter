@@ -1,6 +1,13 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
+/// Calls [onChange] whenever [focus] changes focus state.
+///
+/// The listener is attached for the lifetime of this hook and removed during
+/// cleanup. It does not invoke [onChange] for the initial state; call the
+/// callback separately when an initial notification is required. [keys]
+/// controls when the listener is rebound, so include dependencies captured by
+/// [onChange] when they can change.
 void useFocusedChange(
   FocusNode focus,
   Function({required bool hasFocus}) onChange, [

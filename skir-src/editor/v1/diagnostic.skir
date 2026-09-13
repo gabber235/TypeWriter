@@ -1,3 +1,6 @@
+// Diagnostics carry structured explanations for invalid editor data and operations. Codes support consumer handling;
+// message and details provide context.
+
 import { DataPath } from "editor/v1/path.skir";
 
 enum DiagnosticSeverity(810300001) {

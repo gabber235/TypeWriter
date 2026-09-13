@@ -1,11 +1,15 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Mixin for interaction modes that need to display information in the app bar.
+/// Adds an app bar projection to an [InteractionMode].
+///
+/// [ModeDisplayWidget] renders this projection only while the implementing mode
+/// is current. The returned widget is built in the consumer's context, so it
+/// may use the active theme and shared design extensions.
 mixin ModeDisplay on InteractionMode {
-  /// Builds a widget to display in the app bar for this mode.
+  /// Builds the mode's app bar projection for [context].
   ///
-  /// This method is called when the mode is active and needs to show
-  /// visual feedback to the user about the current interaction context.
+  /// The method is called during the current mode's presentation build. It
+  /// should describe the mode, not own or change interaction mode state.
   Widget buildDisplay(BuildContext context);
 }

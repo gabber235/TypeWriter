@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 import java.nio.file.Path
 
+/** Selects the host integration that supplies process lifecycle and logging. */
 @Serializable
 enum class HostEntrypoint {
     STANDALONE,

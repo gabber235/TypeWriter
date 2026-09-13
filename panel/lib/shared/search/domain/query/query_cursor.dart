@@ -1,6 +1,11 @@
 import "package:collection/collection.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Resolves the semantic editing context at [cursorOffset].
+///
+/// Selector, value, operator, and free text ranges use the original input
+/// offsets. The offset is clamped so editor callers can safely pass a stale
+/// selection after an input update.
 QueryCursorContext resolveQueryCursorContext(
   List<QueryLexerToken> tokens,
   String input,

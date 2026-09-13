@@ -1,5 +1,11 @@
 part of "../../bound_value_renderer.dart";
 
+/// Resolves a type aware presentation while preserving the current binding.
+///
+/// An explicit presentation id is preferred when it is compatible with the
+/// resolved type. Otherwise the type registry generates a default. Delegation
+/// is tracked in the scope and rejected when it would recurse, so malformed
+/// presentation definitions produce diagnostics instead of unbounded rendering.
 extension DefaultPresentationElementRendering on DefaultPresentationElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     if (presentationId case final presentationId?

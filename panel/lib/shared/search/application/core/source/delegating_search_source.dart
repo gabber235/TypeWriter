@@ -2,6 +2,8 @@ import "dart:async";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Base for decorators that transform child snapshots while preserving source
+/// initialization, query, selector, preview, and disposal ownership.
 abstract base class DelegatingSearchSource implements SearchSource {
   DelegatingSearchSource({required this.source}) {
     _snapshotSubscription = source.snapshots.listen(onSnapshot);
@@ -47,5 +49,6 @@ abstract base class DelegatingSearchSource implements SearchSource {
     _snapshots.add(snapshot);
   }
 
+  /// Transforms or forwards one child snapshot.
   void onSnapshot(SearchSourceSnapshot snapshot);
 }

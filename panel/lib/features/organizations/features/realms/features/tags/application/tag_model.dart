@@ -1,5 +1,10 @@
 part of "tags.dart";
 
+/// Persistent graph coordinates and dimensions for a tag node.
+///
+/// Coordinates are grid units interpreted by the tag graph. Width and height
+/// must remain positive because the inspector and graph require a visible
+/// node; [TagEditorSnapshot] enforces that rule for draft changes.
 @freezed
 abstract class Placement with _$Placement {
   const factory Placement({
@@ -22,6 +27,12 @@ abstract class Placement with _$Placement {
       wire.GraphPlacement(x: x, y: y, width: width, height: height);
 }
 
+/// Immutable panel model of the wire level Realm tag.
+///
+/// [parentIds] names direct parents. The relationship is treated as a directed
+/// acyclic graph by the panel, and drag validation rejects self links, cycles,
+/// and unknown nodes. Wire conversion is lossless for the fields represented
+/// here. Inspector values omit the identity because the editor resource owns it.
 @freezed
 abstract class Tag with _$Tag {
   @Assert("name != \"\"", "Name must not be empty.")
@@ -52,6 +63,11 @@ abstract class Tag with _$Tag {
   );
 }
 
+/// Converts a tag to and from the structural value used by the editor.
+///
+/// Decoding is deliberately strict. Wrong field types, malformed parent IDs,
+/// invalid colors, or nonpositive dimensions return null, allowing the shared
+/// editor to keep an invalid draft visible without creating an invalid Tag.
 extension TagInspectorValue on Tag {
   RecordValue get inspectorValue => RecordValue({
     "name": name.asValue,
@@ -120,8 +136,15 @@ extension TagInspectorValue on Tag {
   }
 }
 
+/// Relationship mutation requested by dropping one tag onto another.
 enum TagParentDropAction { link, unlink }
 
+/// Determines whether a graph drop links or unlinks two existing tags.
+///
+/// Null means the drop must be rejected. The check requires both nodes to be
+/// present, rejects self links and either direction of cycle, and treats an
+/// existing direct link as an unlink action. Unknown ancestry is rejected
+/// conservatively because accepting it could create a cycle.
 TagParentDropAction? tagParentDropAction(
   Iterable<Tag> tags, {
   required skir.RecordId childId,

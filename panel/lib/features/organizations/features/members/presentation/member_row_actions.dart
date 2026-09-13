@@ -6,6 +6,11 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Desktop row action that confirms and delegates membership removal.
+///
+/// The local flag removes the action after confirmation begins, preventing
+/// repeated clicks while the provider submits the operation. Server failures
+/// remain owned by the shared error and submission handling.
 class MemberRowActions extends HookConsumerWidget {
   const MemberRowActions({required this.member, super.key});
 

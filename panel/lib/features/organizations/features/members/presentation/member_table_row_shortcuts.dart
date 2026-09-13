@@ -5,6 +5,11 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adds the member row's keyboard contract without changing its rendering.
+///
+/// Selection commands operate on the same transient set as pointer controls.
+/// Delete removes the whole current selection when this row is selected;
+/// otherwise it confirms removal for this member alone.
 class MemberTableRowShortcuts extends ConsumerWidget {
   const MemberTableRowShortcuts({
     required this.member,

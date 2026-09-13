@@ -9,6 +9,9 @@ part "renderers/input/map_entry_support.dart";
 part "renderers/input/record_input_renderer.dart";
 part "renderers/input/map_input_renderer.dart";
 
+/// Resolves and renders a list control through the shared bound control
+/// boundary. Mixed values use a replacement affordance because item level
+/// edits are undefined until the owners share one list value.
 extension ListInputElementResolvedRendering on ListInputElement {
   Widget renderInput(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(
@@ -43,6 +46,9 @@ extension ListInputElementResolvedRendering on ListInputElement {
   }
 }
 
+/// Resolves and renders a map control while preserving the scope as the
+/// authority for updates and editability. A mixed map follows the same
+/// replacement rule as a mixed list.
 extension MapInputElementResolvedRendering on MapInputElement {
   Widget renderInput(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(
@@ -73,6 +79,8 @@ extension MapInputElementResolvedRendering on MapInputElement {
   }
 }
 
+/// Resolves and renders a record control after verifying that the binding
+/// exposes a record value or an intentional mixed state.
 extension RecordInputElementResolvedRendering on RecordInputElement {
   Widget renderInput(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

@@ -1,5 +1,10 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes composable search provider policies.
+///
+/// Providers describe where results come from and how they are transformed. The
+/// adapter preserves that declarative pipeline for the search runtime instead of
+/// implementing provider behavior in the panel protocol layer.
 extension SkirPresentationSearchProviderDecoder on SkirPresentationDecoder {
   TypeResult<SearchProvider> _searchProvider(wire.SearchProvider value) =>
       switch (value) {

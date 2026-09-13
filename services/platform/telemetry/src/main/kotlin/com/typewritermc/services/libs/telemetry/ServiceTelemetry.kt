@@ -75,6 +75,7 @@ class ServiceTelemetry(
             }.build()
 }
 
+/** Creates a telemetry facade whose tracer, meter, and logger share one instrumentation identity. */
 fun OpenTelemetry.serviceTelemetry(
     name: String,
     version: String? = null,

@@ -1,5 +1,7 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Describes one mutation choice before request data is captured.
+///
 /// Domain preparation chooses which intents share a real transaction.
 /// Independent mutations need no batch protocol or synthetic document.
 sealed class MutationIntent {
@@ -8,6 +10,7 @@ sealed class MutationIntent {
   void collect(MutationPreparation preparation);
 }
 
+/// Keeps one pending commit independent from all other intents.
 final class IndependentMutation<T> extends MutationIntent {
   const IndependentMutation(this.commit);
   final PendingCommit<T> commit;
@@ -19,13 +22,19 @@ final class IndependentMutation<T> extends MutationIntent {
 }
 
 /// Explicit transaction identity within one preparation pass.
+///
 /// Reuse the same combiner for operations that belong to the same domain scope.
+/// The combiner prepares one response for the collected operations.
 final class MutationCombiner<Operation, Response> {
   const MutationCombiner({required this.prepare});
 
   final PreparedCommit<Response> Function(List<Operation>) prepare;
 }
 
+/// Contributes one operation to the transaction identified by [combiner].
+///
+/// Resource membership is declared before preparation. This lets the
+/// coordinator reserve participants without reading mutable draft state.
 final class CombinedMutation<Operation, Response> extends MutationIntent {
   CombinedMutation({
     required this.combiner,
@@ -43,6 +52,7 @@ final class CombinedMutation<Operation, Response> extends MutationIntent {
   }
 }
 
+/// Captured operation data and optional local response integration.
 final class MutationContribution<Operation, Response> {
   const MutationContribution({required this.operation, this.integrate});
 
@@ -50,14 +60,18 @@ final class MutationContribution<Operation, Response> {
   final Future<void> Function(SubmissionResult<Response>)? integrate;
 }
 
-/// Combines only the intents explicitly passed for this action.
-/// Grouping fixes participants without reading their current draft values.
+/// Collects an explicit set of mutation intents into pending commits.
+///
+/// Combines only the intents explicitly passed for this action. Grouping fixes
+/// participants without reading their current draft values. The same combiner
+/// object identifies one transaction; equal values do not merge.
 final class MutationPreparation {
   MutationPreparation._();
 
   final _entries = <PendingCommit<Object?> Function()>[];
   final _groups = <Object, Object>{};
 
+  /// Returns immutable pending commits in first occurrence order.
   static List<PendingCommit<Object?>> collect(
     Iterable<MutationIntent> intents,
   ) {

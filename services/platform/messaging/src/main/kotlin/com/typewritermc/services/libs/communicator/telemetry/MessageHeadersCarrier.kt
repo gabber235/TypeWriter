@@ -4,7 +4,7 @@ import com.typewritermc.services.libs.communicator.transport.MessageHeaders
 import io.opentelemetry.context.propagation.TextMapGetter
 import io.opentelemetry.context.propagation.TextMapSetter
 
-/** Case-insensitive propagator getter for immutable message headers. */
+/** Reads propagated values from immutable headers using case insensitive lookup. */
 object MessageHeadersGetter : TextMapGetter<MessageHeaders> {
     override fun keys(carrier: MessageHeaders): Iterable<String> = carrier.map { it.first }
 
@@ -14,7 +14,12 @@ object MessageHeadersGetter : TextMapGetter<MessageHeaders> {
     ): String? = carrier?.first(key)
 }
 
-/** Propagator setter that immutably replaces values owned by the propagator. */
+/**
+ * Collects propagator writes without mutating caller headers.
+ *
+ * [ownedFields] are removed before injection, preventing stale trace values from surviving reinjection. Other headers
+ * remain available to the outgoing message.
+ */
 class MessageHeadersSetter(
     initial: MessageHeaders,
     ownedFields: Collection<String> = emptyList(),

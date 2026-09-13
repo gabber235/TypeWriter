@@ -40,6 +40,12 @@ data class AssembledDeploymentCatalog(
  * and processing order is stable.
  */
 object DeploymentCatalogAssembler {
+    /**
+     * Assembles a catalog for the selected engine and extension ids.
+     *
+     * This overload resolves source part eligibility from the deployment selection before delegating to the full
+     * assembler. It is the entry point for callers that have manifests but have not yet resolved source parts.
+     */
     fun assemble(
         generation: CatalogGeneration,
         engine: EngineManifest,
@@ -53,6 +59,13 @@ object DeploymentCatalogAssembler {
         return assemble(generation, listOf(engine), orderedExtensions, sourceParts, facts)
     }
 
+    /**
+     * Assembles the immutable discovery and editor views consumed by one staged Realm deployment.
+     *
+     * Manifest readers preserve unknown contribution payloads for later specialized processing. Runtime types and
+     * elements use source part eligibility, while element assembly also evaluates deployment facts. Artifact output
+     * is identity unique and deterministic by manifest id.
+     */
     fun assemble(
         generation: CatalogGeneration,
         engines: Collection<EngineManifest>,

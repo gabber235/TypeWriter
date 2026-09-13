@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Compact summary and clear action for the current member selection.
+///
+/// It reflects transient selection owned by the surrounding list and never
+/// mutates membership data. Clearing delegates to the list coordinator so
+/// table and tablet layouts retain identical selection semantics.
 class SelectedChip extends HookWidget {
   const SelectedChip({
     required this.selectedCount,
@@ -21,9 +26,8 @@ class SelectedChip extends HookWidget {
       focusNode: focusNode,
       label: Text(
         "$selectedCount selected",
-        style: Theme.of(context).textTheme.labelMedium!.copyWith(
-          color: theme.colorScheme.onPrimaryContainer,
-        ),
+        style: Theme.of(context).textTheme.labelMedium!
+            .copyWith(color: theme.colorScheme.onPrimaryContainer),
       ),
       backgroundColor: theme.colorScheme.primaryContainer.withValues(
         alpha: 0.4,

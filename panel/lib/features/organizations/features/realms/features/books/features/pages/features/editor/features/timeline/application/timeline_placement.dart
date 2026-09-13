@@ -4,6 +4,11 @@ import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Converts lane assignments into pixel geometry and visible elements.
+///
+/// This is the boundary between frame based application state and Flutter
+/// rendering. It computes track backgrounds, content extents, nested offsets,
+/// and overscan culling. It does not create widgets or own scrolling state.
 class TimelinePlacementEngine {
   const TimelinePlacementEngine();
 
@@ -219,6 +224,7 @@ class TimelinePlacementEngine {
   }
 }
 
+/// Render geometry and visible element projections for one viewport.
 class TimelinePlacementResult {
   TimelinePlacementResult({
     required this.tracks,
@@ -239,6 +245,7 @@ class TimelinePlacementResult {
   late final Map<TimelineIdentifier, TimelinePlacedElement> placementById;
 }
 
+/// Vertical geometry and alternating background for one timeline track.
 class TimelineTrackGeometry {
   const TimelineTrackGeometry({
     required this.track,

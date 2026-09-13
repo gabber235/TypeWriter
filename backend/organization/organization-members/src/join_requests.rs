@@ -1,3 +1,11 @@
+//! Moderation of pending organization join requests.
+//!
+//! The organization and user request views are separate projections with separate sequences.
+//! Approval changes both request and membership state in one database transaction, then publishes
+//! organization and user events for reconciliation. Decline removes one request from both views.
+//! Mutation receipts make committed approval and decline operations replayable without reapplying
+//! database changes.
+
 use otel_wasi::ResultWithSlug;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -5,7 +13,7 @@ use wasmcloud_utils::database::organization::projections::{
     JoinRequestProjection, OrganizationMemberProjection,
 };
 use wasmcloud_utils::{
-    database::{transaction_query, RecordId, TransactionOutcome},
+    database::{RecordId, TransactionOutcome, transaction_query},
     decode_skir, extract_params,
     skir::base::organization::v1::{join_request::*, member::OrganizationMember},
     skir_transaction_outcome,
@@ -67,6 +75,10 @@ impl ApprovalOutcome {
     }
 }
 
+/// Returns the current unexpired join requests for organization moderation.
+///
+/// The response pairs the organization request projection with its sequence. User request changes
+/// use a different sequence and are published by the corresponding mutation path.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_watch(
     msg: BrokerMessage,
@@ -86,6 +98,12 @@ pub async fn handle_watch(
     .await
 }
 
+/// Approves all selected pending requests with one shared role selection.
+///
+/// The database transaction validates request freshness, role existence and assignability, duplicate
+/// users, and existing memberships before creating memberships and deleting requests. Any invalid
+/// selection rejects the complete batch. Success returns events for the organization request and
+/// member projections, while each affected user also receives request and organization changes.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_approve(
     msg: BrokerMessage,
@@ -250,6 +268,11 @@ pub async fn handle_approve(
     ))
 }
 
+/// Declines one unexpired join request.
+///
+/// The transaction deletes the request and advances the request sequence for both its organization
+/// and user. The organization event is returned to the caller; the matching user event is published
+/// separately so both projections can converge.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_decline(
     msg: BrokerMessage,

@@ -20,8 +20,10 @@ private val PATCH_FILENAME_PATTERN = Regex("^[0-9]{4}_[a-z0-9_]+\\.surql$")
 internal class MigrationResources(
     private val loadText: (String) -> String? = ::loadClasspathResource,
 ) {
+    /** Loads the bootstrap schema that creates migration bookkeeping and shared definitions. */
     fun loadMigrationSchema(): String = loadRequiredResource(MIGRATION_SCHEMA_PATH)
 
+    /** Loads current Realm table definitions in the order declared by the schema index. */
     fun loadRealmSchema(): List<SchemaResource> {
         val filenames = loadIndex(REALM_SCHEMA_INDEX_PATH)
         require(filenames.isNotEmpty()) { "Realm schema index must not be empty" }
@@ -37,6 +39,12 @@ internal class MigrationResources(
         }
     }
 
+    /**
+     * Loads the immutable patch catalog and computes each patch checksum from its exact UTF8 source.
+     *
+     * The runner compares these checksums with applied history, so an applied script must be replaced by a new
+     * filename rather than edited in place.
+     */
     fun loadPatches(): List<DatabasePatch> {
         val filenames = loadIndex(PATCH_INDEX_PATH)
 

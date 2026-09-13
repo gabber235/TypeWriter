@@ -3,6 +3,12 @@ import "package:typewriter_panel/app/application/router/access/authentication_ro
 import "package:typewriter_panel/app/application/router/access/organization_route_access.dart";
 import "package:typewriter_panel/app/application/router/access/route_access_module.dart";
 
+/// Owns the route access modules used by the application's router.
+///
+/// The coordinator forwards semantic access changes as one notification stream
+/// for router reevaluation. It also owns module disposal, so callers dispose
+/// this coordinator instead of managing authentication and organization access
+/// separately.
 final class RouteAccessCoordinator extends ChangeNotifier {
   RouteAccessCoordinator({
     required this.authentication,

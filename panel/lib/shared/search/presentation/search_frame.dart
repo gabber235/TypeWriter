@@ -24,6 +24,11 @@ _PreviewPlacement _previewPlacement(double width) {
   return _PreviewPlacement.external;
 }
 
+/// Lays out a search query, its tree results, actions, and optional preview.
+///
+/// The preview moves from a bottom sheet to an inline column and then to an
+/// external follower as width permits. The query bar and result content stay
+/// in the primary frame in every placement.
 class SearchFrame extends StatelessWidget {
   const SearchFrame({
     required this.queryBar,
@@ -444,9 +449,9 @@ class _BottomPreviewSheet extends StatelessWidget {
                   borderRadius: context.shapes.mediumBorderRadius,
                 ),
                 child: Section(
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainer,
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainer,
                   child: CustomScrollView(
                     controller: scrollController,
                     slivers: [

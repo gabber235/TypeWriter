@@ -1,6 +1,13 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 
+/// Provides two dimensional saturation and brightness selection for an HSV
+/// color.
+///
+/// The caller owns the color and receives candidate values through [onChanged].
+/// Focus is local to this control. Pointer and keyboard input share the same
+/// bounded HSV coordinate space, with fine steps by default and larger steps
+/// with Shift or page keys.
 class ColorArea extends StatefulWidget {
   const ColorArea({
     required this.color,

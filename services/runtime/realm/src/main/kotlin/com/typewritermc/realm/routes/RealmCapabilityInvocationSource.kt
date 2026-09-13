@@ -35,6 +35,12 @@ class RealmCapabilityInvocationSource(
     private val prototypes: TypePrototypeRegistry,
     private val snapshots: RealmDiscoverySnapshotStore,
 ) {
+    /**
+     * Validates and invokes a computation against the catalog generation supplied by the caller.
+     *
+     * Payload and result codecs, capability lookup, permission denial, and provider failures are translated into
+     * protocol outcomes. The invocation id is correlation metadata only, so repeated calls are not deduplicated.
+     */
     suspend fun computation(request: CapabilityInvocationRequest): ComputationResult {
         validateBase(request)?.let { return it.toComputationResult(request.invocationId) }
         val descriptor =
@@ -76,6 +82,12 @@ class RealmCapabilityInvocationSource(
         }
     }
 
+    /**
+     * Validates and invokes a command against the catalog generation supplied by the caller.
+     *
+     * Commands return panel instructions rather than a typed value. Provider failures and permission denial remain
+     * distinct protocol outcomes so the editor can choose the correct recovery path.
+     */
     suspend fun command(request: CapabilityInvocationRequest): CommandResult {
         validateBase(request)?.let { return it.toCommandResult(request.invocationId) }
         val descriptor =

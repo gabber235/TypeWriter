@@ -2,6 +2,13 @@ import "package:expandable_page_view/expandable_page_view.dart";
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 
+/// Displays tab pages whose viewport height follows the current page.
+///
+/// The [TabController] remains owned by the caller or [DefaultTabController].
+/// This widget owns only its synchronized [PageController] and disposes that
+/// controller when removed. Programmatic jumps and user drags update the same
+/// tab selection contract. Use Flutter's [TabBarView] when every page can use
+/// one fixed viewport height.
 class ContentSizeTabBarView extends StatefulWidget {
   /// Creates a page view with one child per tab.
   ///
@@ -41,7 +48,7 @@ class ContentSizeTabBarView extends StatefulWidget {
   /// {@macro flutter.widgets.scrollable.dragStartBehavior}
   final DragStartBehavior dragStartBehavior;
 
-  // The duration of the animation when the page changes.
+  /// The duration used when synchronizing a page with a tab selection.
   final Duration animationDuration;
 
   @override
@@ -57,9 +64,7 @@ class _ContentSizeTabBarViewState extends State<ContentSizeTabBarView> {
   int? _currentIndex;
   int _warpUnderwayCount = 0;
 
-  // If the TabBarView is rebuilt with a new tab controller, the caller should
-  // dispose the old one. In that case the old controller's animation will be
-  // null and should not be accessed.
+  // A replaced TabController remains caller owned and may already be disposed.
   bool get _controllerIsValid => _controller?.animation != null;
 
   void _updateTabController() {

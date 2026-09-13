@@ -7,6 +7,9 @@ import {
   TypedValue,
 } from "editor/v1/type_catalog.skir";
 
+// Editor actions describe local mutations and requests delegated to Realm. Local variants operate on bound values;
+// Realm variants leave execution to Realm. Mutation results carry applied state or failure information.
+
 struct SetValueAction(810700001) {
   target: BindingRef = 0;
   value: TypedExpression = 1;
@@ -54,6 +57,8 @@ struct ReplaceConcreteNominalTypeAction(810700009) {
   value: TypedExpression = 2;
 }
 
+// A mutation that can be evaluated and applied within the current editor
+// value. Binding resolution supplies writability and the revision being edited.
 enum LocalEditorAction(810700010) {
   set_value: SetValueAction = 1;
   insert_list_item: InsertListItemAction = 2;
@@ -66,8 +71,10 @@ enum LocalEditorAction(810700010) {
   replace_concrete_nominal_type: ReplaceConcreteNominalTypeAction = 9;
 }
 
+// Requests the owning editor to refresh its Realm view.
 struct ReloadRealmAction(810700011) {}
 
+// Requests a Realm capability operation. Execution and authorization belong to the Realm owner.
 struct CommandCapabilityAction(810700012) {
   capability_id: CapabilityId = 0;
   payload: TypedExpression = 1;
@@ -83,11 +90,13 @@ enum EditorAction(810700014) {
   realm: RealmEditorAction = 2;
 }
 
+// Confirms the resulting value and revision after a mutation is applied.
 struct MutationSuccess(810700015) {
   revision: int64 = 0;
   value: TypedValue = 1;
 }
 
+// Reports that the expected revision did not match the current value.
 struct MutationConflict(810700016) {
   expected_revision: int64 = 0;
   actual_revision: int64 = 1;

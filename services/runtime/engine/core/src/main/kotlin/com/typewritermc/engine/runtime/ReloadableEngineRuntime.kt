@@ -84,6 +84,7 @@ class ReloadableEngineRuntime(
         activate()
     }
 
+    /** Permanently closes the active scope and discovery deployment; this runtime cannot be resumed afterward. */
     suspend fun stop() {
         quiesce()
         val activeDeployment = deployment

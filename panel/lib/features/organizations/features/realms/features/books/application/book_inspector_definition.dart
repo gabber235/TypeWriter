@@ -1,5 +1,6 @@
 part of "books.dart";
 
+/// Runtime type identity for the book inspector document.
 const bookInspectorTypeRef = ResolvedTypeRef(
   id: QualifiedTypeId(namespace: "panel", name: "Book"),
   revision: 1,
@@ -100,6 +101,13 @@ final _bookInspectorPresentation = PresentationDefinition.single(
   ),
 );
 
+/// Builds one inspector for multiple selected books.
+///
+/// The shared editor can merge book values, but only when every selection has
+/// the same tag collection identity, schema, and local rows. If that context
+/// cannot be proven consistent, diagnostics are returned and no editor is
+/// constructed. This prevents a tag control from writing against an unrelated
+/// collection.
 final class BookMultiInspectionDefinition implements MultiInspectionDefinition {
   const BookMultiInspectionDefinition();
 
@@ -141,7 +149,9 @@ final class BookMultiInspectionDefinition implements MultiInspectionDefinition {
   }
 }
 
+/// Validates the collection context required by multi book tag editing.
 extension BookSelectionCollectionConsistency on List<BookSelection> {
+  /// Returns the one tag collection safe to share across all selections.
   TypeResult<PresentationCollectionSource> get sharedBookTagCollection {
     final first = firstOrNull?.tagCollection;
     if (first == null) {

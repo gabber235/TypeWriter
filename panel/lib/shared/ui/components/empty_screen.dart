@@ -3,6 +3,11 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Presents the full screen empty state for a missing collection or resource.
+///
+/// The optional action is rendered only when [buttonText] is supplied. This
+/// widget does not infer why the collection is empty or own the action's state;
+/// callers provide the message and recovery operation.
 class EmptyScreen extends HookConsumerWidget {
   const EmptyScreen({
     required this.title,
@@ -32,10 +37,8 @@ class EmptyScreen extends HookConsumerWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-            fontSize: small ? 20 : 25,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.headlineMedium!
+              .copyWith(fontSize: small ? 20 : 25, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: small ? 12 : 24),
         if (buttonText != null)

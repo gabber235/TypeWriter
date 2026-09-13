@@ -1,3 +1,9 @@
+// Translates catalog presentations, capabilities, and typed envelopes.
+//
+// These definitions are the panel's executable description of realm editor
+// behavior. The adapter resolves referenced types before the presentation or
+// capability reaches application code, so an invalid catalog cannot create a
+// partially usable editor.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/binding.dart"
     as wire_binding;
@@ -11,6 +17,7 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire_value;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes and decodes definitions that depend on the editor catalog.
 final class SkirCatalogDefinitionCodec {
   const SkirCatalogDefinitionCodec({
     required this.types,
@@ -24,6 +31,7 @@ final class SkirCatalogDefinitionCodec {
   final SkirPresentationDecoder presentations;
   final SkirPresentationEncoder presentationEncoder;
 
+  /// Decodes a presentation and validates its declared input bindings.
   TypeResult<PresentationDefinition> decodePresentation(
     wire_presentation.PresentationDefinition value,
   ) {
@@ -84,6 +92,7 @@ final class SkirCatalogDefinitionCodec {
     );
   }
 
+  /// Encodes a domain presentation and its executable root node.
   TypeResult<wire_presentation.PresentationDefinition> encodePresentation(
     PresentationDefinition value,
   ) {
@@ -130,6 +139,7 @@ final class SkirCatalogDefinitionCodec {
         );
   }
 
+  /// Decodes a capability after resolving its request and result types.
   TypeResult<CapabilityDefinition> decodeCapability(
     wire_capability.CapabilityDefinition value,
   ) => switch (value) {
@@ -181,6 +191,7 @@ final class SkirCatalogDefinitionCodec {
     ),
   );
 
+  /// Decodes a value together with the type that gives it meaning.
   TypeResult<TypedValueEnvelope> decodeEnvelope(
     wire_value.TypedValueEnvelope value,
   ) => combineResults(
@@ -189,6 +200,7 @@ final class SkirCatalogDefinitionCodec {
     (type, value) => TypedValueEnvelope(rootType: type, rootValue: value),
   );
 
+  /// Encodes a typed value envelope for capability transport.
   TypeResult<wire_value.TypedValueEnvelope> encodeEnvelope(
     TypedValueEnvelope value,
   ) => combineResults(

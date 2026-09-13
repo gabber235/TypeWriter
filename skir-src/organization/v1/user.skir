@@ -1,3 +1,6 @@
+// User scoped organization operations expose the projections a user needs to discover memberships and manage their own join requests.
+// Organization membership and pending request views are separate streams, each with its own sequence and change events.
+
 import {
   InternalError,
   InvalidRecordIdError,
@@ -14,6 +17,7 @@ import {
   UserOrganizationsSnapshot,
 } from "organization/v1/organization.skir";
 
+// Reads the organizations currently visible to the user. Membership changes publish later list changes on the user stream.
 method WatchUserOrganizations(
   struct {}
 ): enum {
@@ -23,7 +27,7 @@ method WatchUserOrganizations(
   changed: UserOrganizationsChanged;
 } = 246975;
 
-// All pending join requests made by the user.
+// Reads all unexpired join requests made by the user. Request changes publish later user scoped changes.
 method WatchUserJoinRequests(
   struct {}
 ): enum {
@@ -33,6 +37,9 @@ method WatchUserJoinRequests(
   changed: UserJoinRequestsChanged;
 } = 939197;
 
+// Submits one join code for the authenticated user.
+// A valid code either creates a pending request or immediately creates membership when its auto acceptance policy applies.
+// Single use codes are consumed as part of the successful submission.
 method SubmitUserJoinRequest(
   struct {
     operation_id: string;
@@ -63,6 +70,8 @@ method SubmitUserJoinRequest(
   invalid_record_id_error: InvalidRecordIdError;
 } = 4962;
 
+// Cancels one pending request made by the user and publishes its removal from the user request view.
+// The organization request view receives the corresponding removal as well.
 method CancelUserJoinRequest(
   struct {
     operation_id: string;

@@ -1,12 +1,18 @@
+//! Current organization read snapshots used by watch responses and recovery publication.
+//!
+//! Each snapshot reads current database state and its sequence together. A snapshot is a read
+//! model, not a mutation receipt and not historical result data recalled from an idempotent
+//! mutation. Conversion and publication remain caller responsibilities after the read succeeds.
+
 use otel_wasi::ResultWithSlug;
 use serde::Deserialize;
 
 use super::{
-    projections::{JoinRequestProjection, OrganizationMemberProjection},
     JoinCodeRecord, OrganizationRecord,
+    projections::{JoinRequestProjection, OrganizationMemberProjection},
 };
 use crate::{
-    database::{read_query, RecordId},
+    database::{RecordId, read_query},
     skir::base::organization::v1::{
         join_codes::{OrganizationJoinCodesSnapshot, WatchOrganizationJoinCodesResponse},
         join_request::{
@@ -19,14 +25,17 @@ use crate::{
     },
 };
 
+/// Database shape shared by snapshots that expose a sequence and current values.
 #[derive(Deserialize)]
 struct SnapshotRow<T> {
     sequence: i64,
     values: Vec<T>,
 }
 
-/// Reads current state for watches and publication after committed receipt recovery.
-/// Stored receipt results are historical and must not be used as watch snapshots.
+/// Reads the current organization members and their sequence for a watch snapshot.
+///
+/// The sequence belongs to the current read model. It is not evidence that a later publication
+/// succeeded.
 pub async fn members(
     organization: RecordId,
 ) -> Result<WatchOrganizationMembersResponse, otel_wasi::Error> {
@@ -55,6 +64,7 @@ pub async fn members(
     )))
 }
 
+/// Reads the current organizations visible to a user and their sequence.
 pub async fn organizations(
     user: RecordId,
 ) -> Result<WatchUserOrganizationsResponse, otel_wasi::Error> {
@@ -79,6 +89,7 @@ pub async fn organizations(
     )))
 }
 
+/// Reads unexpired join requests for an organization and their sequence.
 pub async fn join_requests(
     organization: RecordId,
 ) -> Result<WatchOrganizationJoinRequestsResponse, otel_wasi::Error> {
@@ -106,6 +117,7 @@ pub async fn join_requests(
     )))
 }
 
+/// Reads unexpired join requests for a user and their sequence.
 pub async fn user_join_requests(
     user: RecordId,
 ) -> Result<WatchUserJoinRequestsResponse, otel_wasi::Error> {
@@ -133,6 +145,7 @@ pub async fn user_join_requests(
     )))
 }
 
+/// Reads current unexpired join codes for an organization and their sequence.
 pub async fn join_codes(
     organization: RecordId,
 ) -> Result<WatchOrganizationJoinCodesResponse, otel_wasi::Error> {

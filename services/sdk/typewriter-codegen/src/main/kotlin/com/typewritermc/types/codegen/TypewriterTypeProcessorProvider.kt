@@ -50,10 +50,11 @@ import kotlinx.serialization.encodeToByteArray
 import kotlin.io.encoding.Base64
 
 /**
- * KSP entrypoint generating type prototypes and portable schema contributions from annotated Kotlin declarations.
- * Each compiler environment receives a fresh processor. Processing defers unresolved symbols, validates supported
- * declaration shapes, and generates its output once for the compilation. Generated resources feed manifest
- * discovery so runtime consumers do not scan source annotations.
+ * KSP entrypoint generating concrete type prototypes and portable schema contributions from [TypewriterType]
+ * declarations. It converts each declared type into a graph, writes a generated prototype provider, and emits the
+ * resource consumed by manifest discovery. [com.typewritermc.discovery.runtime.PrototypeRegistryLoader] later
+ * resolves those providers in the deployment class loader; runtime code therefore does not scan source annotations.
+ * Processing defers unresolved symbols, validates declaration shape and identity, and writes once per compilation.
  */
 class TypewriterTypeProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =

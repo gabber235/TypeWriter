@@ -1,3 +1,18 @@
+//! Ends an organization's service registration relationship.
+//!
+//! Unbinding is separate from status and binding because it is an authenticated organization
+//! command over an existing ownership edge. It removes the organization association and any
+//! registration lease in one transaction. The service identity and related topology records remain
+//! intact, so a later registration starts with a newly issued or observed lease rather than
+//! reviving the old one.
+//!
+//! The transaction owns the ownership check, mutation, and mutation receipt. `recall` returns the
+//! prior result for a retry with the same request bytes; `commit` stores the result with the
+//! mutation. A service outside the addressed organization has the canonical
+//! `ServiceNotFoundError` response and produces no publication. Successful unbinding publishes
+//! fresh topology and service snapshots after commit. These publications are intentionally outside
+//! the transaction and may fail after the database state is already durable.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -13,6 +28,12 @@ use wasmcloud_utils::{
     wasmcloud::messaging::types::BrokerMessage,
 };
 
+/// Removes the addressed organization's binding from a service.
+///
+/// Success clears both `organization` and `registration`, then publishes the two organization
+/// projections affected by that visibility and ownership change. The response is canonical for
+/// the committed command and carries no service payload because the binding has ended. Missing or
+/// differently owned services return `ServiceNotFoundError` without changing state.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_unbind(
     msg: BrokerMessage,
@@ -85,6 +106,8 @@ RETURN {
         return Ok(skir_variant!(UnbindServiceResponse::ServiceNotFoundError));
     };
 
+    // Both projections are post commit notifications. They cannot be included in the database
+    // transaction, so snapshots provide a repair path when a subscriber misses an event.
     wasmcloud_utils::skir_subjects::organization_topology(org_id)
         .publish(crate::watch_topology::snapshot(org_id).await?)
         .await?;

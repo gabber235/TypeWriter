@@ -1,3 +1,11 @@
+/// Typed references into values exposed by an editor host.
+///
+/// A binding source owns the current value, revision, and write authority.
+/// [BindingEnvironment] only resolves paths and returns replacement snapshots,
+/// so presentations and expressions can share a consistent read model without
+/// taking ownership of mutable editor state.
+library;
+
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
@@ -9,6 +17,10 @@ abstract class BindingId with _$BindingId {
   const factory BindingId(int value) = _BindingId;
 }
 
+/// A binding identifier plus a path inside the bound root value.
+///
+/// Root references identify the complete value. [at] composes a child path for
+/// nested fields or collection entries while retaining the same root owner.
 @freezed
 abstract class BindingReference with _$BindingReference {
   const factory BindingReference({
@@ -55,6 +67,11 @@ abstract class BindingSnapshot with _$BindingSnapshot implements BindingSource {
 /// Projection preserves live value state, revision, and writability. Use
 /// [BindingEnvironment.inspect] for structure and value state. Use
 /// [BindingEnvironment.resolve] only when the caller requires one value.
+/// Read access to a binding while preserving its revision and write authority.
+///
+/// Implementations may expose a ready value, loading state, mixed values, or
+/// diagnostics. [inspect] is therefore the structural API; callers should use
+/// [BindingEnvironment.resolve] only when one concrete value is required.
 abstract interface class BindingSource {
   int get revision;
   bool get writable;
@@ -135,6 +152,11 @@ abstract class ResolvedBinding with _$ResolvedBinding {
   }) = _ResolvedBinding;
 }
 
+/// Immutable lookup and replacement boundary for presentation bindings.
+///
+/// The environment delegates ownership to its [BindingSource] entries. Path
+/// inspection preserves non ready states and metadata, while replacement
+/// updates one root snapshot and increments that source revision.
 @freezed
 abstract class BindingEnvironment with _$BindingEnvironment {
   const factory BindingEnvironment(Map<BindingId, BindingSource> bindings) =

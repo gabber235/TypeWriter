@@ -1,5 +1,10 @@
 part of "services.dart";
 
+/// Editor snapshot for one host's complete desired execution configuration.
+///
+/// The confirmed value is reconstructed from topology child membership, while
+/// [topology] supplies available Realm and engine choices. Runtime observations
+/// remain outside the draft and are never submitted as configuration.
 final class HostEditorSnapshot extends EditorSnapshot {
   const HostEditorSnapshot(this.host, this.topology);
   final TopologyHost host;
@@ -58,6 +63,11 @@ final class HostEditorSnapshot extends EditorSnapshot {
   }
 }
 
+/// Bridges the host configuration editor to the organization resource session.
+///
+/// Refresh reads a topology snapshot. Commit preparation validates and decodes
+/// the draft, then reserves the host and publishes accepted or conflicting
+/// backend results through the repository topology stream.
 final class HostEditorResource implements EditableResource {
   const HostEditorResource(this.repository, this.hostId);
   final ServiceResourceRepository repository;

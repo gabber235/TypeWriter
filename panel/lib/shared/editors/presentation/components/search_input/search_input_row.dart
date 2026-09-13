@@ -1,5 +1,12 @@
 part of "search_input.dart";
 
+/// Renders one presentation search result and keeps the focused row visible.
+///
+/// The row is read only even when the enclosing editor is writable. Its
+/// payload supplies the expression context needed by the presentation
+/// renderer, while selection remains an operation of the enclosing input.
+/// Unknown payloads use the shared missing renderer instead of being treated
+/// as selectable presentation results.
 class _PresentationSearchResultRow extends HookWidget {
   const _PresentationSearchResultRow({
     required this.context,
@@ -128,6 +135,13 @@ class _PresentationSearchResultRow extends HookWidget {
   }
 }
 
+/// Renders the inactive value summary that activates the search interaction.
+///
+/// A summary presentation receives a virtual, read only binding containing the
+/// current canonical value. It can therefore use the same presentation
+/// expressions as an ordinary node without gaining a write path into the
+/// editor. A null value is shown as mixed because no single value can be
+/// presented as the current selection.
 class _SearchInputSummary extends HookWidget {
   const _SearchInputSummary({
     required this.element,

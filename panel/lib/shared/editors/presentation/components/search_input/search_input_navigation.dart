@@ -1,5 +1,12 @@
 part of "search_input.dart";
 
+/// Defines the hidden keyboard actions used while the query field has focus.
+///
+/// Result navigation changes the controller preview, so the same path serves
+/// arrow keys, focus traversal keys, and the explicit first and last actions.
+/// Submission delegates to the input owner because only that owner knows
+/// whether the selected result is valid for the bound value and whether the
+/// interaction should close.
 List<ActionShortcut> _searchInputTextFieldActions({
   required VoidCallback previous,
   required VoidCallback next,

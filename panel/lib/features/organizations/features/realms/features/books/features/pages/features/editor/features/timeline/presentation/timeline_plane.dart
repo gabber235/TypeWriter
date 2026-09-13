@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Render surface for positioned timeline elements, tracks, and the grid.
+///
+/// Parent data stores content rectangles. The render object translates those
+/// rectangles by the viewport offsets, paints non widget backgrounds, and
+/// hit tests children in reverse paint order so the topmost element wins.
 class TimelinePlane extends MultiChildRenderObjectWidget {
   const TimelinePlane({
     required this.placement,
@@ -36,6 +41,7 @@ class TimelinePlane extends MultiChildRenderObjectWidget {
   }
 }
 
+/// Supplies content geometry and child background geometry to the render plane.
 class TimelinePlaneChild extends ParentDataWidget<_TimelinePlaneParentData> {
   const TimelinePlaneChild({
     required this.rect,
@@ -71,6 +77,7 @@ class _TimelinePlaneParentData extends ContainerBoxParentData<RenderBox> {
   Color color = Colors.transparent;
 }
 
+/// Flutter render object that paints the timeline's non widget layers.
 class RenderTimelinePlane extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, _TimelinePlaneParentData>,

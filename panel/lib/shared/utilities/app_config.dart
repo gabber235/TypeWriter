@@ -1,5 +1,10 @@
 import "package:flutter/foundation.dart";
 
+/// Build time configuration grouped by the boundary that consumes it.
+///
+/// Values come from `String.fromEnvironment` and are therefore fixed when the
+/// Flutter application is compiled. Runtime code should read the relevant
+/// grouped configuration instead of duplicating environment variable names.
 class AppConfig {
   AppConfig._();
 
@@ -10,6 +15,7 @@ class AppConfig {
   static const TelemetryConfig telemetry = TelemetryConfig._();
 }
 
+/// OpenTelemetry exporter settings supplied to the panel at build time.
 class TelemetryConfig {
   const TelemetryConfig._();
 
@@ -22,6 +28,11 @@ class TelemetryConfig {
   );
 }
 
+/// NATS endpoints for browser and non browser panel builds.
+///
+/// [url] selects the browser WebSocket endpoint on web and the native NATS
+/// endpoint everywhere else. The individual getters remain available for
+/// callers that need to construct a platform specific connection explicitly.
 class NatsConfig {
   const NatsConfig._();
 
@@ -38,6 +49,10 @@ class NatsConfig {
   String get url => kIsWeb ? webUrl : desktopUrl;
 }
 
+/// OpenID Connect settings used by the panel authentication boundary.
+///
+/// These values are compile time configuration. [scopes] is a space separated
+/// scope string as required by the authorization client.
 class AuthConfig {
   const AuthConfig._();
 
@@ -65,17 +80,16 @@ class AuthConfig {
 
   String get frontChannelLogoutUri => const String.fromEnvironment(
     "AUTH_FRONT_CHANNEL_LOGOUT_URI",
-    defaultValue:
-        "https://panel.typewritermc.com/redirect.html?requestType=front-channel-logout",
+    defaultValue: "https://panel.typewritermc.com/redirect.html?requestType=front-channel-logout",
   );
 
   String get discoveryDocumentUri => const String.fromEnvironment(
     "AUTH_DISCOVERY_DOCUMENT_URI",
-    defaultValue:
-        "https://auth.typewritermc.com/application/o/typewriter-panel/.well-known/openid-configuration",
+    defaultValue: "https://auth.typewritermc.com/application/o/typewriter-panel/.well-known/openid-configuration",
   );
 }
 
+/// URLs for documentation links presented by the panel.
 class DocsConfig {
   const DocsConfig._();
 
@@ -89,6 +103,7 @@ class DocsConfig {
   String get extensionsDocsUrl => "$baseUrl/develop/extensions";
 }
 
+/// Base URL for the panel's HTTP API integrations.
 class ApiConfig {
   const ApiConfig._();
 

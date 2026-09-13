@@ -5,15 +5,26 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-/** Validated settings used to construct one NATS.kt client. */
+/**
+ * Validated settings used to construct one NATS.kt client.
+ *
+ * Providers are queried for a fresh instance on each initial connection and reconnect. [maxReconnects] counts
+ * retries after the initial attempt, while the client adapter receives the corresponding total attempt count.
+ */
 data class NatsConnectionConfiguration(
+    /** NATS server URI using one of the supported NATS or WebSocket schemes. */
     val serverUrl: String,
+    /** Optional client name reported to the NATS server. */
     val clientName: String? = null,
+    /** Prefix used when NATS creates request and reply inbox subjects. */
     val inboxPrefix: String = "_INBOX.",
+    /** Timeout for the initial connection attempt. */
     val connectTimeout: Duration = 5.seconds,
     /** Number of reconnect retries after the initial connection attempt; `null` retries indefinitely. */
     val maxReconnects: Int? = null,
+    /** Delay between reconnect attempts. */
     val reconnectDelay: Duration = 2.seconds,
+    /** Maximum time allowed for draining during shutdown. */
     val shutdownTimeout: Duration = 30.seconds,
 ) {
     init {
@@ -44,7 +55,7 @@ internal val NatsConnectionConfiguration.normalizedReconnectDelay: Duration
 internal val NatsConnectionConfiguration.natsMaxConnectionAttempts: Int?
     get() = maxReconnects?.let { if (it == Int.MAX_VALUE) Int.MAX_VALUE else it + 1 }
 
-/** Supplies fresh connection settings for each connection attempt. */
+/** Supplies fresh connection settings for each initial connection and reconnect attempt. */
 fun interface NatsConfigurationProvider {
     suspend fun configuration(): NatsConnectionConfiguration
 }

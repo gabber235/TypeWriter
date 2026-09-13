@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes search controls and their declarative provider contract.
+///
+/// The panel transports expressions, bindings, and provider configuration. It
+/// does not execute queries or decide how results are cached and ranked.
 extension SkirPresentationSearchEncoder on SkirPresentationEncoder {
   TypeResult<wire.PresentationElement> _searchInput(SearchInputElement value) {
     final control = _bound(value.control);

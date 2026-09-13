@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Summarizes admission policy that affects how a code can be used.
+/// Expiration is rendered separately because it changes with time.
 class JoinCodeTypeBadges extends StatelessWidget {
   const JoinCodeTypeBadges({required this.code, super.key});
 

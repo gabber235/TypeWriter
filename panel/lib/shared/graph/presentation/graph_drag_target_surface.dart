@@ -3,8 +3,14 @@ import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Render slots for the graph and its scene positioned drop target.
 enum GraphDragTargetSlot { graph, dragTarget }
 
+/// Paints the graph and overlays a drop target across the visible scene.
+///
+/// The overlay is enabled only when moving is supported. Hit testing first
+/// inspects graph metadata, allowing the source region to accept its own drag
+/// while other marked regions block the overlay.
 class GraphDragTargetSurface
     extends
         SlottedMultiChildRenderObjectWidget<GraphDragTargetSlot, RenderBox> {
@@ -55,6 +61,7 @@ class GraphDragTargetSurface
   }
 }
 
+/// Marks a node region so the graph drop overlay can avoid intercepting it.
 class GraphDragTargetRegion extends StatelessWidget {
   const GraphDragTargetRegion({
     required this.targetId,
@@ -80,6 +87,7 @@ class _GraphDragTargetRegionMarker {
   final GraphIdentifier targetId;
 }
 
+/// Render object that positions the graph and scene sized drop overlay.
 class RenderGraphDragTargetSurface extends RenderBox
     with SlottedContainerRenderObjectMixin<GraphDragTargetSlot, RenderBox> {
   RenderGraphDragTargetSurface({

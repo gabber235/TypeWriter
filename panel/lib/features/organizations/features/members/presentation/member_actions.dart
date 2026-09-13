@@ -7,6 +7,12 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Actions for the current member selection.
+///
+/// Role changes capture the selected ids and role values before submission, so
+/// later selection changes cannot alter an in flight mutation. Successful role
+/// updates clear the applied selection. Uncertain delivery remains visible in
+/// the shared submission activity and is not falsely presented as completed.
 class BulkMemberActions extends HookConsumerWidget {
   const BulkMemberActions({
     required this.selectedCount,

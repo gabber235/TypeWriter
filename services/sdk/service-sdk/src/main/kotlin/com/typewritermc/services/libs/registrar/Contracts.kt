@@ -83,8 +83,10 @@ class RegistrarCause private constructor(
     }
 }
 
+/** Explains whether access token acquisition failed transiently, by rejection, or by payload incompatibility. */
 enum class AccessTokenFailureReason { UNAVAILABLE, REJECTED, PROTOCOL }
 
+/** Explains why Sentinel credentials could not be refreshed, including stale fallback exhaustion. */
 enum class SentinelFailureReason { UNAVAILABLE, REJECTED, PROTOCOL, STALE }
 
 enum class MessagingOperation {
@@ -108,6 +110,7 @@ enum class RuntimeStopOperation {
     CLOSE_FAILED,
 }
 
+/** Describes the next recovery attempt exposed in degraded registrar state. */
 data class RetrySchedule(
     val attempt: Long,
     val delay: Duration,
@@ -163,6 +166,7 @@ sealed interface CredentialStorageError {
     }
 }
 
+/** Distinguishes absent credentials from credentials that cannot safely be reused. */
 sealed interface CredentialLoadResult {
     data object Missing : CredentialLoadResult
 
@@ -175,6 +179,7 @@ sealed interface CredentialLoadResult {
     ) : CredentialLoadResult
 }
 
+/** Reports whether newly issued credentials were durably persisted. */
 sealed interface CredentialStoreResult {
     data object Success : CredentialStoreResult
 
@@ -241,12 +246,14 @@ sealed interface IdentityIssueResult {
     ) : IdentityIssueResult
 }
 
+/** Issues credentials for a role without retrying an operation whose remote outcome may be ambiguous. */
 fun interface IdentityIssuer {
     suspend fun issue(role: ServiceRole): IdentityIssueResult
 }
 
 enum class RuntimeConnectivity { DISCONNECTED, CONNECTING, CONNECTED }
 
+/** Result returned by runtime operations, with failures classified for registrar recovery. */
 sealed interface RuntimeResult<out Value> {
     data class Success<Value>(
         val value: Value,
@@ -257,6 +264,7 @@ sealed interface RuntimeResult<out Value> {
     ) : RuntimeResult<Nothing>
 }
 
+/** Current organization binding, including the operator token while unbound. */
 sealed interface BindingStatus {
     data class Unbound(
         val token: RegistrationToken?,
@@ -267,6 +275,7 @@ sealed interface BindingStatus {
     ) : BindingStatus
 }
 
+/** Initial or subsequent binding information emitted by a runtime watch. */
 sealed interface BindingObservation {
     data class Initial(
         val status: BindingStatus,
@@ -277,6 +286,7 @@ sealed interface BindingObservation {
     ) : BindingObservation
 }
 
+/** Reports all runtime cleanup failures rather than stopping at the first failure. */
 sealed interface RuntimeCloseResult {
     data object Success : RuntimeCloseResult
 
@@ -328,6 +338,7 @@ enum class RuntimeSetupProgress {
     CONNECTING,
 }
 
+/** Receives ordered setup milestones before a runtime is returned to its owner. */
 fun interface RuntimeSetupProgressSink {
     fun report(progress: RuntimeSetupProgress)
 }
@@ -345,6 +356,7 @@ fun interface RegistrarRuntimeFactory {
     ): RuntimeCreateResult
 }
 
+/** Supplies deterministic jitter input to make retry scheduling testable. */
 fun interface RetryRandom {
     fun normalizedSample(): Double
 }

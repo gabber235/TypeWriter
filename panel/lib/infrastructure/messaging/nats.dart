@@ -1,3 +1,8 @@
+/// NATS transport and typed messaging boundaries used by the panel.
+///
+/// [NatsClient] owns connection and subscription lifecycle. Skir adapters own
+/// serialization and ordered projection recovery, while mutation helpers hand
+/// submission identity and consistency decisions to the shared work owner.
 library;
 
 export "nats_client.dart";

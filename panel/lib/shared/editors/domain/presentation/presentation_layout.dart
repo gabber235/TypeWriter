@@ -63,6 +63,12 @@ sealed class PresentationBorder with _$PresentationBorder {
   }) = PresentationBorderSides;
 }
 
+/// Layout policy for the children of a sequence or collection result.
+///
+/// The policy is data rather than a Flutter widget, allowing the same catalog
+/// contract to be rendered by different presentation consumers. [element]
+/// materializes the policy into the corresponding node element without taking
+/// ownership of the child nodes.
 @freezed
 sealed class PresentationChildrenLayout with _$PresentationChildrenLayout {
   @Assert("spacing >= 0", "Spacing must not be negative.")
@@ -130,6 +136,12 @@ abstract class HierarchySequenceLayout with _$HierarchySequenceLayout {
   }) = _HierarchySequenceLayout;
 }
 
+/// Chooses ordinary child layout or connector backed hierarchy layout for a
+/// [SequencePresentation].
+///
+/// Hierarchy layout is consumed by the collection renderer to preserve parent
+/// and child paths. It is not interchangeable with ordinary separators, which
+/// validation rejects for hierarchy sequences.
 @freezed
 sealed class PresentationSequenceLayout with _$PresentationSequenceLayout {
   const factory PresentationSequenceLayout.children(
@@ -141,6 +153,7 @@ sealed class PresentationSequenceLayout with _$PresentationSequenceLayout {
   ) = PresentationHierarchySequenceLayout;
 }
 
+/// Converts this serializable layout policy into a [PresentationElement].
 extension PresentationChildrenLayoutElement on PresentationChildrenLayout {
   PresentationElement element(List<PresentationNode> children) =>
       switch (this) {

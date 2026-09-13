@@ -1,3 +1,10 @@
+//! Parser and expansion for broker subject dispatch declarations.
+//!
+//! The generated code parses a message subject, records messaging telemetry, invokes the selected
+//! handler, and delegates reply or error handling to `wasmcloud_utils`. Simple templates dispatch
+//! on the captured `action`; named templates first expand shared subject families and then try
+//! each concrete action pattern in declaration order.
+
 use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::quote;
 use std::collections::HashSet;
@@ -6,6 +13,7 @@ use syn::{
     parse::{Parse, ParseStream},
 };
 
+/// Parsed dispatch declaration containing the message expression, subject templates, and handlers.
 pub(crate) struct DispatchInput {
     msg: Expr,
     templates: Vec<TemplateEntry>,
@@ -170,6 +178,10 @@ fn parse_actions(input: ParseStream) -> syn::Result<Vec<ActionEntry>> {
     Ok(actions)
 }
 
+/// Parse a handler expression and accept either `async handler` or `handler.async` syntax.
+///
+/// The marker is consumed by the macro because async invocation is emitted here, while the
+/// handler expression itself remains supplied by the component.
 fn parse_handler(input: ParseStream) -> syn::Result<(Expr, bool)> {
     let mut tokens = Vec::new();
 
@@ -374,6 +386,8 @@ fn simple_parse_logic(input: &DispatchInput, utils_path: &syn::Path) -> TokenStr
     }
 }
 
+/// Emit fallback matching for named templates. Each successful parse returns immediately after
+/// replying, so a subject cannot invoke more than one handler.
 fn named_template_parse_logic(input: &DispatchInput, utils_path: &syn::Path) -> TokenStream {
     let pattern_checks: Vec<_> = input
         .actions

@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Converts one declarative path into layer coordinate space.
+///
+/// Expression failures are reported through [diagnostics] and produce no
+/// path. Curved control offsets are logical, so their horizontal component is
+/// mirrored for right to left layouts before the cubic path is built.
 Path? _resolvePath(
   ConnectionPath configuration,
   _LayerAnchor source,
@@ -96,6 +101,12 @@ Path? _curvedPath(
     );
 }
 
+/// Routes one source to all selected targets as a trunk and branches.
+///
+/// Fan bundles use direct source to target strokes. Orthogonal bundles share a
+/// trunk coordinate derived from the target extent, then route each branch
+/// back to its target with radius bounded by available segment lengths. An
+/// empty target selection is handled by the caller and creates no geometry.
 _ResolvedBundlePaths? _resolveBundlePaths(
   ConnectionBundlePath configuration,
   _LayerAnchor source,
@@ -224,6 +235,10 @@ Offset _bundleAxisOffset(
     ? Offset(trunkCoordinate, axisCoordinate)
     : Offset(axisCoordinate, trunkCoordinate);
 
+/// Turns a polyline into a path with radius limited by adjacent segments.
+///
+/// Limiting the radius is an invariant of the renderer: short branches and
+/// coincident points must not produce arcs that extend beyond their corners.
 Path _roundedPath(List<Offset> points, double radius) {
   final path = Path()..moveTo(points.first.dx, points.first.dy);
   for (var index = 1; index + 1 < points.length; index++) {

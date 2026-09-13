@@ -3,10 +3,20 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Resolves global startup dependencies before exposing the application shell.
+///
+/// Providers are watched in dependency order. Telemetry and sentinel
+/// credentials are required for transport setup, while authentication data is
+/// only loaded after authentication has been established. Loading and failure
+/// are rendered locally so the router never evaluates guards against partial
+/// startup state.
 class EagerInitialization extends ConsumerWidget {
   const EagerInitialization({required this.child, super.key});
   final Widget child;
 
+  /// Converts an asynchronous dependency into either its value or a boundary
+  /// widget. A null value is valid and therefore remains distinct from an
+  /// error or loading state.
   (T?, Widget?) require<T>(AsyncValue<T> value) {
     if (value.hasError) {
       return (null, _Error(value.error!));

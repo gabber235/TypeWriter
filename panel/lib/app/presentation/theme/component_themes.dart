@@ -6,6 +6,11 @@ import "package:typewriter_panel/app/presentation/theme/typewriter_shapes.dart";
 import "package:typewriter_panel/app/presentation/theme/typewriter_spacing.dart";
 import "package:typewriter_panel/app/presentation/theme/typewriter_state_tokens.dart";
 
+/// Applies panel wide Material component defaults to [base].
+///
+/// [colors], [spacing], [shapes], and [states] must come from the same theme
+/// build. Keeping these inputs explicit prevents component defaults from
+/// silently diverging from the extensions exposed to widgets.
 ThemeData applyComponentThemes(
   ThemeData base,
   TypewriterColors colors,

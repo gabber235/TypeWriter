@@ -1,5 +1,11 @@
 import { RecordId } from "kernel/v1/record_id.skir";
 
+// Service is the registration service's canonical record for one issued service identity.
+// Its lifecycle has independent dimensions. Identity is durable, registration is a temporary unbound lease,
+// organization is the user controlled binding, and state is liveness reported by the service registrar.
+// Binding consumes the valid registration lease and clears registration. Unbinding clears both organization and
+// registration. Revision is owned by the registration service and advances for mutable service metadata changes,
+// allowing organization clients to perform compare and set updates without treating liveness as a rename conflict.
 struct Service {
   service_id: RecordId;
   revision: int64;
@@ -11,6 +17,8 @@ struct Service {
   state: ServiceState?;
 }
 
+// The issued role is part of identity and is validated before the service account and record are created.
+// A host role is required before the registration service accepts host execution registration.
 enum ServiceRole {
   host: struct {
     version: string;
@@ -21,16 +29,23 @@ enum ServiceRole {
   } = 2;
 }
 
+// Liveness state written by heartbeat and orderly shutdown notifications. Online means a heartbeat was accepted;
+// offline means an orderly shutdown was accepted. Neither state changes organization binding or grants authority.
 enum ServiceStatus {
   online;
   offline;
 }
 
+// A service registrar owns these observations. last_seen records when the registration service accepted the latest
+// liveness notification. A missing or delayed notification is not the same protocol event as an accepted shutdown.
 struct ServiceState {
   status: ServiceStatus;
   last_seen: timestamp;
 }
 
+// Temporary capability for binding an unbound service to an organization. GetServiceStatus creates or renews it
+// only while the service is unbound. BindService requires an unexpired token, then consumes it atomically with the
+// organization binding, so the lease cannot substitute for an established binding or durable identity.
 struct ServiceRegistration {
   token: string;
   expires_at: timestamp;

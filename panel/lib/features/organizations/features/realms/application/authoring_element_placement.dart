@@ -2,9 +2,19 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Paths in the editor document that map to the wire element operation.
+///
+/// The typed value is encoded relative to this wrapper. Placement is encoded as
+/// a separate protocol variant because it belongs to the page editor rather
+/// than to the element's declared content type.
 final elementValuePath = DataPath.root.field("value");
 final elementPlacementPath = DataPath.root.field("placement");
 
+/// Converts a wire placement variant to the editor's uniform record shape.
+///
+/// Each variant exposes only its meaningful integer fields. Unknown protocol
+/// variants fail loudly because silently inventing placement would move an
+/// element to an incorrect editor location.
 RecordValue elementPlacementValue(wire.ElementPlacement placement) =>
     RecordValue({
       for (final entry in switch (placement) {
@@ -31,6 +41,7 @@ RecordValue elementPlacementValue(wire.ElementPlacement placement) =>
         entry.key: entry.value.asValue,
     });
 
+/// Builds the editor type matching [elementPlacementValue].
 RecordType elementPlacementType(wire.ElementPlacement placement) => RecordType(
   fields: {
     for (final key in elementPlacementValue(placement).fields.keys)
@@ -41,6 +52,11 @@ RecordType elementPlacementType(wire.ElementPlacement placement) => RecordType(
   },
 );
 
+/// Validates and converts an editor placement record to the wire variant.
+///
+/// Dimensions must be positive, timeline ranges must be ordered and
+/// nonnegative, and frames must be nonnegative. Invalid shapes are rejected
+/// before a mutation reaches the transport boundary.
 wire.ElementPlacement encodeElementPlacement(DataValue value) {
   if (value is! RecordValue) {
     throw ArgumentError("Element placement must be a record");

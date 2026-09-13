@@ -1,5 +1,13 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Serves an in memory collection to presentation consumers.
+///
+/// Rows are indexed by the schema key for each watch request. Duplicate keys
+/// and expression failures are returned as diagnostics instead of producing an
+/// ambiguous snapshot. Search filters rows directly, while graph queries
+/// traverse the selected relation in either direction, report cycles and
+/// missing targets, and stop at [graphNodeBudget]. The source is immutable and
+/// emits one synchronous snapshot per request.
 final class LocalPresentationCollectionSource
     implements PresentationCollectionSource {
   const LocalPresentationCollectionSource({

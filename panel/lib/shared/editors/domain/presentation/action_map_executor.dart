@@ -1,5 +1,11 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Executes map entry mutations and concrete nominal type replacement.
+///
+/// Both paths resolve and validate the target before constructing a replacement
+/// value. Map keys are unique, while concrete replacement requires a registry
+/// to validate the selected representation.
+
 extension PutMapEntryActionExecution on PutMapEntryAction {
   LocalMutationResult executeMapMutation(
     ExpressionContext context,

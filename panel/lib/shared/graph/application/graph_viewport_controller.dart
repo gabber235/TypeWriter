@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
+/// Owns the graph viewport transform and its cancellable animations.
+///
+/// The controller owns both animation and transformation resources. Call
+/// [dispose] when the graph leaves the tree. Scale limits are enforced by
+/// [zoomAt]; direct transform changes remain the responsibility of the viewer.
 class GraphViewportController {
   GraphViewportController({
     required TickerProvider tickerProvider,
@@ -20,6 +25,7 @@ class GraphViewportController {
   VoidCallback? _valueListener;
   AnimationStatusListener? _statusListener;
 
+  /// Animates the viewport to [target], replacing any active animation.
   void animateTo(Matrix4 target) {
     _removeAnimationListeners();
     final tween = Matrix4Tween(
@@ -50,6 +56,7 @@ class GraphViewportController {
       ..forward();
   }
 
+  /// Zooms around a viewport point while respecting the configured scale range.
   void zoomAt(Offset focalPoint, double scaleFactor) {
     final scenePoint = transformation.toScene(focalPoint);
     final currentScale = transformation.value.getMaxScaleOnAxis();
@@ -62,6 +69,7 @@ class GraphViewportController {
     animateTo(target);
   }
 
+  /// Resets the transform to unit scale with its origin at [centerOffset].
   void reset(Offset centerOffset) {
     animateTo(
       Matrix4.identity()
@@ -69,6 +77,7 @@ class GraphViewportController {
     );
   }
 
+  /// Moves the scene so [point] appears at [viewportCenter].
   void centerViewportPoint({
     required Offset point,
     required Offset viewportCenter,
@@ -100,6 +109,7 @@ class GraphViewportController {
   }
 }
 
+/// Creates and disposes a viewport controller for the current hook.
 GraphViewportController useGraphViewportController({
   required TickerProvider tickerProvider,
   required Matrix4 initialTransform,

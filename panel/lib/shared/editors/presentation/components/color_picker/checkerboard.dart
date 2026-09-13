@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
 
+/// Places a child over a checkerboard that makes transparency visible.
+///
+/// The child remains responsible for its color and shape. The board is clipped
+/// to [borderRadius] so previews and controls share the same boundary.
 class Checkerboard extends StatelessWidget {
   const Checkerboard({
     required this.child,

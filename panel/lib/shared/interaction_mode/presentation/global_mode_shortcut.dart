@@ -8,8 +8,9 @@ import "package:typewriter_panel/typewriter_panel.dart";
 /// shortcuts from modes that implement [ModeShortcut], passing them to the
 /// [ManagedActionSet] system for registration and display.
 ///
-/// The widget should be placed high in the widget tree to ensure mode shortcuts
-/// are available throughout the application.
+/// Place this above the surfaces that should receive the current mode's
+/// shortcuts. The subtree must own focus for [ManagedActionSet] to activate its
+/// actions. Realm suspension deliberately supplies an empty action set.
 ///
 /// Example usage:
 /// ```dart
@@ -22,7 +23,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 class GlobalModeShortcut extends ConsumerWidget {
   const GlobalModeShortcut({required this.child, super.key});
 
-  /// The child widget to wrap with mode shortcut functionality.
+  /// The subtree whose focus and action context receive the mode shortcuts.
   final Widget child;
 
   @override

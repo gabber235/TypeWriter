@@ -27,6 +27,11 @@ Map<skir.RecordId, bool> serviceConnections(Ref ref) {
   };
 }
 
+/// Resolves host connectivity through its linked service heartbeat.
+///
+/// Host runtime status describes reconciliation, not transport reachability.
+/// This provider therefore follows [TopologyHost.serviceId] into the shared
+/// service deadline projection and returns false when either record is absent.
 @riverpod
 bool hostConnected(Ref ref, skir.RecordId hostId) {
   final topology = ref.watch(organizationTopologyStreamProvider).value;

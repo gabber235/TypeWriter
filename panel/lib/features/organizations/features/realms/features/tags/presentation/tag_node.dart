@@ -8,6 +8,12 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Resolves and displays one projected tag inside the graph.
+///
+/// The node watches independently by record ID, allowing local inspector edits
+/// and remote session revisions to update one graph node without owning graph
+/// state. A missing tag leaves an empty footprint rather than displaying stale
+/// content.
 class TagNode extends HookConsumerWidget {
   const TagNode({required this.tagId, super.key});
 
@@ -30,6 +36,7 @@ class TagNode extends HookConsumerWidget {
   }
 }
 
+/// Adds selection, drag feedback, and inheritance drop behavior to a tag.
 class _TagNode extends HookConsumerWidget {
   const _TagNode({required this.tag});
 
@@ -196,6 +203,7 @@ class _TagNodeContent extends StatelessWidget {
   }
 }
 
+/// Visual representation shown while a tag is dragged outside the graph.
 class FeedbackTagNode extends StatelessWidget {
   const FeedbackTagNode({required this.tag, required this.tagColor, super.key});
 
@@ -243,6 +251,7 @@ class FeedbackTagNode extends StatelessWidget {
   }
 }
 
+/// Preserves the graph node footprint while its source is being dragged.
 class PlaceholderTagNode extends StatelessWidget {
   const PlaceholderTagNode({
     required this.name,

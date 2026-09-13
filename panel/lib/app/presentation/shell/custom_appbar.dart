@@ -2,7 +2,12 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A customizable app bar for flexible layouts, always including the organization selector if available.
+/// Provides the shared route app bar for desktop and mobile layouts.
+///
+/// [leading] stays horizontally scrollable when space is constrained. The
+/// optional [trailing] content is hidden below the desktop width threshold.
+/// On mobile, [sidebar] is exposed through a modal bottom sheet instead of a
+/// persistent side pane. The bar also reserves space for mutation activity.
 class CustomAppBar extends HookConsumerWidget implements PreferredSizeWidget {
   const CustomAppBar({
     required this.leading,
@@ -13,11 +18,19 @@ class CustomAppBar extends HookConsumerWidget implements PreferredSizeWidget {
     super.key,
   });
 
+  /// Color used for the bar and its surface. The app bar theme is the fallback.
   final Color? backgroundColor;
+
+  /// Bar height in logical pixels.
   final double height;
 
+  /// Leading controls and route context.
   final List<Widget> leading;
+
+  /// Optional desktop content shown when the bar has sufficient width.
   final Widget? trailing;
+
+  /// Sidebar content presented by the mobile menu action.
   final Widget sidebar;
 
   @override

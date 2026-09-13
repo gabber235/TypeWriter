@@ -1,5 +1,8 @@
 import { InternalError } from "kernel/v1/errors.skir";
 
+// Current binding view returned to the service registrar. Bound is durable organization association. Unbound may
+// include a temporary registration token for operator binding, or no token when none has been issued yet.
+// Querying status may renew that lease while unbound, so this is both a view and the lease bootstrap boundary.
 enum ServiceBinding {
   bound: struct {
     organization_id: string;
@@ -10,6 +13,9 @@ enum ServiceBinding {
   };
 }
 
+// Returns the service binding and, when unbound, exposes the current registration lease for operator use.
+// The service scoped endpoint distinguishes a missing service from internal failure. It does not report liveness;
+// heartbeat and shutdown notifications own that state.
 method GetServiceStatus(
   struct {}
 ): enum {

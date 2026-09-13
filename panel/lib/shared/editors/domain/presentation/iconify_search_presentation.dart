@@ -11,6 +11,15 @@ const _defaultIconIdentifiers = [
   "game-icons:broad-dagger",
 ];
 
+/// Builds the reusable Iconify picker used by the builtin icon presentation.
+///
+/// The picker combines ten recent values and a curated set of suggestions with
+/// Iconify's remote search endpoint. Query parsing lets callers search either
+/// all collections or a named collection. Remote work is gated, debounced,
+/// ranked, cached, and retained in search history, so an empty or short query
+/// does not cause a request. Results are mapped to an icon preview, collection
+/// name, and display name before the selected icon is written through binding
+/// zero supplied by the presentation host.
 PresentationNode iconifySearchPresentation() {
   final query = _binding(_queryBindingId, const StringType());
   final icon = _binding(
@@ -171,6 +180,8 @@ PresentationNode _iconSummary() {
   );
 }
 
+/// Creates the typed expression used to read a binding introduced by this
+/// presentation definition.
 TypedExpression _binding(BindingId id, TypeExpression type) => TypedExpression(
   resultType: type,
   expression: BindingExpression(BindingReference(bindingId: id)),

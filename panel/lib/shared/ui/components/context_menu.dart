@@ -8,6 +8,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "context_menu.freezed.dart";
 
+/// Adds a platform aware context menu to a child widget.
+///
+/// Secondary click and long press open the menu at the pointer position when
+/// [enableGestures] is true. On Apple platforms, a control click opens it;
+/// other taps are delegated to [onTapUp]'s [orElse] callback. Supply [builder]
+/// when the child must be built with the menu controller.
 class ContextMenuRegion extends HookWidget {
   const ContextMenuRegion({
     required this.items,
@@ -65,6 +71,7 @@ class ContextMenuRegion extends HookWidget {
     return menu;
   }
 
+  /// Creates a secondary click handler that opens [controller] at the pointer.
   static void Function(TapUpDetails) onSecondaryTapUp(
     MenuController controller,
   ) {
@@ -73,6 +80,7 @@ class ContextMenuRegion extends HookWidget {
     };
   }
 
+  /// Creates a long press handler that opens [controller] at the pointer.
   static void Function(LongPressStartDetails) onLongPressStart(
     MenuController controller,
   ) {
@@ -81,6 +89,7 @@ class ContextMenuRegion extends HookWidget {
     };
   }
 
+  /// Creates a toggle handler for controls that open the menu themselves.
   static void Function() onPress(MenuController controller) {
     return () {
       if (controller.isOpen) {
@@ -91,6 +100,7 @@ class ContextMenuRegion extends HookWidget {
     };
   }
 
+  /// Creates a tap handler that applies the platform context menu policy.
   static void Function(TapUpDetails) onTapUp(
     MenuController controller, {
     Function(TapUpDetails)? orElse,
@@ -105,7 +115,7 @@ class ContextMenuRegion extends HookWidget {
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
         case TargetPlatform.windows:
-          // Don't open the menu on these platforms with a Ctrl-tap (or a
+          // Don't open the menu on these platforms with a Ctrl tap (or a
           // tap).
           orElse?.call(details);
         case TargetPlatform.iOS:
@@ -177,9 +187,8 @@ class ContextMenuRegion extends HookWidget {
                   style: Theme.of(context).textTheme.labelSmall!.copyWith(
                     color:
                         section.color ??
-                        Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                        Theme.of(context).colorScheme.onSurface
+                            .withValues(alpha: 0.6),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -190,9 +199,8 @@ class ContextMenuRegion extends HookWidget {
                             size: 14,
                             color:
                                 section.color ??
-                                Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.6),
+                                Theme.of(context).colorScheme.onSurface
+                                    .withValues(alpha: 0.6),
                           ),
                           child: section.icon!,
                         ),
@@ -248,9 +256,14 @@ class ContextMenuRegion extends HookWidget {
   }
 }
 
+/// Describes one entry, group, submenu, or divider in a [ContextMenuRegion].
+///
+/// Menu entries invoke [onPressed] when selected. A submenu and section own
+/// their nested entries and must contain at least one item.
 @freezed
 abstract class MenuItem with _$MenuItem {
   @Assert("label != \"\"", "Label must not be empty.")
+  /// Creates an actionable menu entry. A null [onPressed] disables it.
   const factory MenuItem({
     required String label,
     Widget? icon,
@@ -261,6 +274,7 @@ abstract class MenuItem with _$MenuItem {
 
   @Assert("label != \"\"", "Label must not be empty.")
   @Assert("items.length > 0", "Items must not be empty.")
+  /// Creates a labeled submenu containing [items].
   const factory MenuItem.submenu({
     required String label,
     required List<MenuItem> items,
@@ -270,6 +284,7 @@ abstract class MenuItem with _$MenuItem {
 
   @Assert("items.length > 0", "Items must not be empty.")
   @Assert("label == null || label != \"\"", "Label must be null or nonempty.")
+  /// Creates a grouped set of entries with an optional heading.
   const factory MenuItem.section({
     required List<MenuItem> items,
     String? label,
@@ -277,5 +292,6 @@ abstract class MenuItem with _$MenuItem {
     Color? color,
   }) = MenuItemSection;
 
+  /// Creates a visual separator between neighboring entries.
   const factory MenuItem.divider() = MenuItemDivider;
 }

@@ -1,6 +1,15 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Validates a declaration before [TypeRegistry] attempts to resolve it.
+///
+/// This is the catalog boundary for errors that can be detected without type
+/// arguments or a registry, including duplicate parameters, invalid bounds,
+/// recursive bounds, and invalid parent arguments. Diagnostics are attributed
+/// to the declaration so callers can reject the whole definition and show the
+/// responsible type.
 extension TypeDefinitionValidation on TypeDefinition {
+  /// Returns all declaration diagnostics, retaining independent errors rather
+  /// than stopping at the first malformed part.
   List<TypeDiagnostic> validateDeclaration() {
     final diagnostics = <TypeDiagnostic>[];
     final names = <String>{};
@@ -38,6 +47,8 @@ extension TypeDefinitionValidation on TypeDefinition {
 }
 
 extension TypeParameterListValidation on List<TypeParameter> {
+  /// Detects recursion among parameter bounds, such as `T` bounded by `U`
+  /// while `U` is bounded by `T`.
   List<TypeDiagnostic> validateBoundCycles() {
     final declared = map((parameter) => parameter.name).toSet();
     final dependencies = <String, Set<String>>{};

@@ -1,3 +1,9 @@
+//! Canonical typed subjects for backend requests, watch streams, and change events.
+//!
+//! The templates here are part of the broker contract. Watch subjects are requestable
+//! snapshots, while `changed` subjects are persisted membership deltas. Callers should
+//! use these constructors instead of assembling subject strings locally.
+
 use crate::{
     define_skir_subjects,
     skirout::base::{

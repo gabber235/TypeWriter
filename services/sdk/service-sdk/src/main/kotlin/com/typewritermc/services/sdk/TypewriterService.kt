@@ -36,8 +36,10 @@ class TypewriterService private constructor(
     private val registrar: ServiceRegistrar,
     private val application: KoinApplication,
 ) {
+    /** Latest registrar state for lifecycle presentation and service integration. */
     val states: StateFlow<RegistrarSnapshot> = registrar.states
 
+    /** Starts registration and waits until the service has a confirmed organization binding. */
     suspend fun start(): RegistrarResult<ReadySession> {
         val start = registrar.start()
         if (start is RegistrarResult.Failure) return start
@@ -60,13 +62,17 @@ class TypewriterService private constructor(
         return registrar.communicatorFor(ready.connectionGeneration)
     }
 
+    /** Borrows the communicator only when the supplied ready generation is still current. */
     suspend fun communicatorFor(connectionGeneration: Long): RegistrarResult<Communicator> = registrar.communicatorFor(connectionGeneration)
 
+    /** Builds a replacement authorized runtime and returns its new connection generation. */
     suspend fun rotateAuthorization(): RegistrarResult<Long> = registrar.rotateAuthorization()
 
+    /** Completes authorization handover by closing the retained previous generation. */
     suspend fun releaseAuthorizationRotation(connectionGeneration: Long): RegistrarResult<Unit> =
         registrar.releaseAuthorizationRotation(connectionGeneration)
 
+    /** Stops registration and closes this service's dependency injection application. */
     suspend fun stop(): RegistrarStopResult {
         val result = registrar.stop()
         application.close()
@@ -74,6 +80,7 @@ class TypewriterService private constructor(
     }
 
     companion object {
+        /** Creates a service with file backed identity storage and production registrar adapters. */
         @JvmStatic
         fun create(
             configuration: RegistrarConfiguration,

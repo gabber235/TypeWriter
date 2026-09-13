@@ -2,6 +2,13 @@ import "dart:async";
 
 import "package:flutter/foundation.dart";
 
+/// Tracks a route access state while filtering transient states from guards.
+///
+/// [isPending] defines readiness. [stableStateOf] projects a state into the
+/// stable facts that affect authorization. A readiness waiter completes at the
+/// first nonpending state, while [reevaluation] emits only when consecutive
+/// stable projections differ. Disposal completes pending waiters so guards do
+/// not remain blocked when the router provider is torn down.
 final class RouteAccessStateController<State, StableState extends Object> {
   RouteAccessStateController({
     required State initialState,
@@ -26,8 +33,11 @@ final class RouteAccessStateController<State, StableState extends Object> {
 
   State get current => _current;
   Listenable get reevaluation => _reevaluation;
+
+  /// Completes when the current access state first becomes nonpending.
   Future<void> waitUntilReady() => _ready?.future ?? Future.value();
 
+  /// Replaces the current observation and emits semantic changes when stable.
   void transitionTo(State next) {
     assert(!_disposed, "Cannot transition disposed route access state");
     if (next == _current) return;

@@ -1,5 +1,9 @@
 part of "route.dart";
 
+/// Search text local to the current book sidebar.
+///
+/// It is intentionally separate from canonical page state. The derived page
+/// provider combines this query with canonical pages and local editor work.
 @riverpod
 class _PageSearch extends _$PageSearch {
   @override
@@ -11,6 +15,11 @@ class _PageSearch extends _$PageSearch {
   }
 }
 
+/// Supplies the sidebar projection, preserving local edits while searching.
+///
+/// A projected result is used immediately when available. Otherwise the
+/// canonical provider is awaited once, then the projection is read again so
+/// the sidebar does not display stale canonical values over an active draft.
 @riverpod
 Future<List<Page>> _viewingPages(Ref ref) async {
   final bookId = ref.watch(bookIdProvider);
@@ -26,6 +35,10 @@ Future<List<Page>> _viewingPages(Ref ref) async {
   return ref.read(projectedBookPagesProvider(bookId, search)).requireValue;
 }
 
+/// Sidebar for searching, selecting, and organizing pages in the active book.
+///
+/// Page data is read through the projected provider. Mutations are delegated to
+/// dialogs and drag handlers, which use expected values to surface conflicts.
 class BookSidebarContent extends HookConsumerWidget {
   const BookSidebarContent({this.expanded = true, super.key});
 
@@ -102,6 +115,7 @@ class BookSidebarContent extends HookConsumerWidget {
   }
 }
 
+/// Skeleton sidebar shown while the book's page projection is loading.
 class LoadingPagesSidebar extends StatelessWidget {
   const LoadingPagesSidebar({super.key});
 

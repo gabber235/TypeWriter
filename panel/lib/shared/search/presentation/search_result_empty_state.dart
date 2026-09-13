@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders the non row states of a search source snapshot.
+///
+/// Loading uses a placeholder list. Error summaries take precedence over the
+/// generic failure message. Idle and ready snapshots show source guidance when
+/// present, otherwise the empty result message.
 class SearchResultEmptyState extends StatelessWidget {
   const SearchResultEmptyState({required this.snapshot, super.key});
 

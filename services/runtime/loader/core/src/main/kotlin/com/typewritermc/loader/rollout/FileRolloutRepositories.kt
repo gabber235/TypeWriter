@@ -34,6 +34,7 @@ class BlobProjectionRepository(
     private val blobs: BlobEndpoint,
 ) : ProjectionRepository,
     ProjectionSource {
+    /** Encodes and uploads one projection once, then returns the digest and runtime version index used by hosts. */
     override suspend fun publish(projection: HostDeploymentProjection): ProjectionReference {
         val bytes = HostDeploymentProjectionCodec.encode(projection)
         val digest = ArtifactDigest.sha256(bytes)
@@ -57,6 +58,7 @@ class BlobProjectionRepository(
         )
     }
 
+    /** Downloads, bounds, authenticates, and validates projection bytes against the supplied reference. */
     override suspend fun fetch(reference: ProjectionReference): HostDeploymentProjection {
         val metadata = blobs.metadata(reference.blob).requireSuccess()
         require(metadata.size <= MAXIMUM_PROJECTION_SIZE) { "Deployment projection exceeds its maximum size." }
@@ -91,6 +93,7 @@ class FileRolloutStateRepository(
     private val stateFile = artifactsRoot.resolve("rollout").resolve("${realmId.value}.cbor")
     private var stored = readRolloutState(stateFile)
 
+    /** Allocates and persists an ordinal before the coordinator sends any command for the generation. */
     override suspend fun nextAttempt(generation: DeploymentGeneration): RolloutAttempt =
         updateWithResult { current ->
             val attempt = RolloutAttempt(current.lastAttemptOrdinal + 1, generation)
@@ -104,9 +107,11 @@ class FileRolloutStateRepository(
 
     override suspend fun committed(): CommittedDeployment? = mutex.withLock { stored.current }
 
+    /** Moves the committed deployment to previous and makes [deployment] current in one state write. */
     override suspend fun commit(deployment: CommittedDeployment) =
         update { current -> current.copy(previous = current.current, current = deployment) }
 
+    /** Persists participant observations for this Realm and silently ignores events for another Realm. */
     override suspend fun record(event: ParticipantStateChanged) {
         if (event.realmId != realmId) return
         update { current ->
@@ -118,6 +123,7 @@ class FileRolloutStateRepository(
 
     suspend fun current(): CommittedDeployment? = committed()
 
+    /** Returns the single deployment retained as the rollback baseline, if one exists. */
     suspend fun previous(): CommittedDeployment? = mutex.withLock { stored.previous }
 
     private suspend fun update(transform: (StoredRolloutState) -> StoredRolloutState) {

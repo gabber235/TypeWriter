@@ -5,6 +5,14 @@ import "package:http/http.dart" as http;
 import "package:json_path/json_path.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adapts an HTTPS JSON endpoint to the presentation search contract.
+///
+/// Query and selector bindings are evaluated locally, then the response is
+/// read at [HttpJsonSearchProvider.resultPath]. Each candidate is decoded and
+/// mapped independently, so one malformed candidate becomes a warning while
+/// valid candidates remain usable. Search revisions suppress late responses
+/// from replaced requests. The source owns its stream controller and must be
+/// disposed by the owner that created it; no credentials are added to requests.
 final class HttpJsonPresentationSearchSource implements SearchSource {
   HttpJsonPresentationSearchSource({
     required this.provider,
@@ -212,6 +220,8 @@ final class HttpJsonPresentationSearchSource implements SearchSource {
     _ => "Search provider is unavailable",
   };
 
+  /// Presentation results already carry the renderable node and therefore do
+  /// not need a second network request for preview.
   @override
   Future<SearchPreviewRequestResult> preview(
     SearchPreviewRequest request,

@@ -1,3 +1,9 @@
+//! Small service registration helpers shared by the registrar handlers.
+
+/// Generates a ten character uppercase alphanumeric token for the temporary bind lease.
+///
+/// The token is derived from a fresh UUID and is formatted to match the registration schema. It
+/// is a lease credential, not a service identity or a liveness signal.
 pub fn generate_registration_token() -> String {
     const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let uuid = uuid::Uuid::new_v4();

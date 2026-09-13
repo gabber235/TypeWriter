@@ -1,8 +1,15 @@
-use otel_wasi::{main_attribute, wasi_error, ResultWithSlug};
+//! Organization invitation code reads and lifecycle mutations.
+//!
+//! Codes are organization owned admission records. Watch snapshots expose only active codes and
+//! the organization code sequence. Generation validates every automatic role before creation and
+//! revocation removes only an existing, still active code. Successful mutations commit through a
+//! mutation receipt, advance the code sequence, and publish the resulting change after commit.
+
+use otel_wasi::{ResultWithSlug, main_attribute, wasi_error};
 use serde::Deserialize;
 use std::collections::HashMap;
 use wasmcloud_utils::{
-    database::{organization::JoinCodeRecord, transaction_query, DatabaseDuration, RecordId},
+    database::{DatabaseDuration, RecordId, organization::JoinCodeRecord, transaction_query},
     decode_skir, extract_params,
     skir::base::organization::v1::join_codes::*,
     skir_transaction_outcome,
@@ -29,6 +36,10 @@ impl JoinCodeGenerationOutcome {
     }
 }
 
+/// Returns the current active invitation codes for an organization.
+///
+/// The snapshot sequence is read with the values and is the recovery point for the organization
+/// code change stream. Expired codes are excluded by the database snapshot query.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_watch(
     msg: BrokerMessage,
@@ -48,6 +59,11 @@ pub async fn handle_watch(
     .await
 }
 
+/// Creates an organization invitation code with an optional expiration and automatic roles.
+///
+/// A positive duration is stored as the database expiration interval. Zero and negative durations
+/// are rejected before any state change. The transaction rejects unknown or protected roles,
+/// records the committed result for operation replay, and publishes the code addition afterward.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_generate(
     msg: BrokerMessage,
@@ -205,6 +221,11 @@ RETURN {
     ))
 }
 
+/// Revokes an active invitation code and publishes its removal.
+///
+/// Expired, missing, or already revoked codes return a not found response without advancing the
+/// organization code sequence. Replaying an operation identity returns the committed transaction
+/// result, while reusing it for different input is rejected.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_revoke(
     msg: BrokerMessage,

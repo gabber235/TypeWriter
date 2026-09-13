@@ -1,5 +1,10 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Canonical references for types supplied by the panel and kernel catalog.
+///
+/// These references are shared by authoring, value validation, and presentation
+/// resolution. Construct applications through this owner rather than copying
+/// identifiers, so revisions and generic argument placement stay consistent.
 final standardTypeRefs = StandardTypeReferences();
 
 const standardColorPresentationId = PresentationId(
@@ -19,6 +24,7 @@ const standardSvgIconPresentationId = PresentationId(
   name: "svgIcon",
 );
 
+/// Creates references to the built in nominal types used by the editor model.
 final class StandardTypeReferences {
   StandardTypeReferences();
 
@@ -47,15 +53,24 @@ final class StandardTypeReferences {
     revision: 1,
   );
 
+  /// Applies the option type constructor to [type].
   ResolvedTypeRef optionOf(TypeExpression type) => option.withArguments([type]);
 
+  /// Applies the successful option constructor to [type].
   ResolvedTypeRef someOf(TypeExpression type) => some.withArguments([type]);
 
+  /// Applies the empty option constructor to [type].
   ResolvedTypeRef noneOf(TypeExpression type) => none.withArguments([type]);
 
+  /// Applies the reference constructor to [type].
   ResolvedTypeRef refTo(TypeExpression type) => ref.withArguments([type]);
 }
 
+/// Adds the panel's standard definitions before catalog supplied definitions.
+///
+/// [TypeRegistry] uses this assembled catalog for resolution. The input
+/// definitions remain the caller's extension point; standard definitions are
+/// always available to their representations and presentations.
 TypeCatalog bootstrapTypeCatalog(Iterable<TypeDefinition> definitions) =>
     TypeCatalog([..._standardDefinitions, ...definitions]);
 

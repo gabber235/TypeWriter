@@ -1,5 +1,11 @@
 part of "authoring_session.dart";
 
+/// Returns every resource reservation required by an authoring operation.
+///
+/// The mutation coordinator uses these identities to prevent overlapping local
+/// submissions. Related parent resources are included when the protocol
+/// operation changes their projection, such as creating or moving a child.
+/// Unknown protocol variants fail instead of creating an incomplete reservation.
 Set<skir.RecordId> _operationResources(wire.AuthoringOperation operation) =>
     switch (operation) {
       wire.AuthoringOperation_createBookWrapper(:final value) => {

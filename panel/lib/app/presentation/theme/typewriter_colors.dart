@@ -1,5 +1,12 @@
 import "package:flutter/material.dart";
 
+/// Semantic colors for panel surfaces, content, feedback, and interaction.
+///
+/// This extension is installed by the panel theme and is the preferred source
+/// for Typewriter specific colors. The paired `on` values are selected for
+/// contrast against their corresponding color or container. Use
+/// `BuildContext.colors` in widgets instead of reconstructing colors from
+/// `ColorScheme`.
 @immutable
 class TypewriterColors extends ThemeExtension<TypewriterColors> {
   const TypewriterColors({

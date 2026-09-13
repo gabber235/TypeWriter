@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Mobile and tablet body for one join request card.
+///
+/// This widget adapts layout only. Selection, expiry cleanup, decline
+/// confirmation, and expansion remain callbacks owned by the card and list so
+/// responsive rendering cannot create a second state owner.
 class JoinRequestResponsiveContent extends StatelessWidget {
   const JoinRequestResponsiveContent({
     required this.request,

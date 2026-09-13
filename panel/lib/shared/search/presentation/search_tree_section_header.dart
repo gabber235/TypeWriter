@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders a section row and delegates expansion changes to [onToggle].
+///
+/// [row] is already a presentation projection. Its count includes descendant
+/// results even when the section is collapsed, while [row.expanded] controls
+/// only the visible descendant rows and chevron.
 class SearchTreeSectionHeader extends StatelessWidget {
   const SearchTreeSectionHeader({
     required this.row,

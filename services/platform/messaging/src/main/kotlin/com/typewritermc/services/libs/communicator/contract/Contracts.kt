@@ -20,7 +20,7 @@ value class OperationName private constructor(
     }
 }
 
-/** Stable response variant name. */
+/** Stable, low cardinality name for the specific response variant recorded in telemetry. */
 @JvmInline
 value class ResponseVariant private constructor(
     val value: String,
@@ -34,14 +34,14 @@ value class ResponseVariant private constructor(
     }
 }
 
-/** Semantic outcome of a typed response. */
+/** Semantic outcome of a typed response, independent of transport success. */
 enum class ResponseOutcome {
     SUCCESS,
     DOMAIN_ERROR,
     INTERNAL_ERROR,
 }
 
-/** Semantic response outcome and stable variant. */
+/** Semantic response outcome together with the stable variant name used for telemetry. */
 data class ResponseClassification(
     val outcome: ResponseOutcome,
     val variant: ResponseVariant,
@@ -106,7 +106,8 @@ interface PayloadCodec<Value : Any> {
 /**
  * Defines a typed request with one reply, timeout, response semantics, and failure identity.
  *
- * A contract is metadata shared by caller and router; constructing it creates no subscription.
+ * A contract is metadata shared by caller and router; constructing it creates no subscription. Domain and internal
+ * errors remain decoded responses; codec and transport failures are reported separately by the communicator.
  */
 class UnaryContract<Address : Any, Request : Any, Response : Any>(
     val name: OperationName,
@@ -126,7 +127,7 @@ class UnaryContract<Address : Any, Request : Any, Response : Any>(
  * Defines a request that can receive replies from multiple listeners through one reply channel.
  *
  * Collection lifetime and completion policy are supplied by the caller. Responders may deliberately decline to
- * reply.
+ * reply, so callers must decide how missing replies are handled.
  */
 class ScatterContract<Address : Any, Request : Any, Response : Any>(
     val name: OperationName,
@@ -153,7 +154,8 @@ class EventContract<Address : Any, Event : Any>(
  * Combines an initial request with a separate update subscription and optional update filtering.
  *
  * The client subscribes before requesting initial state to reduce lost updates. Snapshot and update consistency
- * still belongs to the application protocol; this metadata provides no transactional snapshot boundary.
+ * still belongs to the application protocol; this metadata provides no transactional snapshot boundary. Consumers
+ * must define reconnect, duplicate, and revision handling.
  */
 class WatchContract<Address : Any, Request : Any, Initial : Any, Update : Any>(
     val name: OperationName,
@@ -173,7 +175,7 @@ class WatchContract<Address : Any, Request : Any, Initial : Any, Update : Any>(
     }
 }
 
-/** A watch's single initial response or subsequent update. */
+/** A watch item that identifies whether a value is the initial snapshot or a later update. */
 sealed interface WatchMessage<out Initial : Any, out Update : Any> {
     data class Initial<Value : Any>(
         val value: Value,

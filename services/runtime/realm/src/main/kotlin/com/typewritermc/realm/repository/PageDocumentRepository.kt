@@ -36,12 +36,21 @@ import com.typewritermc.types.TypeGraph
  * null; invalid existing content remains inspectable with diagnostics.
  */
 interface PageDocumentRepository {
+    /** Returns the current logical document, or null when the page record does not exist. */
     suspend fun getPageDocument(pageId: PageId): PageDocument?
 
+    /**
+     * Reads every page and the authoring revision in one database transaction.
+     *
+     * Documents that still exist are returned even when projection produces diagnostics. The revision is the
+     * compiler freshness token and must be checked again before publication.
+     */
     suspend fun getAuthoringSnapshot(): AuthoringSnapshot
 
+    /** Returns the source revision that identifies the current compiler input state. */
     suspend fun currentAuthoringRevision(): String
 
+    /** Returns the editor collaboration sequence, which advances independently of compiler source revision. */
     suspend fun currentCollaborationRevision(): Long
 }
 
@@ -51,7 +60,9 @@ interface PageDocumentRepository {
  * Publication must recheck freshness because edits can occur after this snapshot is returned.
  */
 data class AuthoringSnapshot(
+    /** Source revision observed in the same transaction as [documents]. */
     val revision: String,
+    /** Existing page documents reconstructed from that source view. */
     val documents: List<PageDocument>,
 )
 
@@ -244,7 +255,9 @@ private fun Transaction.authoringRevision(): String =
  * catalog view.
  */
 data class PageDocumentCatalog(
+    /** Element descriptors used to resolve stored element types and assemble logical values. */
     val elements: ElementCatalog,
+    /** Type definitions captured with the descriptor view used for this read. */
     val definitions: List<com.typewritermc.types.TypeDefinition>,
 )
 

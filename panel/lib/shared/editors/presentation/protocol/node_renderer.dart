@@ -1,6 +1,16 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Applies node policy before dispatching a presentation element to its
+/// renderer.
+///
+/// This is the recursive boundary for the declarative presentation tree. It
+/// evaluates the node condition in the inherited scope, combines enabled and
+/// read only policy, resolves transparent header chains, and gives the element
+/// renderer the derived scope. Invalid conditions become an inline diagnostic;
+/// valid but disabled nodes remain visible and ignore interaction. The node
+/// does not own draft values or persistence. Inputs and actions cross the
+/// [PresentationRenderScope] callbacks to the enclosing editor owner.
 class PresentationNodeRenderer extends StatelessWidget {
   const PresentationNodeRenderer({
     required this.node,

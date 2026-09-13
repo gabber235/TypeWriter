@@ -177,7 +177,7 @@ class BackendArtifactHostAssignmentSource(
         )
 }
 
-/** A backend revision remains meaningful when both runtime roles are absent. */
+/** Converts the backend topology projection into a host intent, preserving an empty desired assignment. */
 internal fun WatchHostExecutionResponse.toDesiredHostExecution(
     panelEngine: ArtifactRequirement,
     serviceId: String,
@@ -208,10 +208,11 @@ internal fun WatchHostExecutionResponse.toDesiredHostExecution(
     return DesiredHostExecution(ExecutionRevision(serviceId, desired.topologyRevision), assignment)
 }
 
-/** Sends a host observation after local lifecycle completion, including an empty assignment. */
+/** Reports completed local execution transitions and tolerates stale backend revisions. */
 internal class BackendHostExecutionReporter(
     private val clock: Clock = Clock.systemUTC(),
 ) {
+    /** Sends a host observation after local lifecycle completion, including an empty assignment. */
     suspend fun report(
         observation: HostExecutionObservation,
         session: com.typewritermc.loader.api.HostedMessagingSession,
@@ -256,6 +257,7 @@ internal class BackendHostExecutionReporter(
     }
 }
 
+/** Maps loader lifecycle and health state to the backend topology status contract. */
 internal fun ParticipantStatus.toChildRuntimeState(
     now: Instant,
     placement: RuntimePlacement,

@@ -1,5 +1,10 @@
 part of "data_value_json_converter.dart";
 
+/// Tracks the location and shape of one JSON node while decoding tagged data.
+///
+/// Keeping path construction beside type checks makes nested format failures
+/// actionable for callers and avoids losing the original location while the
+/// decoder recurses through lists, maps, and records.
 final class _JsonValue {
   const _JsonValue(this.value, {this.path = r"$"});
 

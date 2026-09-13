@@ -3,6 +3,12 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Organization services workspace.
+///
+/// The page watches the projected service list for names that include unsaved
+/// identity edits, while topology remains an independent live projection. The
+/// registration control sends tokens through the canonical service provider;
+/// this route only composes loading and error states around both reads.
 @RoutePage()
 class ServicesPage extends ConsumerWidget {
   const ServicesPage({super.key});

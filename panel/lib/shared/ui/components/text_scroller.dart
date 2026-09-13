@@ -3,7 +3,10 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Switches between the given texts in a loop.
+/// Switches between [texts] in a noninteractive vertical loop.
+///
+/// The list must contain at least one value. [duration] controls the pause
+/// before each change, while [transitionDuration] controls the page movement.
 class TextScroller extends HookWidget {
   const TextScroller({
     required this.texts,
@@ -14,6 +17,7 @@ class TextScroller extends HookWidget {
     super.key,
   }) : super();
 
+  /// Ordered messages to display. It must not be empty.
   final List<String> texts;
   final TextStyle? style;
   final Duration duration;

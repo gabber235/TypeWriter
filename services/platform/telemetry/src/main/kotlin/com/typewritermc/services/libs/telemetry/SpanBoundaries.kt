@@ -164,6 +164,7 @@ suspend fun <T> ServiceTelemetry.mainSpan(
     }
 }
 
+/** Synchronous counterpart to [serverSpan] for inbound work that does not suspend. */
 fun <T> ServiceTelemetry.serverSpanBlocking(
     name: String,
     unhandledFailureSlug: ErrorSlug,
@@ -200,9 +201,7 @@ suspend fun <T> ServiceTelemetry.serverSpan(
     block = block,
 )
 
-/**
- * Creates a main CONSUMER span for processing a received message using the supplied parent context.
- */
+/** Creates a main CONSUMER span for one received message and propagates its parent context. */
 suspend fun <T> ServiceTelemetry.consumerSpan(
     name: String,
     unhandledFailureSlug: ErrorSlug,

@@ -14,7 +14,11 @@ const bookWidth = 175.0;
 const bookHeight = 230.0;
 const bookAspectRatio = bookWidth / bookHeight;
 
-/// Displays a selectable animated book.
+/// Displays a book in the library grid.
+///
+/// Selection and focus belong to the shared selectable system. This widget only
+/// renders their visual state and does not open or mutate the book. The caller
+/// supplies the projected book data, including already resolved tags.
 class BookWidget extends HookConsumerWidget {
   const BookWidget({
     required this.id,

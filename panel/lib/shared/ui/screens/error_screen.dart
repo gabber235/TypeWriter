@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Stable fallback titles used when an error does not provide a title.
 const funnyErrorTitles = [
   "The plot thickened too much",
   "This quest has no walkthrough",
@@ -50,6 +51,10 @@ const funnyErrorTitles = [
   "The red pen ran out of judgment",
 ];
 
+/// Presents a full size recoverable error state for a route or application shell.
+///
+/// [message] is selectable so users can copy diagnostic context. [child] is
+/// reserved for a recovery action or other caller owned follow up control.
 class ErrorScreen extends StatelessWidget {
   const ErrorScreen({
     this.title = "",
@@ -66,8 +71,13 @@ class ErrorScreen extends StatelessWidget {
     Key? key,
   }) = SmallErrorScreen;
 
+  /// Error heading. An empty value selects a title from [funnyErrorTitles].
   final String title;
+
+  /// Diagnostic or user facing detail shown below the heading.
   final String message;
+
+  /// Optional recovery content rendered after the error detail.
   final Widget? child;
 
   @override
@@ -156,6 +166,9 @@ class ErrorScreen extends StatelessWidget {
   }
 }
 
+/// Compact error state for inline content and constrained panels.
+///
+/// Unlike [ErrorScreen], this variant does not claim the available page height.
 class SmallErrorScreen extends ErrorScreen {
   const SmallErrorScreen({
     required super.title,
@@ -165,6 +178,7 @@ class SmallErrorScreen extends ErrorScreen {
     super.key,
   });
 
+  /// Whether to include the animated error illustration.
   final bool withIcon;
 
   @override

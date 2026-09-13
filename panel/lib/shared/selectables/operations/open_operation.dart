@@ -5,19 +5,23 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A selectable-level operation holding the asynchronous open callback.
+/// Advertises opening for one selectable.
+///
+/// [allowMultiSelect] controls whether this item may participate in a batch
+/// open. The callback owns the actual navigation or presentation side effect.
 class OpenSelectionCapability extends SelectionCapability {
   OpenSelectionCapability({required this.onOpen, this.allowMultiSelect = true});
 
   final FutureOr<void> Function() onOpen;
 
-  /// When false, the Open operation will not appear if this item
-  /// is part of a multi-select with other items.
+  /// Whether this item may participate in a multi item open.
   final bool allowMultiSelect;
 }
 
-/// The open operation exposed when every selected item provides an
-/// [OpenSelectionCapability].
+/// Opens the selected items when every item supports opening.
+///
+/// A multi item open is available only when every capability allows it. Items
+/// are opened in selection order.
 class OpenOperation extends IntentShortcutOperation {
   const OpenOperation();
 
@@ -37,7 +41,7 @@ class OpenOperation extends IntentShortcutOperation {
     // Single selection: always allowed
     if (selection.length == 1) return true;
 
-    // Multi-select: ensure none have allowMultiSelect disabled
+    // Multi selection requires every item to allow batch opening.
     return selection.collectCapabilities<OpenSelectionCapability>().none(
       (op) => !op.allowMultiSelect,
     );
@@ -68,6 +72,7 @@ class OpenOperation extends IntentShortcutOperation {
       OpenOperationButton(selection: selection, operation: this);
 }
 
+/// Inspector control for [OpenOperation].
 class OpenOperationButton extends HookConsumerWidget {
   const OpenOperationButton({
     required this.selection,

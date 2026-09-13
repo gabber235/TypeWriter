@@ -64,6 +64,10 @@ class _RealmInstanceSelectable
       );
 }
 
+/// Builds the route to a Realm owned by an organization.
+///
+/// Callers should only expose this route when the owner service is connected;
+/// selection resolution enforces that prerequisite before creating the action.
 OrganizationRoute realmNavigationRoute(
   skir.RecordId organizationId,
   skir.RecordId realmId,

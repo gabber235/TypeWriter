@@ -2,14 +2,16 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:rive/rive.dart";
 
-/// Hook creator for creating and managing a Rive [FileLoader].
+/// Creates and manages a Rive [FileLoader] for a widget lifetime.
 ///
-/// The FileLoader will be disposed automatically when the widget is disposed.
+/// The loader is created once for the hook's current keys and disposed when
+/// those keys change or the widget is removed. Use the matching factory method
+/// for the source whose identity should control that lifetime.
 ///
 /// Example usage:
 /// ```dart
 /// final fileLoader = useRiveFileLoader.fromAsset(
-///   'assets/animation.riv',
+///   "assets/animation.riv",
 ///   riveFactory: Factory.rive,
 /// );
 /// ```
@@ -18,10 +20,10 @@ const useRiveFileLoader = _RiveFileLoaderHookCreator();
 class _RiveFileLoaderHookCreator {
   const _RiveFileLoaderHookCreator();
 
-  /// Creates a [FileLoader] that loads a Rive file from an asset.
+  /// Creates a loader for the Rive file at [asset].
   ///
-  /// The [asset] parameter is the asset path to load the Rive file from.
-  /// The [riveFactory] parameter determines the renderer to use.
+  /// [riveFactory] selects the renderer. Include source dependencies in [keys]
+  /// when they change without changing the hook call position.
   FileLoader fromAsset(
     String asset, {
     Factory? riveFactory,
@@ -36,10 +38,10 @@ class _RiveFileLoaderHookCreator {
     );
   }
 
-  /// Creates a [FileLoader] that loads a Rive file from a URL.
+  /// Creates a loader for the Rive file at [url].
   ///
-  /// The [url] parameter is the URL to load the Rive file from.
-  /// The [riveFactory] parameter determines the renderer to use.
+  /// [riveFactory] selects the renderer. Include source dependencies in [keys]
+  /// when they change without changing the hook call position.
   FileLoader fromUrl(String url, {Factory? riveFactory, List<Object?>? keys}) {
     return use(
       _RiveFileLoaderHook.fromUrl(
@@ -50,10 +52,10 @@ class _RiveFileLoaderHookCreator {
     );
   }
 
-  /// Creates a [FileLoader] from an already loaded Rive [File].
+  /// Creates a loader backed by the already loaded Rive [file].
   ///
-  /// The [file] parameter is the pre-loaded Rive file.
-  /// The [riveFactory] parameter determines the renderer to use.
+  /// [riveFactory] selects the renderer. Include source dependencies in [keys]
+  /// when they change without changing the hook call position.
   FileLoader fromFile(File file, {Factory? riveFactory, List<Object?>? keys}) {
     return use(
       _RiveFileLoaderHook.fromFile(

@@ -1,7 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
-/// Run code after the widget tree has build.
+/// Runs [function] after the current widget tree has completed a frame.
+///
+/// With no [keys], the callback is scheduled after every rebuild. Supplying
+/// keys makes scheduling follow the hook's normal dependency semantics, so the
+/// callback runs again only when those keys change. The callback is deferred,
+/// not executed during build.
 void useDelayedExecution(Function function, [List<Object?>? keys]) =>
     use(_DelayedExecutionHook(function, keys: keys));
 

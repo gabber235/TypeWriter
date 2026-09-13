@@ -1,5 +1,11 @@
 part of "services.dart";
 
+/// Adapts the organization scoped service projection to the current route.
+///
+/// The route provider owns no service data. It follows the selected
+/// organization and delegates reads and mutations to
+/// [CanonicalOrganizationServices], yielding an empty projection when no
+/// organization is selected.
 @riverpod
 class CanonicalServices extends _$CanonicalServices {
   @override
@@ -22,14 +28,24 @@ class CanonicalServices extends _$CanonicalServices {
     );
   }
 
+  /// Delegates registration binding to the selected organization repository.
   Future<void> bindService(String token) async =>
       _repository.bindService(token);
+
+  /// Delegates an identity update to the selected organization repository.
   Future<TypedMutationResult> updateService(Service service) async =>
       _repository.updateService(service);
+
+  /// Delegates service removal to the selected organization repository.
   Future<void> deleteService(skir.RecordId id) async =>
       _repository.deleteService(id);
 }
 
+/// Overlays active local editor drafts on canonical service identities.
+///
+/// Canonical revisions and runtime observations remain untouched. Consumers
+/// that render editable names should use this projection, while mutation
+/// preparation must retain the canonical snapshot.
 @riverpod
 AsyncValue<List<Service>> projectedServices(Ref ref) {
   final canonical = ref.watch(canonicalServicesProvider);
@@ -52,6 +68,7 @@ AsyncValue<List<Service>> projectedServices(Ref ref) {
   ]);
 }
 
+/// Resolves one service with its unsaved local identity draft applied.
 @riverpod
 AsyncValue<Service?> projectedService(Ref ref, skir.RecordId serviceId) {
   final canonical = ref.watch(canonicalServiceProvider(serviceId));
@@ -70,6 +87,11 @@ AsyncValue<Service?> projectedService(Ref ref, skir.RecordId serviceId) {
   return AsyncData(canonical.requireValue?.projected(local));
 }
 
+/// Exposes topology for the organization selected by the current route.
+///
+/// The route projection delegates lifecycle and reconciliation to
+/// [OrganizationTopologyController] and yields an empty topology without an
+/// organization.
 @riverpod
 Stream<OrganizationTopology> organizationTopologyStream(Ref ref) async* {
   final organization = ref.watch(organizationIdProvider);

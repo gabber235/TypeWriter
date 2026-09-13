@@ -1,5 +1,9 @@
 part of "entries.dart";
 
+/// Stable selection identity for an entry element.
+///
+/// The resource identity uses the authoring element record, allowing shared
+/// selection infrastructure to resolve the entry without owning its data.
 class EntryIdentifier extends SelectableIdentifier
     implements GraphDragData, GraphIdentifier {
   const EntryIdentifier(this.id, {this.pageId});
@@ -84,6 +88,8 @@ class EntryIdentifier extends SelectableIdentifier
   String toString() => "EntryIdentifier($id)";
 }
 
+/// Selectable adapter that connects an entry identity to its editor document,
+/// inspector header, and authoring target.
 class EntrySelection extends EditableSelectable<EntryIdentifier> {
   const EntrySelection({
     required this.target,
@@ -137,7 +143,7 @@ class EntrySelection extends EditableSelectable<EntryIdentifier> {
   String toString() => "EntrySelection($id)";
 }
 
-/// Header for a entry displaying title and identifier.
+/// Inspector header that identifies the selected entry and its catalog type.
 class EntryHeader extends HookWidget {
   const EntryHeader({
     required this.id,

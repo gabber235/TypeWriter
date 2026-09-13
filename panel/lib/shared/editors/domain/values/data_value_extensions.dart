@@ -2,6 +2,11 @@ import "dart:typed_data";
 
 import "data_value.dart";
 
+/// Safe adapters from the tagged [DataValue] union to native Dart values.
+///
+/// Each reader accepts only its exact variant and returns `null` otherwise.
+/// This keeps optional UI and expression handling explicit without throwing on
+/// a value whose type is valid but different from the requested projection.
 extension DataValueReading on DataValue {
   UnitValue? get asUnitOrNull => switch (this) {
     UnitValue() => this as UnitValue,
@@ -69,6 +74,11 @@ extension DataValueReading on DataValue {
   };
 }
 
+/// Convenience constructors for values entering the typed editor domain.
+///
+/// These extensions choose the corresponding [DataValue] variant and do not
+/// perform schema validation. Callers that have a [TypeExpression] must still
+/// validate the resulting value against that type.
 extension DataValueStringWriting on String {
   DataValue get asValue => StringValue(this);
 }

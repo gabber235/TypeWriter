@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes presentation projections and context changes for catalog transport.
+///
+/// The adapter carries binding references and declared types. It does not resolve
+/// data or become the owner of the scopes those references describe.
 extension SkirPresentationDataEncoder on SkirPresentationEncoder {
   TypeResult<wire.PresentationElement> _typedField(TypedFieldElement value) {
     final binding = expressions.binding(value.binding);

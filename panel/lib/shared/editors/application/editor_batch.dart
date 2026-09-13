@@ -1,11 +1,23 @@
 part of "transactional_editor_source.dart";
 
+/// Persists the captured commits as one caller visible batch operation.
+///
+/// The sender must return one typed outcome per participating source. A
+/// missing outcome is treated as unavailable, and an exception is represented
+/// as uncertain because the destination may have accepted the request.
 typedef EditorBatchSender =
     Future<Map<TransactionalEditorSource, TypedMutationResult>> Function(
       Map<TransactionalEditorSource, EditorCommit> commits,
     );
 
-/// Reserves all participating drafts before capturing one atomic submission.
+/// Coordinates one captured save across multiple editor sources.
+///
+/// A batch owns the commit set and its outcomes, then settles each source with
+/// only the mutations represented by that commit. Resource backed sources are
+/// prepared under one workspace reservation, while local sources use the
+/// supplied sender. This keeps multi editor saves consistent and leaves
+/// uncertain outcomes recoverable instead of treating them as ordinary
+/// failures.
 final class EditorBatch {
   EditorBatch._(
     this._commits,
@@ -23,6 +35,12 @@ final class EditorBatch {
   Map<TransactionalEditorSource, TypedMutationResult> _results = {};
   Future<Map<TransactionalEditorSource, TypedMutationResult>>? _recovery;
 
+  /// Validates, captures, and submits changes for all participating sources.
+  ///
+  /// Sources with an active save are awaited first. Every input path must be
+  /// non empty and disjoint within its source. The returned map contains one
+  /// outcome per input source; invalid input is returned without changing any
+  /// draft, while an unconfirmable submission returns [MutationUncertain].
   static Future<Map<TransactionalEditorSource, TypedMutationResult>> submit({
     required Map<TransactionalEditorSource, Map<DataPath, DataValue>> changes,
     EditorBatchSender? send,

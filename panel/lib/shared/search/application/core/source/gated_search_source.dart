@@ -1,9 +1,17 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Decides whether a query may reach a child source.
 typedef SearchSourceGate = bool Function(SearchQueryContext context);
-typedef SearchSourceClosedGuidance =
-    SearchGuidance? Function(SearchQueryContext context);
 
+/// Builds optional guidance emitted when a query is blocked.
+typedef SearchSourceClosedGuidance = SearchGuidance? Function(
+  SearchQueryContext context,
+);
+
+/// Blocks searches and previews until [isOpen] accepts their query context.
+///
+/// While closed, child snapshots are ignored and an idle snapshot with optional
+/// guidance is emitted. Opening the gate does not replay a previous query.
 final class GatedSearchSource extends DelegatingSearchSource {
   GatedSearchSource({
     required super.source,
@@ -50,6 +58,7 @@ final class GatedSearchSource extends DelegatingSearchSource {
   }
 }
 
+/// Adds query dependent access gating to a source.
 extension GatedSearchSourceX on SearchSource {
   SearchSource gated(
     SearchSourceGate isOpen, {

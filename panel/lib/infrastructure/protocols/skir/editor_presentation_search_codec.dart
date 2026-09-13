@@ -1,5 +1,10 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes search controls and provider configuration.
+///
+/// Search combines query state, selection bindings, result mapping, and provider
+/// policy. This boundary validates their contract without performing a search or
+/// owning query lifecycle.
 extension SkirPresentationSearchDecoder on SkirPresentationDecoder {
   TypeResult<PresentationElement> _searchInput(wire.SearchControl value) {
     final control = _bound(value.control);

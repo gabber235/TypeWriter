@@ -5,6 +5,10 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "graph_layout.freezed.dart";
 
+/// Transient geometry shown while a move or resize is still in progress.
+///
+/// It is derived from [GraphInteractionController] state and never mutates the
+/// authoritative [GraphData] snapshot.
 @freezed
 abstract class GraphInteractionPreview with _$GraphInteractionPreview {
   const factory GraphInteractionPreview({
@@ -14,6 +18,7 @@ abstract class GraphInteractionPreview with _$GraphInteractionPreview {
   }) = _GraphInteractionPreview;
 }
 
+/// Transient dimensions for the element currently being resized.
 @freezed
 abstract class GraphResizePreview with _$GraphResizePreview {
   const factory GraphResizePreview({
@@ -23,6 +28,7 @@ abstract class GraphResizePreview with _$GraphResizePreview {
   }) = _GraphResizePreview;
 }
 
+/// A graph element with pixel bounds calculated from a snapshot and preview.
 @freezed
 abstract class GraphPlacedElement with _$GraphPlacedElement {
   const factory GraphPlacedElement({
@@ -35,9 +41,12 @@ abstract class GraphPlacedElement with _$GraphPlacedElement {
   GraphIdentifier get id => element.id;
   Offset get position => bounds.topLeft;
 
+  /// Whether this placement intersects the supplied scene viewport.
   bool isVisibleIn(Rect viewport) => bounds.overlaps(viewport);
 }
 
+/// An edge whose endpoints and connection points have been resolved by
+/// [GraphLayoutResult].
 @freezed
 abstract class GraphPlacedEdge with _$GraphPlacedEdge {
   const factory GraphPlacedEdge({
@@ -49,6 +58,10 @@ abstract class GraphPlacedEdge with _$GraphPlacedEdge {
   }) = _GraphPlacedEdge;
 }
 
+/// Immutable placement result for one graph snapshot.
+///
+/// [paintOrder] sorts nodes by priority for rendering. Visibility culling is a
+/// presentation optimization and never changes the underlying snapshot.
 class GraphLayoutResult {
   GraphLayoutResult({
     required this.data,
@@ -62,6 +75,11 @@ class GraphLayoutResult {
   final Map<GraphIdentifier, GraphPlacedElement> placementsById;
   final List<GraphPlacedElement> paintOrder;
 
+  /// Returns placements intersecting [viewport], plus retained identifiers.
+  ///
+  /// [overscan] expands the culling rectangle in scene pixels. Retained nodes
+  /// stay mounted even when outside it, which preserves focus and interaction
+  /// continuity during viewport changes.
   Iterable<GraphPlacedElement> visibleElements(
     Rect viewport, {
     double overscan = 0,
@@ -76,6 +94,10 @@ class GraphLayoutResult {
     );
   }
 
+  /// Resolves unique edges attached to [elementIds] for painting.
+  ///
+  /// Edges with an unresolved endpoint are omitted because no connection point
+  /// can be calculated for them.
   List<GraphPlacedEdge> edgesFor(Iterable<GraphIdentifier> elementIds) {
     final edges = <String, GraphEdge>{};
     for (final id in elementIds) {
@@ -127,9 +149,12 @@ class GraphLayoutResult {
   }
 }
 
+/// Converts grid coordinates and transient interaction state into pixel
+/// placements used by the graph render surface.
 class GraphLayoutEngine {
   const GraphLayoutEngine();
 
+  /// Builds a placement result without changing [data].
   GraphLayoutResult build({
     required GraphData data,
     GraphInteractionPreview preview = const GraphInteractionPreview(),

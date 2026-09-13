@@ -1,10 +1,16 @@
 use crate::identity::{NameSource, NamingError};
 
+/// Names shared by the external account and durable service record.
+///
+/// The provider username is derived from random input and the display name is a
+/// deterministic readable projection of the same input. The names are generated only
+/// after role validation, so rejected requests do not consume this workflow step.
 pub struct GeneratedNames {
     pub authentik_username: String,
     pub display_name: String,
 }
 
+/// Name source using the WebAssembly System Interface random capability.
 pub struct WasiNameSource;
 
 impl NameSource for WasiNameSource {
@@ -40,6 +46,10 @@ const COLORS: &[&str] = &[
 ];
 const NOUNS: &[&str] = &["fox", "owl", "bear", "wolf", "deer", "hawk", "swan", "lynx"];
 
+/// Derives stable provider and display names from one random seed.
+///
+/// Supplying the seed explicitly keeps the transformation deterministic and lets the
+/// workflow separate randomness from naming policy.
 pub fn generate_names(seed: [u8; 16]) -> GeneratedNames {
     let hex = seed
         .iter()

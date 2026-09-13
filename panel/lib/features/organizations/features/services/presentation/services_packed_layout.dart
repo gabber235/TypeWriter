@@ -2,11 +2,23 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 import "services_packed_packer.dart";
 
+/// Adapts service topology nodes and relationships to [GraphData].
+///
+/// This boundary copies and sorts caller collections, drops relationships whose
+/// endpoints are absent, and delegates deterministic placement to
+/// [ServicesPackedPacker]. The returned graph contains every valid node and only
+/// drawable edges, allowing partial live topology snapshots to render safely.
 class ServicesPackedLayout {
   const ServicesPackedLayout({this.gap = 1});
 
+  /// Number of grid cells kept between adjacent rectangles.
   final int gap;
 
+  /// Builds the immutable graph snapshot consumed by the shared graph widgets.
+  ///
+  /// [cellSize] is forwarded unchanged as logical pixels per grid cell. Nodes
+  /// retain their supplied builders and priorities; only their positions and
+  /// valid edge endpoints are resolved here.
   GraphData layout({
     required double cellSize,
     required List<ServicesPackedNode> nodes,

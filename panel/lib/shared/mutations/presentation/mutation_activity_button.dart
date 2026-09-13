@@ -8,6 +8,10 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "mutation_activity_details.dart";
 part "mutation_activity_card.dart";
 
+/// Displays the current scoped mutation activity and opens its details.
+///
+/// The button observes the immutable activity read model while commands are
+/// resolved through the stable local work controller.
 class MutationActivityButton extends ConsumerWidget {
   const MutationActivityButton({super.key});
 
@@ -18,6 +22,10 @@ class MutationActivityButton extends ConsumerWidget {
   );
 }
 
+/// Renders mutation activity for an explicit state and command owner.
+///
+/// This split lets route shells use Riverpod and tests or short lived sessions
+/// provide their own state stream without changing activity behavior.
 class MutationActivityView extends StatelessWidget {
   const MutationActivityView({
     required this.state,
@@ -117,6 +125,10 @@ class MutationActivityView extends StatelessWidget {
   }
 }
 
+/// Adapts a [LocalWorkSession] stream to [MutationActivityView].
+///
+/// The initial snapshot is rendered immediately. Later snapshots replace it
+/// until the session is disposed by its owner.
 class LocalWorkSessionActivityView extends StatelessWidget {
   const LocalWorkSessionActivityView({required this.controller, super.key});
 

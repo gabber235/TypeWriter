@@ -1,3 +1,7 @@
+/// A mutable damped spring used to animate a scalar toward a target.
+///
+/// The owning controller updates the value by calling [tick] each frame. Set
+/// [target] to animate, or set [value] to snap both current and target values.
 class SpringValue {
   SpringValue({
     required double value,
@@ -16,6 +20,7 @@ class SpringValue {
   double stiffness;
   double damping;
 
+  /// The current simulated value.
   double get value => _value;
   set value(double value) {
     if (value == _value) return;
@@ -23,10 +28,15 @@ class SpringValue {
     target = value;
   }
 
+  /// Whether another frame is needed to settle within [epsilon].
   bool get isAnimating {
     return (value - target).abs() > epsilon || velocity.abs() > epsilon;
   }
 
+  /// Advances the spring by [delta] and returns the new current value.
+  ///
+  /// The simulation is frame driven. Callers own scheduling and should avoid
+  /// passing a negative duration.
   double tick(Duration delta) {
     final dt = delta.inMicroseconds / 1000000;
 

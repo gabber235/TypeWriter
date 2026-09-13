@@ -1,5 +1,13 @@
 part of "search_input.dart";
 
+/// Connects the search controller's snapshot and focus actions to the two
+/// visual states of the input.
+///
+/// The summary is the inactive state. The query bar and bounded result tree
+/// are mounted only while editing, but the controller remains in the
+/// [SearchRoot] scope so source state survives rebuilds of this view. Preview
+/// changes are forwarded after the frame that displays them, keeping result
+/// presentations synchronized with keyboard navigation.
 class _PresentationSearchInputBody extends HookConsumerWidget {
   const _PresentationSearchInputBody({
     required this.element,
@@ -154,6 +162,12 @@ class _PresentationSearchInputBody extends HookConsumerWidget {
   }
 }
 
+/// Matches a search result against the value owned by the enclosing binding.
+///
+/// Result payloads from other search types are deliberately not considered
+/// selected. A list binding uses value equality for each member, which keeps
+/// row highlighting derived from the canonical editor value rather than a
+/// second selection store.
 bool _isSelected(EditorValue value, SearchResult result) {
   final payload = result.payload;
   if (payload is! PresentationSearchResultPayload) return false;

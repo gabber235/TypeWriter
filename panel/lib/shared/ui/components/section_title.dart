@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 
+/// Displays the compact heading used within a [Section] or grouped panel.
 class SectionTitle extends StatelessWidget {
   const SectionTitle({required this.title, super.key}) : super();
+
   final String title;
 
   @override

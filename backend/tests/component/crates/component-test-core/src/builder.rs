@@ -17,6 +17,7 @@ use wash_runtime::{
 
 use crate::{FixtureDeclaration, MessagingMock, http_mock::MockRegistry};
 
+/// Host configuration applied to one component in a fixture workload.
 #[derive(Clone, Default)]
 pub struct ComponentConfiguration {
     pub environment: HashMap<String, String>,
@@ -28,38 +29,50 @@ pub struct ComponentConfiguration {
 }
 
 impl ComponentConfiguration {
+    /// Adds a non secret environment variable.
     pub fn environment(mut self, name: impl Into<String>, value: impl Into<String>) -> Self {
         self.environment.insert(name.into(), value.into());
         self
     }
+    /// Adds an environment variable whose value is redacted from diagnostics.
     pub fn secret_environment(mut self, name: impl Into<String>, value: impl Into<String>) -> Self {
         let name = name.into();
         self.secret_environment.insert(name.clone());
         self.environment.insert(name, value.into());
         self
     }
+    /// Adds a component configuration value.
     pub fn config(mut self, name: impl Into<String>, value: impl Into<String>) -> Self {
         self.config.insert(name.into(), value.into());
         self
     }
+    /// Allows the component to contact one outbound HTTP authority.
     pub fn allowed_host(mut self, host: AllowedHost) -> Self {
         self.allowed_hosts.push(host);
         self
     }
+    /// Mounts a declared volume into the component.
     pub fn mount(mut self, mount: VolumeMount) -> Self {
         self.volume_mounts.push(mount);
         self
     }
+    /// Adds one broker subscription for the component.
     pub fn subscription(mut self, subject: impl Into<String>) -> Self {
         self.subscriptions.push(subject.into());
         self
     }
 }
 
+/// Fixture specific configuration hook generated or declared by a component test crate.
 pub trait FixtureSpec: FixtureDeclaration + Sized {
     fn configure(builder: FixtureBuilder<Self>) -> FixtureBuilder<Self>;
 }
 
+/// Fluent workload configuration assembled before a fixture starts.
+///
+/// The builder validates component membership, volumes, subscriptions, HTTP authorities, and
+/// required capabilities before provisioning begins. Configuration errors are accumulated until
+/// [`FixtureBuilder::validate`] so fixture declarations can report one actionable failure.
 pub struct FixtureBuilder<F> {
     pub(crate) components: HashMap<String, ComponentConfiguration>,
     pub(crate) volumes: Vec<Volume>,
@@ -80,6 +93,7 @@ pub struct FixtureBuilder<F> {
 }
 
 impl<F: FixtureDeclaration> FixtureBuilder<F> {
+    /// Creates a builder with the fixture primary component configured by default.
     pub fn new() -> Self {
         let mut components = HashMap::new();
         components.insert(
@@ -105,6 +119,7 @@ impl<F: FixtureDeclaration> FixtureBuilder<F> {
             marker: PhantomData,
         }
     }
+    /// Configures the fixture primary component.
     pub fn primary(
         mut self,
         configure: impl FnOnce(ComponentConfiguration) -> ComponentConfiguration,
@@ -114,6 +129,7 @@ impl<F: FixtureDeclaration> FixtureBuilder<F> {
         self.components.insert(name.to_string(), configure(current));
         self
     }
+    /// Configures a declared dependency component by package name.
     pub fn dependency(
         mut self,
         package: impl Into<String>,
@@ -124,18 +140,22 @@ impl<F: FixtureDeclaration> FixtureBuilder<F> {
         self.components.insert(package, configure(current));
         self
     }
+    /// Declares a volume that components may mount.
     pub fn volume(mut self, volume: Volume) -> Self {
         self.volumes.push(volume);
         self
     }
+    /// Enables incoming HTTP using the supplied host name.
     pub fn http(mut self, host: impl Into<String>) -> Self {
         self.http_host = Some(host.into());
         self
     }
+    /// Registers an outgoing HTTP mock for the primary component.
     pub fn outgoing_http<M: Send + Sync + 'static>(self, base_url: impl AsRef<str>) -> Self {
         let primary = F::DESCRIPTOR.primary.package.to_string();
         self.outgoing_http_for::<M>(primary, base_url)
     }
+    /// Registers an outgoing HTTP mock for a declared component and marker type.
     pub fn outgoing_http_for<M: Send + Sync + 'static>(
         mut self,
         component: impl AsRef<str>,
@@ -181,6 +201,7 @@ impl<F: FixtureDeclaration> FixtureBuilder<F> {
         }
         self
     }
+    /// Enables the in memory broker for the fixture.
     pub fn messaging(mut self) -> Self {
         self.messaging = true;
         self
@@ -203,6 +224,7 @@ impl<F: FixtureDeclaration> FixtureBuilder<F> {
             .push(WitInterface::from("wasi:otel/tracing@0.2.0-rc.2"));
         self
     }
+    /// Sets shared start and body, then drain and stop timeouts.
     pub fn timeouts(mut self, start_body: Duration, drain_stop: Duration) -> Self {
         self.start_timeout = start_body;
         self.body_timeout = start_body;
@@ -210,14 +232,17 @@ impl<F: FixtureDeclaration> FixtureBuilder<F> {
         self.stop_timeout = drain_stop;
         self
     }
+    /// Adds a host plugin to the fixture.
     pub fn plugin(mut self, plugin: Arc<dyn HostPlugin>) -> Self {
         self.plugins.push(plugin);
         self
     }
+    /// Adds an extension with lifecycle hooks and a typed handle.
     pub fn extension<E: FixtureExtension>(mut self, extension: E) -> Self {
         self.extensions.push(Box::new(ExtensionAdapter(extension)));
         self
     }
+    /// Validates the complete workload configuration before any host starts.
     pub fn validate(&self) -> Result<()> {
         if !self.configuration_errors.is_empty() {
             bail!(self.configuration_errors.join("; "));
@@ -290,6 +315,7 @@ fn valid_dns(value: &str) -> bool {
                     .all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
         })
 }
+/// Mutable capability and diagnostic state shared during extension provisioning.
 #[derive(Default)]
 pub struct ProvisionContext {
     pub(crate) handles: HashMap<TypeId, Arc<dyn Any + Send + Sync>>,
@@ -300,31 +326,42 @@ pub struct ProvisionContext {
     pub(crate) redactions: Vec<String>,
 }
 impl ProvisionContext {
+    /// Stores a typed extension handle for the test context.
     pub fn insert<T: Send + Sync + 'static>(&mut self, value: T) -> Arc<T> {
         let value = Arc::new(value);
         self.handles.insert(TypeId::of::<T>(), value.clone());
         value
     }
+    /// Adds a host plugin during provisioning.
     pub fn plugin(&mut self, plugin: Arc<dyn HostPlugin>) {
         self.plugins.push(plugin);
     }
+    /// Adds a WIT interface during provisioning.
     pub fn interface(&mut self, interface: WitInterface) {
         self.interfaces.push(interface);
     }
+    /// Adds or replaces a provisioned component configuration.
     pub fn component(&mut self, name: impl Into<String>, configuration: ComponentConfiguration) {
         self.components.insert(name.into(), configuration);
     }
+    /// Adds a provisioning diagnostic to the test transcript.
     pub fn diagnostic(&mut self, message: impl Into<String>) {
         self.diagnostics.push(message.into());
     }
+    /// Registers a value that must be redacted from failure output.
     pub fn redact(&mut self, value: impl Into<String>) {
         self.redactions.push(value.into());
     }
 }
 
+/// Optional fixture lifecycle participant for provisioning external test resources.
+///
+/// Hooks run in declaration order for provisioning and verification, then reverse order for
+/// cleanup. A provisioning attempt participates in cleanup even when it returns an error.
 #[async_trait]
 pub trait FixtureExtension: Send + 'static {
     type Handle: Send + Sync + 'static;
+    /// Allocates resources and returns the handle exposed to the test context.
     async fn provision(&mut self, context: &mut ProvisionContext) -> Result<Self::Handle>;
     async fn before_start(&mut self) -> Result<()> {
         Ok(())

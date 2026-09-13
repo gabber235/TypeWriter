@@ -1,5 +1,9 @@
 part of "route.dart";
 
+/// Search and animated list for the user's available organizations.
+///
+/// This entry view only navigates. Membership data remains owned by the
+/// organizations provider, so list animation cannot become a competing cache.
 class _OrganizationsSelector extends HookWidget {
   const _OrganizationsSelector({required this.organizations});
 
@@ -86,6 +90,7 @@ class _OrganizationsSelector extends HookWidget {
   }
 }
 
+/// Navigable summary of one organization in the entry list.
 class _OrganizationListTile extends StatelessWidget {
   const _OrganizationListTile({required this.organization});
 

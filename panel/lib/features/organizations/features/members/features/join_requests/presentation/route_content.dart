@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Bridges the live moderation projection into route content states.
+///
+/// Loading and failures stay at the projection boundary. Once data exists,
+/// [JoinRequestsList] owns transient selection while this widget remains a
+/// provider consumer only.
 class JoinRequestsTab extends HookConsumerWidget {
   const JoinRequestsTab({super.key});
 

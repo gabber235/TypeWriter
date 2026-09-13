@@ -1,3 +1,6 @@
+// Organization join codes are the organization owned invitation projection. Watchers receive a current snapshot, then sequenced changes for creation, consumption, and revocation.
+// Codes are read as active while unexpired. A single use code is removed when a join submission consumes it.
+
 import { Duration } from "kernel/v1/duration.skir";
 import {
   InternalError,
@@ -5,7 +8,8 @@ import {
 } from "kernel/v1/errors.skir";
 import { RecordId } from "kernel/v1/record_id.skir";
 
-// JoinCode represents a code that can be used to request to join an organization.
+// JoinCode is the persisted invitation identity and its admission policy.
+// A null expiry means the code does not expire. Auto accepted roles are validated as assignable before the code is created.
 struct JoinCode {
   code: RecordId;
   created_at: timestamp;
@@ -16,6 +20,7 @@ struct JoinCode {
   };
 }
 
+// Current active codes and the organization sequence at the same read point.
 struct OrganizationJoinCodesSnapshot {
   sequence: int64;
   values: [JoinCode];
@@ -26,12 +31,14 @@ enum OrganizationJoinCodesChange {
   remove: RecordId;
 }
 
+// Changes to the active code projection. Consumers apply changes only when sequence advances and refresh on a gap.
 struct OrganizationJoinCodesChanged {
   sequence: int64;
   operation_id: string;
   changes: [OrganizationJoinCodesChange];
 }
 
+// Reads the current active codes. Later changes are published separately on the organization code stream.
 method WatchOrganizationJoinCodes(
   struct {}
 ): enum {
@@ -41,6 +48,8 @@ method WatchOrganizationJoinCodes(
   changed: OrganizationJoinCodesChanged;
 } = 690316;
 
+// Creates an invitation code and emits its add change after the transaction commits.
+// Replaying the same operation identity is supported; reusing it with different input is rejected.
 method GenerateOrganizationJoinCode(
   struct {
     operation_id: string;
@@ -76,6 +85,8 @@ method GenerateOrganizationJoinCode(
   invalid_record_id_error: InvalidRecordIdError;
 } = 804958;
 
+// Removes an active invitation code and emits its remove change after the transaction commits.
+// An expired or already removed code is reported as not found.
 method RevokeOrganizationJoinCode(
   struct {
     operation_id: string;

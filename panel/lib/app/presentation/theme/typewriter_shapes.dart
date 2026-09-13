@@ -1,5 +1,10 @@
 import "package:flutter/material.dart";
 
+/// Shared corner radii and shapes for panel components.
+///
+/// The three radius levels are theme extensions so widgets use one coherent
+/// shape vocabulary. [pill] and [circle] cover controls whose geometry is
+/// semantic rather than part of the radius scale.
 @immutable
 class TypewriterShapes extends ThemeExtension<TypewriterShapes> {
   const TypewriterShapes({this.small = 4, this.medium = 8, this.large = 12});

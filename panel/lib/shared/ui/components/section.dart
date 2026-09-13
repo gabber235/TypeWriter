@@ -1,6 +1,10 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Groups related content in a themed, clipped surface card.
+///
+/// Use this shared container when the content should inherit its background
+/// through [Surface]. [margin] controls the space outside the card.
 class Section extends StatelessWidget {
   const Section({
     required this.child,
@@ -9,9 +13,11 @@ class Section extends StatelessWidget {
     super.key,
   });
 
+  /// Content rendered inside the section's surface and clipping boundary.
   final Widget child;
 
   final Color? backgroundColor;
+
   final EdgeInsetsGeometry? margin;
 
   @override

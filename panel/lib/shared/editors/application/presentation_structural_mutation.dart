@@ -1,5 +1,11 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Recovers persistence intent from a successfully evaluated local action.
+///
+/// A value diff cannot distinguish operations such as moving a list item from
+/// replacing it. Presentation execution uses this conversion to retain the
+/// operation shape, while returning `null` when the evaluated result does not
+/// prove that the structural operation can be represented safely.
 EditorStructuralMutation? structuralMutationFor(
   LocalAction action,
   ExpressionContext context,

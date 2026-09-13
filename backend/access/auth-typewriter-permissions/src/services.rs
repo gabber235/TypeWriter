@@ -1,3 +1,11 @@
+//! Authorization policy for service identities.
+//!
+//! Service claims provide the candidate service identity, but registration status and messaging
+//! scope come from the service contracts. Unbound services receive only their registration
+//! exchange. Bound services additionally receive organization and Realm subjects derived from
+//! the authoritative binding and scope responses. A missing service, failed lookup, unknown
+//! contract variant, invalid Realm identifier, or organization mismatch aborts policy resolution.
+
 use otel_wasi::{main_attribute, wasi_error};
 use serde::{Deserialize, Serialize};
 use wasmcloud_utils::{
@@ -16,6 +24,10 @@ use wasmcloud_utils::{
 use crate::common::build_permissions;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
+/// Claims consumed when deriving policy for a service identity.
+///
+/// The subject selects the service record to inspect. Registration and messaging state still come
+/// from authoritative service contract responses, not from these claims.
 pub struct ServiceClaims {
     pub preferred_username: Option<String>,
     pub name: Option<String>,
@@ -24,6 +36,12 @@ pub struct ServiceClaims {
 }
 
 #[tracing::instrument]
+/// Derive the NATS policy and tags for one authenticated service identity.
+///
+/// Registration subjects are scoped to the service identifier. Organization and Realm subjects
+/// are added only when service status and messaging scope agree on the binding. Lookup failures
+/// remain failures because granting policy without current ownership data would cross the trust
+/// boundary.
 pub async fn handle_service(
     claims: jose::jwt::Claims<ServiceClaims>,
 ) -> Result<(Permissions, Vec<String>), otel_wasi::Error> {
@@ -108,6 +126,7 @@ pub async fn handle_service(
     Ok((permissions, tags))
 }
 
+/// Read authoritative registration state before granting service policy.
 async fn query_service_status(
     service_id: &str,
 ) -> Result<GetServiceStatusResponse, otel_wasi::Error> {
@@ -255,6 +274,7 @@ const SHARED_REQUEST_SUFFIXES: &[&str] = &[
     "shared.blob.complete",
 ];
 
+/// Read the authoritative host messaging scope used to qualify Realm permissions.
 async fn query_service_messaging_scope(
     service_id: &str,
 ) -> Result<

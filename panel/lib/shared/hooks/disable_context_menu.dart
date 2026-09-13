@@ -3,7 +3,12 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
-/// Disable the context menu of the browser on the web.
+/// Disables the browser context menu while the owning widget is mounted.
+///
+/// This affects the web page, not only the widget subtree, so it belongs on a
+/// stable shell owner such as [AppRequiredWidgets]. On non web platforms the
+/// hook has no effect. If the menu was enabled when the hook mounted, it is
+/// restored on disposal provided another owner has not changed it meanwhile.
 void useDisableContextMenu() {
   if (!kIsWeb) {
     return;

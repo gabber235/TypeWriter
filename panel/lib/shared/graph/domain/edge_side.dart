@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
 
+/// Side of an element where an edge enters or leaves the graph element.
+///
+/// The side also determines the axis and outward unit vector used by layout
+/// and rendering code.
 enum EdgeSide {
   top,
   bottom,

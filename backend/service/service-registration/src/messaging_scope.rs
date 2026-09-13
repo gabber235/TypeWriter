@@ -1,3 +1,9 @@
+//! Resolves the Realm relationships used to scope a service's messaging.
+//!
+//! The result combines the service organization with the Realm owned by its host and the Realm
+//! attached to its engine. A service can exist before host registration, so both Realm fields are
+//! optional even when the service itself is found.
+
 use otel_wasi::ResultWithSlug;
 use serde::Deserialize;
 use wasmcloud_utils::{
@@ -19,6 +25,11 @@ struct MessagingScopeRecord {
 }
 
 #[tracing::instrument(skip(msg))]
+/// Returns the service organization, host owned Realm, and engine attached Realm.
+///
+/// This is a read only lookup keyed by the service identifier in the request. `NotFound` means
+/// the service record does not exist. A found service with no registered host is still returned,
+/// with both Realm relationships absent.
 pub async fn handle(
     msg: BrokerMessage,
     _params: HashMap<String, String>,

@@ -5,6 +5,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Mobile presentation of the active join code projection.
+///
+/// Selection is shared with the route so bulk actions behave identically on
+/// mobile and desktop. Animated removal is visual only. Revocation and expiry
+/// are still decided by the application provider.
 class JoinCodesCardList extends HookConsumerWidget {
   const JoinCodesCardList({
     required this.codes,
@@ -65,9 +70,8 @@ class JoinCodesCardList extends HookConsumerWidget {
                     ),
                     Text(
                       "Select all",
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!
+                          .copyWith(color: theme.colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),

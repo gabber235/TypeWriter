@@ -1,5 +1,10 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes connection overlays and validates their anchor references.
+///
+/// Connections are an overlay on a child layout, not another content node. The
+/// separate boundary preserves that distinction and collects invalid wire data
+/// before the renderer receives connector domain values.
 extension SkirPresentationConnectionDecoder on SkirPresentationDecoder {
   TypeResult<PresentationElement> _connectionLayer(
     wire.ConnectionLayerLayout value,

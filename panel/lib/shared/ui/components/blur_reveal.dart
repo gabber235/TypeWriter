@@ -3,9 +3,10 @@ import "dart:ui";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
-/// A widget that displays its child with a blur effect and reveals it on hover.
+/// Reveals a child on pointer hover by animating its blur to zero.
 ///
-/// The blur effect animates smoothly when the user hovers over the widget.
+/// This is pointer driven presentation only. It does not change semantics or
+/// provide an alternate reveal mechanism for keyboard and touch users.
 class BlurReveal extends HookWidget {
   /// Creates a [BlurReveal] widget.
   ///

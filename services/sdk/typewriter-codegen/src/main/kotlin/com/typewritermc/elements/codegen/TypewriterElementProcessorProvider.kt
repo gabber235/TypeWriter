@@ -69,10 +69,12 @@ import kotlinx.serialization.encodeToByteArray
 import kotlin.io.encoding.Base64
 
 /**
- * KSP entrypoint generating element bindings, reference projections, and discovery contributions from annotated
- * Kotlin declarations. Each compiler environment receives a fresh processor. Processing defers unresolved symbols,
- * validates supported declaration shapes, and generates its output once for the compilation. Generated resources
- * feed manifest discovery so runtime consumers do not scan source annotations.
+ * KSP entrypoint generating element prototypes, catalog descriptors, facet bindings, and discovery contributions from
+ * annotated Kotlin declarations. It converts element schemas, writes generated prototype providers, and emits the
+ * catalog and type resources consumed by manifest discovery. [com.typewritermc.discovery.runtime.DiscoveryModuleLoader]
+ * later installs facet providers, while [com.typewritermc.discovery.runtime.PrototypeRegistryLoader] installs the
+ * generated prototypes. Processing defers unresolved symbols, validates supported declaration shapes, and writes once
+ * per compilation.
  */
 class TypewriterElementProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =

@@ -3,11 +3,24 @@ import "dart:math";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Computes stable, non overlapping grid placements for a service topology.
+///
+/// Connected nodes are laid out in directed ranks, with source nodes above
+/// their children. Disconnected components are then packed into a compact grid.
+/// Every traversal and tie breaker is sorted by identifier, so the same graph
+/// produces the same positions regardless of input order. This class is pure;
+/// [ServicesPackedLayout] owns conversion to the shared render model.
 class ServicesPackedPacker {
   const ServicesPackedPacker({required this.gap});
 
+  /// Empty grid columns reserved between adjacent nodes and components.
   final int gap;
 
+  /// Splits the graph into connected components and lays out each component.
+  ///
+  /// Invalid relationships are ignored by the caller before this operation.
+  /// Component identifiers and node order are deterministic, which stabilizes
+  /// visual movement when live topology updates contain the same records.
   List<ServicesPackedComponentPlacement> components(
     List<ServicesPackedNode> nodes,
     List<ServicesPackedConnection> connections,
@@ -18,6 +31,11 @@ class ServicesPackedPacker {
         ).map((component) => _layoutComponent(component, connections)).toList()
         ..sort((left, right) => left.id.compareTo(right.id));
 
+  /// Places components without overlap and returns absolute node coordinates.
+  ///
+  /// Candidate origins are scored by overall extent, area, balance, then
+  /// coordinates. Those tie breakers make the result deterministic while
+  /// favoring a compact graph near the origin.
   Map<GraphIdentifier, ServicesPackedGridPlacement> pack(
     List<ServicesPackedComponentPlacement> components,
   ) {
@@ -254,6 +272,11 @@ class ServicesPackedPacker {
     return 0;
   }
 
+  /// Converts a packed relationship to the shared graph edge contract.
+  ///
+  /// Services are ranked top to bottom, so edges leave the source bottom and
+  /// enter the target top. The element map is accepted for the layout boundary;
+  /// endpoint validity has already been established by [ServicesPackedLayout].
   GraphEdge edge(
     ServicesPackedConnection connection,
     Map<GraphIdentifier, GraphElement> elements,

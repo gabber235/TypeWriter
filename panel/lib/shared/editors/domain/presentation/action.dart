@@ -1,8 +1,21 @@
+/// Contracts for editing values locally and requesting work from the Realm.
+///
+/// Presentation controls create [EditorAction] values and the presentation
+/// protocol routes them either through local execution or its Realm boundary.
+/// Local execution returns a new editor value, while Realm results describe
+/// instructions, authorization, diagnostics, or a stale catalog generation.
+library;
+
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 part "action.freezed.dart";
 
+/// An action initiated by a presentation control.
+///
+/// The variant selects ownership of execution. Local actions mutate the
+/// current binding environment. Realm actions are requests whose execution and
+/// authorization remain with the Realm.
 @freezed
 sealed class EditorAction with _$EditorAction {
   const factory EditorAction.local(LocalAction action) = LocalEditorAction;
@@ -69,6 +82,12 @@ sealed class RealmAction with _$RealmAction {
   }) = InvokeRealmCommandAction;
 }
 
+/// Outcome of invoking a Realm capability from an editor presentation.
+///
+/// A successful command carries panel instructions to apply after the Realm
+/// accepts the request. Invalid and unavailable outcomes preserve diagnostics;
+/// permission and generation failures tell the caller whether to report the
+/// denial or refresh its catalog before retrying.
 sealed class RealmCommandResult {
   const RealmCommandResult();
 
@@ -117,6 +136,11 @@ final class RealmCommandStaleGeneration extends RealmCommandResult {
   final CatalogGeneration actualGeneration;
 }
 
+/// A UI side effect returned by a successful Realm command.
+///
+/// Instructions are interpreted by the editor host. They do not own resource
+/// state: invalidation asks the owning editor to refresh, opening delegates to
+/// the resource router, and notification delegates to the panel shell.
 sealed class PanelInstruction {
   const PanelInstruction();
 
@@ -158,6 +182,11 @@ final class NotifyInstruction extends PanelInstruction {
   final String message;
 }
 
+/// Outcome of evaluating a computation owned by the Realm.
+///
+/// Unlike [RealmCommandResult], success contains a value rather than panel
+/// instructions. Callers must keep invalid, unavailable, permission, and stale
+/// generation outcomes distinct because recovery belongs to different owners.
 sealed class RealmComputationResult {
   const RealmComputationResult();
 
@@ -206,6 +235,13 @@ final class RealmComputationStaleGeneration extends RealmComputationResult {
   final CatalogGeneration actualGeneration;
 }
 
+/// The protocol result for applying a typed mutation to Realm state.
+///
+/// Success confirms the applied value and revision. Conflict exposes the
+/// current value so the editor can reconcile instead of overwriting it.
+/// Invalid, unavailable, and permission outcomes are actionable failures.
+/// Uncertain means transport completion was not observed; callers may use
+/// [MutationUncertain.replay] when the operation is safe to replay.
 @freezed
 sealed class TypedMutationResult with _$TypedMutationResult {
   @Assert("revision >= 0", "Revision must not be negative.")
@@ -240,6 +276,11 @@ sealed class TypedMutationResult with _$TypedMutationResult {
       MutationUnavailable;
 }
 
+/// Result of applying an action to the current local binding environment.
+///
+/// Local application either returns the root value for the changed binding or
+/// diagnostics. It does not claim Realm persistence or assign a server
+/// revision; the editor host decides whether and how to submit the new value.
 @freezed
 sealed class LocalMutationResult with _$LocalMutationResult {
   const factory LocalMutationResult.applied({

@@ -6,6 +6,9 @@ import {
   TypedValue,
 } from "editor/v1/type_catalog.skir";
 
+// Realm presentation search carries typed capability input and query state to a Realm owned producer. Results are
+// streamed as correlated snapshots or unavailable updates.
+
 struct RealmSearchSelector(811000001) {
   selector_id: string = 0;
   key: string = 1;

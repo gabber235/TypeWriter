@@ -5,6 +5,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adds drag to a caller rendered keyframe while preserving its visual child.
+///
+/// Dragging starts a move preview, updates it in frame space, and commits or
+/// cancels through [TimelineElementBuildData]. Selection and cue semantics stay
+/// with the builder supplied by the feature caller.
 class TimelineKeyframeSurface extends HookConsumerWidget {
   const TimelineKeyframeSurface({
     required this.data,

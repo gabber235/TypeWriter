@@ -1,3 +1,7 @@
+/// Immutable graph vocabulary and snapshot validation.
+///
+/// Domain values describe nodes and directed connections in grid coordinates;
+/// they do not own persistence or widget lifecycle.
 library;
 
 export "edge_side.dart";

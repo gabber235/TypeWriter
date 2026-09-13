@@ -1,8 +1,14 @@
+// Handles scalar type constraints at the Skir boundary.
+//
+// The panel domain supports a deliberate subset of wire constraints. This
+// adapter rejects unsupported bounds and numeric forms instead of silently
+// weakening validation semantics.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/type_catalog.dart"
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes and decodes string, numeric, and integer width constraints.
 // ignore: avoid_classes_with_only_static_members
 abstract final class SkirTypeScalarCodec {
   static TypeResult<wire.TypeExpression> encodeString(StringType value) {

@@ -14,6 +14,7 @@ value class EngineId private constructor(
     val value: String,
 ) {
     companion object {
+        /** Creates an engine identifier accepted by artifact names and runtime metadata. */
         fun of(value: String): EngineId {
             require(identifierPattern.matches(value)) { "Invalid engine id: $value" }
             return EngineId(value)
@@ -32,6 +33,7 @@ value class EngineCapabilityId private constructor(
     val value: String,
 ) {
     companion object {
+        /** Creates a capability identifier accepted by artifact names and runtime metadata. */
         fun of(value: String): EngineCapabilityId {
             require(identifierPattern.matches(value)) { "Invalid engine capability id: $value" }
             return EngineCapabilityId(value)
@@ -63,6 +65,7 @@ class SemanticVersion private constructor(
     override fun toString(): String = version.toString()
 
     companion object {
+        /** Creates a semantic version after rejecting negative numeric components. */
         fun of(
             major: Int,
             minor: Int,
@@ -76,6 +79,7 @@ class SemanticVersion private constructor(
             return SemanticVersion(Version(major, minor, patch, preRelease, buildMetadata))
         }
 
+        /** Parses a strict Semantic Versioning value, including optional pre release and build metadata. */
         fun parse(value: String): SemanticVersion = SemanticVersion(value.toVersion(strict = true))
     }
 }
@@ -89,8 +93,10 @@ class SemanticVersion private constructor(
 data class VersionRequirement(
     val minimum: SemanticVersion,
 ) {
+    /** Returns whether [version] stays within this requirement's major version and lower bound. */
     fun accepts(version: SemanticVersion): Boolean = version.major == minimum.major && version >= minimum
 
+    /** Combines requirements when they share a major version, or returns `null` across a breaking boundary. */
     fun merge(other: VersionRequirement): VersionRequirement? {
         if (minimum.major != other.minimum.major) return null
         return VersionRequirement(maxOf(minimum, other.minimum))

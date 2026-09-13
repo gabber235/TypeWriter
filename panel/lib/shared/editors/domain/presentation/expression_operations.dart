@@ -1,5 +1,13 @@
+/// Pure scalar operations used by the expression evaluator.
+///
+/// Numeric arithmetic is kept separate for integer and float values. Comparison
+/// returns null for unsupported pairs so callers can turn that absence into a
+/// typed diagnostic instead of applying an implicit coercion.
+library;
+
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Evaluates arithmetic after the evaluator has established one numeric family.
 extension ArithmeticOperatorEvaluation on ArithmeticOperator {
   TypeResult<DataValue> evaluateIntegers(List<IntegerValue> values) {
     if (values.isEmpty) return _failure("Arithmetic operands are empty");
@@ -84,6 +92,11 @@ int? compareExpressionValues(DataValue left, DataValue right) => switch ((
   _ => null,
 };
 
+/// Produces compact human readable text for interpolation and diagnostics.
+///
+/// This is display text, not serialization. Collections report size and
+/// records report shape so evaluation output cannot accidentally expose a large
+/// or structured value as user facing prose.
 extension DataValueExpressionDisplay on DataValue {
   String get expressionDisplayText => switch (this) {
     UnitValue() => "",

@@ -2,11 +2,16 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A widget that makes sure that all the required global widgets are present.
-/// It's a shortcut for wrapping the entire app with all the different widgets individually.
+/// Installs the interaction infrastructure required by the panel shell.
+///
+/// This wrapper owns no application state. It composes the shared selection,
+/// cursor, pane navigation, action, shortcut, and loading effect layers around
+/// [child]. Keep it above route content so those capabilities span route
+/// changes and can coordinate across otherwise separate widgets.
 class AppRequiredWidgets extends HookWidget {
   const AppRequiredWidgets({required this.child, super.key});
 
+  /// Route content that receives the shell capabilities.
   final Widget child;
 
   @override

@@ -1,3 +1,9 @@
+//! Parse and expand construction of generated SKIR response variants.
+//!
+//! The generated response enum and its payload struct use a naming convention derived from the
+//! response type and variant. This macro centralizes that convention and initializes the generated
+//! unknown field storage for newly constructed values.
+
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
@@ -20,9 +26,8 @@ impl Parse for SkirVariantInput {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let full_path: Path = input.parse()?;
 
-        // Split off the last segment as the variant name.
-        // e.g. `RequestToJoinResponse::CodeNotFoundError` →
-        //   response_ty = `RequestToJoinResponse`, variant = `CodeNotFoundError`
+        // The final path segment is the response variant. Generated payload types reuse the
+        // response and variant names, so the preceding path remains the response type path.
         let mut segments: Vec<_> = full_path.segments.clone().into_iter().collect();
         let Some(variant_segment) = segments.pop() else {
             return Err(syn::Error::new_spanned(
@@ -71,7 +76,7 @@ impl Parse for FieldEntry {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let name: Ident = input.parse()?;
 
-        // Try to parse `: value` — if present, use explicit value; otherwise shorthand
+        // An omitted value is the field identifier itself, matching Rust struct literal shorthand.
         let value = if input.peek(Token![:]) {
             let _: Token![:] = input.parse()?;
             input.parse()?
@@ -87,6 +92,7 @@ impl Parse for FieldEntry {
     }
 }
 
+/// Emit a boxed generated payload with no preserved unknown fields.
 pub(crate) fn expand(input: SkirVariantInput) -> syn::Result<TokenStream> {
     let response_ty = &input.response_ty;
     let variant = &input.variant;

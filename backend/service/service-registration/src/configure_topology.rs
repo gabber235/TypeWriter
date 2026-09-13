@@ -1,3 +1,11 @@
+//! Applies complete desired host execution configurations.
+//!
+//! The organization topology owner sends a configuration with the host's current `revision`.
+//! The transaction validates the host and assignments, changes desired resources atomically, and
+//! increments `topology_revision.desired` whenever the configuration is accepted. The returned
+//! change is published to both organization topology watchers and the host execution watcher.
+//! Runtime activation is separate and arrives through `host_execution::handle_report`.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -54,6 +62,12 @@ enum ConfigureTopologyOutcome {
 }
 
 #[tracing::instrument(skip(msg, params))]
+/// Validates and persists one complete host execution configuration.
+///
+/// `expected_revision` protects concurrent host edits. `operation_id` makes a retried command
+/// replayable through the database mutation receipt. A successful response describes desired
+/// resources, not runtime readiness. Invalid assignments and stale revisions return domain
+/// responses without publishing a topology change.
 pub async fn handle_configure(
     msg: BrokerMessage,
     params: HashMap<String, String>,
@@ -364,6 +378,11 @@ pub async fn handle_configure(
     Ok(ConfigureServiceHostResponse::Success(Box::new(change)))
 }
 
+/// Publishes the committed configuration to both topology consumers.
+///
+/// The organization event carries the complete change, including removed resources. The host
+/// event carries only the desired assignment and its new desired topology revision, which is the
+/// revision the runtime must later report.
 async fn publish_configuration(
     organization_id: &str,
     change: &HostConfigurationChange,
@@ -382,16 +401,19 @@ async fn publish_configuration(
         .await
 }
 
+/// Builds the protocol error used for rejected configuration input or relationships.
 fn invalid_configuration(message: impl Into<String>) -> ConfigureServiceHostResponse {
     skir_variant!(ConfigureServiceHostResponse::InvalidConfigurationError {
         message: message.into(),
     })
 }
 
+/// Checks the nonempty target fields required before the database transaction runs.
 fn valid_target(target: &EngineTarget) -> bool {
     !target.version_constraint.trim().is_empty() && valid_artifact_id(&target.engine_id)
 }
 
+/// Accepts the artifact identifier grammar used by service engine targets.
 fn valid_artifact_id(value: &str) -> bool {
     !value.is_empty()
         && value.split(':').all(|segment| {

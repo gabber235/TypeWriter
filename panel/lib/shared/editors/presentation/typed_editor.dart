@@ -2,6 +2,12 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders the editor source installed by [EditorRoot].
+///
+/// This is the application facing entry point for a typed editor. It adapts
+/// the Riverpod supplied realm runtime to [EditorSurface], while preserving
+/// the source as the owner of draft and save state. If no source is installed,
+/// the subtree is intentionally empty rather than creating an implicit editor.
 class TypedEditor extends ConsumerWidget {
   const TypedEditor({
     this.path = DataPath.root,

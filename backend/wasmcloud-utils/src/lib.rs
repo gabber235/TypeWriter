@@ -1,3 +1,10 @@
+//! Shared runtime contracts for Typewriter wasmCloud components.
+//!
+//! This crate combines generated SKIR types with the boundaries that components use to
+//! decode requests, classify and serialize responses, access SurrealDB values, and
+//! publish broker messages. The public helpers preserve those contracts without making
+//! individual components repeat transport or identifier conversion rules.
+
 extern crate self as wasmcloud_utils;
 
 mod bindings {
@@ -25,20 +32,20 @@ pub use crate::skirout as skir;
 pub use otel_wasi;
 pub use skir_client;
 
-// Re-export proc macros
+// Proc macros are re exported here so component crates use one public contract surface.
 pub use wasmcloud_utils_macros::{
     dispatch_actions, read_query, skir_domain_result, skir_response, skir_transaction_outcome,
     skir_variant, transaction_outcome_index, transaction_outcome_index_file, transaction_query,
     transaction_query_file,
 };
 
-// SkirResponse trait and domain-result helpers
+// Response classification and conversion from database outcomes.
 mod skir_response_trait;
 pub use skir_response_trait::{
     SkirDomainResult, SkirDomainResultExt, SkirResponse, SkirResponseOutcome,
 };
 
-// Central skir response declarations
+// Response enums registered for dispatch and typed messaging replies.
 mod skir_responses;
 
 mod skir_subject;
@@ -47,7 +54,10 @@ pub mod skir_subjects;
 
 pub mod skir_utils;
 
-/// Macro to extract a single parameter from the subject params HashMap.
+/// Extract one named parameter from the map produced by subject parsing.
+///
+/// Missing parameters are reported as `param-extract-failed`, which lets dispatch
+/// handlers return the same typed transport error as other malformed subjects.
 ///
 /// Returns a `Result<&str, otel_wasi::Error>`.
 ///
@@ -79,7 +89,10 @@ macro_rules! extract_param {
     };
 }
 
-/// Macro to extract multiple parameters from the subject params HashMap at once.
+/// Extract several named parameters from a parsed subject in one operation.
+///
+/// Extraction is left to right and stops at the first missing parameter, returning
+/// `param-extract-failed`.
 ///
 /// Returns a `Result<(&str, ...), otel_wasi::Error>`.
 ///
@@ -108,10 +121,10 @@ macro_rules! extract_params {
     };
 }
 
-/// Validate that one SKIR record ID or a collection of IDs references the expected table.
+/// Validate that SKIR record IDs belong to the expected database table.
 ///
-/// On a mismatch, returns the response's standardized `InvalidRecordIdError` domain variant
-/// from the enclosing handler. The response must opt into that conventional variant.
+/// On mismatch, return the enclosing response's standardized `InvalidRecordIdError`
+/// domain variant. The response enum must define that conventional variant.
 ///
 /// # Example
 /// ```rust,ignore
@@ -137,9 +150,10 @@ macro_rules! validate_record_ids {
     }};
 }
 
-/// Decode a skir message from bytes, dropping unrecognized fields.
+/// Decode a SKIR message while dropping fields unknown to this component.
 ///
-/// Returns a `Result<T, otel_wasi::Error>`.
+/// Decoding failures are translated to `skir-decode-failed`. Dropping unknown
+/// fields keeps older and newer contract versions interoperable at this boundary.
 ///
 /// # Example
 /// ```rust,ignore

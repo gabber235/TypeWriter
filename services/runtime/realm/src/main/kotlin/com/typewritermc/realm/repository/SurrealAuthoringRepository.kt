@@ -31,6 +31,9 @@ class SurrealAuthoringRepository(
     private val typeGraphs: () -> Map<ElementTypeId, TypeGraph>,
     private val valueMutator: ElementValueMutator = ElementValueMutator(),
 ) : AuthoringRepository {
+    /**
+     * Captures all requested scopes before the transaction commits, giving every slice one collaboration sequence.
+     */
     override suspend fun snapshot(scopes: Set<AuthoringSnapshotScope>): AuthoringSnapshotResult =
         database.inTransaction { transaction ->
             val sequence = transaction.currentCollaborationSequence()
@@ -38,6 +41,12 @@ class SurrealAuthoringRepository(
             AuthoringSnapshotResult(sequence, slices)
         }
 
+    /**
+     * Runs mutation, sequence advancement, compiler invalidation, and replay storage in one transaction.
+     *
+     * The compiler revision advances only for operations that change compiler inputs. The collaboration sequence
+     * advances for every applied batch, including edits that affect editor state without changing compiled output.
+     */
     override suspend fun apply(batch: AuthoringBatch): AuthoringBatchResult =
         try {
             database.inTransaction { transaction ->

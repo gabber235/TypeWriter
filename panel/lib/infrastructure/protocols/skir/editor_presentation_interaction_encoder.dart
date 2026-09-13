@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes presentation interactions while delegating action semantics.
+///
+/// Buttons and menus carry actions into the catalog protocol. Execution remains
+/// with the editor action owner, not with this serialization boundary.
 extension SkirPresentationInteractionEncoder on SkirPresentationEncoder {
   TypeResult<wire.PresentationElement> _button(ButtonElement value) =>
       combineResults(

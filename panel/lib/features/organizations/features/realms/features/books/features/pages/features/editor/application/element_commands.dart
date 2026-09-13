@@ -4,6 +4,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Authoring batch commands for page element lifecycle and placement changes.
+///
+/// Each method translates editor intent into wire operations and submits one
+/// batch through [AuthoringSession]. The session remains responsible for
+/// optimistic revision checks and reporting whether the batch was applied.
 extension ElementCommands on AuthoringSession {
   Future<wire.ApplyAuthoringBatchResponse> createElements(
     Iterable<wire.PageElement> elements,
@@ -63,6 +68,8 @@ extension ElementCommands on AuthoringSession {
   ]);
 
   /// Rewrites links within the duplicated set; external targets remain unchanged.
+  /// Duplicates elements and rewrites links whose targets are also duplicated.
+  /// Links to elements outside [copies] retain their original target.
   Future<wire.ApplyAuthoringBatchResponse> duplicateElements(
     Map<wire.PageElement, skir.RecordId> copies,
   ) {

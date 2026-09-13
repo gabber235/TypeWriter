@@ -9,6 +9,13 @@ const presentationSearchResultType = SearchResultType(
   label: "Result",
 );
 
+/// Carries the selected value and render context produced by a presentation
+/// search provider.
+///
+/// The retained [expressions] are the candidate context, including provider
+/// bindings and any HTTP response bindings. They let the result render and be
+/// ranked after the source request has finished. [providerKey] identifies the
+/// provider definition used to serialize and validate history.
 @freezed
 abstract class PresentationSearchResultPayload
     with _$PresentationSearchResultPayload {
@@ -20,6 +27,11 @@ abstract class PresentationSearchResultPayload
   }) = _PresentationSearchResultPayload;
 }
 
+/// Announces a selected result to the history coordinator.
+///
+/// [historyNamespace] routes the result to the matching historical provider;
+/// selection is separate from result production so search sources stay
+/// independent of persistence.
 @freezed
 abstract class PresentationSearchSelectionEvent
     with _$PresentationSearchSelectionEvent {

@@ -1,6 +1,12 @@
 import "package:collection/collection.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Compares type expressions by their semantic structure rather than object
+/// identity.
+///
+/// Record field order is ignored, while ordered constraints such as string
+/// patterns and enum values retain their order. Named expressions compare only
+/// their resolved references, not the declaration they may resolve to later.
 bool typeExpressionsEqual(TypeExpression left, TypeExpression right) {
   if (identical(left, right)) return true;
   if (left.runtimeType != right.runtimeType) return false;
@@ -87,6 +93,9 @@ bool typeFieldsEqual(TypeField left, TypeField right) =>
     left.initialValue == right.initialValue &&
     typeExpressionsEqual(left.type, right.type);
 
+/// A hash for use with caches and change detection alongside
+/// [typeExpressionsEqual]. It follows the same structural rules, including
+/// order independent record fields.
 extension TypeExpressionStructuralHash on TypeExpression {
   int get structuralHash => switch (this) {
     AnyType() || UnitType() || BooleanType() => runtimeType.hashCode,
@@ -175,6 +184,7 @@ extension TypeExpressionStructuralHash on TypeExpression {
   };
 }
 
+/// Structural hash for a record field, including its optional initializer.
 extension TypeFieldStructuralHash on TypeField {
   int get structuralHash =>
       Object.hash(name, initialValue, type.structuralHash);

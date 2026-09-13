@@ -1,5 +1,9 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes actions exposed as buttons, menus, and tooltips.
+///
+/// Interaction is kept apart from input controls because invoking an action is
+/// not the same ownership boundary as editing a bound value.
 extension SkirPresentationInteractionDecoder on SkirPresentationDecoder {
   TypeResult<PresentationElement> _button(wire.ButtonElement value) =>
       combineResults(

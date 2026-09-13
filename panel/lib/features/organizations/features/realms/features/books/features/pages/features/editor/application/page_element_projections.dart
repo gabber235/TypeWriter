@@ -1,5 +1,11 @@
 part of "page_elements.dart";
 
+/// Decodes every authoring document into page element projections.
+///
+/// The authoring session supplies canonical documents and their revision. The
+/// realm editor catalog supplies the schema needed to decode values. Catalog
+/// failures remain diagnostics, while unresolved references are represented in
+/// the projection for the UI to repair.
 @riverpod
 AsyncValue<AuthoringValue<Map<String, List<PageElement>>>>
 decodedRealmDocumentValues(
@@ -161,6 +167,11 @@ AsyncValue<List<PageElement>> projectedPageElements(
   return AsyncData(projected.requireValue.value);
 }
 
+/// Overlays local editor values onto canonical page elements.
+///
+/// Canonical revision and element identity remain unchanged. This is the read
+/// model for responsive editors; persistence still belongs to the local work
+/// and authoring session owners.
 @riverpod
 AsyncValue<AuthoringValue<List<PageElement>>> projectedPageElementValues(
   Ref ref,

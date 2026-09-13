@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// The panel wide keyboard map used by `MaterialApp.router` and action sets.
+///
+/// Entries may use [AdaptiveSingleActivator] so control on one platform maps
+/// to meta on another. Intent based actions resolve their display activators
+/// through this map, which keeps registration and shortcut hints consistent.
 final typewriterShortcuts = <ShortcutActivator, Intent>{
   ...WidgetsApp.defaultShortcuts,
 
@@ -90,6 +95,7 @@ final movementShortcuts = {
       TraversalDirection.right,
 };
 
+/// Activates every currently applicable action in the focused context.
 class ActivateAllIntent extends Intent {
   const ActivateAllIntent();
 }
@@ -100,22 +106,27 @@ class CancelIntent extends Intent {
   const CancelIntent();
 }
 
+/// Requests deletion of the focused or selected item.
 class DeleteIntent extends Intent {
   const DeleteIntent();
 }
 
+/// Moves focus or selection to the first item in the current collection.
 class FirstItemIntent extends Intent {
   const FirstItemIntent();
 }
 
+/// Moves focus or selection to the last item in the current collection.
 class LastItemIntent extends Intent {
   const LastItemIntent();
 }
 
+/// Invokes the primary action for the focused surface.
 class PrimaryActionIntent extends Intent {
   const PrimaryActionIntent();
 }
 
+/// Returns activators whose mapped intent has exactly [intent].
 List<ShortcutActivator> shortcutsFor(Type intent) {
   return typewriterShortcuts.entries
       .where((entry) => entry.value.runtimeType == intent)
@@ -123,6 +134,7 @@ List<ShortcutActivator> shortcutsFor(Type intent) {
       .toList();
 }
 
+/// Returns activators for [I] whose intent satisfies [predicate].
 List<ShortcutActivator> shortcutsForIntent<I extends Intent>(
   bool Function(I intent) predicate,
 ) {

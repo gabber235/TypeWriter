@@ -1,3 +1,8 @@
+/// Shared adapters between panel application code and external protocols.
+///
+/// Messaging owns NATS transport and Skir request boundaries. Observability
+/// owns trace propagation. Generated protocol types remain behind these exports
+/// so feature code depends on panel contracts rather than package details.
 library;
 
 export "messaging/messaging.dart";

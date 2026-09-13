@@ -56,20 +56,36 @@ import skirout.editor.v1.type_catalog.TypeExpression as SkirTypeExpression
  * metadata and may fail; the assembler turns such failures into diagnostics.
  */
 interface PresentationProvider {
+    /** Stable namespace used to form the presentation identity. */
     val namespace: String
+
+    /** Source part that contributed this provider. */
     val sourcePart: String
+
+    /** Declaration name used to identify failures before a specification exists. */
     val declarationName: String
+
+    /** Whether this provider may become the default presentation for its target type. */
     val default: Boolean
+
+    /** Priority used to select among default or same named presentations. */
     val priority: Int
 
+    /** Builds the authored specification against deployment serialization metadata. */
     fun specification(context: PresentationBuildContext): PresentationSpec<*>
 }
 
+/** Describes a presentation declaration rejected during catalog compilation. */
 data class PresentationDiagnostic(
+    /** Stable diagnostic category used by catalog consumers. */
     val code: String,
+    /** Human readable failure detail. */
     val message: String,
+    /** Provider namespace, when compilation reached provider provenance. */
     val namespace: String? = null,
+    /** Provider source part, when compilation reached provider provenance. */
     val sourcePart: String? = null,
+    /** Presentation name, when the specification supplied one. */
     val presentationName: String? = null,
 )
 
@@ -80,8 +96,11 @@ data class PresentationDiagnostic(
  * mutated.
  */
 data class PresentationCatalog(
+    /** Type catalog with valid default and named presentation associations. */
     val types: TypeCatalog,
+    /** Compiled protocol definitions in stable presentation identity order. */
     val definitions: List<PresentationDefinition>,
+    /** Nonfatal declaration and association failures encountered during assembly. */
     val diagnostics: List<PresentationDiagnostic>,
 )
 

@@ -1,6 +1,10 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders a tag result using the tag's color as its visual identity.
+///
+/// [fromTag] is the domain to widget adapter. The search owner supplies interaction state and
+/// navigation; this widget does not mutate or otherwise own the tag.
 class TagSearchResultItem extends StatelessWidget {
   const TagSearchResultItem({
     required this.name,

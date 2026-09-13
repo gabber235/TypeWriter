@@ -1,6 +1,18 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Infers generic arguments from a structural type used as evidence.
+///
+/// This is the authoring side of nominal type resolution. It walks the
+/// generic definition, its representation, parents, and dependent bounds,
+/// then asks [TypeRegistry] to validate the fully applied reference. A failed
+/// result contains a diagnostic rather than a partial application.
 extension ResolvedTypeRefInference on ResolvedTypeRef {
+  /// Returns the generic application described by [evidence].
+  ///
+  /// The receiver must be an unapplied reference. Repeated parameter evidence
+  /// must agree structurally, and every declared parameter must be inferable.
+  /// The returned reference is resolved before success, so bounds and the
+  /// definition's other invariants have already been checked.
   TypeResult<ResolvedTypeRef> inferFrom(
     TypeExpression evidence,
     TypeRegistry registry,

@@ -4,6 +4,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "element_definition.freezed.dart";
 
+/// Catalog metadata required to render and edit one element type.
+///
+/// [rootType] identifies the concrete record schema used to decode values.
+/// The catalog and the decoded value must agree on its revision. Resolution
+/// rejects abstract, nonrecord, unidentified, or invalidly represented types
+/// before an editor can mutate the value.
 @freezed
 abstract class ElementDefinition with _$ElementDefinition {
   @Assert("name != \"\"", "Name must not be empty.")
@@ -27,12 +33,18 @@ extension DiscoveredElementDefinitionConversion on DiscoveredElementDefinition {
   );
 }
 
+/// Optional explanation that an element remains readable but should no longer
+/// be chosen for new authoring.
 @freezed
 abstract class ElementDeprecation with _$ElementDeprecation {
   const factory ElementDeprecation({@Default("") String reason}) =
       _ElementDeprecation;
 }
 
+/// Raised when the catalog cannot provide a usable element definition.
+///
+/// The diagnostics are retained so the presentation layer can show the actual
+/// schema or catalog failures instead of collapsing them into a generic error.
 final class ElementDefinitionException implements Exception {
   const ElementDefinitionException(this.diagnostics);
 
@@ -42,6 +54,7 @@ final class ElementDefinitionException implements Exception {
   String toString() => diagnostics.join("; ");
 }
 
+/// Derived identity and schema validation for an element catalog entry.
 extension ElementDefinitionType on ElementDefinition {
   DeclaredTypeId get typeId {
     final id = rootType.id;

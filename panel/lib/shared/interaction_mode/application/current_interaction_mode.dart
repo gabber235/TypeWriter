@@ -3,19 +3,21 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "current_interaction_mode.g.dart";
 
-/// Riverpod notifier that manages the current active interaction mode.
+/// Owns the panel's single current interaction mode.
 ///
-/// This notifier provides centralized state management for the modal interface
-/// system, allowing components throughout the app to:
-/// - Watch the current active mode
-/// - Transition between modes
-/// - Access mode-specific functionality in a type-safe manner
+/// The provider starts in [NormalMode]. Consumers watch its state to adapt
+/// focus, shortcuts, and presentation. Callers request transitions through the
+/// notifier; they do not mutate a mode instance. Replacing the state is
+/// synchronous, and Riverpod notifies all current watchers of the new mode.
 @riverpod
 class CurrentInteractionMode extends _$CurrentInteractionMode {
   @override
   InteractionMode build() => NormalMode();
 
-  /// Transitions to a new interaction mode.
+  /// Makes [mode] the active mode.
+  ///
+  /// The mode object is retained as the new immutable state. Widgets that
+  /// project mode capabilities rebuild from the resulting provider update.
   ///
   /// Example:
   /// ```dart
@@ -26,7 +28,10 @@ class CurrentInteractionMode extends _$CurrentInteractionMode {
     state = mode;
   }
 
-  /// Transitions to the normal interaction mode.
+  /// Returns the application to a fresh [NormalMode] instance.
+  ///
+  /// Use this for dismiss, cancel, and focus exit paths that should leave no
+  /// mode specific state active.
   void normal() {
     state = NormalMode();
   }

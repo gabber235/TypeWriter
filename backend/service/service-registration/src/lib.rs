@@ -1,3 +1,10 @@
+//! Broker entrypoint for service registration, liveness, binding, and host topology.
+//!
+//! Lifecycle messages use service scoped subjects. User scoped requests use the dispatch table
+//! below. Mutations persist database state first, then publish the typed watch event that backs
+//! panel and runtime consumers. Host execution has a second stream because the runtime consumes
+//! desired assignments and reports observations independently from organization topology.
+
 wit_bindgen::generate!({
     with: {
         "wasmcloud:messaging/consumer@0.4.0": wasmcloud_utils::wasmcloud::messaging::consumer,
@@ -35,6 +42,11 @@ impl Guest for Component {
     }
 }
 
+/// Routes lifecycle subjects before delegating request and watch subjects to their handlers.
+///
+/// Heartbeat and shutdown are matched explicitly because they have no request response. All
+/// other subjects are expanded by `dispatch_actions!`, which supplies the path parameters used by
+/// the handlers.
 async fn handle_message_async(msg: types::BrokerMessage) -> Result<(), otel_wasi::Error> {
     if let Ok(params) = parse_subject(
         "[typewriter.from.]service.<service_id>.heartbeat",

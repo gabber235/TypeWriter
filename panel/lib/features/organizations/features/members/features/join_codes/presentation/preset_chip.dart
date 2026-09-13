@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Selectable duration preset used by [DurationInput].
 class PresetChip extends StatelessWidget {
   const PresetChip({
     required this.label,

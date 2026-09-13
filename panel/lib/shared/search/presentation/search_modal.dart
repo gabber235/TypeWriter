@@ -4,6 +4,12 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Opens a themed, keyboard accessible search route.
+///
+/// The supplied [source] is initialized when the route creates its controller
+/// and disposed when that controller is disposed. Renderer maps translate
+/// source result and preview type identifiers into widgets. The returned
+/// future completes when the route is removed.
 Future<void> showSearchModal(
   BuildContext context,
   SearchSource source, {
@@ -43,6 +49,11 @@ Future<void> showSearchModal(
   );
 }
 
+/// Connects modal configuration to a route local [SearchController].
+///
+/// [SearchModalBody] and its descendants read that controller through
+/// [searchProvider]. The controller owns query, selection, preview, section,
+/// and action state for this modal instance.
 class SearchModal extends HookWidget {
   const SearchModal({
     required this.source,

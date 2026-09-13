@@ -27,6 +27,12 @@ data class ReadDiscoveryContributions(
  * and cause; unknown producers are returned separately. Results follow deterministic contribution order.
  */
 object ManifestDiscoveryReader {
+    /**
+     * Decodes type contributions and preserves payloads from producers this SDK does not recognize.
+     *
+     * Duplicate keys fail before decoding. Known payload failures include the full contribution origin in the
+     * thrown cause, while result lists use stable contribution key order.
+     */
     fun read(manifests: Collection<ImprintManifest>): ReadDiscoveryContributions {
         val typeContributions = mutableListOf<KeyedTypeContribution>()
         val unknown = mutableListOf<GeneratedContribution>()

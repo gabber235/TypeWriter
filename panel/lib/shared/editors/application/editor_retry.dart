@@ -3,10 +3,15 @@ import "dart:math";
 
 // ignore_for_file: one_member_abstracts
 
+/// Schedules editor debounce and conflict retry work.
+///
+/// The abstraction keeps time outside the editor state machine, so production
+/// uses timers while tests can complete scheduled work deterministically.
 abstract interface class EditorDelayScheduler {
   EditorScheduledTask schedule(Duration delay);
 }
 
+/// Represents one cancellable editor scheduling decision.
 abstract interface class EditorScheduledTask {
   Future<EditorTaskCompletion> get completed;
 
@@ -48,10 +53,12 @@ final class _TimerEditorScheduledTask implements EditorScheduledTask {
   }
 }
 
+/// Supplies bounded random delay used to spread retry attempts.
 abstract interface class EditorJitterSource {
   Duration next(Duration maximum);
 }
 
+/// Production jitter source backed by a pseudo random generator.
 final class RandomEditorJitterSource implements EditorJitterSource {
   RandomEditorJitterSource([Random? random]) : _random = random ?? Random();
 

@@ -1,5 +1,10 @@
 part of "../../composite_input_renderer.dart";
 
+/// Renders map keys and values as virtual child bindings.
+///
+/// Key edits are rejected when they would create a duplicate, then the whole
+/// map is submitted through the owning scope. Entry identities are maintained
+/// separately so header expansion follows a key across rebuilt map entries.
 extension MapInputElementRendering on MapInputElement {
   Widget render({
     required ResolvedBinding binding,

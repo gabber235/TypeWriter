@@ -3,6 +3,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "type_path.freezed.dart";
 
+/// Resolves a data path against a type expression.
+///
+/// Record fields, list elements, and map values advance the structural type.
+/// Named types are expanded through [TypeRegistry]. An invalid segment or
+/// unresolved nominal reference returns diagnostics, allowing binding callers
+/// to reject a target instead of guessing its type.
 extension TypeExpressionPathResolution on TypeExpression {
   TypeResult<TypeExpression> resolvePath(
     DataPath path, {
@@ -63,6 +69,7 @@ extension on TypeExpression {
   ]);
 }
 
+/// A structural step used to find references inside a type expression.
 @freezed
 sealed class TypeQuerySegment with _$TypeQuerySegment {
   const factory TypeQuerySegment.field(String name) = TypeFieldQuerySegment;
@@ -72,6 +79,7 @@ sealed class TypeQuerySegment with _$TypeQuerySegment {
   const factory TypeQuerySegment.mapValue() = TypeMapValueQuerySegment;
 }
 
+/// A reference declaration and its location within an enclosing type.
 @freezed
 abstract class TypeReferenceLocation with _$TypeReferenceLocation {
   const factory TypeReferenceLocation({
@@ -84,6 +92,10 @@ abstract class TypeReferenceLocation with _$TypeReferenceLocation {
   TypeExpression get target => type.reference.arguments.single;
 }
 
+/// Finds standard reference fields nested in records and collections.
+///
+/// The optional relation filters qualified reference names. Returned paths are
+/// type query paths, not value paths, so a value must be expanded separately.
 extension TypeExpressionReferenceQuery on TypeExpression {
   List<TypeReferenceLocation> queryReferences({String? relation}) {
     final locations = <TypeReferenceLocation>[];
@@ -143,6 +155,11 @@ extension on TypeExpression {
   }
 }
 
+/// Expands a type query into concrete paths in a value.
+///
+/// Collection elements produce one path per existing value. A terminal list
+/// element query produces the append index, which lets editors target a new
+/// item. Missing record fields and incompatible shapes produce no paths.
 extension DataValueTypeQueryExpansion on DataValue {
   List<DataPath> expandTypeQueryPath(Iterable<TypeQuerySegment> query) =>
       List.unmodifiable(_expandTypeQuery(query.toList(), 0, DataPath.root));

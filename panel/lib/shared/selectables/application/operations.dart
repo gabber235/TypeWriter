@@ -10,79 +10,60 @@ const coreSelectionOperations = <SelectionOperation>[
   DeleteOperation(),
 ];
 
-/// Defines a user-invokable action that can operate on the current selection
-/// in the inspector. Concrete implementations should be immutable and light-
-/// weight; any expensive preparation should occur when executing, not on
-/// construction.
+/// Defines an action available for the current resolved selection.
+///
+/// Instances are registered by [SelectionOperationsRoot]. Availability is
+/// evaluated against the resolved selection, while execution reads the latest
+/// provider state so menu, shortcut, and inspector invocations share one
+/// operation implementation.
 abstract class SelectionOperation {
   const SelectionOperation();
 
-  /// Human readable label displayed in menus / buttons.
+  /// Human readable label displayed in menus and buttons.
   String get name;
 
-  /// Human readable description displayed in tooltips.
+  /// Human readable description displayed in tooltips and shortcut displays.
   String get description;
 
-  /// Returns true if this operation can currently execute on the provided
-  /// selection set. Called reactively; keep fast and side-effect free.
-  /// Assures that the selection is not empty.
+  /// Returns whether this operation is valid for [selection].
+  ///
+  /// Callers use this as a fast, side effect free availability check. An empty
+  /// selection is not executable.
   bool canExecuteOn(List<Selectable> selection);
 
-  /// Executes this operation for the given (non-empty) selection.
+  /// Executes against the latest resolved selection in [ref].
   ///
-  /// This is invoked only after [canExecuteOn] has returned true for the same
-  /// selection. Implementations may:
-  /// - Mutate underlying model / document state.
-  /// - Emit provider state changes.
-  /// - Trigger UI side-effects (navigation, dialogs, etc.).
-  ///
-  /// Asynchrony:
-  /// Return a Future to perform asynchronous work; return synchronously (void)
-  /// for immediate completion. Callers may await the returned FutureOr.
-  ///
-  /// Contract / expectations:
-  /// - [selection] is guaranteed by the caller to be non-empty and still valid;
-  ///   defensive re-checks are optional.
-  /// - Do not retain the passed list instance; the function should be emphemeral.
-  /// - Validation / enablement logic should reside in [canExecuteOn]; this
-  ///   method should only throw for unrecoverable programmer errors.
+  /// Implementations may mutate model state, emit provider changes, or trigger
+  /// UI effects. The caller may await the returned [Future]. Availability is
+  /// checked before invocation, but implementations read current provider
+  /// state because selection can change while an asynchronous menu or dialog
+  /// is open.
   FutureOr<void> executeOn(WidgetRef ref);
 
-  /// Builds the context menu representation for this operation.
+  /// Builds the context menu item that invokes this operation.
   ///
-  /// Implementations should return a lightweight [MenuItem] that, when
-  /// activated, triggers [executeOn]. This is used by components such as
-  /// [ContextMenuRegion] to surface the operation in right‑click / long‑press
-  /// menus.
-  ///
-  /// Parameter:
-  /// - [ref]: A [WidgetRef] giving access to providers needed to evaluate
-  ///   current selection state or perform the operation when invoked.
-  ///
-  /// Expectations / guidelines:
-  /// - Must be fast and side‑effect free (other than creating the menu item).
-  /// - Enable / disable logic should already be handled via [canExecuteOn] and
-  ///   filtering (i.e. this method is only called for applicable operations).
-  /// - Implementations may still defensively guard against unexpected states,
-  ///   but should avoid heavy recomputation.
+  /// The item is created only after [canExecuteOn] filtering. Keep construction
+  /// cheap and side effect free; the callback may perform the actual work.
   MenuItem menuItem(WidgetRef ref);
 
-  /// Builds the UI control (e.g. a button) representing this operation for
-  /// the given selection. The control is responsible for invoking the action.
+  /// Builds the inspector control for this operation and [selection].
+  ///
+  /// The selection supplies presentation details such as the item count. The
+  /// control invokes [executeOn] through its [WidgetRef] when activated.
   Widget inspectorButton(List<Selectable> selection);
 }
 
 abstract class ShortcutableOperation extends SelectionOperation {
   const ShortcutableOperation();
 
-  /// Returns the [ActionShortcut] that should be registered for this operation.
+  /// Returns the shortcut registration for this operation.
   ActionShortcut get shortcut;
 }
 
 abstract class ActivatorShortcutOperation extends ShortcutableOperation {
   const ActivatorShortcutOperation();
 
-  /// Keyboard shortcuts that trigger this operation.
+  /// Keyboard activators that trigger this operation.
   List<ShortcutActivator> get activators;
 
   @override
@@ -99,7 +80,7 @@ abstract class ActivatorShortcutOperation extends ShortcutableOperation {
 abstract class IntentShortcutOperation extends ShortcutableOperation {
   const IntentShortcutOperation();
 
-  /// [Intent] that triggers this operation.
+  /// Intent type that triggers this operation.
   Type get intent;
 
   @override
@@ -113,39 +94,42 @@ abstract class IntentShortcutOperation extends ShortcutableOperation {
   );
 }
 
-/// Base type for per-selectable capability objects exposed via
-/// [Selectable.capabilities]. Concrete [SelectionOperation] implementations inspect
-/// the current selection for specific subclasses (e.g. [DeleteSelectionCapability])
-/// to decide whether a higher-level operation is available and to aggregate
-/// the per-item callbacks / data they carry. Extend this to advertise a
-/// capability; it intentionally has no API itself.
+/// Base type for capability objects exposed by [Selectable.capabilities].
+///
+/// Concrete operations inspect capability subtypes to decide whether a batch
+/// action is available and to collect the per item callbacks or data needed to
+/// execute it. Extend this type to advertise a capability. The base type has
+/// no API because each operation defines its own contract.
 extension SelectionCapabilitySelectionX on Iterable<Selectable> {
-  /// True when every selectable exposes an operation of type [T].
+  /// Whether every item exposes a capability of type [T].
+  ///
   /// Returns false for an empty iterable.
   bool allHaveCapability<T extends SelectionCapability>() =>
       isNotEmpty && every((s) => s.capabilities.any((o) => o is T));
 
-  /// True when at least one selectable exposes an operation of type [T].
+  /// Whether at least one item exposes a capability of type [T].
   bool anyHaveCapability<T extends SelectionCapability>() =>
       any((s) => s.capabilities.any((o) => o is T));
 
-  /// Collects all operations of type [T] from the selection in iteration order.
+  /// Collects capabilities of type [T] in selection order.
   Iterable<T> collectCapabilities<T extends SelectionCapability>() =>
       expand((s) => s.capabilities.whereType<T>());
 
-  /// Collects all operations of type [T] and matching them with their respective selectable.
+  /// Collects each capability of type [T] with its owning selectable.
   Iterable<(Selectable, T)>
   collectCapabilitiesWithSelectables<T extends SelectionCapability>() =>
       expand((s) => s.capabilities.whereType<T>().map((o) => (s, o)));
 
-  /// True when no selectable exposes an operation of type [T].
+  /// Whether no item exposes a capability of type [T].
   bool noneHaveCapabilities<T extends SelectionCapability>() =>
       !anyHaveCapability<T>();
 }
 
-/// Computes the subset of registered [Operation]s that are currently
-/// executable for the active selection. Emits an empty list when there is
-/// no selection or nothing applicable, allowing the UI to hide controls.
+/// Filters registered operations to those valid for [selected].
+///
+/// A null or empty resolved selection produces an empty list. This shared
+/// filter drives inspector controls, context menu items, and keyboard
+/// shortcuts, so all entry points use the same availability rules.
 List<SelectionOperation> availableSelectionOperations(
   List<SelectionOperation> operations,
   List<Selectable>? selected,
@@ -157,8 +141,11 @@ List<SelectionOperation> availableSelectionOperations(
       .toList();
 }
 
-/// Shows a dialog displaying errors that occurred during a batch operation.
-/// Reusable across Delete, Unbind, and similar operations.
+/// Shows per item failures collected during a batch operation.
+///
+/// Successful items are handled by the operation before this dialog opens.
+/// The dialog reports only failures and leaves recovery decisions to the
+/// operation's caller.
 Future<void> showOperationErrorsPopup(
   BuildContext context,
   List<(Selectable, Object)> errors,

@@ -4,6 +4,13 @@ import "package:flutter/material.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Communicates save progress and offers recovery for a failed owner write.
+///
+/// [state] is a projection of the owner persistence lifecycle. Retry delegates
+/// to the owner, while conflict actions choose the remote or local resolution
+/// supplied by the owner. Successful feedback is transient, so this widget
+/// clears it after [savedFeedbackDuration] and cancels its timer when replaced
+/// or unmounted.
 class EditorSaveStatus extends StatefulWidget {
   const EditorSaveStatus({
     required this.state,

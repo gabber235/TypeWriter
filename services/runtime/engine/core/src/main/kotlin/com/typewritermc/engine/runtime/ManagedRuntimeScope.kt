@@ -24,11 +24,13 @@ class ManagedRuntimeScope(
     private val cleanups = mutableListOf<suspend () -> Unit>()
     private var closed = false
 
+    /** Registers cleanup owned by this activation, executed after child jobs and in reverse registration order. */
     override fun own(cleanup: suspend () -> Unit) {
         check(!closed) { "Runtime scope is already closed." }
         cleanups += cleanup
     }
 
+    /** Registers [resource] for closure with the activation and returns the same resource for immediate use. */
     override fun <Resource : AutoCloseable> own(resource: Resource): Resource {
         own { resource.close() }
         return resource

@@ -1,5 +1,8 @@
 part of "expression_evaluator.dart";
 
+// Collection evaluation creates read only child contexts for each item. The
+// parent evaluator retains budget accounting across those child evaluators.
+
 extension on _ExpressionEvaluator {
   TypeResult<DataValue> _filter(
     CollectionFilterExpression expression,

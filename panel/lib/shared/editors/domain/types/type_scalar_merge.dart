@@ -1,5 +1,6 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Intersects decimal bounds while retaining decimal precision semantics.
 TypeResult<TypeExpression> intersectDecimals(
   DecimalType left,
   DecimalType right,
@@ -28,6 +29,7 @@ TypeResult<TypeExpression> intersectDecimals(
   );
 }
 
+/// Intersects timestamp bounds and reports an empty interval.
 TypeResult<TypeExpression> intersectTimestamps(
   TimestampType left,
   TimestampType right,
@@ -40,6 +42,7 @@ TypeResult<TypeExpression> intersectTimestamps(
   return TypeResult.success(TimestampType(minimum: minimum, maximum: maximum));
 }
 
+/// Intersects duration bounds and reports an empty interval.
 TypeResult<TypeExpression> intersectDurations(
   DurationType left,
   DurationType right,

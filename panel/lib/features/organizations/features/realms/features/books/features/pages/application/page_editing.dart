@@ -5,7 +5,12 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Creates page metadata mutations with the current workspace dependencies.
+///
+/// Callers use this bridge from widgets so edits enter the same retained local
+/// work and transactional save lifecycle as the full page editor.
 extension PageEditingRef on WidgetRef {
+  /// Applies metadata changes to one page without bypassing local draft state.
   Future<TypedMutationResult> editPage({
     required skir.RecordId id,
     wire.StringChange? name,
@@ -21,6 +26,10 @@ extension PageEditingRef on WidgetRef {
     },
   });
 
+  /// Applies a chapter rename to an already selected page subtree.
+  ///
+  /// The supplied pages are converted to individual path changes. The caller
+  /// receives one typed result after the shared batch owner settles them.
   Future<TypedMutationResult> editPagesChapter(
     List<Page> pages,
     String oldChapter,
@@ -46,13 +55,25 @@ extension PageEditingRef on WidgetRef {
   }
 }
 
-/// Adapts page metadata forms to the same retained ownership as other resources.
+/// Owns the page metadata editing boundary for non editor page surfaces.
+///
+/// It leases each page from [session], creates transactional resource owners
+/// backed by [repository], submits through [EditorBatch], and releases every
+/// lease and owner before returning. Canonical pages remain session state; local
+/// drafts remain in [workspace].
 final class PageEditing {
+  /// Creates an editor operation using explicitly scoped collaborators.
   PageEditing(this.session, this.workspace, this.repository);
   final AuthoringResourceRepository repository;
   final AuthoringSession session;
   final LocalWorkCommands workspace;
 
+  /// Validates and submits metadata changes for one or more pages.
+  ///
+  /// An absent page returns an unavailable result and marks it as deleted.
+  /// Validation or remote rejection leaves the local draft available for
+  /// review. Resource ownership is temporary, so this method always releases
+  /// leases and editor owners, including when submission throws.
   Future<TypedMutationResult> edit(
     Map<skir.RecordId, Map<DataPath, DataValue>> changes,
   ) async {
@@ -86,6 +107,11 @@ final class PageEditing {
     }
   }
 
+  /// Builds the editor target from the session's current canonical page.
+  ///
+  /// A missing page means the caller must stop editing it. The snapshot only
+  /// exposes editable metadata fields; page elements belong to the dedicated
+  /// page editor feature.
   EditorTarget? target(skir.RecordId id) {
     final page = session.snapshot.pages[id];
     if (page == null) return null;
@@ -98,6 +124,10 @@ final class PageEditing {
   }
 }
 
+/// Converts a captured metadata commit into a conditional wire patch.
+///
+/// Only changed paths are emitted. Values read from [commit.baseValue] become
+/// expected values, preserving optimistic concurrency at the realm boundary.
 wire.AuthoringOperation pagePatchOperation(
   skir.RecordId id,
   EditorCommit commit,
@@ -132,6 +162,10 @@ wire.AuthoringOperation pagePatchOperation(
   );
 }
 
+/// Creates the metadata editor snapshot used by page list and form surfaces.
+///
+/// [sequence] identifies the canonical authoring observation, not local draft
+/// work. Element content is intentionally outside this snapshot.
 EditorSnapshot pageEditorSnapshot(wire.Page page, int sequence) =>
     DocumentEditorSnapshot(
       EditorDocument(
@@ -151,6 +185,11 @@ EditorSnapshot pageEditorSnapshot(wire.Page page, int sequence) =>
       ),
     );
 
+/// Projects page scoped authoring observations into the metadata editor model.
+///
+/// The resource translates page upserts into a newer canonical document and
+/// treats removal as deletion. Unrelated book, tag, and element changes are
+/// ignored, leaving this owner responsible only for one page metadata record.
 final class PageEditorResource extends AuthoringEditorResource {
   const PageEditorResource(super.repository, super.id);
   @override

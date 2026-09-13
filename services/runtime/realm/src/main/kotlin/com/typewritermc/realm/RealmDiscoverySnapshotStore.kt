@@ -29,6 +29,12 @@ class RealmDiscoverySnapshotStore {
             onBufferOverflow = BufferOverflow.DROP_OLDEST,
         )
 
+    /**
+     * Makes a snapshot authoritative before notifying consumers that they should reread it.
+     *
+     * Notifications are best effort hints and may be dropped when the buffer is full. Consumers must use [current]
+     * or [snapshots] for data, not reconstruct state from the change stream.
+     */
     fun replace(value: RealmDiscoverySnapshot) {
         snapshots.value = value
         check(changes.tryEmit(value)) { "Realm discovery snapshot change could not be published." }
@@ -38,6 +44,7 @@ class RealmDiscoverySnapshotStore {
         changes.subscriptionCount.first { it > 0 }
     }
 
+    /** Returns the latest authoritative snapshot, or null before staged catalog assembly completes. */
     fun current(): RealmDiscoverySnapshot? = snapshots.value
 }
 

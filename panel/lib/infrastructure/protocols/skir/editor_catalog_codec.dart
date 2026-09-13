@@ -1,3 +1,9 @@
+// Translates the recursive type catalog while preserving reference identity.
+//
+// Decoding happens in two passes. Shell definitions establish the namespace
+// needed to resolve recursive references, then complete definitions validate
+// their representations. This is why catalog decoding cannot be a simple
+// field by field mapping.
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/type_catalog.dart"
@@ -6,12 +12,14 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "editor_catalog_codec.freezed.dart";
 
+/// A decoded catalog together with the registry that resolves its references.
 @freezed
 abstract class DecodedTypeCatalog with _$DecodedTypeCatalog {
   const factory DecodedTypeCatalog(TypeCatalog catalog, TypeRegistry registry) =
       _DecodedTypeCatalog;
 }
 
+/// Encodes domain catalog definitions for Skir transport.
 extension TypeCatalogWireEncoding on TypeCatalog {
   TypeResult<wire.TypeCatalog> encodeWire() => encodeDefinitions().mapValue(
     (definitions) => wire.TypeCatalog(definitions: definitions),
@@ -86,11 +94,13 @@ extension TypeCatalogWireEncoding on TypeCatalog {
   }
 }
 
+/// Starts domain decoding from a complete wire catalog.
 extension WireTypeCatalogDecoding on wire.TypeCatalog {
   TypeResult<DecodedTypeCatalog> decodeDomain() =>
       definitions.decodeDefinitions();
 }
 
+/// Decodes definitions with a shell pass for recursive references.
 extension WireTypeDefinitionListDecoding on Iterable<wire.TypeDefinition> {
   TypeResult<DecodedTypeCatalog> decodeDefinitions() {
     final wireDefinitions = toList();

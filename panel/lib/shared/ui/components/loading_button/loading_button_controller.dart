@@ -2,7 +2,17 @@ import "dart:async";
 
 import "package:flutter/foundation.dart";
 
-/// Controls the state and actions of a loading button.
+/// Owns asynchronous execution state for one [LoadingButton] or
+/// [LoadingIconButton].
+///
+/// The widget that binds the controller is responsible for keeping the bound
+/// callback current. The controller serializes execution and never disposes
+/// resources owned by that callback.
+///
+/// The widget binds its current callback during build. While the callback is
+/// running, [canTrigger] is false and listeners observe [isLoading]. Exceptions
+/// are converted to [lastError] and passed to the bound error callback; the
+/// callback is always released from loading afterward.
 class LoadingButtonController extends ChangeNotifier {
   bool _isLoading = false;
   String? _lastError;
@@ -12,10 +22,10 @@ class LoadingButtonController extends ChangeNotifier {
   /// Whether the button is currently loading.
   bool get isLoading => _isLoading;
 
-  /// The last error that occurred, if any.
+  /// The most recent callback error, cleared when a new execution starts.
   String? get lastError => _lastError;
 
-  /// Whether the button can be triggered.
+  /// Whether a bound callback can start without overlapping an execution.
   bool get canTrigger => _onPressed != null && !_isLoading;
 
   /// Binds the action and error handler used by the owning button.
@@ -27,9 +37,10 @@ class LoadingButtonController extends ChangeNotifier {
     _onError = onError;
   }
 
-  /// Programmatically triggers the button action.
+  /// Starts the bound callback when it is not already running.
   ///
-  /// Returns whether the action was triggered.
+  /// Returns false when no callback is bound or an execution is in progress.
+  /// Completion and failure are observed through this controller.
   bool trigger() {
     if (!canTrigger) return false;
 
@@ -37,7 +48,10 @@ class LoadingButtonController extends ChangeNotifier {
     return true;
   }
 
-  /// Handles a press from the owning button.
+  /// Runs the bound callback for a press from the owning widget.
+  ///
+  /// Calls made while another execution is active complete without starting a
+  /// second callback.
   Future<void> handlePress() => _handlePress();
 
   Future<void> _handlePress() async {

@@ -42,11 +42,13 @@ internal class LoaderSettings(
     }
 }
 
+/** Resolved telemetry settings used to build the loader owned SDK. */
 internal data class LoaderTelemetryConfiguration(
     val otlpEndpoint: String?,
     val sampler: LoaderSamplerConfiguration,
 )
 
+/** Closed set of sampler choices accepted from loader configuration. */
 internal sealed interface LoaderSamplerConfiguration {
     data object AlwaysOn : LoaderSamplerConfiguration
 

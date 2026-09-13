@@ -13,7 +13,7 @@ import kotlin.time.Duration
 class MessageHeaders private constructor(
     private val entries: Map<String, HeaderEntry>,
 ) : Iterable<Pair<String, List<String>>> {
-    /** Returns an immutable list of values for [name], in insertion order. */
+    /** Returns all values for [name], ignoring casing and preserving their insertion order. */
     operator fun get(name: String): List<String> = entries[canonicalName(name)]?.values ?: emptyList()
 
     /** Returns the first value for [name], or null when absent. */
@@ -22,7 +22,7 @@ class MessageHeaders private constructor(
     /** Returns whether [name] is present, ignoring casing. */
     fun contains(name: String): Boolean = entries.containsKey(canonicalName(name))
 
-    /** Returns a new collection with [value] appended under [name]. */
+    /** Returns a new collection with [value] appended under [name], without changing this instance. */
     fun plus(
         name: String,
         value: String,
@@ -37,14 +37,14 @@ class MessageHeaders private constructor(
         return MessageHeaders(Collections.unmodifiableMap(updated))
     }
 
-    /** Returns a new collection without values under [name]. */
+    /** Returns a new collection without values under [name], without changing this instance. */
     fun remove(name: String): MessageHeaders {
         val updated = LinkedHashMap(entries)
         updated.remove(canonicalName(name))
         return MessageHeaders(Collections.unmodifiableMap(updated))
     }
 
-    /** Returns a new collection replacing all values under [name] with [value]. */
+    /** Returns a new collection replacing all values under [name] with [value], without changing this instance. */
     fun set(
         name: String,
         value: String,
@@ -71,6 +71,7 @@ class MessageHeaders private constructor(
     companion object {
         val Empty: MessageHeaders = MessageHeaders(emptyMap())
 
+        /** Builds headers by appending each pair in argument order. */
         fun of(vararg headers: Pair<String, String>): MessageHeaders =
             headers.fold(Empty) { result, (name, value) -> result.plus(name, value) }
     }
@@ -106,7 +107,12 @@ class Payload private constructor(
     }
 }
 
-/** Outbound envelope with immutable payload and headers. */
+/**
+ * Message sent to a transport.
+ *
+ * [replyTo] is an application supplied destination for responders. Request transports may reject it when they own
+ * reply inbox creation themselves.
+ */
 data class OutboundMessage(
     val address: MessageAddress,
     val payload: Payload,
@@ -121,7 +127,7 @@ data class OutboundMessage(
     ) : this(address, Payload.copyOf(payload), replyTo, headers)
 }
 
-/** Inbound envelope with immutable payload and headers. */
+/** Message received from a transport, including an optional responder destination and propagated headers. */
 data class InboundMessage(
     val address: MessageAddress,
     val payload: Payload,
@@ -164,7 +170,7 @@ value class ConsumerGroup private constructor(
     }
 }
 
-/** Options applied while creating a transport subscription. */
+/** Options applied while creating a transport subscription, including optional load balancing by group. */
 data class SubscriptionOptions(
     val consumerGroup: ConsumerGroup? = null,
 )
@@ -201,7 +207,7 @@ sealed interface TransportError {
     ) : TransportError
 }
 
-/** A delivered message, terminal failure, or clean completion. */
+/** One item emitted by a subscription, including its terminal failure or clean completion marker. */
 sealed interface TransportDelivery {
     data class Message(
         val message: InboundMessage,

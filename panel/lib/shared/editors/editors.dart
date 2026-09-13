@@ -1,3 +1,8 @@
+/// Public entry point for the editor domain, application, and presentation APIs.
+///
+/// Consumers should import this library instead of reaching into editor
+/// implementation paths. Generated protocol types remain behind the specific
+/// protocol exports that own them.
 library;
 
 export "application/collection_presentation_search_source.dart";

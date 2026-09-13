@@ -2,6 +2,11 @@ use crate::identity::{IdentityRepository, NewIdentity, RepositoryError};
 use wasmcloud_utils::database::service::ServiceRoleRecord;
 use wasmcloud_utils::database::{RecordId, TransactionOutcome, read_query, transaction_query};
 
+/// Identity repository backed by SurrealDB service records.
+///
+/// Role validation delegates policy to the database function. Record creation uses a
+/// database transaction, so the service record mutation is atomic within SurrealDB. This
+/// repository cannot make that transaction atomic with the external account provider.
 pub struct SurrealIdentityRepository;
 
 impl IdentityRepository for SurrealIdentityRepository {

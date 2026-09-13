@@ -33,7 +33,7 @@ bool get hasOverrideDown =>
 ///
 /// On macOS and iOS, `control: true` is translated to `meta: true` so that
 /// shortcuts use ⌘ instead of ^. On all other platforms, the [control] key
-/// is used as-is.
+/// is used unchanged.
 class AdaptiveSingleActivator extends SingleActivator {
   AdaptiveSingleActivator(
     super.trigger, {

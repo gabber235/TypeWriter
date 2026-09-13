@@ -1,5 +1,8 @@
 part of "action_executor.dart";
 
+// List item operations resolve the parent root, validate indexes, and return
+// the root replacement so projected bindings cannot become separate state.
+
 extension on DuplicateListItemAction {
   LocalMutationResult _duplicate(
     ExpressionContext context,

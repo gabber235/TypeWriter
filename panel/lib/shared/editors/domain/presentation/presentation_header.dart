@@ -3,6 +3,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "presentation_header.freezed.dart";
 
+/// Stable identity used to merge and target actions in a presentation header.
+///
+/// Header composition uses the qualified namespace and name as the conflict
+/// key. Keep identifiers stable when a header is rebuilt so renderer state and
+/// action history remain associated with the same item.
 @freezed
 abstract class HeaderItemId with _$HeaderItemId {
   @Assert("namespace != \"\"", "Header item namespace must not be empty.")
@@ -66,6 +71,10 @@ enum HeaderActionTone { neutral, destructive }
 
 enum HeaderActionPlacement { beforeTitle, afterTitle, end }
 
+/// Header title supplied either as evaluated text or as a nested presentation.
+///
+/// A nested node is useful when a title needs live structure or custom layout;
+/// a text title is the lightweight path for ordinary labels.
 @freezed
 sealed class PresentationHeaderTitle with _$PresentationHeaderTitle {
   const factory PresentationHeaderTitle.text(TypedExpression value) =
@@ -134,6 +143,12 @@ abstract class HeaderActionConfirmation with _$HeaderActionConfirmation {
   }) = _HeaderActionConfirmation;
 }
 
+/// Action or affordance rendered in a node header.
+///
+/// Visibility, enabled state, labels, and confirmation content are expressions
+/// evaluated in the header's binding context. The action still goes through the
+/// editor action boundary, so header placement does not own mutation or commit
+/// policy.
 @freezed
 sealed class HeaderItem with _$HeaderItem {
   const factory HeaderItem.button({
@@ -173,6 +188,13 @@ sealed class HeaderItem with _$HeaderItem {
   }) = HeaderReorderHandleItem;
 }
 
+/// Optional chrome and actions attached to a [PresentationNode].
+///
+/// A header may describe the node's binding, title, and content spacing while
+/// contributing actions such as collection add or boolean toggle. When headers
+/// are composed, an outer item with the same [HeaderItemId] wins; missing outer
+/// fields inherit from the inner header. Header state is presentation metadata,
+/// not editor state.
 @freezed
 abstract class PresentationHeader with _$PresentationHeader {
   const factory PresentationHeader({

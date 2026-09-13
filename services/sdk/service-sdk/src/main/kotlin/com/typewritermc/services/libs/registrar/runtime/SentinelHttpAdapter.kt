@@ -30,6 +30,7 @@ class SentinelCredentials(
     override fun toString() = "SentinelCredentials(jwt=[REDACTED], seed=[REDACTED])"
 }
 
+/** Outcome of one Sentinel credential fetch, classified for stale fallback policy. */
 sealed interface SentinelResult {
     data class Success(
         val credentials: SentinelCredentials,
@@ -40,6 +41,7 @@ sealed interface SentinelResult {
     ) : SentinelResult
 }
 
+/** Fetches the current Sentinel credentials without hiding protocol or transport failures. */
 fun interface SentinelProvider {
     suspend fun fetch(): SentinelResult
 }
@@ -142,6 +144,7 @@ class SentinelCache(
         }
     }
 
+    /** Returns fresh credentials or, for transient unavailability, an entry within maximum staleness. */
     suspend fun get(): SentinelResult =
         mutex.withLock {
             val current = entry
@@ -163,7 +166,9 @@ class SentinelCache(
             }
         }
 
+    /** Discards cached credentials so the next access fetches them. */
     suspend fun invalidate() = clear()
 
+    /** Clears cached Sentinel material during handover or runtime closure. */
     suspend fun clear() = mutex.withLock { entry = null }
 }

@@ -15,6 +15,12 @@ internal class RealmPresentationSearchRoutes(
     private val contracts: LibraryContracts,
     private val realmAddress: RealmAddress,
 ) {
+    /**
+     * Registers search startup and cancellation on the current Realm router.
+     *
+     * Updates are republished through the same subscription filter as the contract. A source that returns a
+     * mismatched identity is converted to an error snapshot, preventing one search from contaminating another.
+     */
     fun register(builder: CommunicatorRoutesBuilder) =
         with(builder) {
             unary(contracts.cancelRealmPresentationSearch) { call ->

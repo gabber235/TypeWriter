@@ -1,5 +1,6 @@
 part of "page_elements.dart";
 
+/// Entry definition indexed by its owning page for mutation routing.
 final class CachedPageEntry {
   const CachedPageEntry({required this.pageId, required this.definition});
 
@@ -7,6 +8,10 @@ final class CachedPageEntry {
   final EntryDefinition definition;
 }
 
+/// Compilation state and diagnostics exposed for one page document.
+///
+/// A blocked document may still have [activeManifestId], which identifies the
+/// last valid version the engine can run while authoring remains repairable.
 final class PageDocumentHealth {
   const PageDocumentHealth({
     required this.diagnostics,
@@ -19,6 +24,11 @@ final class PageDocumentHealth {
   final String? activeManifestId;
 }
 
+/// A decoded page document element, either an entry or a timeline cue.
+///
+/// This is a presentation ready projection, not the persistence authority.
+/// Its value and placement can be overlaid by a local draft and later encoded
+/// back into the wire document by the mutation pipeline.
 @Freezed(unionKey: "_kind")
 abstract class PageElement with _$PageElement {
   const factory PageElement.entry({required PageEntry entry}) =
@@ -27,6 +37,7 @@ abstract class PageElement with _$PageElement {
   const factory PageElement.cue({required Cue cue}) = PageElementCue;
 }
 
+/// Provides stable identity and placement operations across entry and cue variants.
 extension PageElementId on PageElement {
   String get id => switch (this) {
     PageElementEntry(:final entry) => entry.id,
@@ -183,6 +194,11 @@ extension on RecordValue {
   }
 }
 
+/// A directional link between element identifiers at a typed data path.
+///
+/// The decoder derives incoming and outgoing links from the document reference
+/// list. Keeping the link direction in the projection lets graph consumers
+/// render edges without reading the wire document directly.
 @freezed
 abstract class ElementLink with _$ElementLink {
   @Assert("linkId != \"\"", "Link ID must not be empty.")

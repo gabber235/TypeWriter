@@ -1,9 +1,14 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Fills a route or application shell while its initial work is pending.
+///
+/// The screen communicates progress without owning the operation. Replace it
+/// with the resulting route or an [ErrorScreen] when that work completes.
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({this.title = "Waiting for connection", super.key});
 
+  /// Heading that identifies the pending operation.
   final String title;
 
   @override
@@ -22,16 +27,12 @@ class LoadingScreen extends StatelessWidget {
         SizedBox(height: context.spacing.space6),
         Text(
           title,
-          style: Theme.of(context).textTheme.displayLarge!.copyWith(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.displayLarge!
+              .copyWith(fontSize: 40, fontWeight: FontWeight.bold),
         ),
         ConnectionScroller(
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            fontSize: 20,
-            color: context.colors.contentSecondary,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium!
+              .copyWith(fontSize: 20, color: context.colors.contentSecondary),
         ),
         SizedBox(height: context.spacing.space6),
         Spacer(),
@@ -40,9 +41,14 @@ class LoadingScreen extends StatelessWidget {
   }
 }
 
+/// Shows rotating connection messages beneath a [LoadingScreen] heading.
+///
+/// The messages are shuffled when this widget is built, so they are
+/// illustrative status copy rather than a progress report.
 class ConnectionScroller extends StatelessWidget {
   const ConnectionScroller({this.style, super.key});
 
+  /// Text style passed to the rotating status messages.
   final TextStyle? style;
 
   @override

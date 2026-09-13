@@ -5,6 +5,11 @@ import "package:flutter/rendering.dart";
 
 enum _ElementSlot { leading, center, suffix }
 
+/// Lays out a leading control, optional centered content, and optional suffix.
+///
+/// The center and suffix are progressively omitted when the incoming width
+/// cannot preserve the configured minimum center width. The render object owns
+/// that responsive decision, so callers do not need separate breakpoint trees.
 class AdaptiveLeadingLayout
     extends SlottedMultiChildRenderObjectWidget<_ElementSlot, RenderBox> {
   const AdaptiveLeadingLayout({

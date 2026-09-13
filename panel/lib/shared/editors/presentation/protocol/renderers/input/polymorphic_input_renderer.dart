@@ -3,6 +3,12 @@ library;
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Lets the author choose one concrete type for a nominal polymorphic value,
+/// then renders that type's presentation or its default representation editor.
+///
+/// The concrete type selector replaces the whole polymorphic value with an
+/// initial valid payload. The payload editor writes back through the original
+/// binding, which keeps the scope as the sole update owner.
 extension PolymorphicInputElementRendering on PolymorphicInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final element = this;
@@ -72,6 +78,9 @@ extension PolymorphicInputElementRendering on PolymorphicInputElement {
   }
 }
 
+/// Supplies the virtual payload binding used when a concrete type has no
+/// custom presentation. Its update callback reconstructs the enclosing
+/// polymorphic value rather than exposing a second mutable source of truth.
 extension on PolymorphicValue {
   Widget _defaultConcreteEditor(
     ResolvedBinding binding,

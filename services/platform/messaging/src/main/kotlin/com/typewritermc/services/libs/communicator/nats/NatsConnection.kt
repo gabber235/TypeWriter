@@ -79,14 +79,14 @@ class NatsConnection internal constructor(
     /** Current lifecycle state. */
     val state: StateFlow<NatsConnectionState> = mutableState.asStateFlow()
 
-    /** Connects a newly configured client. */
+    /** Connects a newly configured client and begins monitoring its native connectivity. */
     suspend fun connect(): NatsLifecycleResult =
         lifecycle.withLock {
             check(activeClient == null && mutableState.value == NatsConnectionState.Disconnected) { "NATS connection is already active" }
             connectNew(NatsConnectionState.Connecting)
         }
 
-    /** Deliberately disconnects the old client and reconnects using freshly loaded providers. */
+    /** Deliberately disconnects the old client, discards its subscriptions, and reconnects with freshly loaded providers. */
     suspend fun reconnect(): NatsLifecycleResult =
         lifecycle.withLock {
             val old = activeClient ?: return@withLock connectNew(NatsConnectionState.Reconnecting)
@@ -109,7 +109,7 @@ class NatsConnection internal constructor(
             connectNew(NatsConnectionState.Reconnecting)
         }
 
-    /** Drains and disconnects. A failed disconnect retains the client for a later shutdown attempt. */
+    /** Drains and disconnects the active client. A failed cleanup retains the client for a later shutdown attempt. */
     suspend fun shutdown(): NatsLifecycleResult =
         lifecycle.withLock {
             val client = activeClient ?: return@withLock NatsLifecycleResult.Success

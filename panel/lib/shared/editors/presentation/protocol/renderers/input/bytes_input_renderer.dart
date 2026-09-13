@@ -1,5 +1,10 @@
 part of "../../simple_input_renderer.dart";
 
+/// Renders a byte sequence as editable base64 text.
+///
+/// Parsing and type validation happen before the value is sent through the
+/// bound control field. Invalid text therefore leaves the authoritative value
+/// unchanged and lets the caller continue editing.
 extension BytesInputElementRendering on BytesInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

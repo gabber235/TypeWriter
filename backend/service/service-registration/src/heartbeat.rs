@@ -1,3 +1,9 @@
+//! Records service liveness from heartbeat notifications.
+//!
+//! A heartbeat is accepted only after its Skir payload decodes. The service state is updated with
+//! the current time. Bound services additionally publish the resulting service projection to
+//! their organization's watch subject; unbound services remain database only.
+
 use std::collections::HashMap;
 use wasmcloud_utils::database::service::ServiceStatusRecord;
 
@@ -14,6 +20,10 @@ use wasmcloud_utils::{
 use wasmcloud_utils::database::service::ServiceRecord;
 
 #[tracing::instrument(skip(msg, params))]
+/// Marks the service online and propagates the new state when it belongs to an organization.
+///
+/// The notification body carries no state to merge. Its subject identifies the service, while
+/// `update_state` owns the database write and the conditional organization publication.
 pub async fn handle_heartbeat(
     msg: BrokerMessage,
     params: HashMap<String, String>,
@@ -30,6 +40,11 @@ pub async fn handle_heartbeat(
 }
 
 #[tracing::instrument]
+/// Writes service liveness and publishes the bound service projection.
+///
+/// The state write and `last_seen` timestamp are one database update. A missing service is an
+/// error. A service without an organization is valid during onboarding and produces no watch
+/// event because there is no organization projection to update.
 pub(crate) async fn update_state(
     service_id: &RecordId,
     status: &ServiceStatusRecord,

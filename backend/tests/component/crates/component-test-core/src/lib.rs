@@ -1,4 +1,9 @@
 //! Embedded wasmCloud component test runtime.
+//!
+//! A fixture declares component artifacts and host capabilities, then the runner provisions those
+//! capabilities, starts the workload, executes one test body, drains asynchronous work, verifies
+//! expectations, and cleans up in reverse order. [`TestContext`] is the only test body handle for
+//! incoming HTTP, messaging, registered mocks, fixture extensions, and bounded diagnostics.
 
 #![forbid(unsafe_code)]
 
@@ -45,13 +50,20 @@ use tokio::{
 use tracing_subscriber::prelude::*;
 use wash_runtime::{engine::Engine, plugin::wasmcloud_messaging::InMemoryMessagingDriver};
 
+/// Result returned by a component test body.
 pub type TestResult = anyhow::Result<()>;
+/// Boxed future used by the attribute macro to borrow a test context for its duration.
 pub type BoxTestFuture<'a> = Pin<Box<dyn Future<Output = TestResult> + Send + 'a>>;
 
+/// Static fixture metadata consumed by the runner and affected selection logic.
 pub trait FixtureDeclaration: Send + Sync + 'static {
     const DESCRIPTOR: FixtureDescriptor;
 }
 
+/// Test scoped access to the running fixture and its registered host capabilities.
+///
+/// The context owns only test observations and the bounded diagnostic transcript. Workload
+/// lifetime, extension cleanup, and expectation verification remain owned by [`run_case`].
 pub struct TestContext<F> {
     descriptor: &'static TestDescriptor,
     http: Option<(SocketAddr, String)>,
@@ -62,18 +74,25 @@ pub struct TestContext<F> {
     marker: PhantomData<F>,
 }
 impl<F> TestContext<F> {
+    /// Returns the stable fixture identifier used in diagnostics and selection.
     pub fn fixture_id(&self) -> &str {
         self.descriptor.fixture_id
     }
+    /// Returns the static descriptor for the currently executing test case.
     pub fn test(&self) -> &'static TestDescriptor {
         self.descriptor
     }
+    /// Returns the bound incoming HTTP address when the fixture enables HTTP.
     pub fn http_address(&self) -> Option<SocketAddr> {
         self.http.as_ref().map(|value| value.0)
     }
+    /// Returns the host header configured for incoming HTTP requests, when enabled.
     pub fn http_host(&self) -> Option<&str> {
         self.http.as_ref().map(|value| value.1.as_str())
     }
+    /// Creates an HTTP client for the fixture's incoming workload route.
+    ///
+    /// Fails when the fixture did not configure an incoming HTTP server.
     pub fn http(&self) -> Result<IncomingHttpClient> {
         let (address, host) = self
             .http
@@ -85,6 +104,7 @@ impl<F> TestContext<F> {
             client: reqwest::Client::new(),
         })
     }
+    /// Returns the outgoing HTTP mock registered under marker type `M`.
     pub fn http_mock<M: Send + Sync + 'static>(&self) -> Result<HttpMock> {
         self.handles
             .get(&TypeId::of::<M>())
@@ -94,17 +114,20 @@ impl<F> TestContext<F> {
             .map(|value| (*value).clone())
             .map_err(|_| anyhow::anyhow!("registered marker is not an HTTP mock"))
     }
+    /// Returns the in memory client for publishing or requesting through the workload broker.
     pub fn messaging(&self) -> Result<MessagingClient> {
         self.messaging
             .clone()
             .map(MessagingClient)
             .ok_or_else(|| anyhow::anyhow!("fixture has no messaging interface"))
     }
+    /// Returns the messaging expectation mock configured for this fixture.
     pub fn messaging_mock(&self) -> Result<MessagingMock> {
         self.messaging_mock
             .clone()
             .ok_or_else(|| anyhow::anyhow!("fixture has no messaging interface"))
     }
+    /// Returns the handle produced by a fixture extension of type `T`.
     pub fn extension<T: Send + Sync + 'static>(&self) -> Option<Arc<T>> {
         self.handles
             .get(&TypeId::of::<T>())
@@ -112,6 +135,7 @@ impl<F> TestContext<F> {
             .downcast()
             .ok()
     }
+    /// Adds a bounded diagnostic event that is included when the case fails.
     pub fn diagnostic(&mut self, message: impl Into<String>) {
         if self.transcript.len() == 256 {
             self.transcript.pop_front();
@@ -120,6 +144,7 @@ impl<F> TestContext<F> {
     }
 }
 
+/// Client for requests entering the fixture's primary workload.
 #[derive(Clone)]
 pub struct IncomingHttpClient {
     base: String,
@@ -127,17 +152,21 @@ pub struct IncomingHttpClient {
     client: reqwest::Client,
 }
 impl IncomingHttpClient {
+    /// Builds a request with the fixture's configured host header.
     pub fn request(&self, method: http::Method, path: &str) -> reqwest::RequestBuilder {
         self.client
             .request(method, format!("{}{path}", self.base))
             .header(http::header::HOST, &self.host)
     }
+    /// Builds a GET request against the fixture's primary workload.
     pub fn get(&self, path: &str) -> reqwest::RequestBuilder {
         self.request(http::Method::GET, path)
     }
+    /// Builds a POST request against the fixture's primary workload.
     pub fn post(&self, path: &str, body: impl Into<reqwest::Body>) -> reqwest::RequestBuilder {
         self.request(http::Method::POST, path).body(body)
     }
+    /// Sends a request, rejects non successful status, and returns its body bytes.
     pub async fn bytes(
         &self,
         method: http::Method,
@@ -155,9 +184,11 @@ impl IncomingHttpClient {
     }
 }
 
+/// Client for exercising the fixture's in memory broker connections.
 #[derive(Clone)]
 pub struct MessagingClient(InMemoryMessagingDriver);
 impl MessagingClient {
+    /// Publishes a one way message to the workload broker.
     pub async fn publish(
         &self,
         subject: impl Into<String>,
@@ -168,6 +199,7 @@ impl MessagingClient {
             .await
             .map_err(Into::into)
     }
+    /// Sends a broker request and returns the reply body.
     pub async fn request(
         &self,
         subject: impl Into<String>,
@@ -180,6 +212,7 @@ impl MessagingClient {
             .await?
             .body)
     }
+    /// Waits until the in memory broker has finished queued delivery.
     pub async fn wait_idle(&self) -> Result<()> {
         self.0.wait_idle().await.map_err(Into::into)
     }
@@ -265,6 +298,11 @@ fn admission_limit(available: usize, configured: Option<&str>) -> Result<usize, 
     }
 }
 
+/// Runs one registered case through provisioning, execution, verification, and cleanup.
+///
+/// A failing phase is reported as a panic because this function is the synchronous libtest
+/// boundary. Cleanup runs for every extension whose provisioning began, including interrupted
+/// provisioning.
 pub fn run_case<F, B>(descriptor: &'static TestDescriptor, body: B)
 where
     F: FixtureSpec,

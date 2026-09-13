@@ -5,7 +5,14 @@ typedef MultiInteractionCommitter = Future<void> Function(
   List<EditorInteractionSession> interactions,
 );
 
-/// Projects common editable fields while preserving every resource owner.
+/// Presents several owners as one editor for multi selection editing.
+///
+/// A read returns loading or invalid state if any owner has that state, mixed
+/// when owners disagree, and a ready value only when all owners agree. An
+/// update is sent to every owner, but the aggregate is applied only when all
+/// owners accept the same value. [commitInteractions] owns the persistence
+/// policy for the corresponding sessions, including whether their commits are
+/// atomic. This class observes owners but never disposes them.
 final class MultiEditOwner extends ChangeNotifier implements EditOwner {
   MultiEditOwner({
     required List<EditOwner> owners,
@@ -127,6 +134,10 @@ extension IndependentInteractionCommit on Iterable<EditorInteractionSession> {
   }
 }
 
+/// Combines per owner validation or update results without hiding disagreement.
+/// Invalid diagnostics take precedence over conflicts. An applied result is
+/// valid only when at least one owner accepts the path and every applied owner
+/// returns the same value.
 extension SelectionEditorMutationAggregation on Iterable<EditorMutationResult> {
   EditorMutationResult aggregateEditorMutationsFor(DataPath path) {
     final results = toList();

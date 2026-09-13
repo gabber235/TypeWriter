@@ -5,10 +5,16 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-// Entry nodes use white as their established focus treatment so focus remains
-// legible against every data-driven elementDefinition color.
+// Focus uses white because node colors come from the element catalog and can
+// vary per definition. A stable focus color keeps selection legible.
 const _entryFocusColor = Colors.white;
 
+/// Renders the page entry union as a local node, a cross page reference, or a
+/// visible degraded state when the target or its catalog definition is gone.
+///
+/// Interaction state is delegated to selection and graph drag infrastructure.
+/// This widget only chooses the visual variant and passes its state to the
+/// variant renderer.
 class EntryNode extends HookConsumerWidget {
   const EntryNode({required this.entry, super.key});
 
@@ -297,10 +303,8 @@ class _NonexistentEntryNode extends StatelessWidget {
             Flexible(
               child: Text(
                 "Non-existent entry",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: context.colors.onDanger,
-                  fontSize: 13,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium!
+                    .copyWith(color: context.colors.onDanger, fontSize: 13),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -380,10 +384,8 @@ class _MissingElementDefinitionEntryNode extends HookConsumerWidget {
                     Flexible(
                       child: Text(
                         name,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: highlightColor,
-                          fontSize: 13,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium!
+                            .copyWith(color: highlightColor, fontSize: 13),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -454,9 +456,8 @@ class _FeedbackEntryNode extends StatelessWidget {
                           ? TextDecoration.lineThrough
                           : null,
                       decorationThickness: 2.8,
-                      decorationColor: Theme.of(
-                        context,
-                      ).scaffoldBackgroundColor,
+                      decorationColor: Theme.of(context)
+                          .scaffoldBackgroundColor,
                       decorationStyle: TextDecorationStyle.wavy,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -470,9 +471,8 @@ class _FeedbackEntryNode extends StatelessWidget {
                           ? TextDecoration.lineThrough
                           : null,
                       decorationThickness: 2.5,
-                      decorationColor: Theme.of(
-                        context,
-                      ).scaffoldBackgroundColor,
+                      decorationColor: Theme.of(context)
+                          .scaffoldBackgroundColor,
                       decorationStyle: TextDecorationStyle.wavy,
                     ),
                   ),

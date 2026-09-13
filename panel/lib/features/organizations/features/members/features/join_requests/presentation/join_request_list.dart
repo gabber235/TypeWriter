@@ -6,6 +6,12 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Coordinates visible request rows and their transient multi selection.
+///
+/// The input list is the provider's read model. This widget owns only selected
+/// identifiers and list animation. It keeps selection intersected with visible
+/// requests, confirms bulk decline, and delegates every server mutation to the
+/// provider.
 class JoinRequestsList extends HookConsumerWidget {
   const JoinRequestsList({required this.requests, super.key});
 
@@ -17,6 +23,11 @@ class JoinRequestsList extends HookConsumerWidget {
     final theme = Theme.of(context);
     final isDecliningSelection = useRef(false);
 
+    /// Confirms and declines the currently selected visible requests.
+    ///
+    /// Decline is intentionally issued one request at a time because the wire
+    /// contract exposes a single request operation. The provider performs the
+    /// optimistic removal and rollback for each operation.
     Future<void> declineSelection() async {
       if (isDecliningSelection.value) return;
       final requestIds = requests.map((request) => request.requestId).toSet();

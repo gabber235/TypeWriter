@@ -4,6 +4,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "render_scope.freezed.dart";
 
+/// Receives a value update from a rendered input.
+///
+/// The callback receives the expression context and aliases active at the
+/// input, allowing the owner boundary to canonicalize and validate the
+/// destination before applying the mutation.
 typedef BindingSetter = void Function(
   BindingReference reference,
   DataValue value,
@@ -11,16 +16,30 @@ typedef BindingSetter = void Function(
   Map<BindingId, BindingReference> aliases,
 );
 
+/// Routes an action to the owner of the current presentation tree.
+///
+/// The context and aliases are the values at the action site. The receiver
+/// decides whether the action is local or crosses into the realm boundary.
 typedef ActionExecutor = void Function(
   EditorAction action,
   ExpressionContext context,
   Map<BindingId, BindingReference> aliases,
 );
 
+/// Starts an interaction session for a binding, if its owner supports one.
+///
+/// Renderers use this boundary to bracket focus, commit, and cancellation
+/// without owning draft history or persistence state.
 typedef EditorInteractionStarter = EditorInteractionSession? Function(
   BindingReference reference,
 );
 
+/// Owns a temporary binding projected by a composite input.
+///
+/// Composite controls may expose a field that is not stored as an independent
+/// resource value. This host keeps the projected snapshot locally, translates
+/// edits back into the parent value, and reports replacements through
+/// [onChanged]. It does not become the owner of the parent draft or revision.
 final class VirtualBindingHost {
   VirtualBindingHost({
     required this.id,
@@ -47,6 +66,11 @@ final class VirtualBindingHost {
     return interactionTarget!.at(reference.path);
   }
 
+  /// Replaces a projected path and reports the resulting parent snapshot.
+  ///
+  /// Returns false when the path cannot be applied. A successful update changes
+  /// only this host's projection; the callback forwards the replacement to the
+  /// parent input, which remains authoritative for the actual draft.
   bool update(DataPath path, DataValue value) {
     final updated = path.replace(_snapshot.value, value).valueOrNull;
     if (updated == null) return false;
@@ -55,6 +79,11 @@ final class VirtualBindingHost {
     return true;
   }
 
+  /// Executes a local action against the projected snapshot.
+  ///
+  /// The action sees bindings reconstructed from the current projection. When
+  /// it succeeds, the affected value is written back through [update], while
+  /// the parent editor still owns the resulting draft and revision.
   LocalMutationResult execute(
     LocalEditorAction action,
     ExpressionContext context, {
@@ -102,6 +131,10 @@ final class VirtualBindingHost {
   }
 }
 
+/// A presentation definition resolved for a requested identifier or type.
+///
+/// [root] is rendered in a fresh scope when [inputs] are bound. [primaryInput]
+/// identifies the value used when the definition is rendered as a typed field.
 @freezed
 abstract class ResolvedPresentationDefinition
     with _$ResolvedPresentationDefinition {
@@ -113,6 +146,10 @@ abstract class ResolvedPresentationDefinition
   }) = _ResolvedPresentationDefinition;
 }
 
+/// Identifies one header expansion state within a composed presentation.
+///
+/// Node keys cover stable tree locations. Instance keys cover repeated or
+/// invoked content whose rendered identity is supplied by the caller.
 @freezed
 sealed class HeaderExpansionKey with _$HeaderExpansionKey {
   const factory HeaderExpansionKey.node({
@@ -124,6 +161,11 @@ sealed class HeaderExpansionKey with _$HeaderExpansionKey {
       InstanceHeaderExpansionKey;
 }
 
+/// Owns transient expansion choices for headers in one composed editor.
+///
+/// Keys distinguish stable nodes from repeated or invoked presentation
+/// instances. The store is intentionally separate from the immutable render
+/// scope, and is discarded with the enclosing editor surface.
 final class HeaderExpansionStore {
   final Map<HeaderExpansionKey, bool> _values = {};
 
@@ -144,11 +186,22 @@ final class HeaderExpansionStore {
   }
 }
 
+/// Selects a presentation definition for a requested type and identifier.
+///
+/// The resolver owns fallback policy, including default presentations. A null
+/// result means the caller must render the protocol's missing presentation
+/// diagnostic or fallback rather than guessing a definition.
 typedef PresentationResolver = ResolvedPresentationDefinition? Function(
   TypeExpression? type,
   PresentationId? requested,
 );
 
+/// Immutable capabilities and state passed through one presentation tree.
+///
+/// Bindings and actions remain routed to the enclosing editor owner. Derived
+/// scopes may add aliases or virtual bindings, narrow access, disable input,
+/// or enter read only mode, but cannot grant capabilities absent from the
+/// parent scope. [expansionStore] is the sole owner of transient header state.
 @freezed
 abstract class PresentationRenderScope with _$PresentationRenderScope {
   const factory PresentationRenderScope({
@@ -180,6 +233,7 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
 
   const PresentationRenderScope._();
 
+  /// Resolves an alias to the binding address used by the enclosing owner.
   BindingReference canonical(BindingReference reference) {
     final alias = aliases[reference.bindingId];
     if (alias == null) return reference;
@@ -215,20 +269,29 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
       headerShortcuts[HeaderItemCommandId(itemId: itemId, command: command)] ??
       const [];
 
+  /// Sends an input value to the draft owner when this scope permits editing.
+  ///
+  /// Disabled and read only scopes absorb updates. This keeps presentation
+  /// policy at the tree boundary instead of requiring every control to repeat
+  /// the same guard.
   void update(BindingReference reference, DataValue value) {
     if (!enabled || readOnly) return;
     setBinding(reference, value, expressions, aliases);
   }
 
+  /// Routes an action unless this scope has disabled it or is read only for a
+  /// local action. Realm actions remain eligible in read only presentations.
   void invoke(EditorAction action) {
     if (!enabled) return;
     if (readOnly && action is LocalEditorAction) return;
     executeAction(action, expressions, aliases);
   }
 
+  /// Begins an interaction at the canonical owner address, when supported.
   EditorInteractionSession? beginInteraction(BindingReference reference) =>
       startInteraction?.call(canonical(reference));
 
+  /// Adds a lexical alias while preserving the source owner's access policy.
   PresentationRenderScope withAlias(
     BindingId id,
     BindingReference source,
@@ -240,6 +303,10 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
     ownerBindings: {...ownerBindings, id: ownerReference(source)},
   );
 
+  /// Derives a scope whose virtual binding writes back through [host].
+  ///
+  /// Only local actions targeting that binding are intercepted. Other actions
+  /// continue to the enclosing owner.
   PresentationRenderScope withVirtualBinding(
     VirtualBindingHost host, {
     BindingReference? source,

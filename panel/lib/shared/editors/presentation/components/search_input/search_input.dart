@@ -13,6 +13,14 @@ part "search_input_results.dart";
 part "search_input_row.dart";
 part "search_input_types.dart";
 
+/// Renders a presentation search control and applies selections to its binding.
+///
+/// The enclosing [PresentationRenderScope] remains authoritative for the
+/// value and edit interaction. This widget owns only query state, the value
+/// captured at entry, validation feedback, and selection events consumed by
+/// search history. A single selection previews and commits immediately.
+/// Multiple selection toggles list members while keeping the search surface
+/// open. Dismiss commits the interaction; cancel restores the captured value.
 class PresentationSearchInput extends HookConsumerWidget {
   const PresentationSearchInput({
     required this.element,
@@ -27,6 +35,14 @@ class PresentationSearchInput extends HookConsumerWidget {
   final InspectedBinding binding;
   final PresentationRenderScope scope;
   final double maximumExtent;
+
+  /// Optional source factory for callers that need a source different from
+  /// the standard provider materialization.
+  ///
+  /// It receives the search subtree's provider reference and a synchronous
+  /// stream of committed selections. The returned source is owned by the
+  /// [SearchController] created for this widget and must follow the
+  /// [SearchSource] disposal contract.
   final PresentationSearchSourceBuilder? sourceBuilder;
 
   @override

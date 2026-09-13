@@ -5,6 +5,14 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Edits one color value in the shared editor surface.
+///
+/// The bound editor owns the color and receives every valid change through
+/// [onChanged]. This field owns only picker visibility and interaction
+/// boundaries. Opening begins an interaction, ordinary dismissal commits it,
+/// and cancel dismissal reports cancellation without changing the value here.
+/// The mixed constructor keeps differing bound values distinct until the caller
+/// chooses a replacement color.
 class ColorPickerField extends HookConsumerWidget {
   const ColorPickerField({
     required this.color,

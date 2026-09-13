@@ -111,8 +111,10 @@ class TypePrototypeRegistry(
         }
     }
 
+    /** Finds the prototype for an exact resolved reference or fails when the deployment lacks it. */
     fun require(reference: ResolvedTypeRef): TypePrototype<*> = byReference[reference] ?: error("Type prototype is unavailable: $reference")
 
+    /** Finds the prototype registered for a runtime class or fails when it is unavailable. */
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> require(type: KClass<T>): TypePrototype<T> =
         byRuntimeType[type] as? TypePrototype<T> ?: error("Type prototype is unavailable: ${type.qualifiedName}")
@@ -231,6 +233,7 @@ class CatalogAbstractTypePrototype<T : Any>(
     }
 }
 
+/** Resolves this runtime class through the active prototype registry. */
 context(prototypes: TypePrototypeRegistry)
 val <T : Any> KClass<T>.prototype: TypePrototype<T>
     get() = prototypes.require(this)

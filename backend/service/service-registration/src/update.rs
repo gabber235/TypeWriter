@@ -1,3 +1,17 @@
+//! Applies organization owned service metadata changes.
+//!
+//! Metadata update is separate from registration binding because it operates on an already bound
+//! service, uses organization authorization, and has compare and set revision semantics. Binding
+//! changes ownership and visibility. Update changes the service projection while preserving that
+//! ownership. Unbinding removes ownership and clears the lease.
+//!
+//! The database transaction owns the revision check, name validation, write, and mutation receipt.
+//! `recall` and `commit` make retries safe for one `operation_id` and reject reuse with different
+//! request bytes. The transaction returns the canonical updated record or the canonical current
+//! record for a revision conflict. Validation and not found outcomes perform no write and publish
+//! nothing. The watch update is published only after commit, because a message cannot participate
+//! in the database rollback boundary.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -40,6 +54,14 @@ impl ServiceUpdateOutcome {
     }
 }
 
+/// Updates the name of a service owned by the addressed organization.
+///
+/// The expected revision makes concurrent edits explicit. Success returns the committed service;
+/// a conflict returns the current service and the caller's expected revision, allowing the caller
+/// to reconcile against canonical state. Invalid names, services outside the organization, and
+/// reused operation identities map to their contract responses without a metadata publication.
+/// After a successful commit, the organization service watch receives the updated projection. A
+/// publication failure occurs after durable mutation and is therefore not rolled back.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_update(
     msg: BrokerMessage,
@@ -148,6 +170,8 @@ pub async fn handle_update(
         }
     };
 
+    // The update is durable before this projection is published. The watch is a convergence
+    // mechanism, not part of the transaction's mutation receipt.
     wasmcloud_utils::skir_subjects::organization_services(org_id)
         .publish(WatchOrganizationServicesResponse::Update(Box::new(
             service.clone(),

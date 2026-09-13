@@ -10,6 +10,7 @@ pub enum SkirResponseOutcome {
 }
 
 impl SkirResponseOutcome {
+    /// Returns the stable telemetry label for this outcome.
     pub fn as_str(self) -> &'static str {
         match self {
             SkirResponseOutcome::Success => "success",
@@ -19,24 +20,35 @@ impl SkirResponseOutcome {
     }
 }
 
-/// Trait implemented by skir response enums via the `skir_response!` proc macro.
+/// Contract shared by every typed SKIR response enum.
 ///
-/// Provides serialization, outcome classification, slug/message generation, and
-/// internal error construction for typed skir response enums.
+/// The `skir_response!` macro supplies the implementation. Response handlers use this
+/// trait to serialize replies, classify telemetry, expose a stable variant slug, and
+/// construct the fallback response used when a handler fails before producing a domain
+/// result.
 pub trait SkirResponse: Sized {
-    /// Serialize this response to skir bytes.
+    /// Serialize the response using its generated SKIR serializer.
+    ///
+    /// The bytes are the wire payload for messaging replies and do not include a
+    /// transport envelope.
     fn to_skir_bytes(&self) -> Vec<u8>;
 
-    /// Returns the runtime outcome classification for this variant.
+    /// Classify this variant for handler control flow and telemetry.
     fn outcome(&self) -> SkirResponseOutcome;
 
-    /// Returns a kebab-case slug for this variant (e.g. `"invalid-credentials"`).
+    /// Return the stable slug used in telemetry and internal error values.
     fn variant_slug(&self) -> &'static str;
 
-    /// Returns a human-readable message for this variant.
+    /// Return the caller facing message for this variant.
+    ///
+    /// Payload fields may be included when the response declaration defines a
+    /// payload aware message.
     fn variant_message(&self) -> String;
 
-    /// Construct the generic internal error variant for this response enum.
+    /// Construct the generic internal error sent when a handler returns an error.
+    ///
+    /// The original error remains the handler result, while this value is sent to the
+    /// caller as the typed response.
     fn internal_error() -> Self;
 
     /// Construct a default domain-error response for a known slug.
@@ -48,7 +60,10 @@ pub trait SkirResponse: Sized {
     }
 }
 
-/// Result of converting a transaction-domain result into a typed SKIR response flow.
+/// Result of converting a database operation into the response flow used by handlers.
+///
+/// `Value` continues the success path. `Response` is an expected domain outcome and
+/// must be returned to the caller without being treated as infrastructure failure.
 #[derive(Debug)]
 pub enum SkirDomainResult<T, R> {
     /// The transaction succeeded and produced a value.
@@ -57,15 +72,18 @@ pub enum SkirDomainResult<T, R> {
     Response(R),
 }
 
-/// Extension helpers for SurrealDB transaction results that carry domain slugs.
+/// Converts database outcomes carrying domain slugs into typed SKIR responses.
+///
+/// Unknown slugs are infrastructure errors because the response enum does not define
+/// a safe wire representation for them.
 pub trait SkirDomainResultExt<T>: Sized {
-    /// Convert an inner transaction result into either a value or a typed domain response.
+    /// Convert a result into either its value or the response enum's default domain variant.
     fn into_skir_domain_result<R>(self) -> Result<SkirDomainResult<T, R>, otel_wasi::Error>
     where
         R: SkirResponse;
 
-    /// Convert an inner transaction result, allowing the call site to construct
-    /// payloadful domain-error responses for matching slugs.
+    /// Convert a result while allowing the caller to construct payloadful domain variants
+    /// for matching slugs before the enum's default constructor is tried.
     fn into_skir_domain_result_with<R, F>(
         self,
         override_constructor: F,
@@ -143,8 +161,10 @@ where
     ))
 }
 
-/// SurrealDB adds its display prefix when a THROW crosses a query block.
-/// Normalize only structured database rejections, before matching known domain slugs.
+/// Remove the prefix SurrealDB adds when a structured `THROW` crosses a query block.
+///
+/// Only this known wrapper is removed. Other messages remain unchanged so unknown
+/// database failures are not mistaken for domain slugs.
 fn database_domain_slug(message: &str) -> &str {
     message.trim_start_matches("An error occurred: ")
 }

@@ -1,5 +1,6 @@
 part of "sidebar.dart";
 
+/// Labels a group of related links in the sidebar.
 class SidebarHeader extends StatelessWidget {
   const SidebarHeader({required this.text, super.key});
   final String text;
@@ -25,6 +26,10 @@ class SidebarHeader extends StatelessWidget {
   }
 }
 
+/// Navigates to an internal route and reflects the active route selection.
+///
+/// The route controller is read from the nearest [StackRouterScope]. If no
+/// controller is available, the link remains visible but cannot be activated.
 class SidebarLink extends HookConsumerWidget {
   const SidebarLink({
     required this.icon,
@@ -72,9 +77,8 @@ class SidebarLink extends HookConsumerWidget {
                   }
                 }
               : null,
-          hoverColor: Theme.of(
-            context,
-          ).colorScheme.onSurface.withValues(alpha: 0.1),
+          hoverColor: Theme.of(context).colorScheme.onSurface
+              .withValues(alpha: 0.1),
           borderRadius: context.shapes.mediumBorderRadius,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -93,19 +97,15 @@ class SidebarLink extends HookConsumerWidget {
                   Expanded(
                     child: Text(
                       text,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: color,
-                        fontSize: 14,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!
+                          .copyWith(color: color, fontSize: 14),
                     ),
                   )
                 else
                   Text(
                     text,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: color,
-                      fontSize: 14,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium!
+                        .copyWith(color: color, fontSize: 14),
                   ),
 
                 ?trailing,
@@ -118,6 +118,7 @@ class SidebarLink extends HookConsumerWidget {
   }
 }
 
+/// Opens an external destination from the sidebar.
 class ExternalSidebarLink extends StatelessWidget {
   const ExternalSidebarLink({
     required this.icon,
@@ -146,9 +147,8 @@ class ExternalSidebarLink extends StatelessWidget {
         borderRadius: context.shapes.mediumBorderRadius,
         child: InkWell(
           onTap: uri.launchExternally,
-          hoverColor: Theme.of(
-            context,
-          ).colorScheme.onSurface.withValues(alpha: 0.1),
+          hoverColor: Theme.of(context).colorScheme.onSurface
+              .withValues(alpha: 0.1),
           borderRadius: context.shapes.mediumBorderRadius,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -167,19 +167,15 @@ class ExternalSidebarLink extends StatelessWidget {
                   Expanded(
                     child: Text(
                       text,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: color,
-                        fontSize: 14,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!
+                          .copyWith(color: color, fontSize: 14),
                     ),
                   )
                 else
                   Text(
                     text,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: color,
-                      fontSize: 14,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium!
+                        .copyWith(color: color, fontSize: 14),
                   ),
 
                 ?trailing,
@@ -196,6 +192,7 @@ class ExternalSidebarLink extends StatelessWidget {
   }
 }
 
+/// Renders support, documentation, and account actions at the sidebar footer.
 class FooterSidebarLinks extends StatelessWidget {
   const FooterSidebarLinks({
     this.compact = false,
@@ -221,8 +218,10 @@ class FooterSidebarLinks extends StatelessWidget {
   }
 }
 
+/// Support community destination opened by the sidebar support action.
 const discordUrl = "https://discord.gg/j5WWscvQkW";
 
+/// Sidebar link to the Typewriter support community.
 class SupportSidebarLink extends StatelessWidget {
   const SupportSidebarLink({super.key, this.expand = false});
 
@@ -239,8 +238,10 @@ class SupportSidebarLink extends StatelessWidget {
   }
 }
 
+/// Typewriter documentation destination opened by sidebar actions.
 const docsUrl = "https://docs.typewritermc.com";
 
+/// Sidebar link to the Typewriter documentation.
 class DocumentationSidebarLink extends StatelessWidget {
   const DocumentationSidebarLink({super.key, this.expand = false});
 

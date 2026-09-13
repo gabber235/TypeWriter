@@ -1,3 +1,20 @@
+// Presentation is the declarative editor surface shared by catalog producers and
+// panel renderers. A PresentationDefinition exposes reusable inputs and a root
+// PresentationNode. The node tree composes layout, content, data projection,
+// editing controls, and actions without embedding renderer specific state.
+//
+// PresentationNode is the recursive boundary. Properties gate and constrain the
+// node, an optional header adds node chrome, and its optional PresentationElement
+// supplies behavior when present. Elements fall into five cooperating families: layout
+// arranges nodes, content displays values, data projects or scopes values, input
+// edits bound values, and interaction invokes editor actions. Connections are a
+// layout overlay, while search providers supply data to search inputs.
+//
+// BindingRef identifies the value or scope an element consumes. TypedExpression
+// supplies derived display, condition, and control values. BindingId identifies
+// inputs introduced by a definition or temporary collection scope. These are
+// evaluation context, not presentation owned mutable state.
+
 import { EditorAction } from "editor/v1/action.skir";
 import {
   BindingId,
@@ -131,6 +148,7 @@ struct PresentationHeader(810800016) {
   content_padding: PresentationInsets? = 6;
 }
 
+// Nodes are the recursive units of a presentation. Properties gate rendering and editing, headers add node chrome, and the element supplies the node's behavior.
 struct PresentationNode(810800017) {
   node_id: string = 0;
   properties: PresentationProperties = 1;
@@ -547,6 +565,7 @@ enum SequenceLayout(810800080) {
   hierarchy: HierarchySequenceLayout = 2;
 }
 
+// Shared contract for controls that edit a binding. Persistence and authorization remain with the owning editor.
 struct BoundControl(810800081) {
   binding: BindingRef = 0;
   label: TypedExpression? = 1;

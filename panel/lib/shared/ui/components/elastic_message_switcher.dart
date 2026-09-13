@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Switches messages with a clipped elastic slide and fade transition.
+/// Switches keyed messages with an elastic slide, fade, and size transition.
+///
+/// The child identity controls when a message changes. This widget owns only
+/// presentation timing and does not retain message or loading state.
 class ElasticMessageSwitcher extends StatelessWidget {
   const ElasticMessageSwitcher({
     required this.child,

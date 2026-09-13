@@ -30,8 +30,21 @@ import com.typewritermc.library.Tag as LibraryTag
  * returned explicitly; operational storage failures may throw.
  */
 interface AuthoringRepository {
+    /**
+     * Reads the requested scopes at one collaboration sequence.
+     *
+     * The result is a read view for editor reconciliation, not a compiler snapshot. A page scope uses the same
+     * logical document projection as compilation, including reference diagnostics and compile status.
+     */
     suspend fun snapshot(scopes: Set<AuthoringSnapshotScope>): AuthoringSnapshotResult
 
+    /**
+     * Applies one complete batch atomically and returns a protocol result instead of exposing domain rejection as
+     * an exception.
+     *
+     * Reusing a batch id with the same payload returns the original applied result. A different payload is invalid.
+     * Storage failures remain exceptional.
+     */
     suspend fun apply(batch: AuthoringBatch): AuthoringBatchResult
 }
 
@@ -45,6 +58,12 @@ value class BatchId(
     }
 }
 
+/**
+ * Selects the smallest authoring view needed by an editor caller.
+ *
+ * Scopes are assembled together at one collaboration sequence, so callers can reconcile a mixed library, book, and
+ * page view without combining observations from different revisions.
+ */
 @Serializable
 sealed interface AuthoringSnapshotScope {
     @Serializable
@@ -70,10 +89,18 @@ sealed interface AuthoringSnapshotScope {
  * The sequence supports change event reconciliation and differs from compiler source revision.
  */
 data class AuthoringSnapshotResult(
+    /** Collaboration sequence shared by every returned slice. */
     val sequence: Long,
+    /** One slice for each requested scope, in the scope iteration order. */
     val slices: List<AuthoringSnapshotSlice>,
 )
 
+/**
+ * Materialized result for one [AuthoringSnapshotScope].
+ *
+ * A missing book or page is represented by a null resource inside its slice. That lets callers distinguish an
+ * empty child collection from a deleted scoped resource.
+ */
 sealed interface AuthoringSnapshotSlice {
     data class Library(
         val books: List<LibraryBook>,
@@ -417,12 +444,22 @@ sealed interface AuthoringResourceChange {
  */
 @Serializable
 data class AuthoringChanged(
+    /** Collaboration sequence assigned by the committed transaction. */
     val sequence: Long,
+    /** Idempotency key of the batch that produced this change set. */
     val batchId: BatchId,
+    /** Resources directly created, updated, or removed by the batch. */
     val changes: List<AuthoringResourceChange>,
+    /** Resources whose projected views changed because of references or containment. */
     val indirectlyAffectedResources: Set<AuthoringResourceRef>,
 )
 
+/**
+ * Transport representation of a value that can participate in optimistic conflict reporting.
+ *
+ * Values are intentionally limited to properties understood by authoring operations. They are not a general
+ * serialization of every library model.
+ */
 @Serializable
 sealed interface AuthoringPropertyValue {
     @Serializable
@@ -483,17 +520,21 @@ data class PropertyConflict(
 
 @Serializable
 data class AuthoringDiagnostic(
+    /** Stable machine readable reason used by clients and tests. */
     val code: String,
+    /** Human readable detail. Defaults to the code when no additional detail is available. */
     val message: String = code,
+    /** Resource implicated by the diagnostic, when the failure can be localized. */
     val resource: AuthoringResourceRef? = null,
+    /** Nested element value path implicated by the diagnostic, when applicable. */
     val path: ElementValuePath? = null,
 )
 
 /**
- * Returns committed changes, optimistic conflicts, or validation diagnostics for the complete batch.
+ * Complete outcome of an authoring batch.
  *
  * Applied also identifies compilation invalidation. Conflict and Invalid never represent partially committed batch
- * edits.
+ * edits. Only [Applied] represents committed state; the other outcomes mean that the transaction committed nothing.
  */
 @Serializable
 sealed interface AuthoringBatchResult {

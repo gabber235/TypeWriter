@@ -1,28 +1,51 @@
 part of "authoring_session.dart";
 
-/// Durable authoring requests. Live projections subscribe only while they are observed.
+/// Owns durable authoring requests for editor resources in one realm.
+///
+/// The repository is cached by [ResourceRepositories] for the organization and
+/// realm. It does not own canonical snapshots or live subscriptions. The
+/// [AuthoringSession] owns those projections and consumes [changes] and
+/// [invalidations] emitted after mutation integration. [SkirMutationClient]
+/// remains the transport owner; this repository supplies authoring subjects,
+/// serialization, resource reservations, and response integration.
 final class AuthoringResourceRepository {
   AuthoringResourceRepository(this.session, this.organization, this.realm);
 
+  /// Organization repositories that own this repository's transport lifetime.
   final ResourceRepositories session;
+
+  /// Organization containing the realm resources.
   final skir.RecordId organization;
+
+  /// Realm containing the authoring resources.
   final skir.RecordId realm;
   final _changes = StreamController<wire.AuthoringChanged>.broadcast(
     sync: true,
   );
   final _invalidations = StreamController<void>.broadcast(sync: true);
 
+  /// Emits applied authoring events for the owning session's canonical model.
   Stream<wire.AuthoringChanged> get changes => _changes.stream;
+
+  /// Emits when a conflict requires the owning session to refresh.
   Stream<void> get invalidations => _invalidations.stream;
+
+  /// Builds service subjects for this organization's realm.
   RealmServiceAddress get address =>
       RealmServiceAddress(organizationId: organization, realmId: realm);
 
+  /// Combines editor contributions into one authoring batch per preparation.
   late final combiner =
       MutationCombiner<
         wire.AuthoringOperation,
         wire.ApplyAuthoringBatchResponse
       >(prepare: prepare);
 
+  /// Fetches one authoritative snapshot scope for an editor resource.
+  ///
+  /// The repository must still be active when the request starts and when the
+  /// response arrives. A successful response is returned unchanged. Invalid,
+  /// internal, and unknown responses become the repository's API exceptions.
   Future<wire.AuthoringSnapshot> fetch(
     wire.AuthoringSnapshotScope scope,
   ) async {
@@ -42,6 +65,13 @@ final class AuthoringResourceRepository {
     };
   }
 
+  /// Prepares an editor batch for the shared local mutation owner.
+  ///
+  /// Operations must include their expected canonical values. The returned
+  /// commit captures immutable request bytes, reserves every affected resource,
+  /// supports identical request replay, and emits [changes] after an applied
+  /// response. A conflict emits [invalidations]. Other outcomes remain owned
+  /// by the shared mutation layer and do not emit canonical changes here.
   PreparedCommit<wire.ApplyAuthoringBatchResponse> prepare(
     List<wire.AuthoringOperation> operations,
   ) {
@@ -84,6 +114,7 @@ final class AuthoringResourceRepository {
     );
   }
 
+  /// Closes event streams and ends this repository's lifecycle.
   void dispose() {
     unawaited(_changes.close());
     unawaited(_invalidations.close());

@@ -1,3 +1,9 @@
+//! Parse response registries and generate the [`SkirResponse`] implementation.
+//!
+//! Generated SKIR enums expose payload structs for each variant. This expansion is the single
+//! mapping point from those variants to runtime outcome classification, stable telemetry slugs,
+//! messages, and domain error construction.
+
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::quote;
@@ -8,6 +14,7 @@ use syn::{
     token,
 };
 
+/// Response registry declaration consumed by the `skir_response!` macro.
 pub(crate) struct SkirResponseInput {
     ty: Ident,
     success: Vec<Ident>,
@@ -232,6 +239,8 @@ fn parse_optional_binding(input: ParseStream) -> syn::Result<Option<Ident>> {
     Ok(Some(binding))
 }
 
+/// Classify generated variants for reply handling and telemetry. Unknown wire variants remain
+/// internal failures rather than domain outcomes.
 fn outcome_arms(input: &SkirResponseInput, utils_path: &syn::Path) -> Vec<TokenStream> {
     let ty = &input.ty;
     let mut arms = Vec::new();
@@ -270,6 +279,8 @@ fn slug_arms(input: &SkirResponseInput) -> Vec<TokenStream> {
     arms
 }
 
+/// Construct only payloadless custom domain errors from a database slug. Payloadful variants
+/// require call site data and are handled by `skir_domain_result!` overrides.
 fn domain_error_from_slug_arms(input: &SkirResponseInput) -> Vec<TokenStream> {
     let ty = &input.ty;
     let mut arms = Vec::new();

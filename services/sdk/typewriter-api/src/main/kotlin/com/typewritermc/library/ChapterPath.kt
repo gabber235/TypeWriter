@@ -38,6 +38,7 @@ value class ChapterPath private constructor(
     companion object {
         val Root = ChapterPath("")
 
+        /** Creates a path without normalizing or validating its dot separated value. */
         fun parse(value: String): ChapterPath = ChapterPath(value)
     }
 }

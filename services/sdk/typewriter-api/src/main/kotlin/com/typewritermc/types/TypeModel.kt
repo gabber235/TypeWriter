@@ -50,6 +50,7 @@ annotation class TypewriterType(
 @Retention(AnnotationRetention.BINARY)
 annotation class TypewriterString
 
+/** Identifies the option family built into the Typewriter type model. */
 @Serializable
 enum class BuiltinTypeId {
     OPTION,
@@ -90,8 +91,13 @@ sealed interface TypeId {
     }
 
     companion object {
+        /** Built in identity for the generic option type. */
         val Option: TypeId = Builtin(BuiltinTypeId.OPTION)
+
+        /** Built in identity for a present option value. */
         val Some: TypeId = Builtin(BuiltinTypeId.SOME)
+
+        /** Built in identity for an absent option value. */
         val None: TypeId = Builtin(BuiltinTypeId.NONE)
     }
 }
@@ -112,9 +118,11 @@ data class ResolvedTypeRef(
         require(revision > 0) { "Type revision must be positive." }
     }
 
+    /** Returns this reference with a copied list of generic arguments. */
     fun withArguments(arguments: Iterable<TypeExpression>) = copy(arguments = arguments.toList())
 }
 
+/** Describes the bit width and signedness of a portable integer expression. */
 @Serializable
 enum class IntegerWidth(
     val bits: Int,
@@ -130,6 +138,7 @@ enum class IntegerWidth(
     UNSIGNED_64(64, false),
 }
 
+/** Describes the precision of a portable floating point expression. */
 @Serializable
 enum class FloatWidth {
     FLOAT_32,
@@ -145,18 +154,22 @@ enum class FloatWidth {
  */
 @Serializable
 sealed interface TypeExpression {
+    /** An unconstrained expression used when no structural representation is available. */
     @Serializable
     @SerialName("any")
     data object Any : TypeExpression
 
+    /** The zero field value used for unit shaped data. */
     @Serializable
     @SerialName("unit")
     data object Unit : TypeExpression
 
+    /** A portable Boolean expression. */
     @Serializable
     @SerialName("boolean")
     data object Boolean : TypeExpression
 
+    /** A string expression with optional length, pattern, and enumeration constraints. */
     @Serializable
     @SerialName("string")
     data class StringType(
@@ -183,6 +196,7 @@ sealed interface TypeExpression {
         }
     }
 
+    /** An integer expression whose bounds use arbitrary precision values before width validation. */
     @Serializable
     @SerialName("integer")
     data class Integer(
@@ -203,6 +217,7 @@ sealed interface TypeExpression {
         }
     }
 
+    /** A finite floating point expression with optional numeric constraints. */
     @Serializable
     @SerialName("float")
     data class Float(
@@ -223,6 +238,7 @@ sealed interface TypeExpression {
         }
     }
 
+    /** A decimal text expression whose canonical syntax is preserved without binary rounding. */
     @Serializable
     @SerialName("decimal")
     data class Decimal(
@@ -241,6 +257,7 @@ sealed interface TypeExpression {
         }
     }
 
+    /** An instant expression with optional temporal bounds. */
     @Serializable
     @SerialName("timestamp")
     data class Timestamp(
@@ -248,6 +265,7 @@ sealed interface TypeExpression {
         val maximum: Instant? = null,
     ) : TypeExpression
 
+    /** A duration expression with optional temporal bounds. */
     @Serializable
     @SerialName("duration")
     data class Duration(
@@ -255,6 +273,7 @@ sealed interface TypeExpression {
         val maximum: kotlin.time.Duration? = null,
     ) : TypeExpression
 
+    /** An expression whose value must be one of the declared portable values. */
     @Serializable
     @SerialName("enumeration")
     data class Enumeration(
@@ -267,6 +286,7 @@ sealed interface TypeExpression {
         }
     }
 
+    /** A homogeneous ordered collection expression. */
     @Serializable
     @SerialName("list")
     data class ListType(
@@ -280,6 +300,7 @@ sealed interface TypeExpression {
         }
     }
 
+    /** A collection expression that preserves typed keys and values as entries. */
     @Serializable
     @SerialName("map")
     data class MapType(
@@ -293,6 +314,7 @@ sealed interface TypeExpression {
         }
     }
 
+    /** A named field expression, optionally allowing fields outside the declared set. */
     @Serializable
     @SerialName("record")
     data class Record(
@@ -304,12 +326,14 @@ sealed interface TypeExpression {
         }
     }
 
+    /** A reference to a catalog definition, including any generic arguments. */
     @Serializable
     @SerialName("named")
     data class Named(
         val reference: ResolvedTypeRef,
     ) : TypeExpression
 
+    /** A generic parameter placeholder resolved from its enclosing definition. */
     @Serializable
     @SerialName("parameter")
     data class Parameter(
@@ -338,6 +362,7 @@ data class TypeField(
     }
 }
 
+/** Controls how a nominal type parameter participates in subtype relationships. */
 @Serializable
 enum class TypeVariance {
     INVARIANT,
@@ -345,6 +370,7 @@ enum class TypeVariance {
     CONTRAVARIANT,
 }
 
+/** Defines whether a nominal type has a runtime representation or only contracts for descendants. */
 @Serializable
 enum class NominalTypeKind {
     CONCRETE,
@@ -352,6 +378,7 @@ enum class NominalTypeKind {
     SEALED_ABSTRACT,
 }
 
+/** Declares a generic parameter, its bounds, and variance in a type definition. */
 @Serializable
 data class TypeParameter(
     val name: String,
@@ -363,6 +390,7 @@ data class TypeParameter(
     }
 }
 
+/** Identifies a presentation by namespace and name. */
 @Serializable
 data class PresentationId(
     val namespace: String,
@@ -374,6 +402,7 @@ data class PresentationId(
     }
 }
 
+/** Identifies a conversion offered from a type definition. */
 @Serializable
 data class ConversionId(
     val namespace: String,

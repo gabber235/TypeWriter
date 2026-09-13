@@ -1,5 +1,10 @@
 part of "../../content_renderer.dart";
 
+/// Renders numeric protocol progress with an accessible textual value.
+///
+/// Integer, float, and decimal values are accepted. The maximum must be
+/// positive, while the visual fraction is clamped to the indicator range so
+/// out of range progress remains displayable without weakening validation.
 extension ProgressElementRendering on ProgressElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final resolvedValue = scope.evaluate(value).valueOrNull._progressNumber;

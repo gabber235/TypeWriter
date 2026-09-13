@@ -1,5 +1,8 @@
 part of "../../composite_input_renderer.dart";
 
+/// Keeps presentation identity independent from mutable map entry values.
+/// Matching keys preserve an entry's header state; positional fallback keeps
+/// state attached when a key itself is being edited.
 final class _MapEntryTracker {
   var _nextIdentity = 0;
 

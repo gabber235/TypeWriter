@@ -137,7 +137,7 @@ data class RouterOptions(
 /** Lifecycle state of a communicator router. */
 enum class RouterState { NEW, STARTING, RUNNING, STOPPING, STOPPED }
 
-/** Result of a router lifecycle operation. */
+/** Result of a router lifecycle operation; startup and shutdown failures remain typed values when ordinary. */
 sealed interface RouterResult {
     data object Success : RouterResult
 
@@ -146,7 +146,7 @@ sealed interface RouterResult {
     ) : RouterResult
 }
 
-/** Typed router lifecycle failure. */
+/** Typed router lifecycle failure with the cause that callers can use for diagnostics or recovery. */
 sealed interface RouterError {
     val cause: Throwable?
 
@@ -159,7 +159,7 @@ sealed interface RouterError {
     ) : RouterError
 }
 
-/** Validated collection of typed routes. */
+/** Validated collection of typed routes, held by a router until its single start attempt. */
 class CommunicatorRoutes internal constructor(
     internal val routes: List<Route>,
 )
@@ -174,7 +174,7 @@ class CommunicatorRoutes internal constructor(
 class CommunicatorRoutesBuilder internal constructor() {
     private val routes = mutableListOf<Route>()
 
-    /** Registers a unary route. */
+    /** Registers a unary route using the contract's subscription pattern and optional consumer group. */
     fun <A : Any, Q : Any, R : Any> unary(
         contract: UnaryContract<A, Q, R>,
         parallelism: Int? = null,
@@ -184,7 +184,7 @@ class CommunicatorRoutesBuilder internal constructor() {
         router.unary(contract, handler, message)
     }
 
-    /** Registers a unary route subscribed at one concrete address. */
+    /** Registers a unary route restricted to the concrete address rendered from [address]. */
     fun <A : Any, Q : Any, R : Any> unaryAt(
         contract: UnaryContract<A, Q, R>,
         address: A,
@@ -195,7 +195,7 @@ class CommunicatorRoutesBuilder internal constructor() {
         router.unary(contract, handler, message)
     }
 
-    /** Registers a fanout request route without a consumer group. */
+    /** Registers a fanout request route without a consumer group, allowing every matching listener to receive it. */
     fun <A : Any, Q : Any, R : Any> scatter(
         contract: ScatterContract<A, Q, R>,
         parallelism: Int? = null,
@@ -214,7 +214,7 @@ class CommunicatorRoutesBuilder internal constructor() {
         router.scatter(contract, handler, message)
     }
 
-    /** Registers an event route. */
+    /** Registers an event route using the contract's publication pattern. */
     fun <A : Any, E : Any> event(
         contract: EventContract<A, E>,
         parallelism: Int? = null,
@@ -224,7 +224,7 @@ class CommunicatorRoutesBuilder internal constructor() {
         router.event(contract, handler, message)
     }
 
-    /** Registers an event route subscribed at one concrete address. */
+    /** Registers an event route restricted to the concrete address rendered from [address]. */
     fun <A : Any, E : Any> eventAt(
         contract: EventContract<A, E>,
         address: A,
@@ -235,7 +235,7 @@ class CommunicatorRoutesBuilder internal constructor() {
         router.event(contract, handler, message)
     }
 
-    /** Registers a watch route. */
+    /** Registers a watch request route; update publications are handled by the watch owner, not this route. */
     fun <A : Any, Q : Any, I : Any, U : Any> watch(
         contract: WatchContract<A, Q, I, U>,
         parallelism: Int? = null,
@@ -245,7 +245,7 @@ class CommunicatorRoutesBuilder internal constructor() {
         router.watch(contract, handler, message)
     }
 
-    /** Registers a watch route subscribed at one concrete request address. */
+    /** Registers a watch request route restricted to the concrete request address rendered from [address]. */
     fun <A : Any, Q : Any, I : Any, U : Any> watchAt(
         contract: WatchContract<A, Q, I, U>,
         address: A,

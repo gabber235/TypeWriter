@@ -1,18 +1,41 @@
+/*
+ * Bridges a presentation model to the editor owners that supply its bindings.
+ *
+ * The session owns listener wiring and the binding generation used by
+ * expression evaluation. Edit owners remain authoritative for draft state,
+ * validation, interaction gates, and persistence. Replacing the model changes
+ * routing and invalidates binding observations, but never recreates or resets
+ * those owners.
+ */
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Owns presentation subscriptions and routing, never the supplied editors.
-/// Refreshing a value binding leaves editor state and interaction sessions intact.
+/// Owns presentation subscriptions and routes presentation operations to the
+/// supplied edit owners.
+///
+/// The session is the bridge between binding references in a presentation and
+/// owners stored in its inputs. It owns listener wiring and binding revisions,
+/// while each owner remains authoritative for draft state and persistence.
+/// Refreshing a model therefore preserves the supplied owners and their active
+/// interaction state.
 final class PresentationSession extends ChangeNotifier {
   PresentationSession(PresentationModel model) : _model = model {
     _attach();
   }
+
   PresentationModel _model;
+
+  /// The model currently used to resolve presentation bindings and actions.
   PresentationModel get model => _model;
   final Set<EditOwner> _owners = {};
   int _generation = 0;
   int get generation => _generation;
 
+  /// Replaces presentation routing while retaining the existing edit owners.
+  ///
+  /// Listeners are rewired before notification. The generation advances so
+  /// binding snapshots created after the refresh cannot be confused with
+  /// observations from the previous model.
   void refresh(PresentationModel model) {
     for (final owner in _owners) {
       owner.removeListener(_ownerChanged);
@@ -38,12 +61,15 @@ final class PresentationSession extends ChangeNotifier {
     }
   }
 
+  /// Finds the owner behind a binding reference, if that input is editable.
   EditOwner? owner(BindingReference reference) =>
       switch (_model.inputs[reference.bindingId]) {
         PresentationEditInput(:final owner) => owner,
         _ => null,
       };
 
+  /// Builds the expression environment backed by current value inputs and
+  /// live edit owners.
   BindingEnvironment get bindings {
     final sources = <BindingId, BindingSource>{};
     for (final entry in model.inputs.entries) {
@@ -65,6 +91,11 @@ final class PresentationSession extends ChangeNotifier {
     return BindingEnvironment(sources);
   }
 
+  /// Applies a presentation edit after resolving its input path.
+  ///
+  /// The reference path is relative to the input. Structural intent is
+  /// prefixed with the same input path so later persistence can preserve list,
+  /// map, and polymorphic operations.
   EditorMutationResult update(
     BindingReference reference,
     DataValue value, {
@@ -87,6 +118,10 @@ final class PresentationSession extends ChangeNotifier {
     );
   }
 
+  /// Starts an interaction on an editable presentation binding.
+  ///
+  /// The returned session belongs to the underlying owner. A value input has no
+  /// interaction lifecycle and returns `null`.
   EditorInteractionSession? beginInteraction(BindingReference reference) {
     final input = model.inputs[reference.bindingId];
     return input is PresentationEditInput
@@ -94,6 +129,11 @@ final class PresentationSession extends ChangeNotifier {
         : null;
   }
 
+  /// Executes a local presentation action and routes its result to its owner.
+  ///
+  /// Multi owner actions are evaluated independently for each owner, then
+  /// applied only after every member validates successfully. This keeps a
+  /// shared presentation from partially changing its selection.
   EditorMutationResult executeLocal(
     LocalEditorAction action,
     ExpressionContext context,

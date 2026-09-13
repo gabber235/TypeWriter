@@ -9,24 +9,36 @@ import com.typewritermc.loader.deployment.HostId
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
+/**
+ * Shared state model for Realm deployment rollout.
+ *
+ * The coordinator publishes immutable projection references, participants apply them locally, and status probes
+ * verify attempt and health state. These serializable values are also the payload model for the rollout messaging
+ * contracts in the rollout communication module.
+ *
+ * [RealmId] identifies the Realm whose hosts participate in a rollout.
+ */
 @JvmInline
 @Serializable
 value class RealmId(
     val value: String,
 )
 
+/** Requests presence from hosts assigned to a Realm, using [probeId] to reject replies from another probe. */
 @Serializable
 data class ProbeRealmHosts(
     val realmId: RealmId,
     val probeId: String = UUID.randomUUID().toString(),
 )
 
+/** Requests one participant status for a specific coordinator attempt. */
 @Serializable
 data class ProbeParticipantStatus(
     val realmId: RealmId,
     val attempt: RolloutAttempt,
 )
 
+/** Separates a participant status from a host side failure in scatter responses. */
 @Serializable
 sealed interface ParticipantStatusReply {
     val hostId: HostId
@@ -59,6 +71,7 @@ data class ProjectionReference(
     val runtimeVersions: Map<RuntimePlacement, ArtifactVersion> = emptyMap(),
 )
 
+/** Reports runtime health independently from whether a projection is merely staged or active. */
 @Serializable
 sealed interface RuntimeHealthSnapshot {
     @Serializable
@@ -77,12 +90,14 @@ sealed interface RuntimeHealthSnapshot {
     }
 }
 
+/** Identifies the projection currently active on a host and its observed health. */
 @Serializable
 data class ActiveProjectionReference(
     val projection: ProjectionReference,
     val health: RuntimeHealthSnapshot,
 )
 
+/** Snapshot returned by discovery, used to select responding participants and recovery baselines. */
 @Serializable
 data class RealmHostPresence(
     val probeId: String,
@@ -92,6 +107,7 @@ data class RealmHostPresence(
     val activeProjection: ActiveProjectionReference?,
 )
 
+/** Reports whether a host could answer a presence probe. */
 @Serializable
 sealed interface PresenceReply {
     @Serializable
@@ -120,6 +136,7 @@ data class RolloutAttempt(
     }
 }
 
+/** Provides stable command names for telemetry and failed command reporting. */
 @Serializable
 enum class RolloutCommandKind {
     STAGE,
@@ -144,6 +161,7 @@ sealed interface RollbackTarget {
     ) : RollbackTarget
 }
 
+/** A participant lifecycle command bound to one exact projection reference. */
 @Serializable
 sealed interface RolloutCommand {
     val kind: RolloutCommandKind
@@ -207,6 +225,7 @@ data class CommandAcceptance(
     val internalFailure: Boolean = false,
 )
 
+/** Describes the projection active before the candidate was staged. */
 @Serializable
 sealed interface ActiveBaseline {
     @Serializable
@@ -218,6 +237,7 @@ sealed interface ActiveBaseline {
     ) : ActiveBaseline
 }
 
+/** Identifies the one prior projection retained for rollback after activation. */
 @Serializable
 sealed interface RetainedProjection {
     @Serializable
@@ -328,12 +348,14 @@ sealed interface ParticipantStatus {
     ) : ParticipantStatus
 }
 
+/** Carries a participant lifecycle observation to coordinator persistence. */
 @Serializable
 data class ParticipantStateChanged(
     val realmId: RealmId,
     val status: ParticipantStatus,
 )
 
+/** Durable coordinator phases, including compensation after activation failure. */
 @Serializable
 enum class RolloutPhase {
     PROPOSED,

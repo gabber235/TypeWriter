@@ -1,3 +1,9 @@
+// Decodes server actions and mutation outcomes into panel domain objects.
+//
+// The action protocol spans local edits and realm commands, while mutation
+// outcomes distinguish conflict, invalid input, unavailable services, and
+// permission denial. Keeping those variants intact lets callers choose
+// reconciliation or user feedback instead of treating all failures alike.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/action.dart"
     as wire;
@@ -9,6 +15,7 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire_expression;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Decodes wire actions and typed mutation responses.
 final class SkirActionDecoder {
   const SkirActionDecoder(this.expressions, this.values);
 
@@ -17,6 +24,7 @@ final class SkirActionDecoder {
 
   SkirTypeCodec get types => values.typeCodec;
 
+  /// Decodes a local edit or a realm command action.
   TypeResult<EditorAction> decode(wire.EditorAction value) => switch (value) {
     wire.EditorAction_localWrapper(:final value) => _local(
       value,
@@ -27,6 +35,7 @@ final class SkirActionDecoder {
     wire.EditorAction_unknown() => invalidWire("Unknown editor action"),
   };
 
+  /// Decodes a mutation outcome, retaining revisions and diagnostics.
   TypeResult<TypedMutationResult> decodeMutation(
     wire.TypedMutationResult value,
   ) => switch (value) {

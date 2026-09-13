@@ -21,9 +21,16 @@ private val DATABASE_CONNECT_FAILURE = ErrorSlug.of("realm-database-connect-fail
  * lifecycle pairs it with close.
  */
 interface RealmDatabaseProvider {
+    /**
+     * Opens, authenticates, version checks, and migrates one database for repository use.
+     *
+     * Failure before return transfers no usable handle to the caller. Implementations must close any partially
+     * initialized handle before propagating the failure.
+     */
     context(_: MainSpanScope)
     fun connect(): Surreal
 
+    /** Releases a handle returned by [connect]. */
     fun close(database: Surreal) {
         database.close()
     }

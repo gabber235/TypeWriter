@@ -8,6 +8,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "members.freezed.dart";
 part "members.g.dart";
 
+/// Client model for one organization member.
+///
+/// The server projection is authoritative. The nullable profile fields are
+/// observations supplied by the identity system, while [roles] and [joinedAt]
+/// describe the membership projection. Conversion methods keep the UI model
+/// separate from generated protocol values.
 @freezed
 abstract class OrganizationMember with _$OrganizationMember {
   const factory OrganizationMember({
@@ -41,6 +47,12 @@ abstract class OrganizationMember with _$OrganizationMember {
   );
 }
 
+/// Owns the current organization's member projection and its mutations.
+///
+/// The provider starts with a snapshot, applies later sequenced changes, and
+/// invalidates itself when a sequence gap or failed mutation makes the local
+/// projection unsafe to trust. A successful mutation applies the returned
+/// event, so consumers observe the same change stream as remote updates.
 @riverpod
 class OrganizationMembers extends _$OrganizationMembers {
   @protected
@@ -91,6 +103,9 @@ class OrganizationMembers extends _$OrganizationMembers {
     );
   }
 
+  /// Preserves protected roles while normalizing an editor's assignable role
+  /// choice. If the choice would leave a member without roles, returns the
+  /// organization's default role instead of emitting an invalid request.
   Future<List<OrganizationRole>> ensureCorrectRoles(
     skir.RecordId memberId,
     List<OrganizationRole> newRoles,
@@ -118,7 +133,16 @@ class OrganizationMembers extends _$OrganizationMembers {
     return roles.toList();
   }
 
-  /// Applies a role choice atomically to the captured member selection.
+  /// Submits one role selection for all [memberIds].
+  ///
+  /// Protected roles are retained by the server and only assignable roles from
+  /// [requestedRoles] cross the mutation boundary. The request is replay safe
+  /// for identical input. Rejected or uncertain delivery invalidates this
+  /// provider, forcing recovery from a fresh snapshot rather than preserving a
+  /// possibly stale projection.
+  ///
+  /// The server treats the selection as one transaction, so callers do not need
+  /// to compensate for a partial role update.
   Future<void> updateMemberRoles(
     Iterable<skir.RecordId> memberIds,
     List<OrganizationRole> requestedRoles,
@@ -210,7 +234,12 @@ class OrganizationMembers extends _$OrganizationMembers {
     }
   }
 
-  /// Removes a member from the organization.
+  /// Removes [memberId] through the organization mutation boundary.
+  ///
+  /// Success is reflected by the returned sequenced event. A missing member or
+  /// protected founder is reported as an [ApiException]. Unknown or internal
+  /// responses invalidate the local projection so the next read can recover
+  /// from the server's membership snapshot.
   Future<void> removeMember(skir.RecordId memberId) async {
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) {
@@ -288,6 +317,9 @@ class OrganizationMembers extends _$OrganizationMembers {
     }
   }
 
+  /// Applies a server event only when its sequence advances the local projection.
+  /// Duplicate events are harmless. A gap discards the projection and requests a
+  /// new snapshot because the missing changes cannot be reconstructed locally.
   void _applyEvent(skir.OrganizationMembersChanged event) {
     switch (sequencedCollection.apply(
       sequence: event.sequence,
@@ -309,6 +341,8 @@ class OrganizationMembers extends _$OrganizationMembers {
   ) => true;
 }
 
+/// Reduces complete add and update values, plus identity only removals, into
+/// the immutable member list used by the provider state.
 List<OrganizationMember> _reduceMembers(
   List<OrganizationMember> members,
   skir.OrganizationMembersChanged event,
@@ -329,5 +363,3 @@ List<OrganizationMember> _reduceMembers(
     };
   });
 }
-
-/// Provider for the list of pending join requests to the current organization.

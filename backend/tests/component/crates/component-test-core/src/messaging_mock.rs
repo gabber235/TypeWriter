@@ -13,6 +13,10 @@ const TRANSCRIPT_LIMIT: usize = 128;
 
 type BodyPredicate = Arc<dyn Fn(&[u8]) -> bool + Send + Sync>;
 
+/// Deterministic broker boundary for fixture publish and request expectations.
+///
+/// Every observed operation enters the bounded transcript and unmatched operations fail
+/// verification. Request expectations may script bytes, delayed replies, or errors.
 #[derive(Clone)]
 pub struct MessagingMock {
     state: Arc<Mutex<State>>,
@@ -25,6 +29,7 @@ struct State {
     redactions: Vec<Vec<u8>>,
 }
 
+/// Redacted record of one broker operation observed by the fixture.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MessagingTranscriptEntry {
     pub operation: MessagingOperation,
@@ -33,6 +38,7 @@ pub struct MessagingTranscriptEntry {
     pub matched: bool,
 }
 
+/// Broker operation type recorded by the messaging mock.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MessagingOperation {
     Publish,
@@ -61,6 +67,7 @@ enum ScriptedReply {
     Error(String, Duration),
 }
 
+/// Fluent declaration of one broker expectation and optional scripted reply.
 pub struct MessagingExpectation {
     mock: MessagingMock,
     index: usize,
@@ -78,10 +85,12 @@ impl MessagingMock {
         }
     }
 
+    /// Expects a one way publish matching the subject pattern.
     pub fn expect_publish(&self, pattern: impl Into<String>) -> MessagingExpectation {
         self.push(MessagingOperation::Publish, pattern.into())
     }
 
+    /// Expects a request matching the subject pattern.
     pub fn expect_request(&self, pattern: impl Into<String>) -> MessagingExpectation {
         self.push(MessagingOperation::Request, pattern.into())
     }
@@ -112,6 +121,7 @@ impl MessagingMock {
         }
     }
 
+    /// Returns the bounded redacted broker transcript.
     pub fn transcript(&self) -> Vec<MessagingTranscriptEntry> {
         self.state
             .lock()
@@ -229,14 +239,17 @@ impl MessagingExpectation {
         self
     }
 
+    /// Requires exact request body bytes.
     pub fn body(self, body: impl Into<Vec<u8>>) -> Self {
         self.update(|item| item.body = BodyMatch::Exact(body.into()))
     }
 
+    /// Requires a body accepted by the supplied predicate.
     pub fn body_matches(self, predicate: impl Fn(&[u8]) -> bool + Send + Sync + 'static) -> Self {
         self.update(|item| item.body = BodyMatch::Predicate(Arc::new(predicate)))
     }
 
+    /// Requires exactly `count` matching operations.
     pub fn times(self, count: usize) -> Self {
         self.update(|item| {
             item.minimum = count;
@@ -244,6 +257,7 @@ impl MessagingExpectation {
         })
     }
 
+    /// Allows zero or one matching operation.
     pub fn optional(self) -> Self {
         self.update(|item| {
             item.minimum = 0;
@@ -251,6 +265,7 @@ impl MessagingExpectation {
         })
     }
 
+    /// Sets the inclusive allowed operation count.
     pub fn range(self, range: RangeInclusive<usize>) -> Self {
         self.update(|item| {
             item.minimum = *range.start();
@@ -258,18 +273,22 @@ impl MessagingExpectation {
         })
     }
 
+    /// Scripts an immediate reply body for a request expectation.
     pub fn reply(self, body: impl Into<Vec<u8>>) -> Self {
         self.reply_after(body, Duration::ZERO)
     }
 
+    /// Scripts a reply body after a delay.
     pub fn reply_after(self, body: impl Into<Vec<u8>>, delay: Duration) -> Self {
         self.update(|item| item.reply = Some(ScriptedReply::Bytes(body.into(), delay)))
     }
 
+    /// Scripts a reply error without a delay.
     pub fn reply_error(self, message: impl Into<String>) -> Self {
         self.reply_error_after(message, Duration::ZERO)
     }
 
+    /// Scripts a delayed reply error.
     pub fn reply_error_after(self, message: impl Into<String>, delay: Duration) -> Self {
         self.update(|item| item.reply = Some(ScriptedReply::Error(message.into(), delay)))
     }
@@ -321,6 +340,7 @@ impl ScriptedResponse {
     }
 }
 
+/// Matches NATS style single token and trailing token wildcards.
 pub fn subject_matches(pattern: &str, subject: &str) -> bool {
     let pattern = pattern.split('.').collect::<Vec<_>>();
     let subject = subject.split('.').collect::<Vec<_>>();

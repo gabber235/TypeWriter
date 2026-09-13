@@ -56,12 +56,14 @@ value class CatalogGeneration(
     }
 }
 
+/** Publishes an artifact and whether the selected deployment can use it. */
 @Serializable
 data class ArtifactCatalogEntry(
     val id: ArtifactId,
     val eligibility: Eligibility,
 )
 
+/** Publishes source part eligibility with the artifact that owns the source part. */
 @Serializable
 data class SourcePartCatalogEntry(
     val artifact: ArtifactId,

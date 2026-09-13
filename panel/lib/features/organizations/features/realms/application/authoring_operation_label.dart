@@ -1,5 +1,11 @@
 part of "authoring_session.dart";
 
+/// Produces the user facing mutation label for one authoring batch.
+///
+/// Uniform batches retain the specific intent, including their count. Mixed
+/// batches use a generic label because no single operation describes the whole
+/// transaction. The label is presentation metadata and does not affect routing
+/// or protocol identity.
 String _authoringLabel(Iterable<wire.AuthoringOperation> operations) {
   final labels = operations
       .map(

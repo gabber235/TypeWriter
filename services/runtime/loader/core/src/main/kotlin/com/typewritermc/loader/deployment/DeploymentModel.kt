@@ -82,12 +82,14 @@ data class DeploymentSnapshot(
     }
 }
 
+/** Constrains the engine selected for primary runtime hosts. */
 @Serializable
 data class PrimaryEngineTarget(
     val id: ArtifactId,
     val version: VersionConstraint,
 )
 
+/** Carries the panel engine requirement supplied by Realm assignment. */
 @Serializable
 data class RealmLoaderIntent(
     val panelEngine: ArtifactRequirement,

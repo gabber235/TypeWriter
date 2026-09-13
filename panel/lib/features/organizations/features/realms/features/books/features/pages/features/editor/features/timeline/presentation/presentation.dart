@@ -1,3 +1,4 @@
+/// Flutter surfaces, actions, and rendering primitives for timeline editing.
 library;
 
 export "timeline.dart";

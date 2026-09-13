@@ -2,6 +2,13 @@ import "dart:async";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Evaluates a presentation's local search values and maps them to result rows.
+///
+/// This source has no external subscription. Each query reevaluates the
+/// provider expression against the query context, validates and maps each
+/// item independently, and publishes warnings for items that cannot render.
+/// Initialization performs the first empty query; disposal prevents later
+/// snapshots from being emitted.
 final class StaticPresentationSearchSource implements SearchSource {
   StaticPresentationSearchSource({
     required this.provider,
@@ -31,6 +38,7 @@ final class StaticPresentationSearchSource implements SearchSource {
   Stream<List<QuerySelectorDefinition>> get selectors =>
       Stream.value(presentationQuerySelectors(provider.selectors));
 
+  /// Runs the initial search after the source has been attached to listeners.
   @override
   void initialize() {
     scheduleMicrotask(() {
@@ -40,6 +48,10 @@ final class StaticPresentationSearchSource implements SearchSource {
     });
   }
 
+  /// Recomputes local results for [query] and publishes one source snapshot.
+  ///
+  /// A provider evaluation failure prevents mapping. A malformed item is
+  /// skipped with a warning so valid results remain usable.
   @override
   void search(SearchQueryContext query) {
     if (_disposed) return;
@@ -107,6 +119,7 @@ final class StaticPresentationSearchSource implements SearchSource {
     providerKey: providerKey,
   ).map(value: value, type: type, expressions: context);
 
+  /// Static results contain all data needed by their presentation renderer.
   @override
   Future<SearchPreviewRequestResult> preview(
     SearchPreviewRequest request,

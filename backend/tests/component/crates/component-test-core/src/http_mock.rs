@@ -21,6 +21,7 @@ const SECRET_HEADERS: [&str; 4] = [
     "proxy-authorization",
 ];
 
+/// Captured outbound HTTP request presented to a fixture mock.
 #[derive(Clone, Debug)]
 pub struct MockRequest {
     pub method: Method,
@@ -28,6 +29,7 @@ pub struct MockRequest {
     pub headers: HeaderMap,
     pub body: Bytes,
 }
+/// Scripted outbound HTTP response returned by a fixture mock.
 #[derive(Clone, Debug)]
 pub struct MockResponse {
     pub status: StatusCode,
@@ -77,6 +79,10 @@ struct State {
     handler: Option<Handler>,
     secrets: Vec<String>,
 }
+/// Deterministic outbound HTTP boundary owned by a component fixture.
+///
+/// Registered expectations are consumed during execution and checked by the runner after the
+/// workload stops. Transcripts retain only bounded, redacted request summaries.
 #[derive(Clone)]
 pub struct HttpMock {
     pub(crate) authority: String,
@@ -89,9 +95,11 @@ impl HttpMock {
             state: Arc::new(Mutex::new(State::default())),
         }
     }
+    /// Returns the authority this mock intercepts.
     pub fn authority(&self) -> &str {
         &self.authority
     }
+    /// Starts an expectation whose default cardinality is exactly one call.
     pub fn expect(&self) -> ExpectationBuilder {
         ExpectationBuilder {
             mock: self.clone(),
@@ -108,6 +116,7 @@ impl HttpMock {
             },
         }
     }
+    /// Installs a dynamic handler, bypassing registered expectations.
     pub fn handler<F, Fut>(&self, handler: F)
     where
         F: Fn(MockRequest) -> Fut + Send + Sync + 'static,
@@ -117,11 +126,13 @@ impl HttpMock {
             s.handler = Some(Arc::new(move |r| Box::pin(handler(r))));
         }
     }
+    /// Redacts a body value from recorded request transcripts.
     pub fn redact(&self, secret: impl Into<String>) {
         if let Ok(mut s) = self.state.lock() {
             s.secrets.push(secret.into());
         }
     }
+    /// Returns the bounded redacted request transcript.
     pub fn transcript(&self) -> Vec<String> {
         self.state
             .lock()
@@ -278,73 +289,91 @@ fn redacted_request(r: &MockRequest, secrets: &[String]) -> String {
     )
 }
 
+/// Fluent declaration of one outbound HTTP expectation and response.
 pub struct ExpectationBuilder {
     mock: HttpMock,
     expectation: Expectation,
 }
 impl ExpectationBuilder {
+    /// Restricts the expected request method.
     pub fn method(mut self, method: Method) -> Self {
         self.expectation.method = Some(method);
         self
     }
+    /// Restricts the expectation to GET.
     pub fn get(self) -> Self {
         self.method(Method::GET)
     }
+    /// Restricts the expectation to POST.
     pub fn post(self) -> Self {
         self.method(Method::POST)
     }
+    /// Restricts the expected request authority.
     pub fn authority(mut self, value: impl Into<String>) -> Self {
         self.expectation.authority = Some(value.into());
         self
     }
+    /// Restricts the expected path and query string.
     pub fn path_query(mut self, value: impl Into<String>) -> Self {
         self.expectation.path_query = Some(value.into());
         self
     }
+    /// Requires one request header value.
     pub fn header(mut self, name: http::HeaderName, value: http::HeaderValue) -> Self {
         self.expectation.headers.append(name, value);
         self
     }
+    /// Requires the complete request header set to match.
     pub fn exact_headers(mut self) -> Self {
         self.expectation.exact_headers = true;
         self
     }
+    /// Requires exact request body bytes.
     pub fn body(mut self, value: impl Into<Bytes>) -> Self {
         self.expectation.body = Some(BodyMatcher::Exact(value.into()));
         self
     }
+    /// Requires a request body that decodes to the supplied JSON value.
     pub fn json<T: Serialize>(mut self, value: &T) -> Result<Self> {
         self.expectation.body = Some(BodyMatcher::Json(serde_json::to_value(value)?));
         Ok(self)
     }
+    /// Requires a request body accepted by the supplied predicate.
     pub fn body_matches(mut self, p: impl Fn(&[u8]) -> bool + Send + Sync + 'static) -> Self {
         self.expectation.body = Some(BodyMatcher::Predicate(Arc::new(p)));
         self
     }
+    /// Requires exactly `count` matching requests.
     pub fn times(mut self, count: usize) -> Self {
         self.expectation.count = count..=count;
         self
     }
+    /// Allows zero or one matching request.
     pub fn optional(mut self) -> Self {
         self.expectation.count = 0..=1;
         self
     }
+    /// Sets the inclusive allowed request count.
     pub fn count(mut self, range: RangeInclusive<usize>) -> Self {
         self.expectation.count = range;
         self
     }
+    /// Sets the scripted response status.
     pub fn status(mut self, status: StatusCode) -> Self {
         self.expectation.response.status = status;
         self
     }
+    /// Adds a scripted response header.
     pub fn response_header(mut self, name: http::HeaderName, value: http::HeaderValue) -> Self {
         self.expectation.response.headers.append(name, value);
         self
     }
+    /// Sets scripted response body bytes.
     pub fn response_body(mut self, value: impl Into<Bytes>) -> Self {
         self.expectation.response.body = value.into();
         self
     }
+    /// Sets a scripted JSON response and content type.
     pub fn response_json<T: Serialize>(mut self, value: &T) -> Result<Self> {
         self.expectation.response.body = Bytes::from(serde_json::to_vec(value)?);
         self.expectation.response.headers.insert(
@@ -353,14 +382,17 @@ impl ExpectationBuilder {
         );
         Ok(self)
     }
+    /// Delays the scripted response by the supplied duration.
     pub fn delay(mut self, value: Duration) -> Self {
         self.expectation.response.delay = value;
         self
     }
+    /// Scripts a transport failure with the supplied message.
     pub fn transport_failure(mut self, message: impl Into<String>) -> Self {
         self.expectation.response.failure = Some(message.into());
         self
     }
+    /// Registers the completed expectation with its mock.
     pub fn register(self) -> Result<()> {
         let mut state = self
             .mock

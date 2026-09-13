@@ -1,15 +1,20 @@
+// Organization data is the user's organization list projection. It is updated when membership is created or removed.
+// The sequence belongs to the user view, not to the organization member view.
+
 import {
   InternalError,
   InvalidRecordIdError,
 } from "kernel/v1/errors.skir";
 import { RecordId } from "kernel/v1/record_id.skir";
 
+// Organization display data exposed in a user's organization list.
 struct Organization {
   organization_id: RecordId;
   name: string;
   logo_url: string;
 }
 
+// Current organizations visible to one user and that user's organization list sequence.
 struct UserOrganizationsSnapshot {
   sequence: int64;
   values: [Organization];
@@ -20,12 +25,15 @@ enum UserOrganizationsChange {
   remove: RecordId;
 }
 
+// Changes to a user's organization list. Remove carries the organization identity.
 struct UserOrganizationsChanged {
   sequence: int64;
   operation_id: string;
   changes: [UserOrganizationsChange];
 }
 
+// Creates an organization and adds it to the creator's organization list.
+// The success event is scoped to that user projection.
 method CreateOrganization(
   struct {
     operation_id: string;
@@ -43,6 +51,7 @@ method CreateOrganization(
   };
 } = 336038;
 
+// Deletes an organization by identity after validating the record identifier.
 method DeleteOrganization(
   struct {
     organization_id: RecordId;

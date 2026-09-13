@@ -1,7 +1,12 @@
 import { InternalError } from "kernel/v1/errors.skir";
 
-// Public unauthenticated query used to bootstrap NATS auth callout.
-// These credentials identify the sentinel user and carry no publish/subscribe permissions.
+// Bootstrap boundary for NATS authentication. It is intentionally unauthenticated because the
+// caller has no authenticated NATS identity yet. The returned credentials identify the sentinel
+// user and carry no publish or subscribe permissions. Authenticated entity policy is resolved
+// separately through GetEntityPermission.
+//
+// The current sentinel service reads configured credentials, extracts the JWT and seed, and refuses
+// to produce a success response when configuration or either credential is missing.
 method GetSentinelCredentials(
   struct {}
 ): enum {

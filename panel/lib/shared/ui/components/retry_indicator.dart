@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Reports that an operation is being retried.
+///
+/// [message] should describe the operation rather than imply that the retry
+/// already succeeded. The widget is intentionally non interactive; retry
+/// ownership and cancellation remain with the caller.
 class RetryIndicator extends StatelessWidget {
   const RetryIndicator({this.message = "Retrying...", super.key});
 

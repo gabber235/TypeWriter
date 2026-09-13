@@ -1,12 +1,18 @@
 import "dart:async";
 
-/// Reserves an entire resource set at once. Disjoint work can continue.
+/// Serializes mutations that touch overlapping resource identities.
+///
+/// A request reserves its complete resource set atomically. Requests with
+/// disjoint sets proceed together, while overlapping requests wait in arrival
+/// order behind earlier overlapping work. The owner must release each returned
+/// reservation exactly when the submission no longer needs its resources.
 final class MutationCoordinator {
   final Set<Object> _held = {};
   final List<({Set<Object> resources, Completer<MutationReservation> ready})>
   _waiting = [];
   bool _disposed = false;
 
+  /// Waits until [resources] can be held without overlap.
   Future<MutationReservation> reserve(Set<Object> resources) {
     if (_disposed) return Future.error(StateError("Mutation session ended"));
     final ready = Completer<MutationReservation>();
@@ -34,6 +40,7 @@ final class MutationCoordinator {
     }
   }
 
+  /// Rejects queued requests and releases coordinator state.
   void dispose() {
     _disposed = true;
     for (final request in _waiting) {
@@ -44,11 +51,13 @@ final class MutationCoordinator {
   }
 }
 
+/// Idempotent ownership token for one coordinator reservation.
 final class MutationReservation {
   MutationReservation._(this._release);
   final void Function() _release;
   bool _released = false;
 
+  /// Releases the held resources and advances compatible queued requests.
   void release() {
     if (_released) return;
     _released = true;

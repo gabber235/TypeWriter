@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Resolves marker nodes along a path using their declared binding scope.
+///
+/// Marker positions are normalized to the path length. A bundle trunk has no
+/// target scope because it represents the shared source side; that invalid
+/// combination becomes a diagnostic and the affected marker is skipped.
 void _resolveMarkers({
   required List<ConnectionMarker> templates,
   required Path path,
@@ -60,6 +65,11 @@ void _resolveMarkers({
   }
 }
 
+/// Evaluates connector appearance and rejects invalid numeric or color values.
+///
+/// Style resolution is performed in the selected anchor scope. Returning null
+/// suppresses only the stroke that cannot be painted; accumulated diagnostics
+/// remain available to the layer overlay.
 _ResolvedConnectorStyle? _resolveConnectorStyle(
   ConnectorStyle style,
   PresentationRenderScope scope,
@@ -126,6 +136,11 @@ _ResolvedEndpointMarker? _resolveEndpointMarker(
   );
 }
 
+/// Evaluates an optional presentation condition with a typed fallback.
+///
+/// A missing condition uses [fallback]. A present expression must produce a
+/// boolean, otherwise resolution fails visibly instead of treating malformed
+/// authoring data as enabled or disabled by accident.
 TypeResult<bool> _evaluateBoolean(
   TypedExpression? expression,
   PresentationRenderScope scope,
@@ -146,6 +161,10 @@ TypeResult<bool> _evaluateBoolean(
         ]);
 }
 
+/// Evaluates a finite normalized value in the inclusive range from zero to one.
+///
+/// Connection bend and marker positions use this contract so routing and path
+/// sampling cannot receive an invalid fraction.
 TypeResult<double> _evaluateUnit(
   TypedExpression expression,
   PresentationRenderScope scope,
@@ -163,6 +182,10 @@ TypeResult<double> _evaluateUnit(
       : TypeResult.success(value);
 }
 
+/// Evaluates a finite nonnegative connection measurement.
+///
+/// Widths, radii, and marker extents are authoring values in logical pixels.
+/// Invalid values become diagnostics rather than entering Flutter painting.
 TypeResult<double> _evaluateNonnegative(
   TypedExpression expression,
   PresentationRenderScope scope,

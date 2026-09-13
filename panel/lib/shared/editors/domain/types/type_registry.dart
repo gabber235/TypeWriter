@@ -1,5 +1,11 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Catalog authority used to resolve nominal type references.
+///
+/// Construction bootstraps standard declarations, indexes definitions, and
+/// records declaration diagnostics. Resolution then validates identity, arity,
+/// inheritance cycles, bounds, variance, sealed ownership, and representation
+/// refinement. Successful results are cached by their complete reference.
 final class TypeRegistry {
   TypeRegistry(TypeCatalog catalog)
     : this._(catalog, bootstrapTypeCatalog(catalog.definitions));
@@ -21,9 +27,14 @@ final class TypeRegistry {
   final Map<ResolvedTypeRef, List<TypeDiagnostic>> _declarationDiagnostics;
   final Map<ResolvedTypeRef, ResolvedType> _cache = {};
 
+  /// Resolves the nominal reference carried by a type expression.
   TypeResult<ResolvedType> resolve(NamedType type) =>
       resolveExact(type.reference);
 
+  /// Resolves a reference without interpreting it as a structural expression.
+  ///
+  /// Failures retain diagnostics for duplicate declarations, malformed
+  /// declarations, unknown types, invalid generic use, and inheritance errors.
   TypeResult<ResolvedType> resolveExact(ResolvedTypeRef reference) {
     final declaration = reference._declarationRef;
     if (_duplicates.contains(declaration)) {
@@ -247,6 +258,7 @@ final class TypeRegistry {
     return const [];
   }
 
+  /// Returns the raw declaration for a reference, without resolving parents.
   TypeDefinition? definition(ResolvedTypeRef reference) =>
       _definitions[reference._declarationRef];
 

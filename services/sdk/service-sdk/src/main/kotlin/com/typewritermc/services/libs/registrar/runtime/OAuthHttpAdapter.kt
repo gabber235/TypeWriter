@@ -25,6 +25,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
+/** Outcome of one OAuth exchange, with token lifetime measured in seconds. */
 sealed interface AccessTokenResult {
     data class Success(
         val token: RedactedSecret.AccessToken,
@@ -159,6 +160,7 @@ class AccessTokenCache(
         require(skew.isFinite() && !skew.isNegative()) { "Token cache skew must be finite and non-negative" }
     }
 
+    /** Returns a cached token when it remains outside the configured refresh skew, otherwise exchanges again. */
     suspend fun get(): AccessTokenResult =
         mutex.withLock {
             entry?.takeIf { it.created.elapsedNow() + skew < it.result.expiresInSeconds.seconds }?.result
@@ -167,7 +169,9 @@ class AccessTokenCache(
                 }
         }
 
+    /** Discards the cached token so the next access performs an exchange. */
     suspend fun invalidate() = clear()
 
+    /** Clears cached authentication material during handover or runtime closure. */
     suspend fun clear() = mutex.withLock { entry = null }
 }

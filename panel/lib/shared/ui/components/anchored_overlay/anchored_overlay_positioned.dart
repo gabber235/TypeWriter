@@ -2,6 +2,10 @@ import "package:flutter/rendering.dart";
 import "package:flutter/widgets.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Positions one overlay child relative to [anchorRect] in overlay coordinates.
+///
+/// This is the render layer used by [AnchoredOverlayPortal]. It lays out the
+/// child, computes a bounded placement, and paints the child at that offset.
 class AnchoredOverlayPositioned extends SingleChildRenderObjectWidget {
   const AnchoredOverlayPositioned({
     required this.anchorRect,
@@ -40,6 +44,10 @@ class AnchoredOverlayPositioned extends SingleChildRenderObjectWidget {
   }
 }
 
+/// Render object that applies [computeAnchoredPlacement] during layout.
+///
+/// The render object owns no overlay visibility. Its inputs are supplied by the
+/// portal and its child remains responsible for its own semantics and state.
 class RenderAnchoredOverlayPositioned extends RenderBox
     with RenderObjectWithChildMixin<RenderBox> {
   RenderAnchoredOverlayPositioned({

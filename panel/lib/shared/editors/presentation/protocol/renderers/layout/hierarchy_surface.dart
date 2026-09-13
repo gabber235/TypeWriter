@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Custom multi child surface for hierarchy offsets and connector strokes.
+///
+/// Flutter measures children first, then this surface computes one geometry
+/// result used for both child parent data and painting. The render object owns
+/// that result; the callback only transfers diagnostics to the widget layer.
 final class _HierarchyRenderSurface extends MultiChildRenderObjectWidget {
   const _HierarchyRenderSurface({
     required this.layout,
@@ -33,6 +38,10 @@ final class _HierarchyRenderSurface extends MultiChildRenderObjectWidget {
   }
 }
 
+/// Owns hierarchy layout, child placement, and connector painting.
+///
+/// It does not resolve protocol expressions. Its input is the resolved layout
+/// model, and its only outward mutation is reporting geometry diagnostics.
 final class _RenderHierarchySurface extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, _HierarchyParentData>,

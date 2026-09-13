@@ -1,7 +1,12 @@
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A view into an owner. It owns no draft, revision, or submission.
+/// Exposes a nested path as an [EditOwner] without creating a second owner.
+///
+/// Reads, validation, updates, interactions, and notifications delegate to
+/// [owner] with [path] prefixed. The projection owns no draft, revision,
+/// persistence attempt, or disposal lifecycle, so callers must dispose the
+/// underlying owner rather than the projection.
 final class ProjectedEditOwner implements EditOwner {
   ProjectedEditOwner(this.owner, this.path);
 

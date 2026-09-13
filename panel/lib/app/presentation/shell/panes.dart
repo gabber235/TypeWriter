@@ -1,3 +1,10 @@
+// Coordinates focus movement between visible panes in the panel shell.
+//
+// A Pane registers its focus scope and rendered bounds with the nearest
+// GlobalPaneNavigator. Directional shortcuts are evaluated after layout,
+// using the pane bounds rather than the bounds of an individual child. The
+// primary pane supplies the initial virtual origin, while the last active
+// pane supplies the fallback origin when focus is temporarily absent.
 import "dart:collection";
 
 import "package:flutter/material.dart";
@@ -220,6 +227,14 @@ class _PaneCoordinatorScope extends InheritedWidget {
       coordinator != oldWidget.coordinator;
 }
 
+/// Gives a region its own focus scope and participates in shell navigation.
+///
+/// Place this widget below [GlobalPaneNavigator]. Set [primary] on the pane
+/// that should receive the first directional navigation request. Set
+/// [enabled] to exclude the pane from directional navigation while retaining
+/// its content. [trapFocus] controls whether keyboard traversal wraps inside
+/// the pane. Navigation uses the rendered region's bounds rather than the
+/// bounds of an individual child.
 class Pane extends StatefulWidget {
   const Pane({
     required this.id,
@@ -399,11 +414,17 @@ class _RenderPaneGeometry extends RenderProxyBox {
   }
 }
 
+/// Requests focus movement to the nearest eligible pane in [direction].
 class NavigatePaneIntent extends Intent {
   const NavigatePaneIntent(this.direction);
   final AxisDirection direction;
 }
 
+/// Provides the coordinator and shortcuts used by descendant [Pane] widgets.
+///
+/// Navigation is enabled only when at least two eligible panes are laid out.
+/// Requests are deferred until after the current frame so route transitions,
+/// registration changes, and geometry changes are observed together.
 class GlobalPaneNavigator extends StatefulWidget {
   const GlobalPaneNavigator({required this.child, super.key});
   final Widget child;
@@ -478,6 +499,7 @@ class _GlobalPaneNavigatorState extends State<GlobalPaneNavigator> {
   }
 }
 
+/// Adapts a [NavigatePaneIntent] to the pane coordinator callback.
 class NavigationAction extends Action<NavigatePaneIntent> {
   NavigationAction({required this.isActionEnabled, required this.callback});
   @override

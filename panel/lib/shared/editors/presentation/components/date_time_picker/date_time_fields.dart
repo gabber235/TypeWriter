@@ -4,6 +4,12 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Edits the hour, minute, and second components of a timestamp.
+///
+/// The timestamp remains controlled by the caller. Each valid component edit
+/// emits a complete value through [onChanged], preserving the date and hidden
+/// precision. Arrow keys change by one, page keys use the component step, and
+/// Home or End selects a boundary.
 class DateTimeFields extends HookWidget {
   const DateTimeFields({
     required this.value,

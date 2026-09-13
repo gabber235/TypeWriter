@@ -1,7 +1,12 @@
 part of "transactional_editor_source.dart";
 
-/// Updates immutable resource inputs without replacing the retained draft.
+/// Rebinds a retained draft to newer immutable resource metadata.
 extension EditorResourceBinding on TransactionalEditorSource {
+  /// Refreshes the resource handle and snapshot without replacing local edits.
+  ///
+  /// The resource key is the ownership boundary and cannot change while a
+  /// draft is retained. Older document revisions are ignored, preventing a
+  /// delayed read from moving the editor backwards.
   void refreshTarget(EditorTarget target) {
     if (_resource?.key != target.resource.key) {
       throw StateError("A draft cannot change resource scope");
@@ -10,12 +15,18 @@ extension EditorResourceBinding on TransactionalEditorSource {
     refreshSnapshot(target.snapshot);
   }
 
+  /// Applies a newer presentation snapshot while preserving the draft.
   void refreshSnapshot(EditorSnapshot snapshot) {
     if (snapshot.document.revision < document.revision) return;
     _snapshot = snapshot;
     refreshDocument(snapshot.document);
   }
 
+  /// Integrates an authoritative read before saving resource mutations.
+  ///
+  /// Returns whether the read diverged from local state. Callers use that
+  /// signal to stop submission and expose the divergence instead of writing
+  /// against stale resource data.
   bool refreshAuthoritativeSnapshot(EditorSnapshot snapshot) {
     if (snapshot.document.revision < document.revision) return false;
     _snapshot = snapshot;
@@ -23,7 +34,12 @@ extension EditorResourceBinding on TransactionalEditorSource {
   }
 }
 
-/// Runs resource reads and request capture inside the same reservation.
+/// Prepares and submits resource saves inside one mutation reservation.
+///
+/// It refreshes every participant, checks ownership and conflicts, captures
+/// commits, and verifies that all preparations belong to the reserved atomic
+/// transaction. Failures before submission are unavailable; failures where
+/// submission status cannot be confirmed are uncertain and retain replay data.
 final class _ResourceSave {
   const _ResourceSave(
     this.commits,
@@ -186,6 +202,12 @@ final class _ResourceSave {
 }
 
 extension _ResourcePersistence on TransactionalEditorSource {
+  /// Persists resource paths, retrying conflicts with the newest revision.
+  ///
+  /// Only paths still eligible after reconciliation are retried. An uncertain
+  /// result stops the loop and stores the unresolved commit for explicit
+  /// recovery, while successful commits are accepted before the source is
+  /// notified.
   Future<TypedMutationResult> _persistResource(Set<DataPath> paths) async {
     var activePaths = paths;
     var attempts = 0;

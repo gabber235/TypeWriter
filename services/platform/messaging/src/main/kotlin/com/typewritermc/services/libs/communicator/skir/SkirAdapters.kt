@@ -16,7 +16,12 @@ import com.typewritermc.services.libs.telemetry.ErrorSlug
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-/** Adapts this serializer to a codec with explicit unknown-value handling. */
+/**
+ * Adapts this serializer to the communicator codec boundary.
+ *
+ * Encoding copies the serializer output into immutable payload storage. Decoding applies [unrecognizedValues], so both
+ * peers must agree on whether unknown protocol values are dropped or rejected.
+ */
 fun <Value : Any> Serializer<Value>.asPayloadCodec(
     unrecognizedValues: UnrecognizedValuesPolicy = UnrecognizedValuesPolicy.DROP,
 ): PayloadCodec<Value> =
@@ -26,7 +31,7 @@ fun <Value : Any> Serializer<Value>.asPayloadCodec(
         override fun decode(payload: Payload): Value = fromBytes(payload.toByteArray(), unrecognizedValues)
     }
 
-/** Creates a validated unary contract while keeping address and failure semantics explicit. */
+/** Creates a unary contract using the request and response serializers declared by [method]. */
 fun <Address : Any, Request : Any, Response : Any> skirUnaryContract(
     method: Method<Request, Response>,
     name: OperationName,
@@ -45,7 +50,7 @@ fun <Address : Any, Request : Any, Response : Any> skirUnaryContract(
         failureSlug,
     )
 
-/** Creates a scatter contract that collects replies from every listener through one inbox. */
+/** Creates a scatter contract using [method] for both request and response serialization. */
 fun <Address : Any, Request : Any, Response : Any> skirScatterContract(
     method: Method<Request, Response>,
     name: OperationName,
@@ -62,7 +67,7 @@ fun <Address : Any, Request : Any, Response : Any> skirScatterContract(
         failureSlug,
     )
 
-/** Creates a watch contract from an initial request method and separate update serializer. */
+/** Creates a watch contract from [method] for the initial exchange and [updateSerializer] for updates. */
 fun <Address : Any, Request : Any, Initial : Any, Update : Any> skirWatchContract(
     method: Method<Request, Initial>,
     updateSerializer: Serializer<Update>,

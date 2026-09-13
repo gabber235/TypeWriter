@@ -6,26 +6,64 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "local_work_snapshot.dart";
 
 /// Commands and live editor access owned by the current local work scope.
+///
+/// Implementations own resource leases and submission lifetimes. Callers may
+/// retain a resource while a screen is alive, but must release it when the
+/// screen ends. A scoped owner may reject commands after its session ends.
 abstract interface class LocalWorkCommands {
+  /// Current resources with live editors or retained leases.
   Map<EditorResourceKey, EditorResource> get resources;
+
+  /// Submission records that have not yet expired or been dismissed.
   List<MutationSubmission<Object?>> get submissions;
+
+  /// Reserves [pending] resources, captures the draft after reservation, and
+  /// starts the resulting submission.
   Future<MutationSubmission<T>> enqueue<T>(PendingCommit<T> pending);
+
+  /// Starts an already captured commit, optionally transferring [reservation].
   MutationSubmission<T> start<T>(
     PreparedCommit<T> commit, {
     MutationReservation? reservation,
   });
+
+  /// Starts [commit] and returns its feature response, throwing when delivery
+  /// remains uncertain.
   Future<T> execute<T>(PreparedCommit<T> commit);
+
+  /// Adds an externally created submission to the activity journal.
   void track<T>(MutationSubmission<T> submission);
+
+  /// Removes a settled submission from the activity journal.
   void dismiss(Object id);
+
+  /// Returns the live editor owner for [target], creating or refreshing it.
   EditorSource editor(EditorTarget target);
+
+  /// Keeps a resource alive while a caller is using its editor or destination.
   void retain(EditorResourceKey key);
+
+  /// Releases one caller lease. The resource is disposed when no work remains.
   void release(EditorResourceKey key);
+
+  /// Retries a failed submission or flushes the draft that owns its identity.
   Future<void> retry(Object id);
+
+  /// Discards the local draft when its save lifecycle permits it.
   void discard(EditorResourceKey key);
+
+  /// Opens the current destination for [key], if one is available.
   Future<void> open(EditorResourceKey key);
+
+  /// Looks up a live editor without creating or retaining one.
   EditorSource? source(EditorResourceKey key);
 }
 
+/// Mutable session record joining one editor source to navigation ownership.
+///
+/// [source] owns canonical and draft values. This record owns the label,
+/// destination, destination observation, and lease count used to decide when
+/// the source can be released.
 final class EditorResource {
   EditorResource(EditorTarget target, this.source)
     : targetId = target.targetId,
@@ -71,6 +109,12 @@ final class EditorResource {
 }
 
 /// Owns mutable editors and submissions for one user and organization scope.
+///
+/// The session is the consistency boundary for resource reservations and the
+/// activity journal. It publishes immutable [LocalWorkState] snapshots, while
+/// editor sources and submissions remain owned objects behind this read model.
+/// Dispose ends the scope, releases all resources, rejects queued reservations,
+/// and prevents later publication.
 final class LocalWorkSession implements LocalWorkCommands {
   LocalWorkSession();
 
@@ -89,9 +133,18 @@ final class LocalWorkSession implements LocalWorkCommands {
   @override
   List<MutationSubmission<Object?>> get submissions =>
       List.unmodifiable(_submissions.values);
+
+  /// Latest immutable read model for resources, local values, and submissions.
   LocalWorkState get state => _state;
+
+  /// Emits a new state only when the read model changes.
   Stream<LocalWorkState> get changes => _changes.stream;
 
+  /// Waits for all participants, then captures and starts the pending commit.
+  ///
+  /// Reservation precedes preparation so overlapping mutations cannot cross
+  /// the consistency boundary while current draft values are captured. A
+  /// failed preparation or disposed session releases the reservation.
   @override
   Future<MutationSubmission<T>> enqueue<T>(PendingCommit<T> pending) async {
     final reservation = await coordinator.reserve(pending.resources);
@@ -148,6 +201,11 @@ final class LocalWorkSession implements LocalWorkCommands {
     return submission;
   }
 
+  /// Runs [commit] through the journal and returns only a settled response.
+  ///
+  /// Confirmed and rejected responses are returned to the caller. An
+  /// uncertain result becomes [SubmissionException], preserving replay policy
+  /// and the original cause for an explicit recovery decision.
   @override
   Future<T> execute<T>(PreparedCommit<T> commit) async {
     final submission = start(commit);
@@ -158,6 +216,11 @@ final class LocalWorkSession implements LocalWorkCommands {
     };
   }
 
+  /// Adds [submission] to the journal and observes its lifecycle.
+  ///
+  /// A later submission with the same label and resources replaces an earlier
+  /// settled rejection. Active or uncertain records are preserved because
+  /// dismissing them could hide an unresolved persistence outcome.
   @override
   void track<T>(MutationSubmission<T> submission) {
     if (_disposed) throw StateError("Mutation journal is disposed");
@@ -272,6 +335,7 @@ final class LocalWorkSession implements LocalWorkCommands {
     _publish();
   }
 
+  /// Ends this scope and releases every owned resource and submission.
   void dispose() {
     if (_disposed) return;
     _disposed = true;

@@ -2,10 +2,12 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:responsive_framework/responsive_framework.dart";
 
+/// Theme and responsive layout queries bound to a widget context.
 extension BuildContextX on BuildContext {
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 }
 
+/// Named responsive breakpoints configured by the panel application.
 enum Breakpoint {
   mobile("MOBILE"),
   tablet("TABLET"),
@@ -17,6 +19,7 @@ enum Breakpoint {
   final String name;
 }
 
+/// Selects layout behavior from the nearest responsive framework scope.
 extension ResponsiveBreakpointsX on BuildContext {
   bool get isMobile => ResponsiveBreakpoints.of(this).isMobile;
   bool get isTablet => ResponsiveBreakpoints.of(this).isTablet;
@@ -55,6 +58,9 @@ extension ResponsiveBreakpointsX on BuildContext {
     return ResponsiveBreakpoints.of(this).screenWidth >= width;
   }
 
+  /// Selects the value for this context's breakpoint.
+  ///
+  /// Missing larger breakpoint values fall back toward [mobile].
   T responsive<T>({required T mobile, T? tablet, T? desktop, T? fourK}) {
     if (isMobile) {
       return mobile;
@@ -73,6 +79,7 @@ extension ResponsiveBreakpointsX on BuildContext {
           false);
 }
 
+/// Operations on theme brightness values.
 extension BrightnessX on Brightness {
   Brightness get inverted {
     switch (this) {

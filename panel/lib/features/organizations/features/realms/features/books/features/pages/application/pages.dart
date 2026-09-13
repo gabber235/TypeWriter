@@ -10,6 +10,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "pages.freezed.dart";
 part "pages.g.dart";
 
+/// Immutable page metadata used by library and page editor consumers.
+///
+/// The wire authoring session is canonical. This model is a typed read model;
+/// local editor values are overlaid only by [projected] and never written back
+/// into canonical state by the model itself.
 @freezed
 abstract class Page with _$Page {
   @Assert("name != \"\"", "Name must not be empty.")
@@ -24,6 +29,7 @@ abstract class Page with _$Page {
 
   const Page._();
 
+  /// Converts the authoring contract into the panel's page read model.
   factory Page.fromWire(wire.Page page) => Page(
     pageId: page.id,
     bookId: page.book,
@@ -33,12 +39,17 @@ abstract class Page with _$Page {
     priority: page.priority,
   );
 
+  /// Encodes editable metadata for the shared transactional editor boundary.
   RecordValue get editorValue => RecordValue({
     "name": name.asValue,
     "chapter": chapter.asValue,
     "priority": priority.asValue,
   });
 
+  /// Applies a validated metadata record, or returns null for an invalid shape.
+  ///
+  /// Name, chapter, and priority must be present with their expected value
+  /// types. This keeps malformed local work from replacing a visible page.
   Page? withEditorValue(DataValue value) {
     if (value is! RecordValue) return null;
     final name = value.fields["name"];
@@ -57,12 +68,18 @@ abstract class Page with _$Page {
     );
   }
 
+  /// Overlays local draft state while retaining this canonical page as fallback.
   Page projected(LocalEditorValue? local) {
     if (local == null) return this;
     return withEditorValue(local.projectOnto(editorValue)) ?? this;
   }
 }
 
+/// Retains and exposes canonical pages belonging to one book.
+///
+/// The realm authoring session owns the data and server sequence. This provider
+/// leases the book scope for its lifetime, refreshes on sequenced session
+/// observations, and does not include local editor drafts.
 @riverpod
 class CanonicalBookPages extends _$CanonicalBookPages {
   @override
@@ -91,6 +108,11 @@ class CanonicalBookPages extends _$CanonicalBookPages {
   }
 }
 
+/// Retains one canonical page through a page scope lease.
+///
+/// Missing pages become a not found outcome after the authoritative snapshot or
+/// a later sequenced removal. Draft values are intentionally supplied by
+/// [projectedPage], not this provider.
 @riverpod
 class CanonicalPage extends _$CanonicalPage {
   @override
@@ -119,6 +141,11 @@ class CanonicalPage extends _$CanonicalPage {
   }
 }
 
+/// Produces the book page list visible to the library sidebar.
+///
+/// Canonical pages are overlaid with current local drafts, then filtered by
+/// page name or chapter. Missing organization or realm context falls back to
+/// canonical data because no scoped local projection can be selected.
 @riverpod
 AsyncValue<List<Page>> projectedBookPages(
   Ref ref,
@@ -155,6 +182,10 @@ AsyncValue<List<Page>> projectedBookPages(
   ]);
 }
 
+/// Produces one page with its current local metadata projection.
+///
+/// Canonical loading and errors pass through. An invalid draft projection is
+/// ignored by [Page.projected], preserving the last valid visible metadata.
 @riverpod
 AsyncValue<Page> projectedPage(Ref ref, skir.RecordId pageId) {
   final canonical = ref.watch(canonicalPageProvider(pageId));
@@ -183,6 +214,7 @@ AsyncValue<Page> projectedPage(Ref ref, skir.RecordId pageId) {
   return AsyncData(canonical.requireValue.projected(local));
 }
 
+/// Resolves the route's string parameter to the typed page record identity.
 @riverpod
 skir.RecordId? pageId(Ref ref) {
   final id = ref.watch(routeParamProvider("pageId"));

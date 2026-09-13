@@ -2,10 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Graph manipulation mode for moving nodes.
+/// Keyboard mode that emits one grid step of movement for the active nodes.
 ///
-/// This mode provides keyboard shortcuts for moving selected graph nodes
-/// using hjkl and arrow keys.
+/// The graph handles [GraphMoveIntent] and sends the resulting absolute
+/// positions to its move callback. This mode changes interaction interpretation,
+/// not the graph snapshot or selection owner.
 class GraphMoveMode extends InteractionMode
     with ModeDisplay, ModeShortcut, DirectionalInteractionMode {
   const GraphMoveMode();
@@ -62,10 +63,11 @@ class GraphMoveMode extends InteractionMode
       GraphMoveIntent(direction: direction);
 }
 
-/// Graph manipulation mode for resizing nodes.
+/// Keyboard mode that emits one grid step of resizing for the active nodes.
 ///
-/// This mode provides keyboard shortcuts for resizing selected graph nodes
-/// using hjkl and arrow keys.
+/// The graph handles [GraphResizeIntent] and clamps dimensions to one cell
+/// before sending them to its resize callback. This mode changes interaction
+/// interpretation, not the graph snapshot or selection owner.
 class GraphResizeMode extends InteractionMode
     with ModeDisplay, ModeShortcut, DirectionalInteractionMode {
   @override

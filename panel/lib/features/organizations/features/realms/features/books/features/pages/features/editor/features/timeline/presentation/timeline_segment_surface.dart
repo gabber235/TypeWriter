@@ -3,6 +3,12 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adds move and edge resize gestures to a caller rendered segment.
+///
+/// The surface owns gesture accumulation and returns only transient preview
+/// changes through [TimelineElementBuildData]. Resize resolvers may include an
+/// adjacent segment so shared boundaries remain continuous. Persistence and
+/// failure recovery belong to the enclosing timeline caller.
 class TimelineSegmentSurface extends HookConsumerWidget {
   const TimelineSegmentSurface({
     required this.data,

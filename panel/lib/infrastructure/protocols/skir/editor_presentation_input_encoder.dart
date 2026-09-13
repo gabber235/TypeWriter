@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes bound editing controls without taking persistence ownership.
+///
+/// Binding references and control constraints cross the protocol boundary as
+/// declared intent. The editor decides whether and how a resulting edit commits.
 extension SkirPresentationInputEncoder on SkirPresentationEncoder {
   TypeResult<wire.BoundControl> _bound(BoundControl value) {
     final binding = expressions.binding(value.binding);

@@ -1,3 +1,18 @@
+//! Reports the service registration state and maintains its unbound registration lease.
+//!
+//! Status is intentionally service scoped and separate from the organization scoped bind,
+//! metadata update, and unbind operations. It is the service registrar's bootstrap boundary. A
+//! bound service returns its durable organization association. An unbound service returns the
+//! current token, creating one when needed and renewing it when it enters the two minute renewal
+//! window. The lease is temporary bearer authority, not liveness; heartbeat and shutdown own
+//! liveness state.
+//!
+//! The lease read and any renewal share one transaction so the response describes the same state
+//! that was observed. No mutation receipt is used here because status is a current state query,
+//! not a caller identified command. Its canonical response is `Status` or `ServiceNotFoundError`;
+//! database and decoding failures remain internal errors. Later bind and unbind publications do
+//! not alter this service scoped response contract.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -22,6 +37,12 @@ struct StatusQueryResult {
     token: Option<String>,
 }
 
+/// Returns the current binding state and, when unbound, the lease available for operator binding.
+///
+/// The transaction renews an expiring unbound lease before constructing the response, while a
+/// bound service bypasses lease handling and exposes only its organization. The service registrar
+/// uses this result to decide whether to authenticate against an existing binding or wait for an
+/// operator to consume the token. It does not prove service liveness.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_status(
     msg: BrokerMessage,

@@ -11,6 +11,12 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders actions for the currently selected moderation rows.
+///
+/// Selection belongs to [JoinRequestsList]. This widget owns only the role
+/// choices and in flight approval state, then delegates the atomic mutation to
+/// [OrganizationJoinRequests]. Uncertain submission stays in the shared
+/// mutation activity instead of being presented as a local rejection.
 class BulkJoinRequestActions extends HookConsumerWidget {
   const BulkJoinRequestActions({
     required this.selectedCount,

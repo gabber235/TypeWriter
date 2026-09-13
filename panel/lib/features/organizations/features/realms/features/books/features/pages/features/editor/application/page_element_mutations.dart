@@ -1,5 +1,11 @@
 part of "page_elements.dart";
 
+/// Mutations exposed by the page coordinator for graph, timeline, and
+/// lifecycle changes.
+///
+/// Placement batches preserve each owner's expected value and retain a draft
+/// when one result is uncertain or conflicting. Creation, deletion, duplication
+/// and page moves use the authoring batch contract directly.
 mixin _PageElementMutations
     on _$PageElements, _PageElementMutationContext, _PageElementValues {
   Future<void> moveAll(List<(String, int, int)> changed) => _commitPlacements(

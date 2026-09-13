@@ -1,5 +1,9 @@
 import "package:flutter/widgets.dart";
 
+/// Named predicates for resolving Flutter widget state sets.
+///
+/// These helpers keep state property resolution readable while preserving the
+/// set's normal semantics.
 extension WidgetStates on Set<WidgetState> {
   bool get isHovered => contains(WidgetState.hovered);
   bool get isFocused => contains(WidgetState.focused);

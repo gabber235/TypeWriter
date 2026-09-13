@@ -5,6 +5,10 @@ import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Widget bridge for the graph render object and its visible node children.
+///
+/// Children are culled before construction, but [layout] still contains every
+/// placement so edges can resolve against the complete snapshot.
 class GraphSurface extends MultiChildRenderObjectWidget {
   GraphSurface({
     required this.layout,
@@ -55,6 +59,7 @@ class GraphSurface extends MultiChildRenderObjectWidget {
   }
 }
 
+/// Supplies a child's scene placement to [RenderGraphSurface].
 class GraphSurfaceChild extends ParentDataWidget<GraphSurfaceParentData> {
   const GraphSurfaceChild({
     required this.placed,
@@ -77,10 +82,15 @@ class GraphSurfaceChild extends ParentDataWidget<GraphSurfaceParentData> {
   Type get debugTypicalAncestorWidgetClass => GraphSurface;
 }
 
+/// Parent data carrying scene placement from [GraphSurfaceChild] to the render object.
 class GraphSurfaceParentData extends ContainerBoxParentData<RenderBox> {
   GraphPlacedElement? placed;
 }
 
+/// Lays out, paints, and hit tests visible graph nodes and connections.
+///
+/// Node widgets own their content. This render object owns scene coordinates,
+/// grid dots, edge arrows, and visibility dependent edge painting.
 class RenderGraphSurface extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, GraphSurfaceParentData>,
@@ -124,6 +134,7 @@ class RenderGraphSurface extends RenderBox
     markNeedsPaint();
   }
 
+  /// Edges attached to currently mounted nodes, exposed for render tests.
   @visibleForTesting
   List<GraphPlacedEdge> get visibleEdges => graphLayout.edgesFor(visibleIds);
 

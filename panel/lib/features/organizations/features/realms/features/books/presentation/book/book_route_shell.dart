@@ -1,5 +1,9 @@
 part of "route.dart";
 
+/// Empty state shown when a book route has no selected page.
+///
+/// Adding a page uses the same dialog as the sidebar, so creation and initial
+/// navigation follow one command path.
 class EmptyBookPage extends StatelessWidget {
   const EmptyBookPage({super.key});
 
@@ -32,6 +36,11 @@ class EmptyBookPage extends StatelessWidget {
   }
 }
 
+/// Shared shell for the book route and its nested page routes.
+///
+/// This shell owns layout only. Realm suspension and retry handling are applied
+/// around both the sidebar and editor content, while page selection and page
+/// mutations remain owned by their feature providers and commands.
 class BookScaffold extends HookConsumerWidget {
   const BookScaffold({required this.child, super.key});
 

@@ -6,15 +6,18 @@ package com.typewritermc.types.skir
  * diagnostics; unrelated exceptions propagate.
  */
 sealed interface SkirConversionResult<out Value> {
+    /** Contains the converted value when the complete traversal succeeded. */
     data class Success<Value>(
         val value: Value,
     ) : SkirConversionResult<Value>
 
+    /** Contains conversion diagnostics and no partial converted value. */
     data class Failure(
         val diagnostics: List<SkirConversionDiagnostic>,
     ) : SkirConversionResult<Nothing>
 }
 
+/** Identifies one unsupported or invalid value at a conversion traversal path. */
 data class SkirConversionDiagnostic(
     val path: List<String>,
     val message: String,

@@ -6,6 +6,13 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Projects the controller snapshot into an interactive, scrollable result
+/// tree.
+///
+/// Source errors and guidance appear before grouped rows. Section expansion is
+/// read from and written to [SearchController], while row rendering is
+/// delegated by result type identifier through [rowRenderers]. Empty states
+/// replace the scroll view only when the projected row count is zero.
 class SearchTreeResults extends HookConsumerWidget {
   const SearchTreeResults({required this.rowRenderers, super.key});
 
@@ -53,6 +60,11 @@ class SearchTreeResults extends HookConsumerWidget {
   }
 }
 
+/// Displays one source error summary above the result groups.
+///
+/// Warning and error severities select distinct admonition treatments. The
+/// resizing header keeps long messages compact until the user needs their full
+/// content.
 class SearchErrorSummarySliver extends StatelessWidget {
   const SearchErrorSummarySliver({required this.error, super.key});
 
@@ -86,6 +98,10 @@ class SearchErrorSummarySliver extends StatelessWidget {
   }
 }
 
+/// Displays non blocking guidance supplied by a search source.
+///
+/// Guidance is rendered as a resizing informational sliver and does not alter
+/// the controller snapshot or result tree.
 class SearchGuidanceSliver extends StatelessWidget {
   const SearchGuidanceSliver({required this.guidance, super.key});
 
@@ -112,6 +128,8 @@ class SearchGuidanceSliver extends StatelessWidget {
   }
 }
 
+/// Maps a projected tree row to its section header or source supplied result
+/// renderer.
 class SearchTreeRowWidget extends ConsumerWidget {
   const SearchTreeRowWidget({
     required this.row,
@@ -327,6 +345,10 @@ class _SearchTreeResultRow extends HookConsumerWidget {
   }
 }
 
+/// Renders one top level tree group as a sliver group.
+///
+/// Top level section headers are pinned so the section remains identifiable
+/// while its animated rows scroll. Loose result rows have no header.
 class SearchTreeSectionSliver extends ConsumerWidget {
   const SearchTreeSectionSliver({
     required this.group,

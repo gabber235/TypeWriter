@@ -1,13 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 
-/// A generic switcher with elastic size and scale animations.
+/// Switches keyed content with the panel's standard elastic size and scale
+/// transition.
 ///
-/// This encapsulates the exact timings and curves tuned for smooth, playful
-/// transitions used across the app (e.g., loading content swaps).
-///
-/// The animations are intentionally not configurable to keep transitions
-/// consistent everywhere.
+/// The child identity controls when a transition starts. Timing is intentionally
+/// fixed so loading and status changes share one motion treatment. The widget
+/// owns no application state.
 class ElasticSwitcher extends StatelessWidget {
   const ElasticSwitcher({required this.child, super.key});
 

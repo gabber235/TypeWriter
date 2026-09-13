@@ -11,6 +11,7 @@ internal class RealmCapabilityInvocationRoutes(
     private val source: RealmCapabilityInvocationSource,
     private val contracts: LibraryContracts,
 ) {
+    /** Registers computation and command calls while leaving validation and dispatch ownership with [source]. */
     fun register(builder: CommunicatorRoutesBuilder) =
         with(builder) {
             unary(contracts.invokeRealmComputation) { call -> source.computation(call.request) }

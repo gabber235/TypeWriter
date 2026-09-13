@@ -1,6 +1,12 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Shared visual body for local entries, cross page references, and degraded
+/// entries whose catalog definition is unavailable.
+///
+/// The caller supplies the resolved display state, including reference and
+/// deprecation flags. This keeps graph node variants consistent while their
+/// interaction and error affordances remain separate.
 class InnerElementNode extends StatelessWidget {
   const InnerElementNode({
     required this.name,

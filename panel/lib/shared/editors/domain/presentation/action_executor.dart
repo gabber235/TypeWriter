@@ -2,6 +2,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "action_list_reorder_executor.dart";
 
+/// Executes local actions against one immutable expression context.
+///
+/// Resolution checks writability, expression evaluation checks the supplied
+/// budget, and replacement validates the resulting value before returning a
+/// new root value. No Realm request is made here.
+
 extension LocalEditorActionExecution on LocalEditorAction {
   LocalMutationResult execute(
     ExpressionContext context, {

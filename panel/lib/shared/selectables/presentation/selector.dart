@@ -4,7 +4,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Provides SelectableIdentifier to descendants and exposes primary focus lookup.
+/// Associates a widget subtree with its selectable identifier.
+///
+/// The scope is a focus lookup boundary, not selection state. It lets graph
+/// navigation and other consumers map Flutter's primary focus back to an item
+/// without making focus imply that the item is selected.
 class SelectableScope extends InheritedWidget {
   const SelectableScope({required this.id, required super.child, super.key});
 
@@ -16,7 +20,10 @@ class SelectableScope extends InheritedWidget {
     return scope?.id;
   }
 
-  /// Returns the SelectableIdentifier for FocusManager.primaryFocus, if any.
+  /// Returns the identifier under Flutter's primary focus, if any.
+  ///
+  /// This reads the focused node's build context. It returns null when focus
+  /// is outside a [SelectableScope].
   static SelectableIdentifier? primaryFocusedId() {
     final node = FocusManager.instance.primaryFocus;
     return maybeOf(node?.context);
@@ -26,6 +33,12 @@ class SelectableScope extends InheritedWidget {
   bool updateShouldNotify(SelectableScope oldWidget) => id != oldWidget.id;
 }
 
+/// Combines selection gestures, focus handling, context actions, and item UI.
+///
+/// [selectableId] participates in provider selection. [focusNode] tracks
+/// keyboard focus independently, and [builder] receives both states so callers
+/// can render their distinction. Activation dispatches the shared selector
+/// intent before updating the canonical selection.
 class Selector extends HookConsumerWidget {
   const Selector({
     required this.selectableId,
@@ -36,7 +49,9 @@ class Selector extends HookConsumerWidget {
     super.key,
   });
 
+  /// Identifier changed by taps and keyboard activation.
   final SelectableIdentifier selectableId;
+
   // ignore: avoid_positional_boolean_parameters
   final Widget Function(bool isSelected, bool isFocused, bool isHovered)
   builder;
@@ -49,6 +64,7 @@ class Selector extends HookConsumerWidget {
   /// Called with true if the [focusNode] has primary focus.
   final ValueChanged<bool>? onFocusChange;
 
+  /// Optional callback for a double tap without changing selection semantics.
   final VoidCallback? onDoubleTap;
 
   @override
@@ -191,6 +207,7 @@ class Selector extends HookConsumerWidget {
   }
 }
 
+/// Describes how a selector activation entered the shared action pipeline.
 class SelectedSelectorIntent extends Intent {
   const SelectedSelectorIntent({
     required this.selectableId,
@@ -202,6 +219,9 @@ class SelectedSelectorIntent extends Intent {
   final SelectableIdentifier selectableId;
   final FocusNode focusNode;
 
+  /// Whether the activation originated from a pointer tap.
   final bool throughTap;
+
+  /// Whether the activation originated from Flutter's activate intent.
   final bool throughActivateIntent;
 }

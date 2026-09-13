@@ -2,8 +2,15 @@ import "package:flutter/foundation.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Applies the result of an action to the owning search controller.
 typedef ActionEffectCallback = void Function(SearchActionEffect effect);
 
+/// Owns one active result action and exposes its lifecycle to the UI.
+///
+/// Submission is rejected while another action is running or when the result
+/// selection no longer exists in the supplied snapshot. Completed and failed
+/// states reset automatically after their feedback window. Disposal cancels
+/// publication from work that finishes later.
 class ActionController with ChangeNotifier {
   ActionController({required this._effectCallback});
 
@@ -14,6 +21,8 @@ class ActionController with ChangeNotifier {
   var _state = SearchActionState.idle();
   SearchActionState get state => _state;
 
+  /// Submits [actionType] for [resultIds] using the actions and result tree in
+  /// [snapshot].
   SearchActionSubmitResult execute(
     Type actionType,
     Set<String> resultIds,
@@ -144,6 +153,7 @@ class ActionController with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Stops late asynchronous completions from notifying listeners.
   @override
   void dispose() {
     assert(!_disposed);

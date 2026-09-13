@@ -2,6 +2,11 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Chooses a compact selection control based on the number of available choices.
+///
+/// One choice or more than three choices use [Dropdown], while two or three
+/// choices use a segmented control. Selection initialization remains delegated
+/// to [SelectionInitialization], and the caller owns the selected value.
 class AdaptiveChoiceControl<T extends Object> extends StatelessWidget {
   const AdaptiveChoiceControl({
     required this.choices,

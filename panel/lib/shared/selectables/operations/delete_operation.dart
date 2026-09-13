@@ -5,14 +5,20 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A selectable-level operation holding the asynchronous delete callback.
+/// Advertises deletion for one selectable.
+///
+/// The callback owns deletion of its item. [DeleteOperation] invokes callbacks
+/// serially, retains failures per item, and removes only successful items from
+/// the canonical selection.
 class DeleteSelectionCapability extends SelectionCapability {
   DeleteSelectionCapability({required this.onDelete});
   final FutureOr<void> Function() onDelete;
 }
 
-/// The delete operation exposed when every selected item provides a
-/// [DeleteSelectionCapability].
+/// Deletes the selected items when every item supports deletion.
+///
+/// Successful callbacks are committed independently. Failed callbacks remain
+/// selected and are reported together after the batch completes.
 class DeleteOperation extends IntentShortcutOperation {
   const DeleteOperation();
 
@@ -73,6 +79,7 @@ class DeleteOperation extends IntentShortcutOperation {
       DeleteOperationButton(selection: selection, operation: this);
 }
 
+/// Inspector control for [DeleteOperation], including confirmation and count.
 class DeleteOperationButton extends HookConsumerWidget {
   const DeleteOperationButton({
     required this.selection,

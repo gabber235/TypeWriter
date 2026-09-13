@@ -3,6 +3,7 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Describes whether a focusable owner or one of its descendants is focused.
 enum FocusType { none, focus, primaryFocus }
 
 FocusType _primaryFocus(FocusNode node) {
@@ -21,6 +22,7 @@ FocusType _childPrimaryFocus(FocusNode node) {
       : FocusType.none;
 }
 
+/// Selects which focus relationship activates a [ManagedFocusHighlight].
 enum FocusHighlighting {
   /// Only highlight when it has primary focus, otherwise don't highlight at all.
   onlyPrimary(_primaryFocus),
@@ -28,7 +30,7 @@ enum FocusHighlighting {
   /// Only highlight when a child has focus.
   onlyChild(_childFocus),
 
-  // Highlight when it has primary focus or a child has focus.
+  /// Highlights when this node or one of its descendants has focus.
   primaryAndChild(_childPrimaryFocus);
 
   const FocusHighlighting(this.fetchFocusType);
@@ -38,6 +40,11 @@ enum FocusHighlighting {
   FocusType call(FocusNode node) => fetchFocusType(node);
 }
 
+/// Adds a focus node and a responsive focus ring around [child].
+///
+/// When no [focusNode] is supplied, the hook owns one for this widget instance.
+/// Focus configuration and callbacks are passed through to Flutter's [Focus]
+/// widget. Mobile layouts retain focus behavior but omit the visual ring.
 class ManagedFocusHighlight extends HookWidget {
   const ManagedFocusHighlight({
     required this.child,
@@ -62,7 +69,7 @@ class ManagedFocusHighlight extends HookWidget {
   final BorderRadiusGeometry? borderRadius;
   final double size;
 
-  // Pass-through Focus properties for transparency.
+  // Forwarded Focus properties for transparency.
   final bool autofocus;
   final bool canRequestFocus;
   final bool skipTraversal;
@@ -100,6 +107,10 @@ class ManagedFocusHighlight extends HookWidget {
   }
 }
 
+/// Renders a focus ring from an already resolved [FocusType].
+///
+/// This lower level widget is useful when focus ownership already exists in a
+/// parent. It omits the ring on mobile while retaining the child unchanged.
 class FocusHighlight extends HookWidget {
   const FocusHighlight({
     required this.child,
@@ -131,6 +142,10 @@ class FocusHighlight extends HookWidget {
     );
   }
 
+  /// Resolves a border side from the framework focused state.
+  ///
+  /// Use this when a Material control owns focus state but its decoration must
+  /// match the focus ring used by [ManagedFocusHighlight].
   static WidgetStateBorderSide stateBorder(
     BuildContext context, {
     double width = 2.0,
@@ -154,6 +169,7 @@ class FocusHighlight extends HookWidget {
     });
   }
 
+  /// Resolves the focus ring color for a known focus relationship.
   static BorderSide focusBorder(
     BuildContext context,
     FocusType type, {

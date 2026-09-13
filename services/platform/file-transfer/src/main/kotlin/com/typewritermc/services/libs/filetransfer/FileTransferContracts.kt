@@ -91,7 +91,10 @@ data class FileChunk(
     override fun hashCode(): Int = 31 * offset.hashCode() + bytes.contentHashCode()
 }
 
-/** Reports where a destination can resume a transfer after validating its immutable metadata. */
+/** Reports where a destination can resume a transfer after validating its immutable metadata.
+ *
+ * [acceptedOffset] is the only valid offset for the next contiguous write.
+ */
 data class FileWriteSession(
     val transferId: TransferId,
     val metadata: FileMetadata,
@@ -106,6 +109,7 @@ data class FileWriteSession(
  * transfer session used to deliver it.
  */
 interface FileTransferEndpoint {
+    /** Returns the published metadata for [key], or a typed failure when it is unavailable. */
     suspend fun metadata(key: FileKey): FileTransferResult<FileMetadata>
 
     /**
@@ -131,6 +135,7 @@ interface FileTransferEndpoint {
         metadata: FileMetadata,
     ): FileTransferResult<FileWriteSession>
 
+    /** Appends [bytes] at the session's accepted offset and returns the next offset. */
     suspend fun write(
         transferId: TransferId,
         offset: Long,
@@ -144,15 +149,18 @@ interface FileTransferEndpoint {
      */
     suspend fun complete(transferId: TransferId): FileTransferResult<FileMetadata>
 
+    /** Removes temporary state for [transferId]; published immutable objects are unaffected. */
     suspend fun cancel(transferId: TransferId): FileTransferResult<Unit>
 }
 
 /** Makes every expected transfer outcome explicit without using exceptions for remote or validation failures. */
 sealed interface FileTransferResult<out Value> {
+    /** Contains the requested value or operation result. */
     data class Success<Value>(
         val value: Value,
     ) : FileTransferResult<Value>
 
+    /** Contains a domain or availability failure that adapters can preserve across boundaries. */
     data class Failure(
         val error: FileTransferError,
     ) : FileTransferResult<Nothing>

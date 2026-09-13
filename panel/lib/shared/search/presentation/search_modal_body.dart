@@ -2,6 +2,11 @@ import "package:flutter/material.dart" hide SearchController;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Builds the standard search interaction surface inside a [SearchRoot].
+///
+/// This widget wires the controller to the query bar, tree results, action
+/// shortcuts, action feedback, and preview. It does not create the controller;
+/// an ancestor must provide [searchProvider].
 class SearchModalBody extends HookConsumerWidget {
   const SearchModalBody({
     required this.searchHint,

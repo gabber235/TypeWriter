@@ -3,6 +3,10 @@ import { Color } from "kernel/v1/color.skir";
 import { Icon } from "kernel/v1/icon.skir";
 import { PageKindRef } from "kernel/v1/page_kind.skir";
 
+// Page catalog metadata tells the panel which page kinds exist and which structural editor owns each kind.
+// Accepted definitions and diagnostics travel together so invalid declarations remain explainable without becoming
+// selectable page kinds.
+
 enum GraphDirection(811300001) {
   left_to_right = 1;
   right_to_left = 2;

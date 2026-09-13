@@ -9,7 +9,10 @@ import skirout.editor.v1.type_catalog.TypeExpression
 import skirout.editor.v1.type_catalog.TypedValue
 
 /**
- * Collects request shape diagnostics before search execution.
+ * Collects request shape diagnostics before a search source can start work.
+ *
+ * This is transport boundary validation only. Generation, capability identity, and result type compatibility remain
+ * owned by the search source because they require the current discovery snapshot.
  *
  * It checks required fields and known selector expression structure with a bounded node count. A null result means
  * these checks passed, not that catalog generation or capability types match.
@@ -41,6 +44,11 @@ internal fun invalidRealmPresentationSearchRequest(request: RealmPresentationSea
     )
 }
 
+/**
+ * Replaces a producer response whose subscription identity does not match the request being served.
+ *
+ * The route uses this as a containment boundary before publication, rather than forwarding an ambiguous update.
+ */
 internal fun invalidRealmPresentationSearchResponse(subscriptionId: String): RealmPresentationSearchUpdate =
     RealmPresentationSearchUpdate.createSnapshot(
         subscriptionId = subscriptionId,

@@ -1,5 +1,12 @@
 part of "../../bound_value_renderer.dart";
 
+/// Invokes a named presentation with caller supplied binding arguments.
+///
+/// Arguments are resolved in the caller, then projected into a fresh lexical
+/// scope. The child can preserve edit access only when the caller granted it;
+/// canonical destinations and owner references route changes back to the
+/// caller's transaction. Recursive or unavailable definitions become a
+/// diagnostic.
 extension PresentationInvocationRendering on PresentationInvocationElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final definition = scope.resolvePresentation(null, presentationId);
@@ -23,6 +30,13 @@ extension PresentationInvocationRendering on PresentationInvocationElement {
   }
 }
 
+/// Binds and type checks the arguments for one presentation invocation.
+///
+/// This is the boundary between caller bindings and the presentation's input
+/// bindings. It infers substitutions, enforces edit access, records canonical
+/// destinations and owners, and marks the definition active for recursion
+/// detection. The returned scope is immutable and inherits all other
+/// capabilities from the caller.
 extension PresentationInputScope on PresentationRenderScope {
   /// Arguments resolve in the caller before a fresh lexical scope is created.
   TypeResult<(PresentationNode, PresentationRenderScope)> bindPresentation(

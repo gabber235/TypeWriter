@@ -1,9 +1,12 @@
 import "package:flutter/material.dart";
 import "package:json_annotation/json_annotation.dart";
 
+/// Encodes nullable colors as hexadecimal strings with an optional leading #.
 class NullableColorConverter extends JsonConverter<Color?, String?> {
   const NullableColorConverter();
 
+  /// Accepts three, six, or eight hexadecimal digits, defaulting six digit
+  /// values to fully opaque.
   @override
   Color? fromJson(String? json) {
     if (json == null) return null;
@@ -36,6 +39,7 @@ class NullableColorConverter extends JsonConverter<Color?, String?> {
   }
 }
 
+/// Non nullable counterpart of [NullableColorConverter].
 class ColorConverter extends JsonConverter<Color, String> {
   const ColorConverter();
 

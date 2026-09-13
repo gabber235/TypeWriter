@@ -5,6 +5,12 @@ const realmServiceRoleColor = Colors.deepOrangeAccent;
 const customServiceRoleColor = Colors.green;
 const standaloneServiceColor = Colors.blueGrey;
 
+/// The organization identity of a service and its reported connection state.
+///
+/// A [Service] identifies the logical service record. A host runtime resource
+/// in [OrganizationTopology] is a separate operational record linked through
+/// its service identifier. Use this model for naming and service connection
+/// facts, not for inferring which realm or engine instances are running.
 @freezed
 abstract class Service with _$Service {
   @Assert("name.isNotEmpty", "Name must not be empty.")
@@ -45,26 +51,38 @@ abstract class Service with _$Service {
     state: state?.toSkir(),
   );
 
+  /// A presentation name derived from the editable service identity.
   String get displayName =>
       name.isNotEmpty ? name.formatted : "Unnamed Service";
 
+  /// The UI color associated with the service role.
   Color get color => role.color;
 
+  /// Whether the reported service state is still fresh at [now].
   bool isConnectedAt(DateTime now) => state?.isConnectedAt(now) ?? false;
 
+  /// The last heartbeat reported by the service, when available.
   DateTime? get lastSeen => state?.lastSeen;
 
+  /// A short role label for service presentations.
   String get label => role.label;
 
+  /// The time at which a connected service stops being considered fresh.
   DateTime? get connectionDeadline => state?.nextTimeout;
 
+  /// Whether this identity represents a host service.
   bool get isHost => role is HostServiceRole;
+
+  /// Whether this identity represents a custom service.
   bool get isCustom => role is CustomServiceRole;
+
+  /// Whether this custom service has the reserved realm role.
   bool get isRealm => switch (role) {
     CustomServiceRole(name: "realm") => true,
     _ => false,
   };
 
+  /// The icon used for this service role in the panel.
   IconData get icon {
     return switch (role) {
       HostServiceRole() => Icons.dns,
@@ -73,9 +91,16 @@ abstract class Service with _$Service {
   }
 }
 
+/// Converts the editable portion of a service into the local editor model.
+///
+/// The editor projects local identity values over canonical service data. It
+/// does not replace the canonical revision or runtime state, and consumers
+/// should use the canonical service for mutation expectations.
 extension ServiceIdentityConversion on Service {
+  /// The canonical value owned by the service identity editor.
   RecordValue get identityValue => RecordValue({"name": name.asValue});
 
+  /// Returns this identity with [value] applied when it is valid.
   Service? withIdentityValue(DataValue value) {
     if (value is! RecordValue) return null;
     final name = value.fields["name"];
@@ -83,12 +108,16 @@ extension ServiceIdentityConversion on Service {
     return copyWith(name: name.value);
   }
 
+  /// Projects unsaved identity edits over canonical data for presentation.
+  ///
+  /// A failed projection leaves the canonical service unchanged.
   Service projected(LocalEditorValue? local) {
     if (local == null) return this;
     return withIdentityValue(local.projectOnto(identityValue)) ?? this;
   }
 }
 
+/// Classifies the service identity by the runtime role it provides.
 @freezed
 sealed class ServiceRole with _$ServiceRole {
   @Assert("version.isNotEmpty", "Version must not be empty.")
@@ -135,6 +164,7 @@ sealed class ServiceRole with _$ServiceRole {
   };
 }
 
+/// Temporary credentials and expiry data used to register a service.
 @freezed
 abstract class ServiceRegistration with _$ServiceRegistration {
   const factory ServiceRegistration({
@@ -158,6 +188,10 @@ abstract class ServiceRegistration with _$ServiceRegistration {
 
 const _serviceStateTimeout = Duration(minutes: 2);
 
+/// Connection information reported by a logical service identity.
+///
+/// Freshness is evaluated by [isConnectedAt], using the service heartbeat
+/// policy rather than the host runtime status in the topology model.
 @freezed
 abstract class ServiceState with _$ServiceState {
   const factory ServiceState({
@@ -178,6 +212,7 @@ abstract class ServiceState with _$ServiceState {
     return skir.ServiceState(status: status.toSkir(), lastSeen: lastSeen);
   }
 
+  /// Returns whether this state is connected and within its freshness window.
   bool isConnectedAt(DateTime now) {
     if (status == ServiceStateStatus.offline) return false;
     return now.difference(lastSeen) < _serviceStateTimeout;
@@ -189,6 +224,7 @@ abstract class ServiceState with _$ServiceState {
   }
 }
 
+/// Connection status reported by a service identity.
 enum ServiceStateStatus {
   online,
   offline;

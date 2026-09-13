@@ -1,5 +1,12 @@
 part of "search_input.dart";
 
+/// Displays the current source snapshot as a bounded, accessible result list.
+///
+/// The search controller owns snapshot, preview, and refresh state. This view
+/// derives rows from that snapshot and reports user selection upward; it never
+/// mutates the bound editor value. Source errors expose the source refresh
+/// operation, while guidance and empty states are observations of the same
+/// snapshot and do not terminate editing.
 class _SearchInputResults extends StatelessWidget {
   const _SearchInputResults({
     required this.visible,

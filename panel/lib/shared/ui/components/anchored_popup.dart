@@ -4,8 +4,13 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Positions interactive content during layout, allowing nested tooltips.
-/// Owns dismissal and focus restoration. Closing never pops the caller route.
+/// Provides a transient popup anchored to caller supplied content.
+///
+/// The widget owns popup visibility, local route dismissal, and focus
+/// restoration. The caller owns the trigger and popup content. Closing removes
+/// only the local history entry, so it never pops the surrounding route. Use
+/// [AnchoredOverlayPortal] instead when the overlay should not impose popup
+/// focus or modal barrier behavior.
 class AnchoredPopup extends StatefulWidget {
   const AnchoredPopup({
     required this.builder,

@@ -1,5 +1,10 @@
 part of "../../content_renderer.dart";
 
+/// Resolves and renders a protocol status as an icon and accessible label.
+///
+/// Cases are matched in declaration order. The fallback handles unmatched
+/// values, and unknown values use their expression display text when no label
+/// is configured. Resolution failures remain typed presentation diagnostics.
 extension StatusElementRendering on StatusElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final resolved = _resolveStatus(scope);
@@ -28,6 +33,10 @@ extension StatusElementRendering on StatusElement {
     );
   }
 
+  /// Resolves the source value and its first matching display case.
+  ///
+  /// This keeps protocol matching separate from Flutter styling and ensures
+  /// failures from either expression are returned through one diagnostic path.
   TypeResult<_ResolvedStatus> _resolveStatus(PresentationRenderScope scope) {
     final result = scope.evaluate(value);
     if (result case TypeFailure(:final diagnostics)) {

@@ -3,6 +3,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "type_expression.freezed.dart";
 
+/// The structural language used to describe editor values.
+///
+/// Expressions carry scalar bounds, collection shape, record fields, enum
+/// members, nominal references, and generic parameters. They are immutable
+/// declarations. Validation checks a value against an expression, while the
+/// registry resolves nominal references and applies their representations.
 @freezed
 sealed class TypeExpression with _$TypeExpression {
   const TypeExpression._();
@@ -80,6 +86,7 @@ sealed class TypeExpression with _$TypeExpression {
   const factory TypeExpression.parameter(String name) = ParameterType;
 }
 
+/// The fixed width and signedness of an integer value.
 enum IntegerWidth {
   signed8(bits: 8, signed: true),
   signed16(bits: 16, signed: true),
@@ -101,8 +108,10 @@ enum IntegerWidth {
       : (BigInt.one << bits) - BigInt.one;
 }
 
+/// The precision supported by a floating point value.
 enum FloatWidth { float32, float64 }
 
+/// A named record member and its optional editor default.
 @freezed
 abstract class TypeField with _$TypeField {
   const factory TypeField({

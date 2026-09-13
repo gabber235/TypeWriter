@@ -36,10 +36,10 @@ import com.typewritermc.presentation.PresentationSpec
 import com.typewritermc.presentation.TypewriterPresentation
 
 /**
- * KSP entrypoint generating presentation providers and discovery bindings from annotated Kotlin declarations. Each
- * compiler environment receives a fresh processor. Processing defers unresolved symbols, validates supported
- * declaration shapes, and generates its output once for the compilation. Generated resources feed manifest
- * discovery so runtime consumers do not scan source annotations.
+ * KSP entrypoint generating [PresentationProvider] implementations and discovery bindings from annotated top level
+ * functions. Each provider preserves namespace and source part provenance, exposes the annotation's default and
+ * priority metadata, and invokes the source function inside [PresentationBuildContext]. The emitted resource is
+ * consumed by manifest discovery, so runtime loading does not scan source annotations.
  */
 class TypewriterPresentationProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =

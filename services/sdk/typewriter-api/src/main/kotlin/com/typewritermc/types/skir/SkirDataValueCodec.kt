@@ -21,8 +21,10 @@ import skirout.kernel.v1.duration.Duration as SkirDuration
  * not resolve a catalog or establish that a value satisfies a domain schema.
  */
 object SkirDataValueCodec {
+    /** Encodes a Typewriter value, returning diagnostics for representations Skir cannot carry. */
     fun encode(value: DataValue): SkirConversionResult<SkirTypedValue> = captureSkirConversion { encodeDataValue(value) }
 
+    /** Decodes a Skir value, returning diagnostics for unknown or invalid payload variants. */
     fun decode(value: SkirTypedValue): SkirConversionResult<DataValue> = captureSkirConversion { decodeDataValue(value) }
 }
 

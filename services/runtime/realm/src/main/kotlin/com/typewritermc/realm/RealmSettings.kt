@@ -15,6 +15,12 @@ internal class RealmSettings(
     private val environment: Map<String, String> = emptyMap(),
     private val configuration: Map<String, String> = emptyMap(),
 ) {
+    /**
+     * Returns one nonblank setting using the precedence system properties, environment, file, then default.
+     *
+     * The lookup is a snapshot of the maps supplied to this instance. A blank higher precedence value is ignored,
+     * allowing deployment configuration to fall through to a useful lower precedence value.
+     */
     fun get(
         name: String,
         default: String? = null,
@@ -25,6 +31,7 @@ internal class RealmSettings(
             ?: default
 
     companion object {
+        /** Captures process settings and the optional configuration file selected by the process. */
         fun system(): RealmSettings {
             val systemProperties =
                 System.getProperties().stringPropertyNames().associateWith(System::getProperty)
@@ -40,6 +47,7 @@ internal class RealmSettings(
             return RealmSettings(systemProperties, environment, configuration)
         }
 
+        /** Loads a fixed configuration file, primarily for composition and deterministic tests. */
         fun fromFile(path: Path): RealmSettings = RealmSettings(configuration = readConfiguration(path))
     }
 }

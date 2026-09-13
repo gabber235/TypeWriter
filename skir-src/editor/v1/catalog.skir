@@ -14,6 +14,10 @@ import {
   TypeDefinition,
 } from "editor/v1/type_catalog.skir";
 
+// The editor catalog is one versioned capability boundary. A fetch assembles the
+// type system and the metadata that makes those types editable, searchable, and
+// placeable. Consumers should install the returned generation as one snapshot.
+
 struct SubtypeQueryId(810900002) {
   value: string = 0;
 }
@@ -35,6 +39,7 @@ struct CatalogFetchRequest(810900005) {
   subtype_queries: [SubtypeQuery] = 3;
 }
 
+// Complete editor catalog snapshot. All returned parts share generation.
 struct CatalogFetchSuccess(810900006) {
   generation: CatalogGeneration = 0;
   type_definitions: [TypeDefinition] = 1;
@@ -48,6 +53,7 @@ struct CatalogFetchSuccess(810900006) {
   page_diagnostics: [PageDiagnostic] = 9;
 }
 
+// Reports a conditional fetch against a different catalog generation.
 struct CatalogGenerationMismatch(810900007) {
   actual_generation: CatalogGeneration = 0;
 }

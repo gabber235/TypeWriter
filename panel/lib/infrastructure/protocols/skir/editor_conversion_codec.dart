@@ -1,3 +1,9 @@
+// Decodes the catalog's conversion graph into executable domain metadata.
+//
+// Conversion rules reference types, paths, and other conversions. This
+// boundary resolves and validates those references together so consumers can
+// select conversions without knowing the wire representation or accepting a
+// partially valid rule.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/conversion.dart"
     as wire;
@@ -5,12 +11,14 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire_type;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Decodes wire conversion definitions and their nested rules.
 final class SkirConversionCodec {
   const SkirConversionCodec(this.types, this.paths);
 
   final SkirTypeCodec types;
   final SkirDataPathCodec paths;
 
+  /// Decodes all definitions, aggregating diagnostics across the catalog.
   TypeResult<List<ConversionDefinition>> decode(
     Iterable<wire.ConversionDefinition> value,
   ) {
@@ -135,6 +143,7 @@ extension on wire.ScalarCastKind {
   }
 }
 
+/// Decodes conversion rules that need the shared type and path context.
 extension SkirConversionCodecRules on SkirConversionCodec {
   TypeResult<ConversionRule> _projection(wire.RecordProjectionRule value) {
     final fields = <ConversionProjectionField>[];

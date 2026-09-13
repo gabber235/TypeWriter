@@ -33,6 +33,12 @@ class RealmCatalogInvalidationProcess internal constructor(
 ) {
     private var publisher: Job? = null
 
+    /**
+     * Binds catalog invalidation delivery to a new Realm communicator and waits for its subscriber to be installed.
+     *
+     * The current snapshot is not replayed as an invalidation. Only later generation changes are published, and each
+     * failed publication retries until the generation is delivered or a newer generation supersedes it.
+     */
     internal suspend fun replaceCommunicator(
         communicator: Communicator,
         address: RealmAddress,
@@ -78,6 +84,7 @@ class RealmCatalogInvalidationProcess internal constructor(
         snapshots.awaitChangeSubscriber()
     }
 
+    /** Cancels and joins the current invalidation publisher before its communicator is discarded. */
     internal suspend fun stop() {
         publisher?.cancelAndJoin()
         publisher = null

@@ -1,5 +1,11 @@
 part of "page_elements.dart";
 
+/// Applies typed field edits through the shared local work owner.
+///
+/// The current canonical value and schema revision are resolved when building
+/// the [EditorTarget]. Successful and uncertain mutations are left to the
+/// shared reconciliation pipeline, while conflicts and validation failures are
+/// translated into caller visible API errors.
 mixin _PageElementValues on _$PageElements, _PageElementMutationContext {
   Future<void> updateCueFieldValue(
     String cueId,

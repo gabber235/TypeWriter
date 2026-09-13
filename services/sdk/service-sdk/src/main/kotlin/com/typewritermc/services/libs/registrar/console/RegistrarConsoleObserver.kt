@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collect
 
 /** Receives an operator-visible binding token. */
 fun interface BindingTokenOutput {
+    /** Displays a registration token without assuming ownership of its lifetime. */
     fun display(token: String)
 }
 
@@ -18,6 +19,7 @@ fun interface BindingTokenOutput {
 class RegistrarConsoleObserver(
     private val output: BindingTokenOutput,
 ) {
+    /** Collects state until cancelled and emits each distinct pending registration token once. */
     suspend fun observe(states: Flow<RegistrarSnapshot>) {
         var displayed: String? = null
         states.collect { snapshot ->

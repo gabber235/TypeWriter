@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Paint ready stroke and style produced by connection resolution.
+///
+/// Paths are already in the layer surface's coordinate space. Keeping this
+/// value separate from the declarative connection prevents the painter from
+/// evaluating expressions or deciding failure policy.
 final class _ResolvedStrokePath {
   const _ResolvedStrokePath({required this.path, required this.style});
 
@@ -42,6 +47,11 @@ final class _ResolvedEndpointMarker {
   double get crossAxisExtent => extent / 2;
 }
 
+/// A marker node positioned in layer coordinates for the overlay pass.
+///
+/// [identity] is occurrence based, not configuration based. Equal marker
+/// declarations therefore retain separate render objects and lifecycle when
+/// they occur more than once in a layer.
 final class _ResolvedMarker {
   const _ResolvedMarker({
     required this.identity,
@@ -70,6 +80,11 @@ final class _ResolvedMarker {
   int get hashCode => Object.hash(identity, node, scope, position, angle);
 }
 
+/// Complete result of resolving one connection layer for one paint pass.
+///
+/// The result keeps successful geometry alongside diagnostics. Callers can
+/// paint valid connections and surface invalid declarations without replacing
+/// the presentation content with an error widget.
 final class _ConnectionResolution {
   const _ConnectionResolution({
     required this.strokes,
@@ -82,6 +97,11 @@ final class _ConnectionResolution {
   final List<TypeDiagnostic> diagnostics;
 }
 
+/// Widget facing subset of a connection resolution.
+///
+/// Stroke paths stay in the render layer. Only marker configurations and
+/// diagnostics cross back to the stateful widget because those two outputs
+/// require widget tree participation.
 final class _ConnectionOverlay {
   const _ConnectionOverlay({required this.markers, required this.diagnostics});
 

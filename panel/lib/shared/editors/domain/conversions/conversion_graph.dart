@@ -4,10 +4,24 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "conversion_graph.freezed.dart";
 
+/// Selects and applies conversion paths declared by an editor catalog.
+///
+/// The graph is an immutable snapshot of conversion definitions. Path lookup
+/// uses total cost and rejects ties for the cheapest path, while automatic
+/// lookup additionally permits only local, lossless, infallible edges. Realm
+/// edges can be selected explicitly but remain unavailable to local [apply].
+/// Inheritance edges are added by [withInheritance] from the registry's direct
+/// parent relationships.
 final class ConversionGraph {
+  /// Captures the supplied conversion definitions for later path operations.
   ConversionGraph(Iterable<ConversionDefinition> conversions)
     : _conversions = List.unmodifiable(conversions);
 
+  /// Builds a graph and adds zero cost upcast edges for [applications].
+  ///
+  /// Each application is resolved through [registry], so unknown or invalid
+  /// types prevent a graph from being returned. Only discovered direct parent
+  /// edges are added, and the traversal continues through those parents.
   static TypeResult<ConversionGraph> withInheritance({
     required TypeRegistry registry,
     required Iterable<ResolvedTypeRef> applications,
@@ -52,11 +66,21 @@ final class ConversionGraph {
 
   final List<ConversionDefinition> _conversions;
 
+  /// Finds the unique cheapest path suitable for implicit conversion.
+  ///
+  /// Only local, lossless, infallible edges participate. An identity request
+  /// returns an empty path. Missing paths and equally cheap alternatives are
+  /// returned as typed diagnostics for the caller to surface or recover from.
   TypeResult<List<ConversionDefinition>> automaticPath(
     ResolvedTypeRef source,
     ResolvedTypeRef target,
   ) => _findPath(source, target, automatic: true);
 
+  /// Finds the unique cheapest path, including explicit and realm edges.
+  ///
+  /// Selection does not execute the path. A tie at the lowest cost is an
+  /// ambiguity rather than an arbitrary choice, so callers can require a
+  /// specific conversion or report the catalog defect.
   TypeResult<List<ConversionDefinition>> explicitPath(
     ResolvedTypeRef source,
     ResolvedTypeRef target,
@@ -135,6 +159,12 @@ final class ConversionGraph {
     ]);
   }
 
+  /// Applies an already selected [path] to [value] in order.
+  ///
+  /// This method does not perform path selection or type lookup. It stops at
+  /// the first conversion failure, and returns unavailable when a realm edge
+  /// would require execution outside the panel. An empty path returns the
+  /// original value as a successful identity conversion.
   ConversionResult apply(DataValue value, Iterable<ConversionDefinition> path) {
     var current = value;
     for (final conversion in path) {

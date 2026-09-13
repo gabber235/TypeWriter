@@ -6,6 +6,11 @@ import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Connects pointer navigation and visible element builders to [TimelinePlane].
+///
+/// Scroll and pinch gestures update the controller directly. Element widgets
+/// receive only the visible overscanned projection, while drag gestures are
+/// handled by their specialised surfaces and cannot pan the plane at once.
 class TimelinePlaneSurface extends HookWidget {
   const TimelinePlaneSurface({
     required this.controller,

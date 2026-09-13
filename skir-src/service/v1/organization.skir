@@ -5,10 +5,16 @@ import {
 import { RecordId } from "kernel/v1/record_id.skir";
 import { Service } from "service/v1/service.skir";
 
+// Validation failures for organization owned service metadata. These are rejected without changing the service
+// revision or publishing a service update.
 enum ServiceUpdateValidationError {
   name_invalid;
 }
 
+// Streams the organization service projection for the addressed organization.
+// The initial list is a snapshot. Later add, update, and remove variants describe committed binding, metadata, or
+// liveness changes. A service is visible here only while organization bound; this watch does not expose unbound
+// registration leases.
 method WatchOrganizationServices(
   struct {}
 ): enum {
@@ -20,6 +26,10 @@ method WatchOrganizationServices(
   remove: RecordId;
 } = 820326;
 
+// Performs an organization scoped compare and set update of service metadata.
+// The registration service owns revision and increments it only after accepting the name change. A stale expected
+// revision returns the current service in conflict_error, while service_not_found_error means the service is absent
+// from this organization. Operation identity protects retries and rejects reuse with different input.
 method UpdateOrganizationService(
   struct {
     operation_id: string;

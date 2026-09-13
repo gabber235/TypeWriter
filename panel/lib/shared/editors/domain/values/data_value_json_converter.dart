@@ -6,6 +6,14 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "data_value_json_cursor.dart";
 
+/// Converts tagged [DataValue] objects to the stable JSON shape used by panel
+/// persistence and protocol payloads.
+///
+/// The `kind` field preserves the union variant. Integer values are encoded as
+/// strings, maps retain arbitrary typed keys as ordered entries, and
+/// polymorphic values carry their complete resolved type reference. Decoding
+/// throws [FormatException] for malformed shapes so boundary callers can reject
+/// corrupt data instead of accepting a partial value.
 class DataValueJsonConverter
     extends JsonConverter<DataValue, Map<String, Object?>> {
   const DataValueJsonConverter();
@@ -218,6 +226,11 @@ final class _DataValueDecoder {
   };
 }
 
+/// Restricts [DataValueJsonConverter] to JSON objects representing records.
+///
+/// This adapter is useful for generated JSON models whose field is known to be
+/// a [RecordValue]. It preserves the same tagged representation and reports a
+/// format error when the payload contains another value variant.
 class RecordValueJsonConverter
     extends JsonConverter<RecordValue, Map<String, Object?>> {
   const RecordValueJsonConverter();

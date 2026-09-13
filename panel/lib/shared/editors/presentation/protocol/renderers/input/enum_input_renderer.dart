@@ -1,5 +1,9 @@
 part of "../../simple_input_renderer.dart";
 
+/// Renders the closed set declared by the bound enum type.
+///
+/// Selection is routed through the field so mixed values use explicit
+/// selection state and cannot be mistaken for one shared current option.
 extension EnumInputElementRendering on EnumInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

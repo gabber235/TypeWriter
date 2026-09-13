@@ -56,6 +56,7 @@ import skirout.service.v1.status.GetServiceStatusResponse
 import skirout.service.v1.status.ServiceBinding
 import kotlin.time.TimeSource
 
+/** Address identity used to route messaging operations for one registered service. */
 @JvmInline
 value class ServiceAddress(
     val serviceId: String,
@@ -72,9 +73,16 @@ private fun serviceAddress(pattern: String): AddressTemplate<ServiceAddress> =
         { ServiceAddress(it.require("id")) },
     )
 
+/** Service status requests. */
 val serviceStatusAddress = serviceAddress("cloud.to.service.{id}.status")
+
+/** Panel to service binding notifications. */
 val serviceBoundAddress = serviceAddress("cloud.from.service.{id}.registration.bound")
+
+/** Service heartbeat notifications. */
 val serviceHeartbeatAddress = serviceAddress("cloud.to.service.{id}.heartbeat")
+
+/** Service shutdown notifications. */
 val serviceShutdownAddress = serviceAddress("cloud.to.service.{id}.shutdown")
 
 private val statusPolicy =

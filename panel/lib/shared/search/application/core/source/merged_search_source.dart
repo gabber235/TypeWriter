@@ -2,6 +2,12 @@ import "dart:async";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Combines independent sources into one snapshot and selector stream.
+///
+/// Results, actions, guidance, and errors are concatenated with first source
+/// ownership winning for duplicate IDs or action types. The merged status stays
+/// loading until every child has reported and becomes error only when every
+/// child errors without results. Preview requests route by result ID.
 final class MergedSearchSource implements SearchSource {
   MergedSearchSource({required this.sources}) : assert(sources.isNotEmpty) {
     _latestSnapshots = List.filled(sources.length, null);
@@ -196,6 +202,7 @@ final class MergedSearchSource implements SearchSource {
   }
 }
 
+/// Merges sources in iterable order, which also defines conflict precedence.
 extension MergedSearchSourcesX on Iterable<SearchSource> {
   SearchSource merged() {
     return MergedSearchSource(sources: toList(growable: false));

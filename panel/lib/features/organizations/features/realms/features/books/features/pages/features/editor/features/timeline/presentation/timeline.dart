@@ -10,6 +10,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 export "package:typewriter_panel/features/organizations/features/realms/features/books/features/pages/features/editor/features/timeline/presentation/timeline_keyframe_surface.dart";
 export "package:typewriter_panel/features/organizations/features/realms/features/books/features/pages/features/editor/features/timeline/presentation/timeline_segment_surface.dart";
 
+/// The frame values a timeline caller must apply to one source element.
+///
+/// This is an outcome, not a persistence command. The callback receives all
+/// previews in the session after the controller clears them. A caller that
+/// cannot save the values must surface recovery through its own editor state.
 class TimelineCommitPayload {
   const TimelineCommitPayload({
     required this.id,
@@ -22,10 +27,18 @@ class TimelineCommitPayload {
   final int endFrame;
 }
 
+/// Persists committed frame changes outside the timeline feature.
 typedef TimelineCommit = Future<void> Function(
   List<TimelineCommitPayload> changes,
 );
 
+/// Interactive frame editor for tracks, segments, and keyframes.
+///
+/// The widget derives layout and placement from [data], owns transient focus,
+/// pan, zoom, and preview lifecycle, and delegates source mutation to
+/// [onElementsCommited]. A missing callback disables keyboard edit modes and
+/// drops pointer previews at gesture completion. [resolveTargets] lets an enclosing selection
+/// model expand one focused element into a multi element edit.
 class Timeline extends HookConsumerWidget {
   const Timeline({
     required this.data,
@@ -378,8 +391,8 @@ class Timeline extends HookConsumerWidget {
                               SelectedSelectorIntent:
                                   CallbackAction<SelectedSelectorIntent>(
                                     onInvoke: (intent) {
-                                      // When we click on a node, it will auto focus on it, however we don't want to center the graph
-                                      // on it because it will cause the graph to jump around and all around feel terrible.
+                                      // Tap selection already places the element under the pointer. Centering
+                                      // it again would move the plane away from the user's click target.
                                       if (!intent.throughTap) return null;
                                       ignoreCentering.value = [
                                         ...ignoreCentering.value,

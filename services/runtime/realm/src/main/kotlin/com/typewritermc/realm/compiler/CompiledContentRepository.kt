@@ -22,10 +22,22 @@ import java.util.UUID
  * advancing active content. Blocked attempts are recorded separately and retain the previous active manifest.
  */
 interface CompiledContentRepository {
+    /**
+     * Finds an immutable shard produced from the exact compiler input fingerprint.
+     *
+     * A missing result means the compiler must produce the shard. It does not imply that the page is absent from
+     * the active manifest.
+     */
     suspend fun findShard(inputFingerprint: ContentDigest): CompiledPageShard?
 
+    /** Returns the manifest whose shards currently define active compiled content, or null before first activation. */
     suspend fun activeManifest(): CompiledManifest?
 
+    /**
+     * Returns the activation payload consumed by runtime delivery, or null before first activation.
+     *
+     * The payload is separate from the manifest because it includes the blob locations needed by loaders.
+     */
     suspend fun activeActivation(): CompiledContentActivation?
 
     /**
@@ -35,6 +47,11 @@ interface CompiledContentRepository {
      */
     suspend fun nextActivationRevision(): Long
 
+    /**
+     * Records a compile attempt that cannot publish and leaves the active manifest unchanged.
+     *
+     * Diagnostics are persisted for authoring status. This operation is not a source revision advance.
+     */
     suspend fun recordBlocked(
         sourceRevision: String,
         catalogRevision: String,
@@ -42,6 +59,12 @@ interface CompiledContentRepository {
         diagnostics: List<CompileDiagnostic>,
     )
 
+    /**
+     * Atomically stores immutable records and advances the active pointer when revisions are still current.
+     *
+     * Returns false for a stale source or activation revision. A successful commit invokes activation observers only
+     * after the database transaction has committed.
+     */
     suspend fun publish(
         manifest: CompiledManifest,
         shards: List<CompiledPageShard>,

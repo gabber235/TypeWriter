@@ -1,5 +1,15 @@
+/// Typed builders for collection pipelines in presentation expressions.
+///
+/// Each builder records the scoped binding identifiers needed by evaluation and
+/// computes the resulting type immediately. The source must be a list or map;
+/// incompatible static types fail at authoring time rather than later during
+/// rendering.
+library;
+
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adds collection projections, predicates, reductions, and sequence transforms
+/// while preserving the expression tree's declared result type.
 extension CollectionExpressionAuthoring on TypedExpression {
   TypedExpression collectionMap({
     required BindingId itemBindingId,

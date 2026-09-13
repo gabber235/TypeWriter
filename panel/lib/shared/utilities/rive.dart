@@ -3,6 +3,10 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:rive/rive.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Loads a named Rive state machine, with a deterministic test placeholder.
+///
+/// Production loading and rendering are delegated to Rive. Tests bypass the
+/// asset loader through [placeholder].
 class RiveAsset extends StatelessWidget {
   const RiveAsset({
     required this.asset,
@@ -12,9 +16,16 @@ class RiveAsset extends StatelessWidget {
     super.key,
   });
 
+  /// Asset path passed to Rive.
   final String asset;
+
+  /// State machine selected by name after the asset loads.
   final String stateMachineName;
+
+  /// Widget rendered instead of Rive while running in a Flutter test.
   final Widget placeholder;
+
+  /// Optional projection of each loaded Rive state.
   final Widget Function(BuildContext, RiveState)? builder;
 
   @override
@@ -51,14 +62,12 @@ class _LoadedRiveAsset extends HookWidget {
   }
 }
 
-/// Extension on [RiveState] for convenient widget building with loading and error states.
+/// Builds Rive loading, failure, and loaded states as widgets.
 extension RiveStateExtension on RiveState {
   /// Builds a widget based on the current [RiveState].
   ///
-  /// - [builder]: Called when the Rive file is loaded successfully.
-  /// - [size]: The size for the loading shimmer (defaults to 100x100).
-  /// - [loading]: Optional custom loading widget builder.
-  /// - [error]: Optional custom error widget builder.
+  /// [builder] renders a loaded file. [size] controls the loading placeholder.
+  /// [loading] and [error] replace the default loading and failure widgets.
   Widget call({
     Widget Function(RiveLoaded state)? builder,
     Size size = Size.infinite,
@@ -97,6 +106,7 @@ class _RiveLoadingWidget extends StatelessWidget {
   }
 }
 
+/// Default failure presentation for an unavailable Rive animation.
 class _RiveErrorWidget extends StatelessWidget {
   const _RiveErrorWidget({required this.error});
 

@@ -1,5 +1,10 @@
 part of "books.dart";
 
+/// Filters confirmed or locally projected books for the library search.
+///
+/// Title and resolved tag names are matched case insensitively. An empty query
+/// avoids loading tags because every book is already a match. Loading and
+/// failure states from either dependency are returned unchanged to the UI.
 @riverpod
 AsyncValue<List<Book>> filteredBooks(Ref ref, String query) {
   final books = ref.watch(projectedBooksProvider);
@@ -22,6 +27,7 @@ AsyncValue<List<Book>> filteredBooks(Ref ref, String query) {
   );
 }
 
+/// Resolves the current route parameter into the typed book record identity.
 @riverpod
 skir.RecordId? bookId(Ref ref) {
   final id = ref.watch(routeParamProvider("bookId"));
@@ -29,12 +35,18 @@ skir.RecordId? bookId(Ref ref) {
   return recordId("book:$id");
 }
 
+/// Finds one confirmed book in the authoritative realm session.
 @riverpod
 Future<Book?> canonicalBook(Ref ref, skir.RecordId bookId) async {
   final books = await ref.watch(canonicalBooksProvider.future);
   return books.firstWhereOrNull((book) => book.bookId == bookId);
 }
 
+/// Overlays local editor values on the confirmed book collection.
+///
+/// The authoring session remains canonical. Local values belong to the
+/// resource key for the current organization and realm. An invalid projection
+/// is ignored, leaving the confirmed value visible to this view.
 @riverpod
 AsyncValue<List<Book>> projectedBooks(Ref ref) {
   final canonical = ref.watch(canonicalBooksProvider);
@@ -61,6 +73,11 @@ AsyncValue<List<Book>> projectedBooks(Ref ref) {
   ]);
 }
 
+/// Returns one book with its local editor projection, if present.
+///
+/// This is the read model for consumers that need edits before confirmation.
+/// It retains the canonical loading or missing value state until the local
+/// overlay can be applied.
 @riverpod
 AsyncValue<Book?> projectedBook(Ref ref, skir.RecordId bookId) {
   final canonical = ref.watch(canonicalBookProvider(bookId));

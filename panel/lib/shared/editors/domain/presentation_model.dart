@@ -4,6 +4,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "presentation_model.freezed.dart";
 
+/// Owns the collection sources available to one composed presentation.
+///
+/// Sources are indexed once at model construction so renderers can resolve a
+/// collection by identifier without accepting duplicate definitions. The
+/// resulting map is immutable and remains owned by this value object.
 @immutable
 final class PresentationCollections {
   factory PresentationCollections(
@@ -30,6 +35,7 @@ final class PresentationCollections {
 
   final Map<PresentationCollectionSourceId, PresentationCollectionSource> _byId;
 
+  /// Exposes the immutable source index used by presentation evaluation.
   Map<PresentationCollectionSourceId, PresentationCollectionSource> get byId =>
       _byId;
 
@@ -52,6 +58,12 @@ final class PresentationCollections {
           .hash(_byId);
 }
 
+/// Connects one presentation binding to either data or an edit owner.
+///
+/// Value inputs are read only observations. Edit inputs retain the owner and
+/// relative path needed to route mutations back to the owner that controls the
+/// draft. Keeping that distinction in the model lets a composed presentation
+/// expose read and write capability without owning editor state.
 @freezed
 sealed class PresentationInput with _$PresentationInput {
   const factory PresentationInput.value({
@@ -64,7 +76,13 @@ sealed class PresentationInput with _$PresentationInput {
   }) = PresentationEditInput;
 }
 
-/// Composes independently owned values. The caller retains ownership of editors.
+/// Describes one composed editor presentation and its input bindings.
+///
+/// The model owns presentation structure, type metadata, collection sources,
+/// and diagnostics. It references, but does not own, [EditOwner] instances.
+/// [value] creates a read only binding. [editor] creates a binding that routes
+/// edits through the supplied owner at [path]. The presentation session consumes
+/// this immutable model and owns any derived binding sources or lifecycle.
 @freezed
 abstract class PresentationModel with _$PresentationModel {
   const factory PresentationModel({
@@ -80,6 +98,7 @@ abstract class PresentationModel with _$PresentationModel {
 
   const PresentationModel._();
 
+  /// Builds a presentation rooted in one immutable value observation.
   factory PresentationModel.value({
     required TypeExpression type,
     required DataValue value,
@@ -102,6 +121,7 @@ abstract class PresentationModel with _$PresentationModel {
     diagnostics: diagnostics,
   );
 
+  /// Builds a presentation whose root binding delegates edits to [owner].
   factory PresentationModel.editor({
     required EditOwner owner,
     DataPath path = DataPath.root,

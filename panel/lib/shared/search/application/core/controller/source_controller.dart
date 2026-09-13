@@ -3,6 +3,11 @@ import "dart:async";
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Owns raw query text and the parsed context sent to a [SearchSource].
+///
+/// Selector updates are merged with [baseSelectors]. A changed parsed context
+/// triggers one source search, so callers should use [updateQuery] for user
+/// input and [triggerQuery] only when the same context must be reissued.
 class SourceController extends ChangeNotifier {
   SourceController({
     required this.source,
@@ -38,6 +43,8 @@ class SourceController extends ChangeNotifier {
   late StreamSubscription<SearchSourceSnapshot> _sourceSubscription;
   late StreamSubscription<List<QuerySelectorDefinition>> _selectorSubscription;
 
+  /// Parses [rawQuery], updates the authoritative query context, and searches
+  /// when the parsed context differs from the previous search.
   void updateQuery(String rawQuery) {
     _lastRawQuery = rawQuery;
 
@@ -63,6 +70,7 @@ class SourceController extends ChangeNotifier {
     triggerQuery();
   }
 
+  /// Reissues the last parsed context without reparsing the raw query.
   void triggerQuery() {
     source.search(_lastSearchedContext);
   }
@@ -111,6 +119,7 @@ class SourceController extends ChangeNotifier {
     };
   }
 
+  /// Forwards the latest child snapshot to listeners as the source projection.
   void _onSourceSnapshot(SearchSourceSnapshot snapshot) {
     _snapshot = snapshot;
     notifyListeners();
@@ -121,6 +130,7 @@ class SourceController extends ChangeNotifier {
     updateQuery(_lastRawQuery);
   }
 
+  /// Cancels subscriptions and transfers disposal to the owned source.
   @override
   void dispose() {
     super.dispose();

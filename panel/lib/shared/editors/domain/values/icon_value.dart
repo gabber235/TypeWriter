@@ -3,6 +3,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "icon_value.freezed.dart";
 
+/// Presentation safe icon input used by editor catalogs and controls.
+///
+/// Icons are kept separate from [DataValue] while being convertible to the
+/// nominal standard icon types. Iconify names and SVG source have different
+/// validation rules, and SVG validation rejects active content and external
+/// references before rendering.
 @freezed
 sealed class IconValue with _$IconValue {
   @Assert("value != \"\"", "Iconify value must not be empty.")
@@ -17,6 +23,7 @@ sealed class IconValue with _$IconValue {
   }
 }
 
+/// Validates icon content at the boundary before it becomes a typed value.
 extension IconValueValidation on IconValue {
   List<TypeDiagnostic> validate({DataPath path = DataPath.root}) =>
       switch (this) {
@@ -49,6 +56,10 @@ extension IconValueValidation on IconValue {
   };
 }
 
+/// Recovers the editor icon model from its nominal [DataValue] form.
+///
+/// Values with another concrete type or representation are not icons for this
+/// boundary and return `null` rather than being coerced.
 extension DataValueIcon on DataValue {
   IconValue? get iconValueOrNull => switch (this) {
     PolymorphicValue(concreteType: final type, value: StringValue(:final value))
@@ -61,6 +72,7 @@ extension DataValueIcon on DataValue {
   };
 }
 
+/// Syntax and safety checks shared by icon constructors and validation.
 extension IconTextValidation on String {
   bool get isValidIconifyValue =>
       RegExp(r"^[a-z0-9\-]+:[a-z0-9\-]+$").hasMatch(this);
@@ -68,18 +80,17 @@ extension IconTextValidation on String {
   bool get isSanitizedSvg {
     final source = trimLeft().toLowerCase();
     final hasSvgRoot = RegExp(r"^(?:<\?xml[^>]*>\s*)?<svg\b").hasMatch(source);
-    final linkAttributes = RegExp(
-      r'''(?:href|src)\s*=\s*["']([^"']*)["']''',
-    ).allMatches(source).toList();
+    final linkAttributes = RegExp(r'''(?:href|src)\s*=\s*["']([^"']*)["']''')
+        .allMatches(source)
+        .toList();
     final unsafeLink =
         RegExp(r"(?:href|src)\s*=").allMatches(source).length !=
             linkAttributes.length ||
         linkAttributes.any(
           (match) => !(match.group(1) ?? "").trimLeft().startsWith("#"),
         );
-    final cssUrls = RegExp(
-      r'''url\s*\(\s*["']?([^)'"\s]+)''',
-    ).allMatches(source);
+    final cssUrls = RegExp(r'''url\s*\(\s*["']?([^)'"\s]+)''')
+        .allMatches(source);
     return hasSvgRoot &&
         !source.contains("<script") &&
         !source.contains("<iframe") &&

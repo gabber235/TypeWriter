@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 
+/// Render slots for element content and its resize handle.
 enum ResizableElementSlot { child, gestureDetector }
 
+/// Render widget bridge that overlays a resize handle on element content.
 class ResizableElementSurface
     extends
         SlottedMultiChildRenderObjectWidget<ResizableElementSlot, RenderBox> {
@@ -53,6 +55,7 @@ class ResizableElementSurface
   }
 }
 
+/// Positions and paints element content plus its corner resize handle.
 class RenderResizableElementSurface extends RenderBox
     with SlottedContainerRenderObjectMixin<ResizableElementSlot, RenderBox> {
   RenderResizableElementSurface({

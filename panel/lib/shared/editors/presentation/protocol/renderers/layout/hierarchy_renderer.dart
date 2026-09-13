@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Coordinates hierarchy layout resolution with a custom render surface.
+///
+/// Style and binding expressions resolve before layout. Geometry diagnostics
+/// arise only after child sizes are known, so this widget publishes those
+/// diagnostics after the frame rather than mutating state during layout.
 final class _HierarchySequenceRenderer extends StatefulWidget {
   const _HierarchySequenceRenderer({
     required this.layout,
@@ -24,6 +29,11 @@ final class _HierarchySequenceRendererState
   List<TypeDiagnostic>? _pendingDiagnostics;
   bool _updateScheduled = false;
 
+  /// Coalesces render time geometry failures into one post frame state update.
+  ///
+  /// The render object remains the geometry owner. This state only publishes
+  /// its diagnostics so the visible content can recover without rebuilding the
+  /// hierarchy for every layout callback.
   void _handleDiagnostics(List<TypeDiagnostic> diagnostics) {
     if (listEquals(_geometryDiagnostics, diagnostics) ||
         listEquals(_pendingDiagnostics, diagnostics)) {

@@ -8,23 +8,23 @@ import kotlin.time.Duration.Companion.nanoseconds
  * Calculates bounded delays without owning scheduling, randomness, or retry attempts.
  *
  * Attempts start at zero and jitter samples range from zero to one. Exponential jitter is applied around capped
- * growth, then clamped positive and below the maximum. Callers decide eligibility and exhaustion.
+ * growth, then clamped to a positive duration no greater than the maximum. Callers decide eligibility and exhaustion.
  */
 sealed interface RetryPolicy {
-    /** Returns the delay for a zero-based [attempt] and normalized [jitterSample]. */
+    /** Returns the bounded delay for a zero-based [attempt] and normalized [jitterSample]. */
     fun delayFor(
         attempt: Long,
         jitterSample: Double = 0.5,
     ): Duration
 
     companion object {
-        /** Creates a policy that always returns [delay]. */
+        /** Creates a policy that always returns [delay], regardless of attempt or sample. */
         fun fixed(delay: Duration): RetryPolicy {
             requirePositiveFinite(delay, "delay")
             return FixedRetryPolicy(delay)
         }
 
-        /** Creates a policy whose delay grows from [initial] up to [maximum]. */
+        /** Creates a policy that grows from [initial] toward [maximum] with optional symmetric jitter. */
         fun exponential(
             initial: Duration,
             maximum: Duration,

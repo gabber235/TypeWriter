@@ -1,3 +1,8 @@
+/// Application contracts for the panel's mutually exclusive interaction modes.
+///
+/// The current mode is owned by Riverpod. Mode mixins expose optional
+/// projections and actions, while input field coordination connects Flutter
+/// focus lifecycle to that shared state.
 library;
 
 export "current_interaction_mode.dart";

@@ -31,10 +31,10 @@ import java.util.concurrent.ConcurrentHashMap
 import skirout.editor.v1.search.RealmSearchSelectorExpression as WireSelectorExpression
 
 /**
- * Starts a search with an initial response and separately published updates.
+ * Supplies Realm owned presentation search results to the route layer.
  *
- * The subscription id identifies producer work for explicit cancellation. Cancelling a client watch alone does not
- * call this source cancellation operation.
+ * [watch] returns the initial loading or failure snapshot and may publish later snapshots through [updates].
+ * [cancel] owns producer job cancellation; closing a client watch alone does not invoke it.
  */
 interface RealmPresentationSearchSource {
     suspend fun watch(
@@ -45,16 +45,20 @@ interface RealmPresentationSearchSource {
     fun cancel(subscriptionId: String): Boolean
 }
 
+/** Publishes a search snapshot to the transport owner that created the search. */
 fun interface RealmPresentationSearchUpdatePublisher {
     suspend fun publish(update: RealmPresentationSearchUpdate)
 }
 
+/** Explicit source used while Realm search capability discovery is unavailable. */
 class UnavailableRealmPresentationSearchSource : RealmPresentationSearchSource {
+    /** Returns an unavailable result without starting producer work. */
     override suspend fun watch(
         request: RealmPresentationSearchRequest,
         updates: RealmPresentationSearchUpdatePublisher,
     ): RealmPresentationSearchUpdate = unavailableRealmPresentationSearchUpdate(request.subscriptionId)
 
+    /** No producer exists, so every cancellation request is a miss. */
     override fun cancel(subscriptionId: String): Boolean = false
 }
 
@@ -72,6 +76,7 @@ class CapabilityRealmPresentationSearchSource(
 ) : RealmPresentationSearchSource {
     private val subscriptions = ConcurrentHashMap<String, Job>()
 
+    /** Validates the request, starts producer work, and returns the first loading snapshot. */
     override suspend fun watch(
         request: RealmPresentationSearchRequest,
         updates: RealmPresentationSearchUpdatePublisher,
@@ -141,6 +146,7 @@ class CapabilityRealmPresentationSearchSource(
         )
     }
 
+    /** Cancels and removes the producer owned by the subscription id, if present. */
     override fun cancel(subscriptionId: String): Boolean =
         subscriptions.remove(subscriptionId)?.let {
             it.cancel()

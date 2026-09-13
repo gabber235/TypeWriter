@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use otel_wasi::ResultWithSlug;
 use serde::Deserialize;
 use wasmcloud_utils::{
-    database::{transaction_query, RecordId},
+    database::{RecordId, transaction_query},
     decode_skir, extract_param,
     skir::base::organization::v1::organization::*,
     skir_domain_result, skir_variant,
@@ -12,12 +12,22 @@ use wasmcloud_utils::{
 
 use wasmcloud_utils::database::organization::OrganizationRecord;
 
+/// Database result from creating an organization and advancing the user's list sequence.
+///
+/// Both values come from the same transaction so the emitted user projection change identifies
+/// the sequence at which the new organization became visible.
 #[derive(Deserialize)]
 struct CreatedOrganization {
     organization: OrganizationRecord,
     sequence: i64,
 }
 
+/// Creates an organization for the user in the message subject.
+///
+/// The transaction records the organization and advances the user's organization list sequence.
+/// After the transaction commits, the handler persists the corresponding add change and returns
+/// that same event with the created organization. The operation identity makes database work
+/// replayable, while event persistence remains a separate post transaction effect.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_create(
     msg: BrokerMessage,

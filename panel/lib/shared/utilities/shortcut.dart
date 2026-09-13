@@ -22,7 +22,7 @@ import "package:flutter/services.dart";
 ///
 /// This is also a thin wrapper around a collection of keys, but changes the
 /// equality comparison from an identity comparison to a contents comparison so
-/// that non-identical collections with the same keys in them will compare as
+/// that different collections with the same keys in them will compare as
 /// equal.
 class SortedLogicalKeyActivator
     with Diagnosticable
@@ -43,9 +43,9 @@ class SortedLogicalKeyActivator
 
   /// Create a [SortedLogicalKeyActivator] from a list of [LogicalKeyboardKey]s.
   ///
-  /// Do not mutate the `keys` list after passing it to this object.
+  /// Copies [keys] into the activator.
   ///
-  /// The `keys` list must not be empty and must not contain duplicates.
+  /// The list must not be empty and must not contain duplicates.
   SortedLogicalKeyActivator.fromList(List<LogicalKeyboardKey> keys)
     : assert(keys.isNotEmpty, "The list of keys must not be empty."),
       _orderedKeys = List<LogicalKeyboardKey>.unmodifiable(keys) {
@@ -180,6 +180,7 @@ class SortedLogicalKeyActivator
   }
 }
 
+/// Provides a uniform key list for supported Flutter shortcut activators.
 extension ShortcutActivatorX on ShortcutActivator {
   List<LogicalKeyboardKey> get keys => switch (this) {
     SingleActivator(
@@ -206,5 +207,6 @@ extension ShortcutActivatorX on ShortcutActivator {
     _ => throw UnsupportedError("Unsupported shortcut type $runtimeType"),
   };
 
+  /// The number of keys represented by this activator.
   int get length => keys.length;
 }

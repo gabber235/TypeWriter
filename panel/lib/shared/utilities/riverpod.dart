@@ -3,6 +3,8 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Signals that an operation was requested while its provider state was not
+/// ready to accept it.
 class StateException implements Exception {
   const StateException(this.message);
   final String message;
@@ -12,6 +14,10 @@ class StateException implements Exception {
 }
 
 extension AsyncValueExtension<T> on AsyncValue<T> {
+  /// Renders data, loading, and error states using the panel's standard widgets.
+  ///
+  /// [builder] receives data. Optional builders replace the default loading and
+  /// error presentations. The source [AsyncValue] remains the state owner.
   Widget call({
     required String name,
     required Widget Function(T value) builder,
@@ -43,6 +49,10 @@ extension AsyncValueExtension<T> on AsyncValue<T> {
     );
   }
 
+  /// Compares two states, using [matcher] when both states contain data.
+  ///
+  /// Non data states use [AsyncValue]'s equality, including their error and
+  /// loading metadata.
   bool matches(AsyncValue<T> other, bool Function(T a, T b) matcher) {
     if (runtimeType != other.runtimeType) return false;
     if (hasValue && other.hasValue) {
@@ -51,6 +61,7 @@ extension AsyncValueExtension<T> on AsyncValue<T> {
     return this == other;
   }
 
+  /// Throws [StateException] unless this state contains usable data.
   void ensureReady() {
     if (isLoading) {
       throw StateException("Cannot perform operation while loading");
@@ -60,7 +71,10 @@ extension AsyncValueExtension<T> on AsyncValue<T> {
     }
   }
 
-  /// Returns `null` if the value is ready, otherwise returns the provided state transformed to the new type.
+  /// Converts loading or error state while preserving its meaningful metadata.
+  ///
+  /// Returns `null` for a data state and for loading states that already carry
+  /// a previous value, because those states remain usable by the caller.
   AsyncValue<O>? mapUnready<O>() => switch (this) {
     AsyncLoading(:final progress, :final value)
         when progress != null && value == null =>
@@ -74,13 +88,17 @@ extension AsyncValueExtension<T> on AsyncValue<T> {
   };
 }
 
+/// Lifecycle aware helpers for Riverpod references.
 extension RefExtension on Ref {
+  /// Delays provider work and fails if the provider was disposed meanwhile.
+  ///
+  /// The failure is intentional. Riverpod catches it at the provider boundary,
+  /// preventing delayed work from continuing after its owner is gone.
   Future<void> debounce(Duration duration) async {
     var didDispose = false;
     onDispose(() => didDispose = true);
     await Future.delayed(duration);
 
-    /// Its safe to throw an exception as it will be caught by riverpod.
     if (didDispose) throw Exception("Debounce was disposed");
   }
 }

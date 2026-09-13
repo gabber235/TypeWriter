@@ -1,3 +1,8 @@
+/// Public Skir boundary for panel protocol models and domain codecs.
+///
+/// Generated wire declarations are re exported for transport use, while
+/// handwritten codecs and converters keep those declarations away from most
+/// application code. The generated tree is not edited here.
 library;
 
 export "converters.dart";

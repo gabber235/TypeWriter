@@ -3,6 +3,14 @@ import "dart:typed_data";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Decodes an ordinary JSON value according to a Typewriter type expression.
+///
+/// This is the boundary for JSON returned by presentation and search sources.
+/// Named types are resolved through [registry], collections and records retain
+/// precise paths for failures, missing record fields use their declared
+/// initial values, and the final value is validated against [type]. A malformed
+/// or incompatible source becomes [TypeFailure] with an invalid value
+/// diagnostic, allowing callers to display the error and discard the payload.
 TypeResult<DataValue> decodeJsonDataValue(
   Object? source,
   TypeExpression type, {
@@ -42,6 +50,8 @@ TypeResult<TypeExpression> _resolve(
   return TypeResult.success(type);
 }
 
+/// Decodes a value after its type has been resolved, preserving the JSON path
+/// as recursion crosses nested containers.
 DataValue _decode(
   Object? source,
   TypeExpression type,
@@ -207,6 +217,7 @@ RecordValue _decodeRecord(
   return RecordValue(decoded);
 }
 
+/// Maps untyped JSON to the closest [DataValue] representation for `any`.
 DataValue _infer(Object? source, String path) => switch (source) {
   null => const UnitValue(),
   final bool value => BooleanValue(value),

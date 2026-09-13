@@ -1,5 +1,12 @@
 part of "books.dart";
 
+/// Immutable panel representation of a library book.
+///
+/// A book owns presentation metadata and direct tag references. [bookId] is
+/// the stable authoring identity. The wire conversion preserves that identity,
+/// while color conversion stays at this panel boundary. The title and icon
+/// assertions protect values created inside the panel; wire input is still
+/// decoded through [fromWire] and can be rejected later by editor decoding.
 @freezed
 abstract class Book with _$Book {
   @Assert("title != \"\"", "Title must not be empty.")
@@ -14,6 +21,7 @@ abstract class Book with _$Book {
 
   const Book._();
 
+  /// Converts the authoring contract into the value used by providers and UI.
   factory Book.fromWire(wire.Book book) => Book(
     bookId: book.id,
     title: book.title,
@@ -22,6 +30,7 @@ abstract class Book with _$Book {
     tagIds: book.tags.toList(),
   );
 
+  /// Converts this immutable value into the authoring operation payload.
   wire.Book toWire() => wire.Book(
     id: this.bookId,
     title: title,

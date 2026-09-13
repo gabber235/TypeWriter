@@ -7,6 +7,10 @@ import {
   TypedValue,
 } from "editor/v1/type_catalog.skir";
 
+// Capabilities expose typed Realm operations to editor consumers. Definitions
+// describe dispatch shape in the catalog; invocation results make correlation,
+// generation checks, authorization, decoding, and failure explicit.
+
 struct InvocationId(811200001) {
   value: string = 0;
 }

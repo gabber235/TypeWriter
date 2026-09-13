@@ -1,5 +1,9 @@
 part of "../../scalar_input_renderer.dart";
 
+/// Converts the configured numeric bounds into the slider's double based UI
+/// model, then converts every accepted position back to the bound numeric
+/// type. Invalid bounds and values remain diagnostics instead of being
+/// clamped into a value the editor owner did not provide.
 extension SliderInputElementRendering on SliderInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

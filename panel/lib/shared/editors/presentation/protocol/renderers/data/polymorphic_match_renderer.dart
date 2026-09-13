@@ -1,5 +1,11 @@
 part of "../../data_renderer.dart";
 
+/// Selects a presentation for the concrete variant of a polymorphic binding.
+///
+/// The selected representation is exposed through a virtual binding. Its
+/// edits are translated back into the original polymorphic value, while the
+/// enclosing scope retains ownership of the real binding and revision. An
+/// unmatched variant uses [fallback], or renders nothing when absent.
 extension PolymorphicMatchElementRendering on PolymorphicMatchElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final bindingResult = scope.resolve(binding);

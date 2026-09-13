@@ -3,9 +3,18 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders the timeline editor for one projected page.
+///
+/// Each timeline entry becomes a track. Its outward cue links become nested
+/// timeline elements, while keyframes remain leaf elements. The timeline owns
+/// interaction previews and this widget translates the final frame values
+/// into one page element mutation batch. The projected input may include local
+/// drafts, so the surface can reflect edits before the authoring session
+/// confirms them.
 class EntryScene extends HookConsumerWidget {
   const EntryScene({required this.pageId, super.key});
 
+  /// Identifier of the page whose projected elements supply the scene.
   final String pageId;
 
   @override
@@ -95,6 +104,12 @@ class EntryScene extends HookConsumerWidget {
   }
 }
 
+/// Resolves the timeline drag target set from shared selection state.
+///
+/// A selected cue set is used only when the dragged cue is in that set. A drag
+/// that starts outside the selection affects only its own cue. Descendants are
+/// not independently promoted to roots; the timeline receives the selected
+/// identifiers that are present on this page and handles their hierarchy.
 Set<String> _resolveCues({
   required WidgetRef ref,
   required String pageId,
@@ -119,6 +134,12 @@ Set<String> _resolveCues({
   };
 }
 
+/// Hands committed timeline placement values to the page element owner.
+///
+/// The timeline emits only cues whose previews changed. The page coordinator
+/// validates readiness, overlays the placement values on the current owner
+/// state, and performs the authoring batch. This scene does not decide how
+/// uncertain or conflicting persistence results are reconciled.
 Future<void> _commitSceneBatch({
   required WidgetRef ref,
   required String pageId,
@@ -137,6 +158,11 @@ Future<void> _commitSceneBatch({
   );
 }
 
+/// Immutable timeline input assembled from the current page projection.
+///
+/// Track order follows the projected page entries. Cue hierarchy is rebuilt
+/// from local outward links, so the timeline does not infer relationships from
+/// frame overlap or from unrelated page elements.
 class _SceneViewData {
   const _SceneViewData({required this.timelineData});
 
@@ -170,6 +196,11 @@ class _SceneViewData {
   final TimelineData timelineData;
 }
 
+/// Converts a projected cue and its descendants to timeline data.
+///
+/// Noncue references are omitted because they have no timeline placement.
+/// The projection is expected to contain every linked local cue. A missing
+/// reference is not silently turned into an invented timeline element.
 TimelineElement? _buildTimelineElement({
   required String pageId,
   required PageElement element,
@@ -225,6 +256,11 @@ TimelineElement? _buildTimelineElement({
   );
 }
 
+/// Blends catalog deprecation and transient preview state into cue color.
+///
+/// Preview alpha distinguishes the primary dragged cue from related cues. A
+/// deprecated definition remains visually identifiable while its placement is
+/// still rendered from the projection.
 Color _fillColor(BuildContext context, Cue cue, TimelineElementBuildData data) {
   final isDeprecated = cue.elementDefinition.isDeprecated;
   if (!isDeprecated && !data.isPreview) {
@@ -245,6 +281,7 @@ Color _fillColor(BuildContext context, Cue cue, TimelineElementBuildData data) {
   );
 }
 
+/// Paints a selectable segment while preserving timeline focus visuals.
 class _SceneTimelineSegmentWidget extends HookWidget {
   const _SceneTimelineSegmentWidget({
     required this.data,
@@ -298,6 +335,7 @@ class _SceneTimelineSegmentWidget extends HookWidget {
   }
 }
 
+/// Paints a selectable keyframe and its focus and selection outlines.
 class _SceneTimelineKeyframeWidget extends HookWidget {
   const _SceneTimelineKeyframeWidget({
     required this.data,

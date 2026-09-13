@@ -1,3 +1,8 @@
+// Translates type expressions and resolved references at the catalog boundary.
+//
+// The registry is explicit because named and polymorphic types cannot be
+// interpreted from their wire shape alone. Scalar and structural codecs are
+// delegated to keep this owner focused on variant dispatch and identity.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_type_scalar_codec.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_type_structure_codec.dart";
@@ -5,11 +10,13 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes and decodes the complete Skir type expression vocabulary.
 final class SkirTypeCodec {
   const SkirTypeCodec(this.registry);
 
   final TypeRegistry registry;
 
+  /// Encodes a resolved reference, including its type arguments.
   TypeResult<wire.ResolvedTypeRef> encodeReference(ResolvedTypeRef reference) {
     final arguments = <wire.TypeExpression>[];
     final diagnostics = <TypeDiagnostic>[];
@@ -29,6 +36,7 @@ final class SkirTypeCodec {
     );
   }
 
+  /// Decodes a reference and validates its revision and arguments.
   TypeResult<ResolvedTypeRef> decodeReference(wire.ResolvedTypeRef? value) {
     if (value == null) return invalidWire("Wire type reference is null");
     final id = _decodeTypeId(value.typeId);
@@ -53,6 +61,7 @@ final class SkirTypeCodec {
     );
   }
 
+  /// Encodes a type expression using scalar and structural subcodecs.
   TypeResult<wire.TypeExpression> encodeExpression(TypeExpression value) =>
       switch (value) {
         AnyType() => const TypeResult.success(wire.TypeExpression.any),
@@ -89,6 +98,7 @@ final class SkirTypeCodec {
         ),
       };
 
+  /// Decodes a type expression and rejects unknown wire variants.
   TypeResult<TypeExpression> decodeExpression(wire.TypeExpression? value) {
     if (value == null) return invalidWire("Wire type expression is null");
     return switch (value) {

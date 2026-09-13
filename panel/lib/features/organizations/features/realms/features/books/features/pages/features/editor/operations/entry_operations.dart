@@ -17,7 +17,9 @@ const entrySelectionOperations = <SelectionOperation>[
   EntryReplaceWithOperation(),
 ];
 
-/// Operation to create a connection between the selected entry and another entry.
+/// Starts the link flow for selected entries when they share a compatible
+/// reference path. The operation is currently exposed as a discoverable action,
+/// while target selection and persistence remain to be implemented.
 class EntryLinkWithOperation extends ActivatorShortcutOperation {
   const EntryLinkWithOperation();
 
@@ -89,7 +91,9 @@ class EntryLinkWithOperation extends ActivatorShortcutOperation {
   );
 }
 
-/// Operation to link with a duplicate of the selected/target entry.
+/// Starts the link with duplicate flow for selected entries with a shared
+/// reference path. The action is currently a placeholder and does not mutate
+/// authoring state until target selection and persistence are implemented.
 class EntryLinkWithDuplicateOperation extends ActivatorShortcutOperation {
   const EntryLinkWithDuplicateOperation();
 
@@ -166,7 +170,10 @@ class EntryLinkWithDuplicateOperation extends ActivatorShortcutOperation {
   );
 }
 
-/// Operation to duplicate the selected entry.
+/// Duplicates selected entries from one page and selects the created entries.
+///
+/// The operation rejects mixed page selections because duplication is submitted
+/// through one page coordinator. Backend conflicts remain visible to the caller.
 class EntryDuplicateOperation extends ActivatorShortcutOperation {
   const EntryDuplicateOperation();
 
@@ -241,6 +248,10 @@ class EntryDuplicateOperation extends ActivatorShortcutOperation {
   );
 }
 
+/// Deletes selected entries after confirmation and removes them from selection.
+///
+/// All entries must belong to one page. The page coordinator validates their
+/// current location again before submitting the batch.
 class EntryDeleteOperation extends IntentShortcutOperation {
   const EntryDeleteOperation();
 
@@ -317,7 +328,10 @@ class EntryDeleteOperation extends IntentShortcutOperation {
   );
 }
 
-/// Operation to move the selected entry to another page.
+/// Moves selected entries to a compatible page and clears their old selection.
+///
+/// Entries must share one source page and placement kind. The target list is
+/// filtered by the catalog editor that can render that placement kind.
 class EntryMoveToPageOperation extends ActivatorShortcutOperation {
   const EntryMoveToPageOperation();
 
@@ -480,7 +494,8 @@ Future<Page?> _selectTargetPage(BuildContext context, List<Page> pages) {
   );
 }
 
-/// Operation to replace the selected entry with another entry.
+/// Placeholder for replacing selected entries and rewiring their references.
+/// It currently exposes the intended action but performs no authoring mutation.
 class EntryReplaceWithOperation extends ActivatorShortcutOperation {
   const EntryReplaceWithOperation();
 

@@ -1,8 +1,12 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A prominent page heading with supporting subtext for context.
-/// Includes responsive padding that adjusts based on screen size.
+/// Establishes the title and explanatory context for a page or route.
+///
+/// The title and subtext are supplied by the caller, while default spacing and
+/// typography follow the panel's responsive theme. Pass [padding] only when
+/// the parent owns the page's inset; otherwise the component chooses an inset
+/// for the current screen class.
 class PageHeading extends StatelessWidget {
   const PageHeading({
     required this.title,

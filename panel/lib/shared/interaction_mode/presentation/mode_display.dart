@@ -2,11 +2,11 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Widget that displays the current interaction mode in the app bar.
+/// Projects the current mode's optional app bar display.
 ///
-/// This widget watches the current interaction mode and displays the mode's
-/// custom widget if it implements the ModeDisplay interface. If the current
-/// mode doesn't implement ModeDisplay, the widget renders nothing.
+/// This widget watches `currentInteractionModeProvider` and delegates to
+/// [ModeDisplay.buildDisplay] when the current mode implements that mixin. A
+/// mode without the capability contributes a zero sized widget.
 class ModeDisplayWidget extends ConsumerWidget {
   const ModeDisplayWidget({super.key});
 

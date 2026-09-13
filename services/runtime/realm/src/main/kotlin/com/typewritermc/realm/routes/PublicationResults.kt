@@ -3,9 +3,10 @@ package com.typewritermc.realm.routes
 import com.typewritermc.services.libs.communicator.result.CommunicationResult
 
 /**
- * Fails when the transport did not accept a required update publication.
+ * Converts failed transport publication into a producer failure.
  *
- * Successful return confirms publication only, not processing by subscribers.
+ * This confirms acceptance by the communicator only. Subscriber processing and durable receipt remain outside this
+ * boundary.
  */
 internal fun CommunicationResult<Unit>.requirePublished() {
     if (this is CommunicationResult.Failure) error("Watch publication failed: $error")

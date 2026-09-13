@@ -18,6 +18,12 @@ import kotlin.reflect.KClass
  * conflicting registry entries fail loading; this loader does not own the supplied class loader.
  */
 class PrototypeRegistryLoader {
+    /**
+     * Resolves concrete providers and catalog backed abstract prototypes for one deployment domain.
+     *
+     * The supplied class loader remains owned by the caller. Every advertised concrete provider must resolve to
+     * the exact type it advertises; abstract runtime classes are loaded from their qualified type identities.
+     */
     fun load(
         discovery: AssembledTypeDiscovery,
         domain: DiscoveryDomainId,

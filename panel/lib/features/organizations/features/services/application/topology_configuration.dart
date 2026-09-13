@@ -1,6 +1,15 @@
 part of "services.dart";
 
+/// Applies topology watch and mutation changes to the controller's owned
+/// immutable projection.
+///
+/// Configuration changes update the desired and applied revision view and
+/// replace the affected child resources. Observation changes update runtime
+/// state only. Timestamp and revision checks prevent an older observation from
+/// erasing newer knowledge when responses and watch events overlap.
 extension OrganizationTopologyConfiguration on OrganizationTopology {
+  /// Merges a host runtime observation without changing its desired
+  /// configuration.
   OrganizationTopology applyHostObservation(TopologyHost incoming) {
     final previous = hosts.firstWhereOrNull(
       (host) => host.hostId == incoming.hostId,
@@ -23,6 +32,7 @@ extension OrganizationTopologyConfiguration on OrganizationTopology {
     );
   }
 
+  /// Merges a realm runtime observation owned by a host.
   OrganizationTopology applyRealmObservation(TopologyRealm incoming) {
     final previous = realmInstances.firstWhereOrNull(
       (realm) => realm.realmId == incoming.realmId,
@@ -40,6 +50,7 @@ extension OrganizationTopologyConfiguration on OrganizationTopology {
     );
   }
 
+  /// Merges an engine runtime observation owned by a host.
   OrganizationTopology applyEngineObservation(TopologyEngine incoming) {
     final previous = engineInstances.firstWhereOrNull(
       (engine) => engine.engineId == incoming.engineId,
@@ -57,8 +68,13 @@ extension OrganizationTopologyConfiguration on OrganizationTopology {
     );
   }
 
-  /// Applies the transaction as one projection, preserving newer observations.
-  /// Responses and watch events may arrive in either order or repeat.
+  /// Applies one complete backend configuration change as one projection.
+  ///
+  /// The change is authoritative for the affected desired configuration and
+  /// child resource membership. Newer runtime observations already held by the
+  /// projection are retained. Repeated changes and overlapping response or
+  /// watch delivery are safe to merge without treating configuration as proof
+  /// of runtime activation.
   OrganizationTopology applyConfiguration(skir.HostConfigurationChange change) {
     var host = TopologyHost.fromSkir(change.host);
     final previousHost = hosts.firstWhereOrNull(

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Paints frame ticks and labels using the same viewport coordinates as the plane.
 class TimelineRuler extends StatelessWidget {
   const TimelineRuler({required this.viewport, required this.style, super.key});
 

@@ -6,6 +6,13 @@ import "package:freezed_annotation/freezed_annotation.dart";
 
 part "models.freezed.dart";
 
+/// Immutable contracts shared by search sources, controllers, and widgets.
+///
+/// Sources publish a [SearchSourceSnapshot] containing a hierarchical
+/// [SearchNode] tree. Controllers turn raw input into [SearchQueryContext] and
+/// coordinate actions against result IDs still present in that tree.
+
+/// A selector extracted from the normalized query.
 @freezed
 abstract class SearchParsedSelector with _$SearchParsedSelector {
   @Assert("selectorId != \"\"", "Selector ID must not be empty.")
@@ -17,8 +24,10 @@ abstract class SearchParsedSelector with _$SearchParsedSelector {
   }) = _SearchParsedSelector;
 }
 
+/// Boolean operators preserved in the parsed selector expression.
 enum SearchSelectorOperator { and, or }
 
+/// The selector expression used by sources that need boolean query semantics.
 @freezed
 sealed class SearchSelectorExpression with _$SearchSelectorExpression {
   const factory SearchSelectorExpression.leaf(SearchParsedSelector selector) =
@@ -35,6 +44,7 @@ sealed class SearchSelectorExpression with _$SearchSelectorExpression {
   ) = SearchSelectorNotExpression;
 }
 
+/// Parsed query state passed from [SourceController] to a [SearchSource].
 @freezed
 abstract class SearchQueryContext with _$SearchQueryContext {
   const factory SearchQueryContext({
@@ -44,8 +54,10 @@ abstract class SearchQueryContext with _$SearchQueryContext {
   }) = _SearchQueryContext;
 }
 
+/// Controls whether guidance remains visible with results.
 enum SearchGuidanceVisibility { always, emptyOnly }
 
+/// Non error information a source wants the search UI to display.
 @freezed
 abstract class SearchGuidance with _$SearchGuidance {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -60,8 +72,10 @@ abstract class SearchGuidance with _$SearchGuidance {
   }) = _SearchGuidance;
 }
 
+/// Severity presented for a source diagnostic.
 enum SearchErrorSeverity { warning, error }
 
+/// A source scoped warning or error rendered above the result tree.
 @freezed
 abstract class SearchErrorSummary with _$SearchErrorSummary {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -74,8 +88,13 @@ abstract class SearchErrorSummary with _$SearchErrorSummary {
   }) = _SearchErrorSummary;
 }
 
+/// Coarse lifecycle state represented by a source snapshot.
 enum SearchSourceStatus { idle, loading, ready, error }
 
+/// Immutable source projection consumed by search widgets.
+///
+/// Nodes and actions may remain available while [status] is loading or error,
+/// allowing decorators to retain stale results while exposing current feedback.
 @freezed
 abstract class SearchSourceSnapshot with _$SearchSourceSnapshot {
   const factory SearchSourceSnapshot({
@@ -143,6 +162,10 @@ abstract class SearchSourceSnapshot with _$SearchSourceSnapshot {
   }
 }
 
+/// A result tree node. Sections may contain nested sections and results.
+///
+/// Child order is significant. Sources and tree builders preserve it for
+/// display, traversal, ranking tie breaks, and stable row identity.
 @freezed
 sealed class SearchNode with _$SearchNode {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -158,6 +181,7 @@ sealed class SearchNode with _$SearchNode {
       SearchResultNode;
 }
 
+/// Traversal helpers that preserve depth first, source order.
 extension SearchNodes on List<SearchNode> {
   List<SearchResult> findResults(Set<String> resultIds) {
     final wanted = resultIds.toSet();
@@ -209,6 +233,7 @@ extension SearchNodes on List<SearchNode> {
   }
 }
 
+/// Rendering identity for a [SearchResult].
 @freezed
 abstract class SearchResultType with _$SearchResultType {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -225,6 +250,7 @@ abstract class SearchResultType with _$SearchResultType {
   }) = _SearchResultType;
 }
 
+/// Search data rendered as a row and optionally a preview.
 @freezed
 abstract class SearchResult with _$SearchResult {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -239,8 +265,13 @@ abstract class SearchResult with _$SearchResult {
   }) = _SearchResult;
 }
 
+/// Execution strategy represented by the action base class selected at runtime.
 enum SearchActionBatchMode { none, aggregate, repeated }
 
+/// A user operation exposed by one or more search results.
+///
+/// Actions are registered in a snapshot by runtime type. [priority] controls
+/// presentation order, while optional icon, color, and shortcut customize UI.
 abstract class SearchAction {
   const SearchAction();
 
@@ -251,18 +282,22 @@ abstract class SearchAction {
   ShortcutActivator? get shortcut => null;
 }
 
+/// Executes once for exactly one result.
 abstract class SingleSearchAction extends SearchAction {
   Future<SearchActionResult> execute(SearchResult result);
 }
 
+/// Executes independently for each selected result.
 abstract class RepeatedSearchAction extends SearchAction {
   Future<SearchActionResult> execute(SearchResult result);
 }
 
+/// Executes once with all selected results.
 abstract class BatchSearchAction extends SearchAction {
   Future<SearchActionResult> executeBatch(List<SearchResult> results);
 }
 
+/// Outcome and requested UI effect of an action execution.
 @freezed
 abstract class SearchActionResult with _$SearchActionResult {
   const factory SearchActionResult.completed({
@@ -276,6 +311,7 @@ abstract class SearchActionResult with _$SearchActionResult {
   }) = SearchActionResultFailed;
 }
 
+/// Combines repeated action outcomes into one user visible result.
 extension SearchActionResults on List<SearchActionResult> {
   SearchActionResult merge() {
     if (isEmpty) {
@@ -301,6 +337,7 @@ extension SearchActionResults on List<SearchActionResult> {
   }
 }
 
+/// Controller instruction emitted after an action completes.
 @freezed
 abstract class SearchActionEffect with _$SearchActionEffect {
   const factory SearchActionEffect.updateQuery({required String updateQuery}) =
@@ -311,6 +348,10 @@ abstract class SearchActionEffect with _$SearchActionEffect {
   const factory SearchActionEffect.close() = SearchActionClose;
 }
 
+/// Resolves multiple controller effects into one deterministic instruction.
+///
+/// Query updates take precedence over refresh, refresh takes precedence over
+/// close, and an empty set closes the search surface.
 extension SearchActionEffects on Set<SearchActionEffect> {
   SearchActionEffect merge() {
     if (isEmpty) {
@@ -331,6 +372,7 @@ extension SearchActionEffects on Set<SearchActionEffect> {
   }
 }
 
+/// Immediate result of attempting to submit an action.
 enum SearchActionSubmitResult {
   submitted,
   busy,
@@ -338,6 +380,7 @@ enum SearchActionSubmitResult {
   actionNotFound,
 }
 
+/// Observable lifecycle of the currently submitted action.
 @freezed
 sealed class SearchActionState with _$SearchActionState {
   const factory SearchActionState.idle() = SearchActionIdle;
@@ -363,6 +406,7 @@ sealed class SearchActionState with _$SearchActionState {
   }) = SearchActionFailed;
 }
 
+/// Identifies a result whose detail should be loaded.
 @freezed
 abstract class SearchPreviewRequest with _$SearchPreviewRequest {
   @Assert("resultId != \"\"", "Result ID must not be empty.")
@@ -372,6 +416,7 @@ abstract class SearchPreviewRequest with _$SearchPreviewRequest {
   }) = _SearchPreviewRequest;
 }
 
+/// Success or user visible failure from a preview request.
 @freezed
 abstract class SearchPreviewRequestResult with _$SearchPreviewRequestResult {
   const factory SearchPreviewRequestResult.data({required Object data}) =
@@ -382,4 +427,5 @@ abstract class SearchPreviewRequestResult with _$SearchPreviewRequestResult {
       SearchPreviewRequestResultError;
 }
 
+/// Selection behavior supported by the actions in the current snapshot.
 enum SearchSelectionMode { single, multiple }

@@ -2,11 +2,19 @@
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Produces context aware completions from a parsed query.
+///
+/// Suggestions never mutate input. Each item identifies the exact range the
+/// query bar should replace, allowing callers to apply a completion without
+/// reparsing editor state first.
 class QuerySuggestionEngine {
   const QuerySuggestionEngine(this.selectors);
 
   final List<QuerySelectorDefinition> selectors;
 
+  /// Returns at most [maxItems] completions for the parse cursor context.
+  ///
+  /// Without cursor context, the result is empty.
   List<QuerySuggestion> suggest(QueryParseResult result, {int maxItems = 8}) {
     final context = result.cursorContext;
     if (context == null) {

@@ -2,9 +2,12 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A decorated wrapper around Material's [DropdownMenu] that unifies focus
-/// highlighting, surrounding focus behavior, managed action shortcuts, and
-/// key-event blocking with [InputFieldContainer].
+/// A decorated wrapper around Material's [DropdownMenu] for editor inputs.
+///
+/// It keeps focus, selection initialization, action shortcuts, surrounding
+/// actions, and key event blocking on the same [InputFieldContainer] boundary,
+/// so dropdowns behave like other editor controls.
+///
 class Dropdown<T extends Object> extends HookWidget {
   const Dropdown({
     required this.dropdownMenuEntries,

@@ -3,6 +3,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "type_special_value_validation.dart";
 
+/// Validates a value against a structural or nominal editor type.
+///
+/// The returned list contains every discovered issue, with paths extended into
+/// nested collections and records. Nominal values require a registry so their
+/// declaration, concrete representation, and polymorphic tag can be checked.
 extension DataValueValidation on DataValue {
   List<TypeDiagnostic> validateAgainst(
     TypeExpression type, {

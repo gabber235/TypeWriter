@@ -1,3 +1,4 @@
+/// English month names indexed by the Dart [DateTime] month minus one.
 const calendarMonthNames = [
   "January",
   "February",
@@ -13,6 +14,7 @@ const calendarMonthNames = [
   "December",
 ];
 
+/// English weekday names indexed by the Dart [DateTime] weekday minus one.
 const calendarWeekdayNames = [
   "Monday",
   "Tuesday",

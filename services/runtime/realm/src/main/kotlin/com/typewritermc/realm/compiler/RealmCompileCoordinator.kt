@@ -30,6 +30,7 @@ class RealmCompileCoordinator(
     val health: StateFlow<RealmCompileHealth> = mutableHealth
     private var worker: Job? = null
 
+    /** Starts the worker and schedules an initial compilation of the current authoring snapshot. */
     fun start() {
         check(worker == null) { "Realm compiler is already started." }
         worker =
@@ -48,6 +49,11 @@ class RealmCompileCoordinator(
         invalidations.trySend(Unit).getOrThrow()
     }
 
+    /**
+     * Cancels and joins the worker before resetting health to [RealmCompileHealth.Idle].
+     *
+     * No new compilation can begin after this returns until [start] is called again.
+     */
     suspend fun stop() {
         worker?.cancelAndJoin()
         worker = null
@@ -90,6 +96,7 @@ class RealmCompileCoordinator(
  * Blocked identifies invalid input, while Failed identifies an operational exception being retried.
  */
 sealed interface RealmCompileHealth {
+    /** The coordinator has no active worker. */
     data object Idle : RealmCompileHealth
 
     data object Compiling : RealmCompileHealth

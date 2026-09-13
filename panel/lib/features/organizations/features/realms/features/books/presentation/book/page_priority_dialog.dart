@@ -1,5 +1,10 @@
 part of "route.dart";
 
+/// Changes a page priority through an optimistic, conflict checked mutation.
+///
+/// The dialog keeps submission single shot while the request is pending. A
+/// failed request re enables submission and leaves the dialog open so the
+/// caller can correct or retry the value.
 class ChangePagePriorityDialogue extends HookConsumerWidget {
   const ChangePagePriorityDialogue({
     required this.pageId,

@@ -1,5 +1,10 @@
 part of "../../content_renderer.dart";
 
+/// Resolves and renders protocol text as selectable, accessible Flutter text.
+///
+/// Presentation expressions are validated together before the widget is
+/// built. This gives callers one diagnostic result for invalid style values
+/// and keeps the widget limited to displaying the resolved immutable snapshot.
 extension TextElementRendering on TextElement {
   Widget render(PresentationRenderScope scope) {
     final resolved = _resolveTextPresentation(this, scope);
@@ -25,6 +30,10 @@ extension TextElementRendering on TextElement {
   }
 }
 
+/// Resolves every optional text style expression as one consistency boundary.
+///
+/// No partial style is returned when any configured expression is invalid. The
+/// renderer therefore cannot display a partly applied protocol presentation.
 TypeResult<_ResolvedTextPresentation> _resolveTextPresentation(
   TextElement element,
   PresentationRenderScope scope,

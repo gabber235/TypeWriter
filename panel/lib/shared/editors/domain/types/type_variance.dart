@@ -1,5 +1,10 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Rejects variance declarations that cannot describe the editable shape.
+///
+/// A non invariant parameter may not occur in a position whose structure is
+/// invariant. The registry runs this check before applying generic arguments,
+/// because accepting the declaration would make later assignability unsound.
 extension TypeDefinitionVarianceValidation on TypeDefinition {
   List<TypeDiagnostic> validateVarianceUse() => [
     for (final parameter in parameters)

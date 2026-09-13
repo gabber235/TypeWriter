@@ -1,3 +1,10 @@
+//! Serves the organization topology snapshot used to initialize topology watches.
+//!
+//! A snapshot joins host, Realm, and engine records for one organization. Realm and engine
+//! records are returned as views with owner context, matching the shapes used by configuration
+//! and runtime update events. Each collection is ordered by record identifier for deterministic
+//! initialization; subsequent changes arrive on the typed topology subject.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -24,6 +31,11 @@ struct TopologyListRecord {
 }
 
 #[tracing::instrument(skip(msg, params))]
+/// Decodes the topology watch request and returns the caller's organization snapshot.
+///
+/// The organization path parameter defines the query scope. The actor parameter is retained for
+/// tracing context supplied by the subject, while the request body currently carries no fields
+/// beyond the Skir boundary.
 pub async fn handle_watch(
     msg: BrokerMessage,
     params: HashMap<String, String>,
@@ -37,6 +49,11 @@ pub async fn handle_watch(
     snapshot(org_id).await
 }
 
+/// Reads all topology resources belonging to one organization.
+///
+/// The query excludes resources owned by other organizations and projects Realm and engine rows
+/// through the database view functions before serialization. The complete list initializes a
+/// consumer; configuration and runtime handlers publish incremental topology events afterward.
 pub async fn snapshot(org_id: &str) -> Result<WatchOrganizationTopologyResponse, otel_wasi::Error> {
     let organization_id = RecordId::new("organization", org_id);
     let topology = read_query!(

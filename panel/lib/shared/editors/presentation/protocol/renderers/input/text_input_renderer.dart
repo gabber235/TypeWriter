@@ -1,5 +1,9 @@
 part of "../../scalar_input_renderer.dart";
 
+/// Renders a string binding with presentation supplied formatting and
+/// placeholder text. Each change is validated before it reaches the scope,
+/// while focus and completion callbacks delimit the field interaction
+/// lifecycle for draft owners.
 extension TextInputElementRendering on TextInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(

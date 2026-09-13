@@ -3,7 +3,15 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Renders a composition without combining the lifecycles of its edit owners.
+/// Coordinates one presentation tree over its independently owned edit sources.
+///
+/// [model] supplies bindings, presentation nodes, and the explicit owner map.
+/// This widget owns the [PresentationSession], expression registry, header
+/// expansion state, and commit placement bookkeeping. It does not own drafts:
+/// mutations and save decisions are routed to the [EditorSource] owners.
+/// Local actions update that session immediately. Realm actions cross the
+/// supplied runtime and surface diagnostics when execution or instruction
+/// handling cannot continue.
 class ComposedEditor extends StatefulWidget {
   const ComposedEditor({
     required this.model,

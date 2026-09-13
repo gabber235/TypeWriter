@@ -1,5 +1,14 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// The atomic outcome of comparing one local draft with a newer remote value.
+///
+/// `base` becomes the next canonical value and `draft` becomes the value shown
+/// to the user. `revision` belongs to `base`. `dirtyPaths` are local choices
+/// still requiring persistence, `confirmedPaths` are local choices already
+/// accepted by the remote value, and `conflicts` preserve paths where both
+/// sides changed different ways. Diagnostics report paths that could not be
+/// applied safely. Consumers should install this result as one owner controlled
+/// transition, never as unrelated field updates.
 final class EditorReconciliationResult {
   const EditorReconciliationResult({
     required this.base,
@@ -20,6 +29,14 @@ final class EditorReconciliationResult {
   final List<TypeDiagnostic> diagnostics;
 }
 
+/// Applies the editor's merge policy at every locally dirty path.
+///
+/// The comparison is three way: `base` is the last canonical value, `local`
+/// is the unsaved draft, and `remote` is the newer canonical observation. An
+/// unchanged remote path keeps the local edit. A remote value equal to local
+/// confirms that edit. When both changed, `atomic` and `orderedList` conflict,
+/// `record` descends by field, and `set` merges membership. Invalid paths are
+/// retained as diagnostics instead of being silently discarded.
 final class EditorReconciler {
   const EditorReconciler();
 
@@ -242,6 +259,7 @@ final class _MergeResult {
   final Map<DataPath, EditorPathConflict> conflicts;
 }
 
+/// Describes a remote shape that cannot be applied at a locally tracked path.
 TypeDiagnostic _invalidPath(DataPath path) => TypeDiagnostic(
   code: TypeDiagnosticCode.invalidPath,
   message: "Remote value cannot be reconciled at this path",

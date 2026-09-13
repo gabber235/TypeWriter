@@ -1,5 +1,10 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes optional node headers and their action items.
+///
+/// Header chrome is protocol owned but rendered with the node it decorates. This
+/// adapter keeps title, spacing, visibility, and confirmation semantics together
+/// instead of scattering header interpretation through the renderer.
 extension on SkirPresentationDecoder {
   TypeResult<PresentationHeader> _header(wire.PresentationHeader value) {
     final binding = value.binding == null

@@ -63,6 +63,12 @@ internal class AuthoringMutation(
 
     private val affectedPages = linkedSetOf<PageId>()
 
+    /**
+     * Applies one operation to the open transaction and records its observable effects.
+     *
+     * This method deliberately does not commit. A later rejection still rolls back earlier operations in the same
+     * batch through the transaction owner.
+     */
     fun apply(operation: AuthoringOperation) {
         when (operation) {
             is AuthoringOperation.CreateBook -> createBook(operation)
@@ -81,6 +87,11 @@ internal class AuthoringMutation(
         }
     }
 
+    /**
+     * Returns resources whose projected views changed through containment or references without a direct mutation.
+     *
+     * Direct resources are excluded so callers can process each resource through exactly one change category.
+     */
     fun indirectResources(): Set<AuthoringResourceRef> {
         val direct = changes.mapTo(hashSetOf(), AuthoringResourceChange::resource)
         return affectedPages

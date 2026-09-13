@@ -1,5 +1,9 @@
 part of "../../simple_input_renderer.dart";
 
+/// Renders a timestamp with the date and time portions selected by the
+/// presentation. A mixed binding remains a mixed picker until the user makes
+/// one replacement value, while malformed configuration is shown as a
+/// presentation diagnostic.
 extension DateTimeInputElementRendering on DateTimeInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     if (!includeDate && !includeTime) {

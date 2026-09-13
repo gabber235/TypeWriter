@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Communicates that the current graph drop cannot create an inheritance link.
+///
+/// The application layer has already rejected the relationship, commonly for
+/// a self link or cycle. This widget is feedback only and exposes no mutation
+/// callback, so a rejected drag cannot accidentally change canonical state.
 class RejectedTagDropTarget extends StatelessWidget {
   const RejectedTagDropTarget({required this.tag, super.key});
 

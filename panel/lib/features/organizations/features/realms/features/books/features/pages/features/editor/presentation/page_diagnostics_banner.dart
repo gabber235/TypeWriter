@@ -2,6 +2,9 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Reports page diagnostics and compile blocking without hiding the last valid
+/// runtime manifest. It disappears when the document is healthy or unavailable
+/// for the current organization and realm.
 class PageDiagnosticsBanner extends ConsumerWidget {
   const PageDiagnosticsBanner({required this.pageId, super.key});
 

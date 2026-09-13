@@ -2,6 +2,10 @@ import "dart:async";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Delays search and preview requests until input has been quiet for [duration].
+///
+/// A newer request supersedes a pending preview with an explicit error result.
+/// Disposal cancels timers and completes any pending preview request.
 final class DebouncedSearchSource implements SearchSource {
   DebouncedSearchSource({required this.source, required this.duration});
 
@@ -104,6 +108,7 @@ final class DebouncedSearchSource implements SearchSource {
   }
 }
 
+/// Adds input debouncing to a source.
 extension DebouncedSearchSourceX on SearchSource {
   SearchSource debounced(Duration duration) {
     return DebouncedSearchSource(source: this, duration: duration);

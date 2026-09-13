@@ -2,14 +2,17 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// The shared prologue of every bound input control.
+/// Establishes the common boundary between a bound control and its leaf UI.
 ///
-/// Resolves the control's binding, verifies its shape, computes editability
-/// once, owns the field's interaction session, and labels the control, so
-/// leaf renderers only build the control-specific widget.
+/// The shell reads the binding snapshot from [scope], preserves loading and
+/// invalid states as diagnostics, derives representation or nominal type
+/// shape, and creates the field's interaction coordinator. The enclosing
+/// scope remains authoritative for draft state, write routing, and read only
+/// policy. Leaf renderers receive [BoundControlField] only after these checks,
+/// so they do not duplicate access or lifecycle decisions.
 ///
-/// [builder] must not call hooks: the shell returns diagnostics before it
-/// runs, which would make hook order unstable.
+/// [builder] must not call hooks. The shell can return before invoking it, and
+/// conditional hook calls would make hook order unstable.
 class BoundControlShell extends HookWidget {
   const BoundControlShell({
     required this.control,
@@ -24,9 +27,13 @@ class BoundControlShell extends HookWidget {
   final BoundControl control;
   final PresentationRenderScope scope;
 
-  /// Whether the built control is wrapped in a [LabeledControl]. Disable for
-  /// controls whose chrome is provided elsewhere, such as absorbed headers.
+  /// Whether the shell supplies the control label and description wrapper.
+  /// Set this to false when an outer surface, such as a collection header,
+  /// already owns that chrome.
   final bool labeled;
+
+  /// Whether shape checks use the declared nominal type instead of its
+  /// representation type.
   final bool nominal;
 
   /// Returns a diagnostic message when the resolved binding does not have
@@ -79,6 +86,12 @@ class BoundControlShell extends HookWidget {
   }
 }
 
+/// The checked binding and interaction capabilities passed to a leaf control.
+///
+/// This object is an immutable view for one build. [update] routes through the
+/// scope, while [editable] combines scope enablement, binding writability, and
+/// read only mode. A leaf must not retain the object after building or mutate
+/// the binding directly.
 final class BoundControlField {
   const BoundControlField._({
     required this._scope,
@@ -97,7 +110,11 @@ final class BoundControlField {
   bool get editable => enabled && !readOnly;
   bool get locked => !editable;
   bool get mixed => binding.value is MixedEditorValue;
+
+  /// The concrete value when the binding is ready. Loading, mixed, and invalid
+  /// states are intentionally represented by [binding] instead.
   DataValue? get value => binding.value.valueOrNull;
 
+  /// Submits a validated leaf value to the scope's binding owner.
   void update(DataValue value) => _scope.update(binding.reference, value);
 }

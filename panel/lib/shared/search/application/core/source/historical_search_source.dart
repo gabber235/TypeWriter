@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Persistence boundary for the most recently committed search results.
 abstract interface class SearchHistoryStorage {
   Future<List<SearchResult>> loadValidResults({
     required String key,
@@ -14,6 +15,11 @@ abstract interface class SearchHistoryStorage {
   });
 }
 
+/// Shows committed results for an empty query and persists their recency.
+///
+/// History is loaded asynchronously. Selections received before loading are
+/// held and applied afterward. Nonempty queries pass through unchanged, while
+/// empty queries receive a history section before the child tree.
 final class HistoricalSearchSource implements SearchSource {
   HistoricalSearchSource({
     required this.source,
@@ -204,6 +210,7 @@ const _emptySearchQuery = SearchQueryContext(
   selectors: [],
 );
 
+/// Adds persisted recent results to a source's empty query.
 extension HistoricalSearchSourceX on SearchSource {
   SearchSource withHistory({
     required String key,

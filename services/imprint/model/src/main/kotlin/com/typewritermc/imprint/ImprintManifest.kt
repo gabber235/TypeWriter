@@ -7,8 +7,13 @@ import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
+/** JAR entry containing the canonical CBOR manifest. */
 const val IMPRINT_MANIFEST_PATH = "META-INF/typewriter/manifest.cbor"
+
+/** JAR directory containing raw processor contributions before manifest generation. */
 const val IMPRINT_CONTRIBUTIONS_PATH = "META-INF/typewriter/contributions"
+
+/** Current envelope version accepted by [ImprintManifestCodec]. */
 const val CURRENT_IMPRINT_FORMAT = 1
 
 /**
@@ -160,8 +165,10 @@ private fun validateSourcePartIncludes(sourceParts: List<ExtensionSourcePart>) {
 object ImprintManifestCodec {
     private val cbor = Cbor { encodeDefaults = true }
 
+    /** Encodes [manifest] for storage at [IMPRINT_MANIFEST_PATH]. */
     fun encode(manifest: ImprintManifest): ByteArray = cbor.encodeToByteArray(manifest)
 
+    /** Decodes and validates one manifest, rejecting formats other than [CURRENT_IMPRINT_FORMAT]. */
     fun decode(bytes: ByteArray): ImprintManifest {
         val manifest = cbor.decodeFromByteArray<ImprintManifest>(bytes)
         require(manifest.format == CURRENT_IMPRINT_FORMAT) {

@@ -15,10 +15,8 @@ String _generateRandomString(int length, {bool includeSpaces = false}) {
 }
 
 TextStyle _secretTextStyle(BuildContext context) {
-  return Theme.of(context).textTheme.titleSmall!.copyWith(
-    fontVariations: [.weight(700)],
-    letterSpacing: 1,
-  );
+  return Theme.of(context).textTheme.titleSmall!
+      .copyWith(fontVariations: [.weight(700)], letterSpacing: 1);
 }
 
 class _ConcealedDisplay extends HookWidget {
@@ -56,9 +54,8 @@ class _ConcealedDisplay extends HookWidget {
               child: Text(
                 randomText.value,
                 style: _secretTextStyle(context).copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                      .withValues(alpha: 0.6),
                 ),
               ),
             ),
@@ -123,9 +120,8 @@ class _TypewriterLoadingDisplay extends HookWidget {
               child: Text(
                 displayText,
                 style: _secretTextStyle(context).copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                      .withValues(alpha: 0.6),
                 ),
                 maxLines: 1,
               ),
@@ -221,9 +217,8 @@ class _ExpiredDisplay extends StatelessWidget {
               child: Text(
                 value,
                 style: _secretTextStyle(context).copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant
+                      .withValues(alpha: 0.6),
                 ),
               ),
             ),

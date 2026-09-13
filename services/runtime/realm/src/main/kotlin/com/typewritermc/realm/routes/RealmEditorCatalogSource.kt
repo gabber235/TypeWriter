@@ -37,8 +37,15 @@ import skirout.editor.v1.type_catalog.CapabilityId as SkirCapabilityId
  * Callers can request a generation to prevent mixing metadata from different deployments.
  */
 interface RealmEditorCatalogSource {
+    /**
+     * Fetches one complete catalog view from the current discovery snapshot.
+     *
+     * A supplied expected generation makes the fetch conditional. Implementations must return one generation for
+     * every catalog section in a successful result.
+     */
     suspend fun fetch(request: CatalogFetchRequest): CatalogFetchResult
 
+    /** Returns the generation observed when the catalog watch is created. */
     suspend fun initialGeneration(request: WatchEditorCatalogRequest): CatalogWatchUpdate
 }
 
@@ -52,6 +59,7 @@ interface RealmEditorCatalogSource {
 class SnapshotRealmEditorCatalogSource(
     private val snapshot: suspend () -> RealmDiscoverySnapshot?,
 ) : RealmEditorCatalogSource {
+    /** Captures one snapshot, expands its type dependencies, then encodes the result for the editor protocol. */
     override suspend fun fetch(request: CatalogFetchRequest): CatalogFetchResult {
         val snapshot = snapshot() ?: return unavailableCatalogFetchResult("Realm discovery snapshot is unavailable")
         val generation = snapshot.discovery.generation.value

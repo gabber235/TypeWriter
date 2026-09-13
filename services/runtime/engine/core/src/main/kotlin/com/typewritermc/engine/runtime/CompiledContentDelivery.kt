@@ -41,10 +41,13 @@ import skirout.library.v1.compiled_content.WatchCompiledContentResponse
  * Delivery health describes this subscription separately from overall runtime health.
  */
 interface EngineContentDelivery {
+    /** Exposes delivery state without implying that the engine has assembled or executed the content. */
     val health: StateFlow<EngineContentDeliveryHealth>
 
+    /** Starts one delivery worker that invokes [apply] for each accepted activation. */
     fun start(apply: suspend (ActivatedCompiledContent) -> Unit)
 
+    /** Stops delivery and waits until no callback can still use activation resources. */
     suspend fun stop()
 }
 
@@ -55,14 +58,18 @@ interface EngineContentDelivery {
  * facet reconciliation exists.
  */
 sealed interface EngineContentDeliveryHealth {
+    /** No session is available, or delivery has been stopped. */
     data object Idle : EngineContentDeliveryHealth
 
+    /** The delivery worker is subscribed or retrying its subscription. */
     data object Watching : EngineContentDeliveryHealth
 
+    /** The most recent activation was loaded and passed to the application callback. */
     data class Active(
         val activationRevision: Long,
     ) : EngineContentDeliveryHealth
 
+    /** A watch or activation attempt failed; the worker remains eligible for retry. */
     data class Failed(
         val message: String,
     ) : EngineContentDeliveryHealth

@@ -1,5 +1,9 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes display only elements at the protocol boundary.
+///
+/// This family owns presentation of evaluated values, while expression decoding
+/// remains delegated to the shared expression codec.
 extension SkirPresentationContentDecoder on SkirPresentationDecoder {
   TypeResult<PresentationElement> _text(wire.TextContent value) {
     final text = expressions.decode(value.value);

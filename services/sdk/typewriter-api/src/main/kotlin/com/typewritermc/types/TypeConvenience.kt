@@ -48,13 +48,13 @@ fun Instant.toDataValue(): DataValue.Timestamp = DataValue.Timestamp(this)
 /** Creates the portable duration representation of this duration. */
 fun Duration.toDataValue(): DataValue.Duration = DataValue.Duration(this)
 
-/** Creates a portable list from already converted values. */
+/** Creates a portable list from already converted values, preserving iteration order. */
 fun Iterable<DataValue>.toDataValue(): DataValue.ListValue = DataValue.ListValue(toList())
 
-/** Creates a portable record whose keys become field names. */
+/** Creates a portable record whose keys become field names and whose map is retained as supplied. */
 fun Map<String, DataValue>.toRecordValue(): DataValue.Record = DataValue.Record(this)
 
-/** Creates a portable map while preserving entry order. */
+/** Creates a portable map while preserving entry order and typed keys. */
 fun Iterable<Pair<DataValue, DataValue>>.toMapValue(): DataValue.MapValue =
     DataValue.MapValue(map { (key, value) -> DataMapEntry(key, value) })
 
@@ -123,7 +123,7 @@ fun noneValue(valueType: TypeExpression): DataValue.Polymorphic =
 /** Converts Kotlin nullability into the canonical Typewriter option representation. */
 fun DataValue?.toOptionValue(valueType: TypeExpression): DataValue.Polymorphic = this?.toSomeValue(valueType) ?: noneValue(valueType)
 
-/** Extracts a canonical option value, returning null for None. */
+/** Extracts the payload from canonical Some, or returns null for canonical None. */
 fun DataValue.unwrapOption(): DataValue? {
     val polymorphic = requireValue<DataValue.Polymorphic>()
     require(polymorphic.concreteType.arguments.size == 1) { "Option values must have one type argument." }

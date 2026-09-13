@@ -1,5 +1,11 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Replaces an invalid presentation subtree with a diagnostic element.
+///
+/// Renderers call this at the point where a nested node is about to be shown.
+/// A node with validation failures becomes one visible diagnostic boundary;
+/// otherwise localization recurses through renderable child nodes and preserves
+/// the original immutable tree and all valid siblings.
 extension PresentationNodeFailureLocalization on PresentationNode {
   PresentationNode localizeFailures(
     ExpressionContext context, {

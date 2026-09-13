@@ -76,6 +76,13 @@ class Realm(
     private var compileCoordinator: RealmCompileCoordinator? = null
     private var compileCatalogMonitor: Job? = null
 
+    /**
+     * Opens Realm storage, starts compilation, and waits until the first usable messaging session has routes.
+     *
+     * Authored and compiled state is created once per staged runtime. A later host session replaces only the router,
+     * so reconnects preserve database state and compiler ownership. Failure rolls back every resource initialized by
+     * this call and leaves the instance available for a fresh start attempt.
+     */
     context(main: MainSpanScope)
     suspend fun start(realmId: String) {
         check(database == null) { "Realm is already started" }
@@ -166,6 +173,12 @@ class Realm(
         }
     }
 
+    /**
+     * Stops session monitoring, compilation, catalog invalidation, routes, and database access in dependency order.
+     *
+     * Shutdown is idempotent when no Realm resource is active. Cleanup continues after individual failures; the first
+     * failure is thrown with later cleanup failures suppressed.
+     */
     suspend fun shutdown() {
         if (database == null && router == null && serviceMonitor == null) return
         telemetry.mainSpan(
@@ -201,6 +214,12 @@ class Realm(
         }
     }
 
+    /**
+     * Serializes router replacement with shutdown and session changes.
+     *
+     * The previous router is closed before a replacement is created. A failed replacement therefore leaves no active
+     * duplicate subscriptions, while a missing session deliberately disables route publication.
+     */
     private suspend fun replaceRouter(
         realmId: String,
         session: HostedMessagingSession?,

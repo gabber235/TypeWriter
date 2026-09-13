@@ -4,6 +4,9 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Executes a realm action after the renderer has evaluated and validated its
+/// payload. The callback owns the external command boundary and returns the
+/// result that the presentation surface can display or apply as instructions.
 typedef RealmActionExecutor = FutureOr<RealmCommandResult> Function(
   RealmAction action,
   DataValue? payload,
@@ -27,6 +30,14 @@ final _defaultEditorHeaderShortcuts =
       ],
     });
 
+/// Renders a serialized typed value using the editor presentation protocol.
+///
+/// The envelope and catalog are the canonical input snapshot. In editable
+/// mode this widget creates and owns one [LocalEditor], then disposes it when
+/// the envelope or mode changes. In read only mode no local draft exists and
+/// the model renders the envelope value directly. Realm actions are validated
+/// against the supplied capability catalog before being delegated to
+/// [onRealmAction]; unavailable capabilities become presentation diagnostics.
 class EditorProtocolRenderer extends StatefulWidget {
   const EditorProtocolRenderer({
     required this.envelope,

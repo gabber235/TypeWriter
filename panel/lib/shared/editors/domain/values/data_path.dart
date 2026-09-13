@@ -4,26 +4,40 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "data_path.freezed.dart";
 
+/// Value object locating a nested [DataValue] inside an editor value.
+///
+/// Paths are shared by bindings, validation diagnostics, mutations, and
+/// reconciliation. The root is `$`; field, list index, and typed map key
+/// segments are appended without inspecting the value until [read] or
+/// [replace] is called. A failed traversal returns an invalid path diagnostic.
 @freezed
 abstract class DataPath with _$DataPath {
   const factory DataPath(List<DataPathSegment> segments) = _DataPath;
 
   const DataPath._();
 
+  /// The location of the value owned by the editor itself.
   static const root = DataPath([]);
 
+  /// Returns a path addressing [name] in a record below this path.
   DataPath field(String name) =>
       DataPath([...segments, FieldPathSegment(name)]);
 
+  /// Returns a path addressing [index] in a list below this path.
   DataPath index(int index) => DataPath([...segments, IndexPathSegment(index)]);
 
+  /// Returns a path addressing [key] in a typed map below this path.
   DataPath mapKey(DataValue key) =>
       DataPath([...segments, MapKeyPathSegment(key)]);
 
+  /// Appends [suffix] while preserving both paths as separate value objects.
   DataPath followedBy(DataPath suffix) =>
       DataPath([...segments, ...suffix.segments]);
 
   /// Whether this path equals [ancestor] or points inside it.
+  ///
+  /// Editor reconciliation uses this prefix relation to associate a nested
+  /// change or diagnostic with the owner of an enclosing binding.
   bool isAtOrBelow(DataPath ancestor) {
     if (segments.length < ancestor.segments.length) return false;
     for (var index = 0; index < ancestor.segments.length; index++) {
@@ -32,6 +46,12 @@ abstract class DataPath with _$DataPath {
     return true;
   }
 
+  /// Reads the value at this path from [root].
+  ///
+  /// Polymorphic wrappers are transparent during traversal. Missing fields,
+  /// indices, keys, and incompatible container kinds become invalid path
+  /// diagnostics instead of exceptions, allowing editor callers to surface or
+  /// recover from stale bindings.
   TypeResult<DataValue> read(DataValue root) {
     var current = root;
     for (final segment in segments) {
@@ -46,6 +66,11 @@ abstract class DataPath with _$DataPath {
     return TypeResult.success(current);
   }
 
+  /// Derives [root] with the value at this path replaced by [replacement].
+  ///
+  /// Every traversed record, list, map, and polymorphic wrapper is rebuilt on
+  /// the way back to the root. The input is not mutated. A stale or
+  /// incompatible path returns an invalid path diagnostic.
   TypeResult<DataValue> replace(DataValue root, DataValue replacement) =>
       _replace(root, 0, replacement);
 
@@ -101,6 +126,10 @@ extension _DataPathResultMap on TypeResult<DataValue> {
 }
 
 @Freezed(toStringOverride: false)
+/// One typed step in a [DataPath].
+///
+/// Segments own the container operation for their kind, which keeps traversal
+/// and replacement diagnostics consistent for all editor callers.
 sealed class DataPathSegment with _$DataPathSegment {
   const DataPathSegment._();
 
@@ -112,12 +141,14 @@ sealed class DataPathSegment with _$DataPathSegment {
 
   const factory DataPathSegment.mapKey(DataValue key) = MapKeyPathSegment;
 
+  /// Reads this segment from [parent], reporting an invalid path on mismatch.
   TypeResult<DataValue> read(DataValue parent) => switch (this) {
     FieldPathSegment(:final name) => parent._readField(name),
     IndexPathSegment(:final index) => parent._readIndex(index),
     MapKeyPathSegment(:final key) => parent._readMapKey(key),
   };
 
+  /// Rebuilds [parent] with this segment set to [value].
   TypeResult<DataValue> replace(DataValue parent, DataValue value) =>
       switch (this) {
         FieldPathSegment(:final name) => parent._replaceField(name, value),

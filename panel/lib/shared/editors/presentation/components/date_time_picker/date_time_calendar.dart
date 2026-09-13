@@ -2,6 +2,12 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Selects a calendar date while retaining keyboard navigation state locally.
+///
+/// The caller owns the selected timestamp and receives a new date through
+/// [onChanged]. The calendar owns its focused date, visible month, and current
+/// navigation level. When the incoming calendar date changes externally, its
+/// focused date and visible month reset to that date.
 class DateTimeCalendar extends StatefulWidget {
   const DateTimeCalendar({
     required this.value,

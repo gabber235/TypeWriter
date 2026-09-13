@@ -3,7 +3,13 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Convenience surface for one independently owned editor.
+/// Bridges an [EditorSource] to the presentation renderer.
+///
+/// The source remains the authority for the current document, draft, and save
+/// state. This widget listens for source changes, derives a presentation model
+/// for [path], and recreates only the render model when the document changes.
+/// Use [ComposedEditor] directly when one presentation combines several edit
+/// owners or when the caller already owns the model lifecycle.
 class EditorSurface extends StatelessWidget {
   const EditorSurface({
     required this.source,

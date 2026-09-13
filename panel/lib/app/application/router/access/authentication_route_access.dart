@@ -5,6 +5,7 @@ import "package:typewriter_panel/app/application/router/access/route_access_stat
 
 part "authentication_route_access.freezed.dart";
 
+/// Authentication outcomes understood by the router guards.
 @freezed
 sealed class RouteAuthenticationDecision with _$RouteAuthenticationDecision {
   const factory RouteAuthenticationDecision.loading() =
@@ -17,6 +18,11 @@ sealed class RouteAuthenticationDecision with _$RouteAuthenticationDecision {
       RouteAuthenticationUnavailable;
 }
 
+/// Owns the authentication decision consumed by route guards.
+///
+/// The module starts loading, becomes ready after the binding supplies an
+/// outcome, and becomes unavailable during disposal. Stable outcome changes
+/// trigger router reevaluation through [reevaluation].
 final class AuthenticationRouteAccess implements RouteAccessModule {
   AuthenticationRouteAccess()
     : _state = RouteAccessStateController(
@@ -37,6 +43,7 @@ final class AuthenticationRouteAccess implements RouteAccessModule {
 
   RouteAuthenticationDecision get decision => _state.current;
 
+  /// Publishes the latest authentication outcome from the binding layer.
   void setDecision(RouteAuthenticationDecision decision) =>
       _state.transitionTo(decision);
 

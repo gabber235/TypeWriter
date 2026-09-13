@@ -1,5 +1,9 @@
 part of "type_validation.dart";
 
+/// Additional value checks for nominal values and scalar representations.
+///
+/// These checks stay beside general validation because they need concrete
+/// runtime details, including sanitized SVG content and polymorphic tags.
 extension on FloatValue {
   List<TypeDiagnostic> validateFloatAgainst(FloatType type, DataPath path) {
     if (!value.isFinite) return [_invalid(path, "Float must be finite")];
@@ -69,9 +73,8 @@ extension on DataValue {
     if (!resolvedConcrete.isConcrete) {
       return [_invalid(path, "Polymorphic tag must identify a concrete type")];
     }
-    if (!NamedType(
-      polymorphic.concreteType,
-    ).isStructurallyAssignableTo(type, registry)) {
+    if (!NamedType(polymorphic.concreteType)
+        .isStructurallyAssignableTo(type, registry)) {
       return [
         _invalid(path, "Polymorphic type does not refine the abstract type"),
       ];

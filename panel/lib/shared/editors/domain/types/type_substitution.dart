@@ -1,5 +1,7 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Applies generic arguments to every expression inside a nominal reference.
+/// Unmatched parameters remain unchanged so validation can report them later.
 extension ResolvedTypeRefSubstitution on ResolvedTypeRef {
   ResolvedTypeRef substitute(Map<String, TypeExpression> substitutions) =>
       withArguments(
@@ -7,6 +9,10 @@ extension ResolvedTypeRefSubstitution on ResolvedTypeRef {
       );
 }
 
+/// Rewrites generic parameters through an immutable type expression tree.
+///
+/// Constraints, collection shape, record metadata, and enum values are
+/// retained. Only parameter occurrences and nested nominal arguments change.
 extension TypeExpressionSubstitution on TypeExpression {
   TypeExpression substitute(Map<String, TypeExpression> substitutions) {
     final type = this;

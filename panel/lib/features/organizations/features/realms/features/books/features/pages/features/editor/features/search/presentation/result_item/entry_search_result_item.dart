@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders an entry result and its location in the page, chapter, and book hierarchy.
+///
+/// [fromEntry] derives the entry's color, icon, and deprecation marker from its element
+/// definition, then combines them with location labels supplied by the caller. This keeps the
+/// domain definition authoritative while the search owner remains responsible for navigation.
 class EntrySearchResultItem extends StatelessWidget {
   const EntrySearchResultItem({
     required this.name,
@@ -103,15 +108,13 @@ class EntrySearchResultItem extends StatelessWidget {
                 TextSpan(text: elementDefinitionName.formatted),
                 TextSpan(
                   text: " • ",
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: descriptionColor.withValues(alpha: 0.5),
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall!
+                      .copyWith(color: descriptionColor.withValues(alpha: 0.5)),
                 ),
                 TextSpan(
                   text: pageTitle.formatted,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: descriptionColor.withValues(alpha: 0.9),
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall!
+                      .copyWith(color: descriptionColor.withValues(alpha: 0.9)),
                 ),
                 if (chapter.isNotEmpty) ...[
                   TextSpan(
@@ -144,10 +147,8 @@ class EntrySearchResultItem extends StatelessWidget {
                   ),
                 ],
               ],
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: descriptionColor,
-                fontSize: 11,
-              ),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: descriptionColor, fontSize: 11),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

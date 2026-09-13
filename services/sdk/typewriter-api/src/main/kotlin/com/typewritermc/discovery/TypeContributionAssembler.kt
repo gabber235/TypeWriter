@@ -39,6 +39,12 @@ data class AssembledTypeDiscovery(
  * bindings. A missing eligibility entry does not exclude a binding.
  */
 object TypeContributionAssembler {
+    /**
+     * Merges contributions into the structural catalog and domain specific executable bindings.
+     *
+     * Contributions are sorted by provenance before conflicts are checked. A source part marked ineligible loses
+     * executable and prototype bindings, but its definitions remain available for diagnostics and catalog display.
+     */
     fun assemble(
         contributions: Collection<KeyedTypeContribution>,
         sourceParts: Collection<SourcePartCatalogEntry> = emptyList(),

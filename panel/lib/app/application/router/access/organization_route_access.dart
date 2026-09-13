@@ -5,6 +5,11 @@ import "package:typewriter_panel/app/application/router/access/route_access_stat
 
 part "organization_route_access.freezed.dart";
 
+/// Snapshot of the authenticated principal's organization access.
+///
+/// Loading and unavailable states are intentionally distinct from an available
+/// empty set. The latter means access data loaded successfully and the user is
+/// not a member of any organization.
 @freezed
 sealed class OrganizationRouteAccessState with _$OrganizationRouteAccessState {
   const factory OrganizationRouteAccessState.loading() =
@@ -17,8 +22,15 @@ sealed class OrganizationRouteAccessState with _$OrganizationRouteAccessState {
   }) = OrganizationRouteAccessAvailable;
 }
 
+/// Decision for one organization route parameter.
 enum OrganizationRouteDecision { loading, member, nonMember, unavailable }
 
+/// Owns the organization membership snapshot consumed by route guards.
+///
+/// The available state is the stable authorization fact. The principal and
+/// membership set are replaced together by the binding, so a route is checked
+/// against one coherent observation rather than two independently changing
+/// providers.
 final class OrganizationRouteAccess implements RouteAccessModule {
   OrganizationRouteAccess()
     : _state = RouteAccessStateController(
@@ -40,9 +52,11 @@ final class OrganizationRouteAccess implements RouteAccessModule {
 
   OrganizationRouteAccessState get state => _state.current;
 
+  /// Publishes a new coherent principal and membership observation.
   void setState(OrganizationRouteAccessState state) =>
       _state.transitionTo(state);
 
+  /// Maps a route organization identifier to the guard's decision.
   OrganizationRouteDecision decisionFor(String organizationId) =>
       switch (_state.current) {
         OrganizationRouteAccessLoading() => OrganizationRouteDecision.loading,

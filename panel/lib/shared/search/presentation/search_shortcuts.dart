@@ -3,6 +3,11 @@ import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adds keyboard actions for the current search preview and visible results.
+///
+/// Preview actions are exposed while a result is active. Control plus digit
+/// shortcuts target the first nine visible results, and action execution is
+/// disabled while the controller reports a running action.
 class SearchShortcuts extends HookConsumerWidget {
   const SearchShortcuts({required this.child, super.key});
 

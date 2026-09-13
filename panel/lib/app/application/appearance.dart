@@ -6,6 +6,11 @@ part "appearance.g.dart";
 
 const _storageKey = "appearance_mode";
 
+/// Stores the panel's theme preference and exposes it to the application shell.
+///
+/// The preference is read from browser or platform storage when the provider is
+/// first built. [mode] updates both storage and the provider state so the shell
+/// changes theme immediately and keeps the choice for the next launch.
 @riverpod
 class Appearance extends _$Appearance {
   @override
@@ -22,6 +27,7 @@ class Appearance extends _$Appearance {
     }
   }
 
+  /// Selects [mode] and persists the selection for future launches.
   void mode(ThemeMode mode) {
     String? value;
 

@@ -2,6 +2,10 @@ import "package:flutter/widgets.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Provides the coordinator that synchronizes input focus with interaction mode.
+///
+/// The provider owns the coordinator for its Riverpod container. Disposing that
+/// container removes the global focus listener and clears registrations.
 final inputFieldModeCoordinatorProvider = Provider<InputFieldModeCoordinator>((
   ref,
 ) {
@@ -10,6 +14,14 @@ final inputFieldModeCoordinatorProvider = Provider<InputFieldModeCoordinator>((
   return coordinator;
 });
 
+/// Coordinates the shared mode state for registered input fields.
+///
+/// Each field owns its [FocusNode]s and registers them here for as long as its
+/// widget is mounted. This coordinator is the single owner of the mapping from
+/// field IDs to input and surrounding focus. Focus changes and explicit begin
+/// or end calls converge on the current mode. Unknown IDs and stale unregister
+/// callbacks are ignored, which makes widget teardown safe when focus and
+/// disposal happen in the same frame.
 class InputFieldModeCoordinator {
   InputFieldModeCoordinator(this._ref) {
     FocusManager.instance.addListener(_handleFocusChanged);
@@ -23,6 +35,12 @@ class InputFieldModeCoordinator {
   String? _focusedInputId;
   bool _disposed = false;
 
+  /// Registers a field and returns an idempotent unregister callback.
+  ///
+  /// Re registering an ID replaces its previous registration. The returned
+  /// callback removes only the registration created by this call, so an older
+  /// widget cannot remove a newer widget's entry. Registration also reconciles
+  /// immediately with the current primary focus.
   VoidCallback register({
     required String id,
     required FocusNode inputFocusNode,
@@ -59,12 +77,19 @@ class InputFieldModeCoordinator {
     };
   }
 
+  /// Enters [InsertMode] for the registered field identified by [id].
+  ///
+  /// The call is ignored when the field has already been disposed or was never
+  /// registered. Focus reconciliation then requests the field's input focus.
   void begin(String id) {
     if (!_registrations.containsKey(id)) return;
 
     _ref.read(currentInteractionModeProvider.notifier).setMode(InsertMode(id));
   }
 
+  /// Leaves insert mode when [id] still owns the active insert mode.
+  ///
+  /// Stale callbacks from another field cannot end a newer field's mode.
   void end(String id) {
     final mode = _ref.read(currentInteractionModeProvider);
     if (mode is! InsertMode || mode.id != id) return;
@@ -72,6 +97,7 @@ class InputFieldModeCoordinator {
     _ref.read(currentInteractionModeProvider.notifier).normal();
   }
 
+  /// Releases the global focus listener and all field registrations.
   void dispose() {
     _disposed = true;
     FocusManager.instance.removeListener(_handleFocusChanged);

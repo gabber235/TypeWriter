@@ -1,5 +1,6 @@
 part of "presentation_element.dart";
 
+/// Position of an anchor relative to the bounds of its owning presentation.
 enum PresentationAnchorAlignment {
   topStart,
   topCenter,
@@ -12,11 +13,15 @@ enum PresentationAnchorAlignment {
   bottomEnd,
 }
 
+/// Binding scope used when evaluating a connection marker expression.
 enum ConnectionExpressionScope { layer, source, target }
 
+/// Axis used to route an orthogonal connection bundle.
 enum ConnectionAxis { horizontal, vertical }
 
 @freezed
+/// Expression driven offset used by anchors and curved connection control
+/// points.
 abstract class PresentationOffset with _$PresentationOffset {
   const factory PresentationOffset({
     required TypedExpression x,
@@ -25,6 +30,12 @@ abstract class PresentationOffset with _$PresentationOffset {
 }
 
 @freezed
+/// Named point that a connection can resolve inside a rendered presentation.
+///
+/// The renderer discovers local anchors in the current layer. An anchor marked
+/// [exportToParent] can additionally be selected through an exported group,
+/// allowing a child presentation to participate in a connection owned by its
+/// parent.
 abstract class PresentationAnchorPoint with _$PresentationAnchorPoint {
   @Assert("id != \"\"", "Anchor ID must not be empty.")
   const factory PresentationAnchorPoint({
@@ -39,6 +50,7 @@ abstract class PresentationAnchorPoint with _$PresentationAnchorPoint {
 }
 
 @freezed
+/// Selects either a local anchor or an exported anchor group.
 sealed class PresentationAnchorSelector with _$PresentationAnchorSelector {
   @Assert("id != \"\"", "Anchor ID must not be empty.")
   const factory PresentationAnchorSelector.local(String id) = LocalAnchor;
@@ -49,6 +61,7 @@ sealed class PresentationAnchorSelector with _$PresentationAnchorSelector {
 }
 
 @freezed
+/// Visual stroke settings shared by connector paths.
 abstract class ConnectorStroke with _$ConnectorStroke {
   const factory ConnectorStroke({
     required TypedExpression color,
@@ -57,6 +70,7 @@ abstract class ConnectorStroke with _$ConnectorStroke {
 }
 
 @freezed
+/// Marker rendered at a connector endpoint.
 sealed class ConnectorEndpointMarker with _$ConnectorEndpointMarker {
   const factory ConnectorEndpointMarker.arrow({required TypedExpression size}) =
       ArrowConnectorMarker;
@@ -67,6 +81,7 @@ sealed class ConnectorEndpointMarker with _$ConnectorEndpointMarker {
 }
 
 @freezed
+/// Stroke and endpoint appearance for a connection overlay.
 abstract class ConnectorStyle with _$ConnectorStyle {
   const factory ConnectorStyle({
     required ConnectorStroke stroke,
@@ -77,6 +92,11 @@ abstract class ConnectorStyle with _$ConnectorStyle {
 }
 
 @freezed
+/// Presentation node placed on a resolved connection path.
+///
+/// Marker expressions are evaluated in [scope], which determines whether they
+/// see layer, source, or target bindings. Markers are rendered as an overlay
+/// and do not participate in pointer input or semantics.
 abstract class ConnectionMarker with _$ConnectionMarker {
   const factory ConnectionMarker({
     required PresentationNode node,
@@ -87,6 +107,7 @@ abstract class ConnectionMarker with _$ConnectionMarker {
 }
 
 @freezed
+/// One bend position for an orthogonal connection.
 abstract class OrthogonalConnectionPath with _$OrthogonalConnectionPath {
   const factory OrthogonalConnectionPath({
     required TypedExpression bendPosition,
@@ -94,6 +115,7 @@ abstract class OrthogonalConnectionPath with _$OrthogonalConnectionPath {
 }
 
 @freezed
+/// Control point offsets that define a curved connection.
 abstract class CurvedConnectionPath with _$CurvedConnectionPath {
   const factory CurvedConnectionPath({
     required PresentationOffset sourceControlOffset,
@@ -102,6 +124,10 @@ abstract class CurvedConnectionPath with _$CurvedConnectionPath {
 }
 
 @freezed
+/// Routing strategy for one source to one target connection.
+///
+/// A path is resolved after anchors are collected. Invalid expressions or
+/// unavailable anchors become presentation diagnostics in the renderer.
 sealed class ConnectionPath with _$ConnectionPath {
   const factory ConnectionPath.straight() = StraightConnectionPath;
   const factory ConnectionPath.orthogonal(OrthogonalConnectionPath path) =
@@ -110,6 +136,7 @@ sealed class ConnectionPath with _$ConnectionPath {
 }
 
 @freezed
+/// Routing settings for the trunk and branches of a bundled connection.
 abstract class OrthogonalConnectionBundlePath
     with _$OrthogonalConnectionBundlePath {
   const factory OrthogonalConnectionBundlePath({
@@ -119,6 +146,7 @@ abstract class OrthogonalConnectionBundlePath
 }
 
 @freezed
+/// Routing strategy for one source connected to multiple targets.
 sealed class ConnectionBundlePath with _$ConnectionBundlePath {
   const factory ConnectionBundlePath.orthogonal(
     OrthogonalConnectionBundlePath path,
@@ -127,6 +155,12 @@ sealed class ConnectionBundlePath with _$ConnectionBundlePath {
 }
 
 @freezed
+/// Declarative connection drawn between anchors in the layout overlay.
+///
+/// A regular connection resolves one target. A bundle shares a trunk across
+/// several targets. Connections are purely presentation metadata: the layout
+/// renderer resolves their expressions and geometry each paint pass, then
+/// reports unresolved anchors and invalid values as diagnostics.
 sealed class PresentationConnection with _$PresentationConnection {
   const factory PresentationConnection.connection({
     required PresentationAnchorSelector source,

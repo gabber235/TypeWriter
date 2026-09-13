@@ -82,6 +82,7 @@ data class SyntheticEntry(
     }
 }
 
+/** Provides the generated page declaration used by page reference conformance checks. */
 @TypewriterPage(
     id = "019d3a87000170008000000000000001",
 )
@@ -93,8 +94,10 @@ fun syntheticPage() =
         editor = PageEditorDefinition.Graph(GraphDirection.LEFT_TO_RIGHT, listOf(SyntheticEntry::class)),
     )
 
+/** Exposes search, computation, and command fixtures for generated Realm capability discovery. */
 @RealmCapabilities
 class SyntheticRealmCapabilities {
+    /** Returns one matching repeated message and then completes the search stream. */
     @RealmCapability.Search
     context(_: RealmSearchContext)
     fun searchMessages(request: RealmSearchRequest<LiteralMessage>): RealmSearch<RepeatedMessage> =
@@ -103,10 +106,12 @@ class SyntheticRealmCapabilities {
             complete()
         }
 
+    /** Repeats the input value and returns the literal message result. */
     @RealmCapability.Computation
     context(_: RealmComputationContext)
     suspend fun repeatMessage(request: RepeatedMessage): LiteralMessage = LiteralMessage(request.value.repeat(request.repetitions))
 
+    /** Emits a successful panel notification containing the input value. */
     @RealmCapability.Command
     context(_: RealmCommandContext)
     suspend fun publishMessage(request: LiteralMessage): RealmCommandOutcome =
@@ -121,6 +126,7 @@ class SyntheticRealmCapabilities {
         )
 }
 
+/** Builds the default editor presentation with controls for both message variants. */
 @TypewriterPresentation(
     default = true,
     priority = 100,
@@ -145,6 +151,7 @@ fun syntheticEntryEditor() =
         }
     }
 
+/** Builds a compact named presentation for the same entry. */
 @TypewriterPresentation(priority = 10)
 context(_: PresentationBuildContext)
 fun syntheticEntryCompactEditor() =
@@ -159,6 +166,7 @@ fun syntheticEntryCompactEditor() =
         }
     }
 
+/** Supplies the runtime facet discovered for [SyntheticEntry]. */
 @TypewriterElementFacet(SyntheticEntry::class)
 class SyntheticEntryFacet : ElementRuntimeFacet<SyntheticEntry> {
     context(context: ElementRuntimeContext)
@@ -168,6 +176,7 @@ class SyntheticEntryFacet : ElementRuntimeFacet<SyntheticEntry> {
         }
 }
 
+/** Registers the conformance runtime scope and owns no external resources. */
 @TypewriterRegistrar(id = "synthetic")
 class SyntheticRuntimeRegistrar : RuntimeRegistrar {
     context(scope: RuntimeScope)

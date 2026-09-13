@@ -3,35 +3,46 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 /// Builds an item while it is being removed from an animated list or grid.
-typedef AnimatedListRemovedItemBuilder<T> =
-    Widget Function(BuildContext context, T item, Animation<double> animation);
+typedef AnimatedListRemovedItemBuilder<T> = Widget Function(
+  BuildContext context,
+  T item,
+  Animation<double> animation,
+);
 
 /// Builds an item while it is being removed from an animated table.
-typedef AnimatedTableRemovedItemBuilder<T> =
-    TableRow Function(
-      BuildContext context,
-      T item,
-      Animation<double> animation,
-    );
+typedef AnimatedTableRemovedItemBuilder<T> = TableRow Function(
+  BuildContext context,
+  T item,
+  Animation<double> animation,
+);
 
 /// The key and synchronized item snapshot managed by an animated collection hook.
 ///
-/// Assign [key] to the matching animated collection. Use [items] for both its
-/// initial item count and item builder so Flutter and the backing data retain
-/// matching indices throughout structural animations.
+/// The hook owns the snapshot used to bridge the caller's data and Flutter's
+/// index based animated collection. Assign [key] to the matching collection,
+/// use [items] for its initial item count and builder, and do not mutate the
+/// returned list. Structural changes animate by identity; payload changes for
+/// an existing identity replace the snapshot without a structural animation.
 class AnimatedListHookResult<T, S extends State<StatefulWidget>> {
   const AnimatedListHookResult({required this.key, required this.items});
 
   /// The key to assign to the matching animated list or grid widget.
   final GlobalKey<S> key;
 
-  /// The item snapshot to use in the widget builder and initial item count.
+  /// An unmodifiable snapshot for the widget builder and initial item count.
+  ///
+  /// Its order matches the collection state after the latest build. The
+  /// snapshot is replaced when the input changes, so keep using the latest
+  /// hook result during the build that owns the collection.
   final List<T> items;
 }
 
 /// Synchronizes [items] with an [AnimatedList].
 ///
-/// [identity] must return a stable, unique value for every item.
+/// The returned key must be assigned to that list and the returned snapshot
+/// must supply its initial count and item builder. [identity] must return a
+/// stable, unique value for every item. Reordering preserves matching items;
+/// insertion and removal use the configured durations.
 AnimatedListHookResult<T, AnimatedListState> useAnimatedList<T>({
   required List<T> items,
   required Object Function(T item) identity,
@@ -60,7 +71,10 @@ AnimatedListHookResult<T, AnimatedListState> useAnimatedList<T>({
 
 /// Synchronizes [items] with an [AnimatedTable].
 ///
-/// [identity] must return a stable, unique value for every item.
+/// The returned key must be assigned to that table and the returned snapshot
+/// must supply its initial count and row builder. [identity] must return a
+/// stable, unique value for every item. Reordering preserves matching rows;
+/// insertion and removal use the configured durations.
 AnimatedListHookResult<T, AnimatedTableState> useAnimatedTable<T>({
   required List<T> items,
   required Object Function(T item) identity,
@@ -89,7 +103,10 @@ AnimatedListHookResult<T, AnimatedTableState> useAnimatedTable<T>({
 
 /// Synchronizes [items] with a [SliverAnimatedList].
 ///
-/// [identity] must return a stable, unique value for every item.
+/// The returned key must be assigned to that sliver and the returned snapshot
+/// must supply its initial count and item builder. [identity] must return a
+/// stable, unique value for every item. Reordering preserves matching items;
+/// insertion and removal use the configured durations.
 AnimatedListHookResult<T, SliverAnimatedListState> useSliverAnimatedList<T>({
   required List<T> items,
   required Object Function(T item) identity,
@@ -118,7 +135,10 @@ AnimatedListHookResult<T, SliverAnimatedListState> useSliverAnimatedList<T>({
 
 /// Synchronizes [items] with an [AnimatedGrid].
 ///
-/// [identity] must return a stable, unique value for every item.
+/// The returned key must be assigned to that grid and the returned snapshot
+/// must supply its initial count and item builder. [identity] must return a
+/// stable, unique value for every item. Reordering preserves matching items;
+/// insertion and removal use the configured durations.
 AnimatedListHookResult<T, AnimatedGridState> useAnimatedGrid<T>({
   required List<T> items,
   required Object Function(T item) identity,
@@ -147,7 +167,10 @@ AnimatedListHookResult<T, AnimatedGridState> useAnimatedGrid<T>({
 
 /// Synchronizes [items] with a [SliverAnimatedGrid].
 ///
-/// [identity] must return a stable, unique value for every item.
+/// The returned key must be assigned to that sliver and the returned snapshot
+/// must supply its initial count and item builder. [identity] must return a
+/// stable, unique value for every item. Reordering preserves matching items;
+/// insertion and removal use the configured durations.
 AnimatedListHookResult<T, SliverAnimatedGridState> useSliverAnimatedGrid<T>({
   required List<T> items,
   required Object Function(T item) identity,
@@ -174,19 +197,23 @@ AnimatedListHookResult<T, SliverAnimatedGridState> useSliverAnimatedGrid<T>({
   );
 }
 
-typedef _InsertItem<S extends State<StatefulWidget>> =
-    void Function(S state, int index, Duration duration);
+typedef _InsertItem<S extends State<StatefulWidget>> = void Function(
+  S state,
+  int index,
+  Duration duration,
+);
 
-typedef _RemovedItemBuilder<R> =
-    R Function(BuildContext context, Animation<double> animation);
+typedef _RemovedItemBuilder<R> = R Function(
+  BuildContext context,
+  Animation<double> animation,
+);
 
-typedef _RemoveItem<S extends State<StatefulWidget>, R> =
-    void Function(
-      S state,
-      int index,
-      _RemovedItemBuilder<R> builder,
-      Duration duration,
-    );
+typedef _RemoveItem<S extends State<StatefulWidget>, R> = void Function(
+  S state,
+  int index,
+  _RemovedItemBuilder<R> builder,
+  Duration duration,
+);
 
 class _AnimatedListHook<T, S extends State<StatefulWidget>, R>
     extends Hook<AnimatedListHookResult<T, S>> {

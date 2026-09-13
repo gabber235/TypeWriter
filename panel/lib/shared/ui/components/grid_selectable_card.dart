@@ -2,12 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A reusable, presentation-only grid card used to display a selectable item
-/// with an optional badge and a title.
+/// Renders a selectable grid card with an optional badge and title.
 ///
-/// This widget is intentionally pure-UI: it does not manage selection, focus,
-/// or hover state. Provide those states via the constructor. Interaction
-/// (tap, keyboard focus, selection) should be handled by parent widgets.
+/// This widget is presentation only. It does not manage selection, focus, or
+/// hover state. Provide those states through the constructor and keep tap,
+/// keyboard focus, and selection ownership in the parent.
 class GridSelectableCard extends StatelessWidget {
   const GridSelectableCard({
     required this.title,
@@ -69,7 +68,7 @@ class GridSelectableCard extends StatelessWidget {
   /// Animation curve for selection and focus transitions.
   final Curve animationCurve;
 
-  /// Optional badge label rendered at the top-left.
+  /// Optional badge label rendered at the top left.
   final String? badgeLabel;
 
   /// Badge background color. When selected, the badge inverts its colors.
@@ -106,10 +105,8 @@ class GridSelectableCard extends StatelessWidget {
 
     final resolvedTitleStyle =
         (titleStyle ??
-                Theme.of(context).textTheme.titleMedium!.copyWith(
-                  fontSize: 16,
-                  fontVariations: [.weight(600)],
-                ))
+                Theme.of(context).textTheme.titleMedium!
+                    .copyWith(fontSize: 16, fontVariations: [.weight(600)]))
             .copyWith(color: isSelected ? onBase : baseColor);
 
     final backgroundColor = _backgroundColor(context);

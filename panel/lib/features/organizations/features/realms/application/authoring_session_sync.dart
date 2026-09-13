@@ -1,5 +1,12 @@
 part of "authoring_session.dart";
 
+/// Maintains the session's ordered live projection and lifecycle recovery.
+///
+/// Authoring events are applied only when their sequence immediately follows
+/// the canonical sequence. Events received during refresh or ahead of a gap
+/// stay buffered until a snapshot makes the sequence continuous. Compiled
+/// content events refresh only retained page scopes because compilation can
+/// change page related state without changing the authoring event stream.
 mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
   final Map<_AuthoringScope, int> _scopeCounts = {};
   final Map<_AuthoringScope, Future<void>> _scopeReadiness = {};
@@ -68,6 +75,7 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
     }
   }
 
+  /// Marks the canonical model stale across a reconnect boundary.
   void _onLifecycle(NatsConnectionState connection) {
     switch (connection) {
       case NatsReconnecting() || NatsFailed():
@@ -79,6 +87,10 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
     }
   }
 
+  /// Accepts an event only when it preserves sequence continuity.
+  ///
+  /// Duplicate and older events are harmless. A future event is buffered and
+  /// causes a snapshot refresh rather than being applied out of order.
   void _accept(wire.AuthoringChanged change) {
     if (_refreshOperation != null || state.sequence == null) {
       _buffer.add(change);
@@ -112,6 +124,11 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
     _scheduleRefresh();
   }
 
+  /// Reconciles all held scopes through serialized authoritative snapshots.
+  ///
+  /// Refresh requests coalesce, and a request raised during a fetch causes one
+  /// more pass. A snapshot older than the current sequence cannot replace the
+  /// read model.
   Future<void> _runRefresh() async {
     if (_disposed || _scopeCounts.isEmpty) return;
     state = state.copyWith(refreshing: true);
@@ -131,6 +148,7 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
     }
   }
 
+  /// Applies buffered events after a snapshot restored sequence continuity.
   void _drainBuffer() {
     if (state.sequence == null) return;
 
@@ -150,6 +168,8 @@ mixin _AuthoringSessionSync on _$AuthoringSession, _AuthoringSessionSnapshots {
     }
   }
 
+  /// Applies a contiguous event and refreshes retained pages it affects
+  /// indirectly.
   void _applyEvent(wire.AuthoringChanged event) {
     _applyChanges(event.changes, sequence: event.sequence);
     final pages = event.indirectlyAffectedResources

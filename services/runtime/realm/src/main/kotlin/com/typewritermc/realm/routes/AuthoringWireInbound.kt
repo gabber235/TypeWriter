@@ -53,7 +53,10 @@ import skirout.library.v1.authoring.PageElement as WireElement
 import skirout.library.v1.authoring.Tag as WireTag
 
 /**
- * Converts requested snapshot scopes and removes duplicates.
+ * Converts the panel's snapshot scope selection into repository scopes and removes duplicates.
+ *
+ * A scope is an explicit read boundary. Unknown wire variants fail closed instead of accidentally requesting a
+ * broader snapshot.
  *
  * Unknown scope variants are rejected rather than broadening the requested snapshot.
  */
@@ -68,7 +71,10 @@ internal fun Iterable<WireScope>.toDomain(): Set<AuthoringSnapshotScope> =
     }
 
 /**
- * Validates and converts wire operations into an atomic domain batch.
+ * Converts the panel's wire batch into the repository's atomic domain command.
+ *
+ * Codec and value constructor failures are intentionally allowed to reach the route, which maps them to an invalid
+ * request diagnostic before the repository can mutate state.
  *
  * Unknown variants, malformed ids, values, or placements fail conversion. The route maps invalid arguments to
  * request diagnostics before repository mutation.

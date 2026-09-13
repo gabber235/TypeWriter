@@ -1,5 +1,10 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Row changes required to transform one visible tree list into another.
+///
+/// Removals are ordered from the end toward the start because consumers apply
+/// them directly to an indexed animated list. Insertions use their target
+/// indices in the next list.
 class SearchTreeDiff {
   const SearchTreeDiff({required this.removals, required this.insertions});
 
@@ -7,6 +12,7 @@ class SearchTreeDiff {
   final List<SearchTreeInsertion> insertions;
 }
 
+/// One row removed from the previous visible list.
 class SearchTreeRemoval {
   const SearchTreeRemoval({required this.index, required this.row});
 
@@ -14,6 +20,7 @@ class SearchTreeRemoval {
   final SearchTreeRow row;
 }
 
+/// One row inserted into the next visible list.
 class SearchTreeInsertion {
   const SearchTreeInsertion({required this.index, required this.row});
 
@@ -21,6 +28,8 @@ class SearchTreeInsertion {
   final SearchTreeRow row;
 }
 
+/// Computes keyed additions and removals while retaining the longest stable
+/// subsequence in place.
 SearchTreeDiff diffSearchTreeRows({
   required List<SearchTreeRow> previous,
   required List<SearchTreeRow> next,

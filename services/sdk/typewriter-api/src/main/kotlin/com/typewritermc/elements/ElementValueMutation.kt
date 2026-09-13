@@ -23,18 +23,21 @@ data class ElementValuePath(
 
 @Serializable
 sealed interface ElementValuePathSegment {
+    /** Selects a named field in a record value. */
     @Serializable
     @SerialName("field")
     data class Field(
         val name: String,
     ) : ElementValuePathSegment
 
+    /** Selects an item by its current zero based list index. */
     @Serializable
     @SerialName("index")
     data class Index(
         val index: Int,
     ) : ElementValuePathSegment
 
+    /** Selects the value associated with an equal key in a map. */
     @Serializable
     @SerialName("map_key")
     data class MapKey(
@@ -122,11 +125,14 @@ sealed interface ElementValueMutation {
  * A failure does not expose partially applied edits, so callers can retain their original stored value.
  */
 sealed interface ElementValueMutationResult {
+    /** Contains the fully projected result after every mutation succeeded. */
     data class Success(
         val value: StoredElementValue,
     ) : ElementValueMutationResult
 
+    /** Indicates that no replacement was produced because at least one mutation was invalid. */
     data class Failure(
+        /** Stable code identifying the rejected mutation category. */
         val code: String,
     ) : ElementValueMutationResult
 }

@@ -3,6 +3,7 @@ package com.typewritermc.loader.rollout
 import com.typewritermc.loader.api.HostedMessagingSession
 import com.typewritermc.loader.api.RuntimePlacement
 
+/** Identifies the backend service and monotonic assignment revision that produced an execution intent. */
 data class ExecutionRevision(
     val serviceId: String,
     val value: Long,
@@ -14,6 +15,7 @@ data class DesiredHostExecution(
     val assignment: ArtifactHostAssignment?,
 )
 
+/** Owns the local resources created for one non null host assignment. */
 internal interface HostAssignmentRuntime {
     val assignment: ArtifactHostAssignment
     val status: ParticipantStatus?
@@ -23,6 +25,7 @@ internal interface HostAssignmentRuntime {
     suspend fun close()
 }
 
+/** Snapshot reported after an assignment has been applied and its resources are ready to report. */
 internal data class HostExecutionObservation(
     val revision: ExecutionRevision,
     val roles: Set<RuntimePlacement>,
@@ -42,8 +45,10 @@ internal class HostExecutionOwner(
     private var closing = false
     private var delivered: Pair<HostExecutionObservation, Long>? = null
 
+    /** Whether resources for the current assignment still exist, including after failed cleanup. */
     val hasRuntime: Boolean get() = runtime != null
 
+    /** Returns true only after the desired assignment and its lifecycle transition completed successfully. */
     fun isApplied(desired: DesiredHostExecution): Boolean = applied == desired && !closing
 
     suspend fun apply(

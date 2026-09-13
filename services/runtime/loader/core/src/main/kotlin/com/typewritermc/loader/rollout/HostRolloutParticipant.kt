@@ -97,8 +97,10 @@ class HostRolloutParticipant(
     val activeProjection: ActiveProjectionReference?
         get() = currentActiveProjection
 
+    /** Rejects commands addressed to another Realm or host before taking the lifecycle mutex. */
     fun accepts(envelope: RolloutEnvelope): Boolean = envelope.realmId == realmId && hostId in envelope.participants
 
+    /** Returns the local state for probe [attempt], including the active projection health when present. */
     suspend fun currentStatus(attempt: RolloutAttempt): ParticipantStatus =
         commands.withLock {
             when (val state = localState) {
@@ -116,6 +118,7 @@ class HostRolloutParticipant(
             }
         }
 
+    /** Applies one command atomically with respect to other commands and reports rejection without hiding internal failure. */
     suspend fun handle(envelope: RolloutEnvelope): CommandAcceptance =
         telemetry.artifactSpan(
             "artifact.rollout.command",
@@ -476,6 +479,7 @@ class HostRolloutParticipant(
         healthMonitor = null
     }
 
+    /** Stops health observation and closes every staged, active, or retained runtime, preserving retryable ownership on failure. */
     suspend fun close() =
         commands.withLock {
             stopHealthMonitor()

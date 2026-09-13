@@ -9,36 +9,26 @@ import "package:typewriter_panel/shared/ui/components/elastic_switcher.dart";
 import "package:typewriter_panel/shared/ui/components/loading_button/loading_button_controller.dart";
 import "package:typewriter_panel/shared/utilities/snackbar.dart";
 
+/// Selects the Material button treatment used by [LoadingButton].
 enum LoadingVariant { filled, text, outlined }
 
-/// A button that manages async callbacks, shows a loading spinner, and reports errors.
+/// Runs one asynchronous action at a time and exposes its progress in a
+/// Material button.
 ///
-/// Variants:
-/// - filled / filledIcon
-/// - text / textIcon
-/// - outlined / outlinedIcon
+/// The effective [LoadingButtonController] owns execution state. If no
+/// controller is supplied, the hook owned by this widget provides it. A bound
+/// callback is never started concurrently, and callback exceptions are kept as
+/// controller error state before being surfaced to the user. The error is shown
+/// in a tooltip and sent to the nearest scaffold messenger when one exists.
 ///
-/// Example usage with controller:
-/// ```dart
-/// // In a HookWidget:
-/// final controller = useLoadingButtonController();
+/// Use [controller] when another widget must trigger the same action or observe
+/// its state. The named constructors select filled, text, or outlined Material
+/// treatments, with icon variants that add a leading icon without changing the
+/// action contract.
 ///
-/// LoadingButton(
-///   controller: controller,
-///   child: Text('Save'),
-///   onPressed: () async {
-///     await saveData();
-///   },
-/// )
-///
-/// // Trigger programmatically
-/// final success = controller.trigger(); // Returns true if triggered
-///
-/// // Access state
-/// print('Loading: ${controller.isLoading}');
-/// print('Error: ${controller.lastError}');
-/// print('Can trigger: ${controller.canTrigger}');
-/// ```
+/// A controller is useful when a surrounding shortcut or action row must invoke
+/// the same operation as the button. The button remains the visual and
+/// interaction owner.
 class LoadingButton extends HookWidget {
   const LoadingButton({
     required this.child,
@@ -219,9 +209,8 @@ class LoadingButton extends HookWidget {
             return BorderSide(
               color:
                   style?.foregroundColor?.resolve(states) ??
-                  FilledButtonTheme.of(
-                    context,
-                  ).style?.foregroundColor?.resolve(states) ??
+                  FilledButtonTheme.of(context).style?.foregroundColor
+                      ?.resolve(states) ??
                   Theme.of(context).colorScheme.primary,
               width: 3,
             );
@@ -235,9 +224,8 @@ class LoadingButton extends HookWidget {
           backgroundColor: WidgetStateProperty.resolveWith((states) {
             final baseColor =
                 style?.foregroundColor?.resolve(states) ??
-                OutlinedButtonTheme.of(
-                  context,
-                ).style?.foregroundColor?.resolve(states) ??
+                OutlinedButtonTheme.of(context).style?.foregroundColor
+                    ?.resolve(states) ??
                 Theme.of(context).colorScheme.primary;
             if (states.contains(WidgetState.focused)) {
               return baseColor.withValues(alpha: 0.2);

@@ -13,6 +13,11 @@ part "guards/auth_guard.dart";
 part "guards/organization_guard.dart";
 part "organization_access_redirect.dart";
 
+/// Creates the process wide router and its route access owners.
+///
+/// The provider keeps one router for the application lifetime. Its disposal
+/// order releases reevaluation first, then the access coordinator and its
+/// modules, preventing callbacks from reaching disposed route state.
 @Riverpod(keepAlive: true)
 Raw<AppRouter> appRouter(Ref ref) {
   final access = RouteAccessCoordinator(
@@ -31,6 +36,11 @@ Raw<AppRouter> appRouter(Ref ref) {
   return router;
 }
 
+/// Defines the panel's route tree and the guards protecting each scope.
+///
+/// Authentication guards protect the public and private roots. The shared
+/// organization guard protects organization and book routes, while nested realm
+/// routes currently rely on the authenticated parent scope.
 @AutoRouterConfig(replaceInRouteName: "Page,Route")
 class AppRouter extends RootStackRouter {
   AppRouter(this.access)
@@ -97,6 +107,10 @@ class AppRouter extends RootStackRouter {
   ];
 }
 
+/// Invalidates route parameter providers after every navigator mutation.
+///
+/// The callback is owned by the application shell and is responsible for
+/// deferring invalidation until the current frame has completed.
 class InvalidatorNavigatorObserver extends NavigatorObserver {
   InvalidatorNavigatorObserver(this.invalidator);
   final void Function() invalidator;
@@ -114,6 +128,7 @@ class InvalidatorNavigatorObserver extends NavigatorObserver {
   void didReplace({Route? newRoute, Route? oldRoute}) => invalidator();
 }
 
+/// Logs navigator transitions using route names and inherited parameters.
 class LoggerNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route? previousRoute) {
@@ -148,6 +163,7 @@ class LoggerNavigatorObserver extends NavigatorObserver {
   }
 }
 
+/// Provides a compact diagnostic representation for navigator logging.
 extension RouteExtensions on Route {
   String get display {
     final route = data;
@@ -159,6 +175,7 @@ extension RouteExtensions on Route {
   }
 }
 
+/// Exposes the router's current path as reactive application state.
 @riverpod
 class CurrentRoute extends _$CurrentRoute {
   @override
@@ -168,6 +185,11 @@ class CurrentRoute extends _$CurrentRoute {
   }
 }
 
+/// Reads an inherited path parameter from the router's active top route.
+///
+/// A missing parameter returns null. Consumers use this provider for route
+/// scoped resource lookup and should handle that absence before constructing an
+/// identifier.
 @riverpod
 String? routeParam(Ref ref, String id) {
   final router = ref.watch(appRouterProvider);

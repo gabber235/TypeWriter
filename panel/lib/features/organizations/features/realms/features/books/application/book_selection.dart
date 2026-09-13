@@ -1,5 +1,10 @@
 part of "books.dart";
 
+/// Stable selectable identity for a book record.
+///
+/// Selection resolves this identity against the current organization and realm
+/// session. It is therefore safe to retain as a key, but it is not a snapshot
+/// of the book and must be resolved again after session state changes.
 class BookIdentifier extends SelectableIdentifier {
   const BookIdentifier(this.bookId);
 
@@ -11,6 +16,12 @@ class BookIdentifier extends SelectableIdentifier {
   @override
   Object get resourceId => bookId;
 
+  /// Resolves the current book and builds its editor and navigation boundary.
+  ///
+  /// Missing organization or realm is a bad request, an unready session stays
+  /// loading, and a completed session without this identity becomes a typed
+  /// not found result. Tag data is required before the selection can expose
+  /// the inspector collection.
   @override
   AsyncValue<Selectable> create(Ref ref) {
     final organization = ref.watch(organizationIdProvider);
@@ -68,6 +79,12 @@ class BookIdentifier extends SelectableIdentifier {
   String toString() => "BookIdentifier(bookId: $bookId)";
 }
 
+/// Selection model shared by library navigation and the book inspector.
+///
+/// The selection owns no canonical data. It carries the confirmed book and
+/// revision used to create an editor snapshot, while [resource] owns loading,
+/// draft reconciliation, commit, and disposal. Opening is deliberately
+/// single select because navigation targets one book route.
 class BookSelection extends EditableSelectable<BookIdentifier> {
   const BookSelection({
     required this.resource,
@@ -125,6 +142,12 @@ BindingReference _bookField(String name) => BindingReference(
   path: DataPath.root.field(name),
 );
 
+/// Encodes and decodes the book fields understood by the inspector.
+///
+/// Decoding is intentionally strict at the editor boundary. Invalid shape,
+/// empty required text, invalid color, or non string tag entries returns null;
+/// [projected] then falls back to the last valid book rather than exposing a
+/// malformed local draft to consumers.
 extension BookInspectorValue on Book {
   RecordValue get inspectorValue => RecordValue({
     "title": title.asValue,
@@ -133,6 +156,7 @@ extension BookInspectorValue on Book {
     "tags": ListValue(tagIds.map((tagId) => tagId.id.asValue).toList()),
   });
 
+  /// Reconstructs a book only when the complete inspector record is valid.
   Book? withInspectorValue(DataValue value) {
     if (value is! RecordValue) return null;
     final title = value.fields["title"];
@@ -166,6 +190,7 @@ extension BookInspectorValue on Book {
     );
   }
 
+  /// Applies a local draft while preserving this value on decode failure.
   Book projected(LocalEditorValue? local) {
     if (local == null) return this;
     return withInspectorValue(local.projectOnto(inspectorValue)) ?? this;

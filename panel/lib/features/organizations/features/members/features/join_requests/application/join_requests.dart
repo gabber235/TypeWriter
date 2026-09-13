@@ -8,8 +8,16 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "join_requests.freezed.dart";
 part "join_requests.g.dart";
 
+/// Organization scoped moderation data for pending membership requests.
+///
+/// The provider below owns the live projection and the approve and decline
+/// mutations. The projection starts from a sequenced server snapshot, applies
+/// later organization events in order, and invalidates itself on a sequence
+/// gap. The UI may remove expired rows locally, but the server remains
+/// authoritative for membership decisions and later reconciliation.
 @freezed
 abstract class OrganizationJoinRequest with _$OrganizationJoinRequest {
+  /// The organization scoped read model shown to membership moderators.
   const factory OrganizationJoinRequest({
     required skir.RecordId requestId,
     required skir.RecordId userId,
@@ -22,6 +30,7 @@ abstract class OrganizationJoinRequest with _$OrganizationJoinRequest {
 
   const OrganizationJoinRequest._();
 
+  /// Converts the moderation projection from the shared wire contract.
   factory OrganizationJoinRequest.fromSkir(
     skir.OrganizationJoinRequest request,
   ) => OrganizationJoinRequest(
@@ -34,6 +43,7 @@ abstract class OrganizationJoinRequest with _$OrganizationJoinRequest {
     userAvatarUrl: request.userAvatarUrl,
   );
 
+  /// Converts this panel read model back to the shared wire shape.
   skir.OrganizationJoinRequest toSkir() => skir.OrganizationJoinRequest(
     requestId: requestId,
     userId: this.userId,
@@ -44,14 +54,25 @@ abstract class OrganizationJoinRequest with _$OrganizationJoinRequest {
     userAvatarUrl: userAvatarUrl,
   );
 
+  /// Returns locally calculated time remaining, clamped at zero.
   Duration get remainingDuration {
     final remaining = expiresAt.difference(DateTime.now());
     return remaining.isNegative ? Duration.zero : remaining;
   }
 
+  /// Whether this row should be hidden from active pending request UI.
   bool get isExpired => remainingDuration == Duration.zero;
 }
 
+/// Owns the current organization moderation projection and its mutations.
+///
+/// The authenticated user and selected organization determine the stream
+/// subjects. Approval is one server transaction for all selected requests and
+/// roles, while decline removes one request optimistically. Both mutations use
+/// operation identities and classify uncertain delivery through the shared
+/// mutation layer. Failed mutations invalidate the provider so the next
+/// snapshot resolves concurrent server decisions; decline also restores its
+/// prior local projection before that refresh.
 @riverpod
 class OrganizationJoinRequests extends _$OrganizationJoinRequests {
   final _sequenceState = SequencedCollection<List<OrganizationJoinRequest>>();
@@ -104,7 +125,13 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
     );
   }
 
-  /// Approves a join request and assigns roles to the new member.
+  /// Approves the selected pending requests and assigns one role set to each.
+  ///
+  /// The server validates the complete selection atomically. A rejection leaves
+  /// every request pending. A confirmed response includes the organization
+  /// change event, which is applied immediately when this provider still owns
+  /// the same organization; the stream remains the recovery path for events
+  /// received later or after a provider restart.
   Future<void> approveRequests(
     Iterable<skir.RecordId> requestIds,
     List<OrganizationRole> roles,
@@ -191,6 +218,10 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
     }
   }
 
+  /// Applies an event only when it continues the owned sequence.
+  ///
+  /// Duplicates are harmless. A gap discards the local assumption and asks the
+  /// provider for a fresh snapshot instead of inventing missing changes.
   void _applyEvent(skir.OrganizationJoinRequestsChanged event) {
     switch (_sequenceState.apply(
       sequence: event.sequence,
@@ -205,7 +236,11 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
     }
   }
 
-  /// Declines a join request.
+  /// Declines one pending request with an optimistic local removal.
+  ///
+  /// The server removes the request from both organization and user views. If
+  /// delivery or validation fails, the previous projection is restored and the
+  /// provider is invalidated so recovery uses authoritative server state.
   Future<void> declineRequest(skir.RecordId requestId) async {
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) {
@@ -216,10 +251,8 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
       throw ApiException.noOrganization();
     }
 
-    // Store previous state for rollback
     final previousState = state;
 
-    // Optimistically remove the request
     state = AsyncValue.data(
       state.value!.where((r) => r.requestId != requestId).toList(),
     );
@@ -269,14 +302,15 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
           debugPrint("Request $requestId declined successfully");
       }
     } catch (e) {
-      state = previousState; // Rollback on any exception
+      state = previousState;
       ref.invalidateSelf();
       rethrow;
     }
   }
 
-  /// Locally cleans up expired join requests.
-  /// Does not affect the server state.
+  /// Removes expired rows from the local projection without contacting the
+  /// server. A later snapshot or change event can restore a row if the server
+  /// still reports it.
   void cleanupExpiredRequests() {
     state = AsyncData(
       state.requireValue.where((request) => !request.isExpired).toList(),
@@ -284,6 +318,7 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
   }
 }
 
+/// Folds one ordered organization event into the moderation projection.
 List<OrganizationJoinRequest> _reduceOrganizationJoinRequests(
   List<OrganizationJoinRequest> requests,
   skir.OrganizationJoinRequestsChanged event,
@@ -303,7 +338,10 @@ List<OrganizationJoinRequest> _reduceOrganizationJoinRequests(
   });
 }
 
-/// Provider for the count of pending join requests.
+/// Counts unexpired requests in the current moderation projection.
+///
+/// Loading and error states report zero because the sidebar badge cannot claim
+/// a pending count until the projection is available.
 @riverpod
 int joinRequestCount(Ref ref) {
   final requests = ref.watch(organizationJoinRequestsProvider);
@@ -312,5 +350,3 @@ int joinRequestCount(Ref ref) {
     orElse: () => 0,
   );
 }
-
-/// Provider for the list of active join codes in the current organization.

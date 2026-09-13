@@ -1,8 +1,26 @@
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Defines how local and remote values may be combined at a path.
+///
+/// `atomic` and `orderedList` preserve the local value and report a conflict
+/// when both sides changed. `record` reconciles fields independently.
+/// `set` combines membership changes while removing duplicates. The policy is
+/// part of the document contract because reconciliation must use the same
+/// semantics as the editor that produced the draft.
 enum EditorMergePolicy { atomic, record, set, orderedList }
 
+/// The complete canonical snapshot used to interpret an editor draft.
+///
+/// `confirmedValue` and `revision` are one atomic observation. A revision is
+/// meaningful only with the value it identifies. Advancing one without the
+/// other could make a commit target the wrong canonical content, so callers
+/// replace them together through `copyWith` or a new `EditorDocument`.
+///
+/// Type metadata, merge policy, diagnostics, and read only status travel with
+/// that observation. The document is immutable and owned by the editor source;
+/// presentation code may retain it as a stable snapshot but must not infer
+/// local unsaved content from it.
 final class EditorDocument {
   const EditorDocument({
     required this.rootType,
@@ -53,6 +71,14 @@ final class EditorDocument {
   );
 }
 
+/// An immutable persistence request captured from one editor state.
+///
+/// `expectedRevision` identifies the canonical `baseValue` that the request
+/// was built against. `rootValue` is the proposed result, and
+/// `localRevision` lets the owner distinguish edits made after capture.
+/// `changedPaths` and `mutations` describe the intended delta. A committer
+/// must treat this as one consistency boundary and return a typed result rather
+/// than implying acceptance from completion alone.
 final class EditorCommit {
   const EditorCommit({
     required this.expectedRevision,
@@ -72,6 +98,12 @@ final class EditorCommit {
   final List<EditorStructuralMutation> mutations;
 }
 
+/// Describes one structural operation included in an [EditorCommit].
+///
+/// These operations preserve intent that a value diff cannot reliably recover,
+/// such as list movement, duplication, and concrete type replacement. The path
+/// is relative to the commit root and [prefixedBy] is used when a nested
+/// operation becomes part of a larger structural edit.
 sealed class EditorStructuralMutation {
   const EditorStructuralMutation(this.path);
 

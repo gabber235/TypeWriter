@@ -3,6 +3,15 @@ import "dart:async";
 import "package:http/http.dart" as http;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Builds the executable search source graph described by a [SearchProvider].
+///
+/// Leaf providers receive the shared expression, type, network, and collection
+/// capabilities. Wrapper providers recursively decorate their child, so gate,
+/// debounce, cache, ranking, limits, distinctness, history, sections, and
+/// merging retain one consistent source lifecycle. [path] is an internal
+/// stable identity for nested providers and is also used to scope diagnostics
+/// and typed history definitions. The factory does not own the returned source;
+/// its caller must dispose it.
 final class PresentationSearchSourceFactory {
   const PresentationSearchSourceFactory({
     required this.client,
@@ -27,6 +36,10 @@ final class PresentationSearchSourceFactory {
   collections;
   final RealmPresentationSearchSourceBuilder? realmSourceBuilder;
 
+  /// Materializes [provider] and all of its child providers into one source.
+  ///
+  /// A missing collection or realm builder becomes an unavailable source with
+  /// an explicit error snapshot instead of failing factory construction.
   SearchSource build(SearchProvider provider, {String path = "root"}) =>
       switch (provider) {
         CollectionSearchProvider() => _collection(provider, path),

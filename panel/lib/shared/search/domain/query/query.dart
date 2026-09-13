@@ -8,6 +8,12 @@ export "query_selector.dart";
 export "query_spans.dart";
 export "query_suggestions.dart";
 
+/// Parses search input against the selector definitions currently available.
+///
+/// Parsing returns both the normalized free text sent to sources and the
+/// selector expression used for structured filtering. Cursor context and
+/// issues are derived from the same parse, so query bar suggestions cannot
+/// drift from search semantics.
 class QueryEngine {
   QueryEngine(List<QuerySelectorDefinition> selectors)
     : selectors = List.unmodifiable(selectors),
@@ -16,6 +22,10 @@ class QueryEngine {
   final List<QuerySelectorDefinition> selectors;
   final QueryLexer lexer;
 
+  /// Parses [input], optionally resolving the cursor at [cursorOffset].
+  ///
+  /// The offset is clamped to the input bounds. A null offset omits cursor
+  /// context, which is useful for callers that only need search semantics.
   QueryParseResult parse(String input, {int? cursorOffset}) {
     final clamped = cursorOffset?.clamp(0, input.length);
 
@@ -75,11 +85,13 @@ class QueryEngine {
   }
 }
 
+/// Small facade for parsing queries without exposing the lexer lifecycle.
 class Query {
   Query(List<QuerySelectorDefinition> selectors)
     : _engine = QueryEngine(selectors);
   final QueryEngine _engine;
 
+  /// Parses [query] using the selector definitions supplied at construction.
   QueryParseResult parse(String query, {int? cursorOffset}) {
     return _engine.parse(query, cursorOffset: cursorOffset);
   }

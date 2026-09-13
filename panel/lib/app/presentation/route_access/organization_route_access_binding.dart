@@ -15,6 +15,10 @@ abstract class _OrganizationAccessSnapshot with _$OrganizationAccessSnapshot {
   }) = __OrganizationAccessSnapshot;
 }
 
+/// Combines principal and membership observations into one binding snapshot.
+///
+/// Keeping the observations together makes a session change one coherent
+/// route access update rather than two independently ordered callbacks.
 final _organizationAccessSnapshotProvider =
     Provider<_OrganizationAccessSnapshot>(
       (ref) => _OrganizationAccessSnapshot(
@@ -23,6 +27,11 @@ final _organizationAccessSnapshotProvider =
       ),
     );
 
+/// Mirrors principal and organization membership providers into [access].
+///
+/// The combined subscription fires immediately and on either dependency's
+/// change. [organizationRouteAccessState] intentionally reports loading or
+/// unavailable before exposing retained membership data.
 ProviderSubscription<Object?> bindOrganizationRouteAccess(
   WidgetRef ref,
   OrganizationRouteAccess access,
@@ -34,6 +43,11 @@ ProviderSubscription<Object?> bindOrganizationRouteAccess(
   fireImmediately: true,
 );
 
+/// Converts principal and membership observations into route access state.
+///
+/// A loading or failed principal blocks membership decisions. Membership IDs
+/// are reduced to a set because guards only need membership lookup, not the
+/// provider's organization presentation model.
 OrganizationRouteAccessState organizationRouteAccessState(
   AsyncValue<String?> principal,
   AsyncValue<List<OrganizationData>> membership,

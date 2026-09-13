@@ -3,6 +3,10 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "type_id.freezed.dart";
 
+/// Stable identity for a built in, generated, or qualified nominal type.
+///
+/// The identity is separate from a resolved reference because a reference
+/// also carries a revision and applied generic arguments.
 @freezed
 sealed class TypeId with _$TypeId {
   const TypeId._();
@@ -42,6 +46,10 @@ sealed class TypeId with _$TypeId {
   };
 }
 
+/// A nominal identity at one schema revision with applied type arguments.
+///
+/// An empty argument list denotes an unapplied declaration. Registry lookup
+/// validates arity and bounds before exposing the resolved representation.
 @freezed
 abstract class ResolvedTypeRef with _$ResolvedTypeRef {
   @Assert("revision > 0", "Revision must be positive.")
@@ -53,6 +61,7 @@ abstract class ResolvedTypeRef with _$ResolvedTypeRef {
 
   const ResolvedTypeRef._();
 
+  /// Returns the same declaration and revision with a new immutable argument list.
   ResolvedTypeRef withArguments(Iterable<TypeExpression> values) =>
       ResolvedTypeRef(id: id, revision: revision, arguments: values.toList());
 

@@ -1,5 +1,10 @@
 part of "local_work_session.dart";
 
+/// Publishes the session's canonical read model without exposing mutable owners.
+///
+/// Expiry timers belong to the session and are created only for settled
+/// submissions. Resource and editor projections are rebuilt from their current
+/// sources, so stale snapshots cannot become authoritative.
 extension _LocalWorkSnapshot on LocalWorkSession {
   void _publish() {
     if (_disposed) return;

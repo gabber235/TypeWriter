@@ -32,6 +32,12 @@ import java.util.Base64
 class PageCompiler(
     private val formatRevision: Int = CURRENT_COMPILER_FORMAT,
 ) {
+    /**
+     * Compiles one repository document without consulting storage or executing element behavior.
+     *
+     * The result is deterministic for the document, catalog revision, and compiler format. A blocked result still
+     * carries its input fingerprint so callers can identify the attempted inputs, but it has no executable shard.
+     */
     fun compile(
         document: PageDocument,
         catalogRevision: String,

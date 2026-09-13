@@ -1,3 +1,11 @@
+/// The portable expression tree used by editor presentations and actions.
+///
+/// Producers build typed trees through the authoring extensions. Consumers
+/// evaluate them with an [ExpressionContext], which supplies bindings and local
+/// conversions. The evaluator is also the safety boundary for recursion,
+/// node, evaluation, regular expression, and value validation failures.
+library;
+
 import "package:flutter/material.dart" show Color;
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
@@ -45,6 +53,12 @@ enum RegexOperation { matches, capture, replace }
 
 enum ColorOperation { withAlpha }
 
+/// An expression together with the type its author declares as its result.
+///
+/// The evaluator validates the computed value against this type after every
+/// nested evaluation and again at the public boundary. Collection callbacks
+/// use binding identifiers scoped to one evaluation and never mutate the
+/// caller's bindings.
 @freezed
 abstract class TypedExpression with _$TypedExpression {
   const factory TypedExpression({
@@ -220,6 +234,11 @@ sealed class InterpolationPart with _$InterpolationPart {
       InterpolationValue;
 }
 
+/// Resource limits for evaluating an expression tree.
+///
+/// Limits protect rendering and action paths from pathological or untrusted
+/// trees. A failure is returned as diagnostics rather than partially exposing
+/// a value.
 @freezed
 abstract class ExpressionBudget with _$ExpressionBudget {
   @Assert("maximumDepth > 0", "Maximum depth must be positive.")
@@ -240,17 +259,17 @@ extension StringExpressionLiteral on String {
 }
 
 extension IntegerExpressionLiteral on int {
-  TypedExpression get asSigned64Literal => IntegerValue(
-    BigInt.from(this),
-  ).asLiteral(const IntegerType(width: IntegerWidth.signed64));
+  TypedExpression get asSigned64Literal =>
+      IntegerValue(BigInt.from(this))
+          .asLiteral(const IntegerType(width: IntegerWidth.signed64));
 
   TypedExpression get asIntegerLiteral => asSigned64Literal;
 }
 
 extension FloatExpressionLiteral on num {
-  TypedExpression get asFloatLiteral => FloatValue(
-    toDouble(),
-  ).asLiteral(const FloatType(width: FloatWidth.float64));
+  TypedExpression get asFloatLiteral =>
+      FloatValue(toDouble())
+          .asLiteral(const FloatType(width: FloatWidth.float64));
 }
 
 extension BooleanExpressionLiteral on bool {
@@ -264,9 +283,9 @@ extension IconExpressionLiteral on IconValue {
 }
 
 extension ColorExpressionLiteral on Color {
-  TypedExpression get asColorLiteral => IntegerValue(
-    BigInt.from(toARGB32()),
-  ).asLiteral(NamedType(standardTypeRefs.color));
+  TypedExpression get asColorLiteral =>
+      IntegerValue(BigInt.from(toARGB32()))
+          .asLiteral(NamedType(standardTypeRefs.color));
 }
 
 extension DataValueExpressionLiteral on DataValue {

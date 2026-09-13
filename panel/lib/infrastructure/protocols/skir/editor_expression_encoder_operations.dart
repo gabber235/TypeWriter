@@ -1,5 +1,9 @@
 part of "editor_expression_encoder.dart";
 
+// The operation mappings stay beside the encoder because they are protocol
+// vocabulary, not domain behavior. Exhaustive switches make a newly added
+// domain operation require an explicit wire mapping.
+
 extension on ComparisonOperator {
   wire.ComparisonOperator get _encodeWire => switch (this) {
     ComparisonOperator.equal => wire.ComparisonOperator.equal,

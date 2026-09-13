@@ -1,5 +1,10 @@
 import "package:flutter/material.dart";
 
+/// The panel's spacing scale, expressed in logical pixels.
+///
+/// Values are exposed as theme data so layout code can use the same rhythm
+/// across features. The omitted scale numbers are intentional and indicate
+/// spacing values that are not part of the current system.
 @immutable
 class TypewriterSpacing extends ThemeExtension<TypewriterSpacing> {
   const TypewriterSpacing({

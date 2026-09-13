@@ -5,6 +5,11 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes tag CRUD as authoring session operations.
+///
+/// These helpers do not update local or canonical state. The session owns
+/// submission, response classification, and revision publication; higher
+/// level tag providers decide when a response is acceptable.
 extension TagCommands on AuthoringSession {
   Future<wire.ApplyAuthoringBatchResponse> createTag(wire.Tag tag) =>
       apply([wire.AuthoringOperation.createCreateTag(tag: tag)]);
@@ -24,6 +29,11 @@ wire.Int32Change? _intChange(int expected, int value) => expected == value
     ? null
     : wire.Int32Change(expected: expected, value: value);
 
+/// Builds a field guarded patch from [expected] to [tag].
+///
+/// Unchanged fields are omitted. Parent equality is set based, but a changed
+/// list preserves the supplied order for the wire operation. Every emitted
+/// change carries its expected value so concurrent edits become conflicts.
 wire.AuthoringOperation tagPatchOperation(Tag tag, {required Tag expected}) {
   final before = expected;
   final placement = before.placement;

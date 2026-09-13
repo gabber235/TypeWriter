@@ -2,6 +2,12 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Selects one normalized color channel with pointer or keyboard input.
+///
+/// [value] stays controlled by the caller. Arrow keys move by one division,
+/// page keys move by ten, and Home or End selects a bound. When
+/// [checkerboard] is enabled, the gradient is drawn over a transparency
+/// indicator.
 class ColorChannelSlider extends StatefulWidget {
   const ColorChannelSlider({
     required this.label,

@@ -10,6 +10,9 @@ use syn::{
     punctuated::Punctuated,
 };
 
+/// Registers fixture metadata and makes the annotated type implement the fixture declaration.
+///
+/// Options define the primary artifact, dependency artifacts, and paths that affect selection.
 #[proc_macro_attribute]
 pub fn component_fixture(attribute: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(attribute as FixtureArgs);
@@ -19,6 +22,9 @@ pub fn component_fixture(attribute: TokenStream, item: TokenStream) -> TokenStre
         .into()
 }
 
+/// Converts an async test body into a synchronous libtest case backed by the fixture runner.
+///
+/// Optional `case` attributes create named wrappers and pass their values to the body.
 #[proc_macro_attribute]
 pub fn component_test(attribute: TokenStream, item: TokenStream) -> TokenStream {
     let fixture = parse_macro_input!(attribute as FixturePath);

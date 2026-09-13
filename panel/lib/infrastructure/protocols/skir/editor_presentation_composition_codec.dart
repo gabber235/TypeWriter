@@ -1,5 +1,10 @@
 part of "editor_presentation_codec.dart";
 
+/// Decodes containers and anchors that compose nodes without owning their state.
+///
+/// Composition creates visual relationships between child nodes. It remains a
+/// separate family because those relationships must survive independently of the
+/// content and controls placed inside the child.
 extension SkirPresentationCompositionDecoder on SkirPresentationDecoder {
   TypeResult<PresentationElement> _container(wire.ContainerLayout value) {
     final border = _border(value.border);

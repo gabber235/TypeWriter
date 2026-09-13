@@ -8,6 +8,12 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Responsive member row for touch layouts.
+///
+/// The collapsed header handles selection and keyboard actions. Expansion
+/// reveals role editing and removal without changing the provider contract used
+/// by the desktop table. Role choices come from the live role catalog, so a
+/// stale member row cannot invent assignable roles.
 class MemberTabletCard extends HookConsumerWidget {
   const MemberTabletCard({
     required this.member,

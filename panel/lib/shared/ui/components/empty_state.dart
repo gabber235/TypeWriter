@@ -1,17 +1,14 @@
-// panel/lib/widgets/generic/components/empty_state.dart
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/fa6_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A reusable empty state widget used across the organization members and
-/// join‑request screens. It displays an optional icon, a title and a short
-/// description, and optionally a button with a callback.
+/// Presents a compact empty state for inline list and table content.
 ///
-/// The widget is deliberately small – it does not contain any animation or
-/// heavy assets – because the existing `EmptyScreen` already provides a richer
-/// animated version for full‑screen use‑cases. `EmptyState` is intended for
-/// inline use inside tables or lists where a compact representation is needed.
+/// [EmptyState] owns no loading or recovery state. The caller decides whether
+/// the absence is normal, transient, or an error and supplies any recovery
+/// action through [buttonText] and [onPressed]. Use [EmptyScreen] when the
+/// surrounding page needs the full screen empty state treatment.
 class EmptyState extends HookConsumerWidget {
   const EmptyState({
     required this.title,
@@ -28,8 +25,7 @@ class EmptyState extends HookConsumerWidget {
   /// Short description placed below the title.
   final String description;
 
-  /// Optional icon identifier from the `Icones` widget (Iconify). If null,
-  /// no icon is displayed.
+  /// Optional icon name understood by [Icones]. If null, no icon is displayed.
   final String? icon;
 
   /// Optional button label. When provided the button is shown.

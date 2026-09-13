@@ -1,5 +1,14 @@
+/// Convenience constructors for the expression tree's common scalar operations.
+///
+/// These methods are authoring only. They do not evaluate or validate values;
+/// [TypedExpression.evaluate] performs runtime operand checks and returns
+/// diagnostics when a tree is incomplete or receives incompatible data.
+library;
+
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Composes typed comparisons, scalar operations, collection access, regular
+/// expressions, and coalescing without exposing the wire representation.
 extension TypedExpressionAuthoring on TypedExpression {
   TypedExpression withResultType(TypeExpression type) =>
       TypedExpression(resultType: type, expression: expression);

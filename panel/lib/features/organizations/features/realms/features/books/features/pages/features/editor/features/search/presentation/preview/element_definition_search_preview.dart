@@ -3,6 +3,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "element_definition_search_preview_content.dart";
 
+/// Renders the preview state for an element definition search result.
+///
+/// The shared search preview coordinator owns requests and converts completion or failure into
+/// [SearchResultPreviewContext]. This widget is a pure state projection: loading shows progress,
+/// data shows the definition metadata and fields, and an error keeps the result identity visible
+/// while presenting the recovery message.
 class ElementDefinitionSearchPreview extends StatelessWidget {
   const ElementDefinitionSearchPreview({required this.context, super.key});
 
@@ -39,6 +45,7 @@ class ElementDefinitionSearchPreview extends StatelessWidget {
   }
 }
 
+/// Provides the stable visual frame shared by loading, data, and error states.
 class _PreviewFrame extends StatelessWidget {
   const _PreviewFrame({
     required this.title,

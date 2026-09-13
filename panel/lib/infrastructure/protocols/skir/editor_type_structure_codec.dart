@@ -1,8 +1,13 @@
+// Handles collection and record type structure at the Skir boundary.
+//
+// Nested expressions and initial values use the owning type and value codecs,
+// so recursive structures retain the same catalog context as their parent.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/type_catalog.dart"
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Encodes and decodes list, map, and record type expressions.
 final class SkirTypeStructureCodec {
   const SkirTypeStructureCodec(this.codec);
 
@@ -67,9 +72,9 @@ final class SkirTypeStructureCodec {
       if (fieldType == null) continue;
       final initial = field.initialValue == null
           ? const TypeResult<wire.TypedValue?>.success(null)
-          : SkirDataValueCodec(
-              codec,
-            ).encode(field.initialValue!).mapValue((value) => value);
+          : SkirDataValueCodec(codec)
+                .encode(field.initialValue!)
+                .mapValue((value) => value);
       diagnostics.addAll(initial.diagnostics);
 
       fields.add(

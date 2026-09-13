@@ -1,28 +1,41 @@
 import "package:flutter/material.dart";
 
 /// Builds a row in an [AnimatedTable].
-typedef AnimatedTableRowBuilder =
-    TableRow Function(
-      BuildContext context,
-      int index,
-      Animation<double> animation,
-    );
+/// Builds one active row. The animation is complete for settled rows and
+/// runs forward for inserted rows.
+typedef AnimatedTableRowBuilder = TableRow Function(
+  BuildContext context,
+  int index,
+  Animation<double> animation,
+);
 
 /// Builds a row while it is being removed from an [AnimatedTable].
-typedef AnimatedTableRemovedRowBuilder =
-    TableRow Function(BuildContext context, Animation<double> animation);
+/// Builds a row that remains available while its removal animation reverses.
+typedef AnimatedTableRemovedRowBuilder = TableRow Function(
+  BuildContext context,
+  Animation<double> animation,
+);
 
 /// Builds a transition for a table cell or empty state.
-typedef AnimatedTableTransitionBuilder =
-    Widget Function(
-      BuildContext context,
-      Animation<double> animation,
-      Widget child,
-    );
+/// Builds the transition applied independently to each cell or empty state.
+typedef AnimatedTableTransitionBuilder = Widget Function(
+  BuildContext context,
+  Animation<double> animation,
+  Widget child,
+);
 
-typedef AnimatedTableBuilder =
-    Widget Function(BuildContext context, Table table);
+/// Wraps the assembled table without taking ownership of its rows.
+typedef AnimatedTableBuilder = Widget Function(
+  BuildContext context,
+  Table table,
+);
 
+/// Maintains a table's active rows while animating insertion and removal.
+///
+/// Row indices are logical active indices. An outgoing row stays in the visual
+/// list until its reverse animation completes, and is excluded from semantics,
+/// focus, and pointer interaction during that period. Callers own the data
+/// source and must update it consistently with the state methods.
 class AnimatedTable extends StatefulWidget {
   const AnimatedTable({
     required this.initialItemCount,
@@ -72,6 +85,10 @@ class AnimatedTableState extends State<AnimatedTable>
     }
   }
 
+  /// Inserts an active row at [index] and animates it into the table.
+  ///
+  /// The row builder receives the new logical index. A still animating outgoing
+  /// row does not consume an active index.
   void insertItem(
     int index, {
     Duration duration = const Duration(milliseconds: 300),
@@ -99,6 +116,11 @@ class AnimatedTableState extends State<AnimatedTable>
     });
   }
 
+  /// Removes the active row at [index] while keeping its supplied snapshot
+  /// builder alive for the reverse animation.
+  ///
+  /// The removed row is no longer interactive or exposed to assistive
+  /// technology before the animation completes.
   void removeItem(
     int index,
     AnimatedTableRemovedRowBuilder builder, {

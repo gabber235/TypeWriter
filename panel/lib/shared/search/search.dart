@@ -1,3 +1,8 @@
+/// Public entry point for the reusable search capability.
+///
+/// The application layer owns query state, source composition, actions, and
+/// lifecycle. The domain layer parses input and turns hierarchical source
+/// nodes into stable rows. Presentation widgets consume the resulting state.
 library;
 
 export "application/core/controller/action_controller.dart";

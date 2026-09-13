@@ -12,6 +12,12 @@ export "package:typewriter_panel/app/presentation/theme/typewriter_spacing.dart"
 export "package:typewriter_panel/app/presentation/theme/typewriter_state_tokens.dart";
 export "package:typewriter_panel/app/presentation/theme/typewriter_theme_access.dart";
 
+/// Builds the panel theme for [brightness].
+///
+/// The returned theme installs the Typewriter design tokens as theme
+/// extensions, maps them into Material's [ColorScheme], and applies the
+/// component defaults used across the panel. Keep light and dark behavior in
+/// the token builders rather than overriding component colors at call sites.
 ThemeData buildTheme(Brightness brightness) {
   final colors = buildTypewriterColors(brightness);
   final spacing = TypewriterSpacing();

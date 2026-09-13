@@ -7,6 +7,12 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Coordinates the live member projection with shared selection state.
+///
+/// Selection is local UI state and is intersected with the latest member ids so
+/// removed or stale rows cannot remain actionable. Durable role and removal
+/// operations go through [OrganizationMembers], while this widget chooses the
+/// table or tablet list and presents loading and provider error states.
 class MembersTab extends HookConsumerWidget {
   const MembersTab({super.key});
 
@@ -44,8 +50,7 @@ class MembersTab extends HookConsumerWidget {
         await showConfirmationDialogue(
           context: context,
           title: "Remove ${idsToRemove.length} member(s)?",
-          content:
-              "Are you sure you want to remove these members from the organization?",
+          content: "Are you sure you want to remove these members from the organization?",
           confirmText: "Remove",
           confirmIcon: Fa6Solid.user_minus,
           onConfirm: () async {
@@ -139,6 +144,7 @@ class MembersTab extends HookConsumerWidget {
   }
 }
 
+/// Keeps the loading placeholder aligned with the eventual responsive layout.
 class _MembersLoadingShimmer extends StatelessWidget {
   const _MembersLoadingShimmer();
 

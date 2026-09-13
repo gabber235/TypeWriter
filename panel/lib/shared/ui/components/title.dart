@@ -1,6 +1,10 @@
 import "package:auto_size_text/auto_size_text.dart";
 import "package:flutter/material.dart";
 
+/// Renders the prominent title used by inspector and editor headers.
+///
+/// Set [isDeprecated] when the represented item remains visible but should be
+/// presented as no longer current.
 class Title extends StatelessWidget {
   const Title({
     required this.title,
@@ -8,8 +12,11 @@ class Title extends StatelessWidget {
     this.isDeprecated = false,
     super.key,
   });
+
   final String title;
   final Color color;
+
+  /// Adds a wavy strike through without hiding the title.
   final bool isDeprecated;
 
   @override

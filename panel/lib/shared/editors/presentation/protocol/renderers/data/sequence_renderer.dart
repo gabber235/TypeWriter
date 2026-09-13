@@ -1,5 +1,11 @@
 part of "../../data_renderer.dart";
 
+/// Renders sequence items with empty, separator, and layout policy.
+///
+/// [itemScopes] already contain the binding context for each item. Standard
+/// layouts receive widgets only, while hierarchy layouts also receive those
+/// scopes for connector and expansion behavior. A hierarchy separator is an
+/// invalid protocol combination and is surfaced beside the rendered sequence.
 Widget renderSequence({
   required BuildContext context,
   required SequencePresentation presentation,
@@ -53,6 +59,9 @@ Widget renderSequence({
   );
 }
 
+/// Localizes expression failures before sending a sequence node through the
+/// protocol renderer, keeping diagnostics attached to the scope that owns the
+/// item being rendered.
 Widget _renderSequenceNode(
   PresentationNode node,
   PresentationRenderScope scope,

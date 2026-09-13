@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
-/** Configuration for a Java HTTP transport. */
+/** Defaults and bounds applied by [JdkHttpTransport] when a request omits an override. */
 data class JdkHttpTransportConfiguration(
     val connectTimeout: kotlin.time.Duration = 10.seconds,
     val defaultRequestTimeout: kotlin.time.Duration = 30.seconds,
@@ -62,6 +62,7 @@ class JdkHttpTransport(
             .followRedirects(HttpClient.Redirect.NEVER)
             .build()
 
+    /** Executes one request and returns bounded response data or a classified transport failure. */
     override suspend fun execute(request: HttpRequest): HttpResult {
         check(!closed.get()) { "JdkHttpTransport is closed" }
         val body = request.body
@@ -95,6 +96,7 @@ class JdkHttpTransport(
         }
     }
 
+    /** Stops the owned executor; later requests fail immediately. */
     override fun close() {
         if (closed.compareAndSet(false, true)) executor.shutdownNow()
     }

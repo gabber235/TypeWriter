@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders a book result with its icon, formatted name, tags, and result type.
+///
+/// The caller supplies the already resolved display color and optional navigation callback. This
+/// widget does not resolve books or interpret search queries; selection, focus, loading, and
+/// shortcut state are projections supplied by the shared search presentation layer.
 class BookSearchResultItem extends StatelessWidget {
   const BookSearchResultItem({
     required this.name,

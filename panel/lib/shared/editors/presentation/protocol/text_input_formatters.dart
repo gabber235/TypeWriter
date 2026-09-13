@@ -1,12 +1,18 @@
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Compiles declarative protocol formats into Flutter formatters in order.
+///
+/// Each formatter receives the candidate text produced by the preceding one.
+/// The resulting list belongs to the caller, which supplies it to a text
+/// control; this extension does not validate or persist the bound value.
 extension TextInputFormatCompilation on Iterable<TextInputFormat> {
   List<TextInputFormatter> toTextInputFormatters() => [
     for (final format in this) format.toTextInputFormatter(),
   ];
 }
 
+/// Compiles one protocol format without changing the declarative value.
 extension TextInputFormatCompilationSingle on TextInputFormat {
   TextInputFormatter toTextInputFormatter() => switch (this) {
     LowercaseTextInputFormat() => _TransformingTextInputFormatter(
@@ -28,6 +34,8 @@ extension TextInputFormatCompilationSingle on TextInputFormat {
   };
 }
 
+/// Applies whole value transformations while preserving the transformed
+/// selection. Active IME composition is left untouched until composition ends.
 final class _TransformingTextInputFormatter extends TextInputFormatter {
   const _TransformingTextInputFormatter(this.transform);
 

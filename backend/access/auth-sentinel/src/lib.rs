@@ -1,3 +1,17 @@
+//! Unauthenticated bootstrap endpoint for the NATS authentication flow.
+//!
+//! Before NATS has an authenticated user identity, the service registrar cannot use the normal
+//! authenticated request path. This crate exposes only the Skir
+//! `GetSentinelCredentialsResponse` at `/auth/sentinel`, allowing the registrar to obtain the
+//! configured sentinel credentials and connect with an identity that has no application policy.
+//! NATS then uses its authorization callout to validate each real external JWT and obtain scoped
+//! permissions from `auth-typewriter-permissions`.
+//!
+//! The HTTP boundary is intentionally narrow and unauthenticated. Its trust boundary is the
+//! deployment secret, which is read at request time and never logged or included in telemetry.
+//! Missing configuration, malformed credential blocks, unknown paths, and wrong methods fail
+//! explicitly. The endpoint must not become a general credential or policy service.
+
 mod bindings {
     use crate::Component;
 
@@ -66,6 +80,12 @@ impl Handler for Component {
 }
 
 #[instrument]
+/// Build the bootstrap response from the deployment credential bundle.
+///
+/// This is the only point where the sentinel secret crosses into the Skir response. Both required
+/// credential blocks must be present. Extraction failure is reported as an internal error, never
+/// as a partial success, because the registrar cannot establish a valid bootstrap connection from
+/// incomplete credentials.
 fn sentinel_response_bytes() -> Result<Vec<u8>, otel_wasi::Error<ErrorCode>> {
     let creds = std::env::var("NATS_SENTINEL_CREDS").map_err(|_| {
         ErrorCode::InternalError(Some("NATS_SENTINEL_CREDS not set".to_string()))
@@ -103,6 +123,7 @@ fn sentinel_response_bytes() -> Result<Vec<u8>, otel_wasi::Error<ErrorCode>> {
 }
 
 #[instrument]
+/// Extract one complete credential block without exposing its value to telemetry.
 fn extract_from_creds(creds: &str, begin_marker: &str, end_marker: &str) -> Option<String> {
     let start = creds.find(begin_marker)? + begin_marker.len();
     let end = creds[start..].find(end_marker)? + start;

@@ -9,6 +9,11 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "organization.freezed.dart";
 part "organization.g.dart";
 
+/// The display projection of an organization in the current user's membership list.
+///
+/// It is built from the user scoped organization stream, not fetched as an
+/// independent organization record. [organizationId] is the canonical identity
+/// used to select routes and to reconcile additions and removals.
 @freezed
 abstract class OrganizationData with _$OrganizationData {
   @Assert("name != \"\"", "Name must not be empty.")
@@ -20,6 +25,7 @@ abstract class OrganizationData with _$OrganizationData {
 
   const OrganizationData._();
 
+  /// Converts the wire projection into the panel's typed display model.
   factory OrganizationData.fromSkir(skir.Organization org) {
     return OrganizationData(
       organizationId: org.organizationId,
@@ -28,6 +34,7 @@ abstract class OrganizationData with _$OrganizationData {
     );
   }
 
+  /// Converts this display model back to the organization wire projection.
   skir.Organization toSkir() {
     return skir.Organization(
       organizationId: this.organizationId,
@@ -37,6 +44,13 @@ abstract class OrganizationData with _$OrganizationData {
   }
 }
 
+/// Owns the current user's organization list projection.
+///
+/// The provider combines an initial snapshot with ordered change events. A
+/// duplicate event is ignored, an ordered event updates the projection, and a
+/// sequence gap invalidates the stream so the server snapshot can re establish
+/// authority. Mutations apply their returned event immediately, avoiding a
+/// second request while preserving the same sequence rules.
 @riverpod
 class Organizations extends _$Organizations {
   final _sequenceState = SequencedCollection<List<OrganizationData>>();
@@ -78,12 +92,13 @@ class Organizations extends _$Organizations {
     );
   }
 
-  /// Creates a new organization and returns its ID
+  /// Creates an organization for the authenticated user.
   ///
-  /// [name] The name of the organization
-  /// [logoUrl] The URL of the organization's logo
-  ///
-  /// Returns the ID of the created organization
+  /// The operation identity makes replay safe at the mutation boundary. On
+  /// success, the returned user scoped change event is applied locally and the
+  /// new organization identity is returned for navigation. Rejected responses
+  /// become actionable [ApiException] values; unknown or internal responses stay
+  /// uncertain so the shared mutation layer can expose recovery state.
   Future<skir.RecordId> createOrganization({
     required String name,
     required String logoUrl,
@@ -177,6 +192,11 @@ List<OrganizationData> _reduceOrganizations(
   });
 }
 
+/// Resolves the organization route parameter into the typed record identity.
+///
+/// A missing route parameter yields null. No provider fabricates an organization
+/// identity, so nested organization consumers can distinguish an absent route
+/// from a missing membership projection.
 @riverpod
 skir.RecordId? organizationId(Ref ref) {
   final id = ref.watch(routeParamProvider("organizationId"));
@@ -184,6 +204,11 @@ skir.RecordId? organizationId(Ref ref) {
   return recordId("organization:$id");
 }
 
+/// Selects the routed organization from the user's canonical organization list.
+///
+/// This is a read projection, not a second organization cache. It stays null
+/// until the route has an identity or the membership stream contains that
+/// identity, which prevents nested pages from using stale organization data.
 @riverpod
 class Organization extends _$Organization {
   @override
@@ -197,7 +222,10 @@ class Organization extends _$Organization {
   }
 }
 
-/// Generates an icon URL for an organization using the provided seed
+/// Builds the deterministic placeholder logo URL used during organization setup.
+///
+/// The seed is derived by the caller from the organization name and a random
+/// value. The resulting URL is persisted as display data by the create mutation.
 String generateOrganizationIconUrl(String seed) {
   return "https://api.dicebear.com/9.x/shapes/webp?seed=$seed";
 }

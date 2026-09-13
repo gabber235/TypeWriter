@@ -3,6 +3,10 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Entry page for users without an authenticated panel session.
+///
+/// The page owns only presentation. [Auth] owns the authorization flow, allowing
+/// the route to remain a simple caller of the application boundary.
 @RoutePage()
 class AuthPage extends HookConsumerWidget {
   const AuthPage({super.key});
@@ -23,10 +27,8 @@ class AuthPage extends HookConsumerWidget {
         Text(
           "Your journey starts here",
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.displayLarge!.copyWith(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.displayLarge!
+              .copyWith(fontSize: 40, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: context.spacing.space6),
         LoadingButton.filled(

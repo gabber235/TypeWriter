@@ -1,6 +1,12 @@
 part of "authoring_session.dart";
 
-/// Shares authoring transaction semantics without knowing any resource presentation.
+/// Adapts one Realm authoring resource to the shared transactional editor.
+///
+/// The resource owns neither the editor draft nor canonical session state. It
+/// supplies the snapshot scope, resource reservation, wire operation, and
+/// authoritative response projection that the shared editor persistence layer
+/// needs. [AuthoringSession] remains the owner of canonical state, while this
+/// adapter makes a resource's accepted value available to its editor owner.
 abstract class AuthoringEditorResource implements EditableResource {
   const AuthoringEditorResource(this.repository, this.id);
   final AuthoringResourceRepository repository;
@@ -18,6 +24,11 @@ abstract class AuthoringEditorResource implements EditableResource {
   Set<Object> get reservations => {
     (repository.organization, repository.realm, id),
   };
+
+  /// Projects the resource from an authoritative snapshot slice.
+  ///
+  /// A missing resource returns null. Callers treat that result as deletion or
+  /// unavailability rather than submitting a draft against stale state.
   FutureOr<EditorSnapshot?> project(wire.AuthoringSnapshot snapshot);
 
   /// Projects the complete resource returned by an applied authoring batch.
@@ -31,6 +42,12 @@ abstract class AuthoringEditorResource implements EditableResource {
     wire.AuthoringChanged change,
     EditorSnapshot submitted,
   );
+
+  /// Converts a captured editor commit into one guarded authoring operation.
+  ///
+  /// The commit contains the canonical base and the local result. Implementors
+  /// must preserve the protocol's expected value checks so concurrent edits are
+  /// reported as conflicts instead of being overwritten.
   wire.AuthoringOperation operation(
     EditorSnapshot snapshot,
     EditorCommit commit,
@@ -40,6 +57,13 @@ abstract class AuthoringEditorResource implements EditableResource {
   Future<EditorSnapshot?> refresh() async =>
       project(await repository.fetch(scope));
 
+  /// Prepares persistence for this resource through the shared mutation owner.
+  ///
+  /// The response integration first projects an applied change. If the change
+  /// does not contain this resource, it refreshes the authoritative scope.
+  /// Conflicts always refresh. The resulting typed mutation outcome is passed
+  /// to the editor owner; this adapter never promotes a sent draft to canonical
+  /// state by itself.
   @override
   MutationIntent prepare(
     EditorSnapshot snapshot,

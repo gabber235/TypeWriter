@@ -1,10 +1,18 @@
 import "package:flutter/widgets.dart";
 
+/// Establishes a layout boundary that anchored overlays can use for placement.
+///
+/// The scope measures its child in the overlay's coordinate space. An overlay
+/// with [BoundaryMode.nearestScope] uses the closest scope and falls back to
+/// the full overlay when no scope is available.
 class AnchoredOverlayScope extends StatefulWidget {
   const AnchoredOverlayScope({required this.child, super.key});
 
   final Widget child;
 
+  /// Returns this scope's bounds in [overlayBox] coordinates, when laid out.
+  ///
+  /// Returns null before either render object has a usable size.
   static Rect? maybeScopeBoundsInOverlay(
     BuildContext context, {
     required RenderBox overlayBox,

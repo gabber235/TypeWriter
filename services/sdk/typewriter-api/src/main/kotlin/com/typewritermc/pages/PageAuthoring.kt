@@ -19,7 +19,12 @@ annotation class TypewriterPage(
     val revision: Int = 1,
 )
 
-/** Marks a generated page kind so other processors can recover its stable identity. */
+/**
+ * Marks a generated page kind so other processors can recover its stable identity.
+ *
+ * Generated code copies the source [TypewriterPage] id and revision here. This annotation is processor metadata,
+ * not the runtime page catalog entry.
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
 annotation class GeneratedPageKind(
@@ -27,10 +32,20 @@ annotation class GeneratedPageKind(
     val revision: Int,
 )
 
+/**
+ * Selects the direction in which graph relationships are laid out by the editor.
+ */
 enum class GraphDirection {
+    /** Places graph successors to the right of their predecessors. */
     LEFT_TO_RIGHT,
+
+    /** Places graph successors to the left of their predecessors. */
     RIGHT_TO_LEFT,
+
+    /** Places graph successors below their predecessors. */
     TOP_TO_BOTTOM,
+
+    /** Places graph successors above their predecessors. */
     BOTTOM_TO_TOP,
 }
 
@@ -86,6 +101,11 @@ data class PageSpec(
     }
 }
 
+/**
+ * Creates a [PageSpec] for use as the return value of a [TypewriterPage] declaration.
+ *
+ * The returned strings remain in their authored form until catalog assembly parses the icon and color.
+ */
 fun page(
     editor: PageEditorDefinition,
     icon: String,

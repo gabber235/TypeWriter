@@ -1,5 +1,11 @@
 part of "route.dart";
 
+/// Creates a page in the active book.
+///
+/// Page kinds come from the active realm catalog. Submission creates the
+/// authoring resource through the session, requires the optimistic result to be
+/// applied, and optionally navigates to the new page. A missing catalog is
+/// presented as an unavailable capability rather than retried by the dialog.
 class AddPageDialogue extends HookConsumerWidget {
   const AddPageDialogue({
     this.fixedKind,
@@ -42,8 +48,7 @@ class AddPageDialogue extends HookConsumerWidget {
     return pageId.id;
   }
 
-  /// Validates the proposed name for a page.
-  /// A name is invalid if it is empty.
+  /// Rejects an empty page name before authoring is attempted.
   String? _validateName(String text) {
     if (text.isEmpty) {
       return "Name cannot be empty";

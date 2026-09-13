@@ -3,6 +3,12 @@ import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Coordinates the search source with selection, preview, and action state.
+///
+/// [SourceController] is authoritative for query and source snapshots. This
+/// controller owns transient UI state such as selected result IDs, collapsed
+/// sections, and the current preview. It is created for one search surface and
+/// must be disposed with that surface.
 class SearchController extends ChangeNotifier {
   SearchController({
     required SearchSource source,
@@ -25,6 +31,8 @@ class SearchController extends ChangeNotifier {
   late final ActionController _actionController;
 
   final VoidCallback? _onCloseRequested;
+
+  /// Requests that the host close the search surface, when a callback exists.
   void close() => _onCloseRequested?.call();
   bool get canClose => _onCloseRequested != null;
 
@@ -45,6 +53,10 @@ class SearchController extends ChangeNotifier {
       ? SearchSelectionMode.multiple
       : SearchSelectionMode.single;
 
+  /// Returns actions available for [result], ordered by descending priority.
+  ///
+  /// When [result] belongs to a multi selection, only actions shared by every
+  /// selected result and supporting repeated execution or batching are returned.
   List<SearchAction> actionsFor(SearchResult result) {
     if (_selectedIds.length > 1 && _selectedIds.contains(result.id)) {
       return actionsForSelected(result);
@@ -84,6 +96,8 @@ class SearchController extends ChangeNotifier {
         .toList();
   }
 
+  /// Starts [actionType] for [resultId], or for the current selection when it
+  /// is omitted. User selection wins if [resultId] is already selected.
   SearchActionSubmitResult executeAction(Type actionType, {String? resultId}) {
     final Set<String> resultIds;
     if (resultId != null) {
@@ -103,6 +117,8 @@ class SearchController extends ChangeNotifier {
   List<String> get selectedIds => List.unmodifiable(_selectedIds);
 
   bool isSelected(String id) => _selectedIds.contains(id);
+
+  /// Toggles [id], using shift based multi selection unless explicitly set.
   void toggleSelected(String id, {bool? isMultiSelect}) {
     final selected = isSelected(id);
     final multiSelect =
@@ -135,6 +151,8 @@ class SearchController extends ChangeNotifier {
       List.unmodifiable(_collapsedSectionIds);
 
   bool isCollapsed(String id) => _collapsedSectionIds.contains(id);
+
+  /// Toggles visibility of the result section identified by [id].
   void toggleSection(String id) {
     if (isCollapsed(id)) {
       _collapsedSectionIds.remove(id);
@@ -147,20 +165,24 @@ class SearchController extends ChangeNotifier {
   SearchResult? _currentPreview;
   SearchResult? get currentPreview => _currentPreview;
 
+  /// Sets the result whose preview and keyboard actions are currently active.
   void preview(SearchResult? result) {
     if (_currentPreview?.id == result?.id && _currentPreview == result) return;
     _currentPreview = result;
     notifyListeners();
   }
 
+  /// Reissues the current query to the source.
   void refresh() => _sourceController.triggerQuery();
 
+  /// Resolves preview data through the source that owns [request].
   Future<SearchPreviewRequestResult> requestPreview(
     SearchPreviewRequest request,
   ) {
     return _sourceController.source.preview(request);
   }
 
+  /// Updates the query, deferring it until a running action finishes.
   void updateQuery(String query) {
     if (actionState is SearchActionRunning) {
       _queryPending = query;
@@ -236,6 +258,7 @@ class SearchController extends ChangeNotifier {
     }
   }
 
+  /// Disposes query and action owners together with this surface.
   @override
   void dispose() {
     super.dispose();

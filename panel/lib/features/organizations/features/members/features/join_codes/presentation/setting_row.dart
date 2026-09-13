@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 
+/// Shared label and control layout for one join code generation setting.
 class SettingRow extends StatelessWidget {
   const SettingRow({
     required this.title,

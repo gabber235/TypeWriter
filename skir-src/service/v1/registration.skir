@@ -1,6 +1,10 @@
 import { InternalError } from "kernel/v1/errors.skir";
 import { ServiceRole } from "service/v1/service.skir";
 
+// Completes the operator mediated transition from an issued, unbound service to an organization bound service.
+// The registration token is a temporary bearer capability. The registration service validates its expiry and
+// atomically consumes it while writing the organization binding. This operation is user scoped, idempotent by
+// operation_id, and does not issue or replace service identity credentials.
 method BindService(
   struct {
     operation_id: string;
@@ -21,11 +25,17 @@ method BindService(
   organization_not_found_error: struct {};
 } = 304691;
 
+// Authoritative binding transition delivered to the service registrar after BindService commits.
+// It carries organization context only. Receipt means binding changed, not that the service has proved liveness;
+// the registrar must still establish authenticated messaging and send heartbeats.
 struct ServiceBoundNotification {
   organization_id: string;
   organization_name: string?;
 }
 
+// Removes the organization binding for a service owned by the addressed organization.
+// The registration service also clears any registration lease and publishes fresh organization views. The service
+// identity remains intact, so a later binding uses a newly observed lease rather than reviving the old one.
 method UnbindService(
   struct {
     operation_id: string;

@@ -1,5 +1,11 @@
 part of "tag_selectable.dart";
 
+/// Editor snapshot for one tag at one authoring session revision.
+///
+/// The document stores inspector shaped data, while [tag] retains the identity
+/// and typed model needed to encode a patch. Width and height are positive in
+/// valid drafts. Parent edits merge as a set so concurrent membership changes
+/// can be reconciled according to editor merge policy.
 final class TagEditorSnapshot extends EditorSnapshot {
   const TagEditorSnapshot(this.tag, this.revision);
   final Tag tag;
@@ -45,6 +51,13 @@ final class TagEditorSnapshot extends EditorSnapshot {
       : const [];
 }
 
+/// Adapts a Realm tag to the shared authoritative editor pipeline.
+///
+/// Snapshot reads search the library scope for the matching tag. Applied
+/// upserts replace the editor snapshot at the response revision, removals
+/// confirm deletion, and unrelated responses return null so the shared adapter
+/// performs one authoritative refresh. [operation] preserves expected field
+/// values when translating an editor commit.
 final class TagEditorResource extends AuthoringEditorResource {
   const TagEditorResource(super.repository, super.id);
   @override

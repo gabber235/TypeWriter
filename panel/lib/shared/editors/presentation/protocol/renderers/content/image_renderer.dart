@@ -1,5 +1,10 @@
 part of "../../content_renderer.dart";
 
+/// Renders a remote protocol image behind an HTTPS trust boundary.
+///
+/// The source is rejected before Flutter creates a network image provider.
+/// Loading remains visible through the shared shimmer treatment, while a
+/// failed request becomes a presentation diagnostic rather than an exception.
 extension ImageElementRendering on ImageElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final resolvedSource = scope.expressionText(source);

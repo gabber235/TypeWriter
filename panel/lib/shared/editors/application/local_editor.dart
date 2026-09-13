@@ -1,8 +1,13 @@
 import "package:flutter/foundation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Keeps temporary edits without inventing a backend revision or save response.
-/// Its creator owns disposal. Replacing the initial value requires a new owner.
+/// Owns a typed value for an editing surface that has no persistence boundary.
+///
+/// Updates are validated against the current schema and notify listeners only
+/// after the local value changes. An interaction captures the value at its
+/// start, so cancellation restores that value while commit merely closes the
+/// interaction. The creator owns disposal; disposal invalidates open
+/// interactions and makes later updates conflicts.
 final class LocalEditor extends ChangeNotifier implements EditOwner {
   LocalEditor({
     required this.rootType,

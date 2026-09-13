@@ -78,13 +78,17 @@ value class VersionConstraint(
         }
     }
 
+    /** Converts this constraint to the Maven range syntax used for dependency resolution. */
     val mavenRange: String
         get() = expression.toConstraint().toMavenFormat()
 
+    /** Returns whether [version] satisfies this constraint. */
     fun accepts(version: ArtifactVersion): Boolean = expression.toConstraint().isSatisfiedBy(version.semanticVersion)
 
+    /** Returns whether two expressions describe the same semantic constraint. */
     fun isEquivalentTo(other: VersionConstraint): Boolean = expression.toConstraint() == other.expression.toConstraint()
 
+    /** Returns the semantic intersection, or null when the two constraints have no satisfying version. */
     fun intersect(other: VersionConstraint): VersionConstraint? {
         val formatter = DefaultFormatter()
         val left = expression.toConstraint().conditions()
@@ -263,6 +267,7 @@ data class CapabilityExtensionSourcePart(
     }
 }
 
+/** Source part compiled once and implicitly available to every targeted extension part. */
 const val COMMON_SOURCE_PART = "common"
 
 private val SOURCE_PART_PATTERN = Regex("[A-Za-z][A-Za-z0-9_]*")

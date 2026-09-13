@@ -4,8 +4,14 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Decides whether a key event should be consumed before it reaches the input.
 typedef KeyEventBlocker = bool Function(BuildContext context, KeyEvent event);
 
+/// Coordinates the inner and surrounding focus nodes used by an input field.
+///
+/// Instances created by the public constructors own their focus nodes and must
+/// be disposed by the creator. Instances built from an existing input focus
+/// node leave that node owned by the caller.
 class InputFieldController {
   InputFieldController({String? inputDebugLabel, String? surroundingDebugLabel})
     : this._(

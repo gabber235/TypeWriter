@@ -3,6 +3,11 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:okcolor/models/extensions.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Shared interactive surface for one editor search result.
+///
+/// Result specific widgets supply content and semantic color. The shared search controller owns
+/// selection and focus; this card only projects those flags into visual state and forwards tap
+/// callbacks. A missing callback deliberately leaves the corresponding interaction disabled.
 class SearchResultCard extends StatelessWidget {
   const SearchResultCard({
     required this.color,

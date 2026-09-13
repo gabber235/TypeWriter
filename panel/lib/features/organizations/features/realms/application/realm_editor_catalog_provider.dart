@@ -1,13 +1,22 @@
+// Providers bind the selected organization and realm to one catalog cache. The
+// cache exists only while the realm connection gate is online. Commands and
+// searches built from the active snapshot share its catalog generation.
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 part "realm_editor_catalog_provider.g.dart";
 
+/// Provides the replaceable catalog transport boundary.
 @Riverpod(keepAlive: true)
 RealmEditorCatalogSource realmEditorCatalogSource(Ref ref) =>
     NatsRealmEditorCatalogSource(ref);
 
+/// Owns the catalog cache while the selected realm is online.
+///
+/// A null value is deliberate when selection or connectivity is absent. This
+/// prevents stale realm subscriptions from surviving a route or connection
+/// change.
 @riverpod
 RealmEditorCatalogCache? realmEditorCatalogCache(Ref ref) {
   final organizationId = ref.watch(organizationIdProvider);
@@ -31,6 +40,8 @@ RealmEditorCatalogCache? realmEditorCatalogCache(Ref ref) {
   return cache;
 }
 
+/// Exposes catalog state, including explicit reasons for missing selection or
+/// connection. Consumers should watch this stream instead of creating a cache.
 @riverpod
 Stream<RealmEditorCatalogState> realmEditorCatalog(Ref ref) {
   final organizationId = ref.watch(organizationIdProvider);
@@ -57,6 +68,7 @@ Stream<RealmEditorCatalogState> realmEditorCatalog(Ref ref) {
   return ref.watch(realmEditorCatalogCacheProvider)!.states;
 }
 
+/// Retains one root type as demand on the shared catalog cache.
 @riverpod
 Stream<RealmEditorCatalogState> realmEditorCatalogForType(
   Ref ref,
@@ -80,6 +92,7 @@ Stream<RealmEditorCatalogState> realmEditorCatalogForType(
   return cache.states;
 }
 
+/// Acquires a provider owned lease for merged catalog demand.
 @riverpod
 RealmEditorCatalogLease? realmEditorCatalogLease(
   Ref ref,
@@ -92,6 +105,11 @@ RealmEditorCatalogLease? realmEditorCatalogLease(
   return lease;
 }
 
+/// Builds the editor runtime from one coherent catalog generation.
+///
+/// Command and search transports share the same decoded registry and
+/// generation. When the catalog becomes unavailable, no runtime is exposed;
+/// when it changes, Riverpod rebuilds the runtime rather than mixing versions.
 final activeRealmEditorRuntimeProvider = Provider<EditorRealmRuntime?>((ref) {
   final organizationId = ref.watch(organizationIdProvider);
   final realmId = ref.watch(realmIdProvider);
@@ -158,6 +176,8 @@ final activeRealmEditorRuntimeProvider = Provider<EditorRealmRuntime?>((ref) {
   );
 });
 
+/// Evaluates and validates a command before crossing into realm transport.
+/// Reload bypasses payload validation because it is a local control action.
 Future<RealmCommandResult> _executeRealmAction({
   required RealmAction action,
   required ExpressionContext context,
@@ -193,6 +213,7 @@ Future<RealmCommandResult> _executeRealmAction({
   return transport.execute(action, payload.valueOrNull);
 }
 
+/// Returns discovered definitions that the realm permits and exposes.
 @riverpod
 List<ElementDefinition> availableElementDefinitions(Ref ref) {
   final state = ref.watch(realmEditorCatalogProvider).value;
@@ -204,6 +225,7 @@ List<ElementDefinition> availableElementDefinitions(Ref ref) {
       .toList(growable: false);
 }
 
+/// Resolves an element and verifies its presentation dependencies before use.
 extension RealmEditorCatalogElementResolution
     on AsyncValue<RealmEditorCatalogState> {
   AsyncValue<T> resolveElement<T>(

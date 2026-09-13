@@ -41,10 +41,10 @@ import com.typewritermc.pages.TypewriterPage
 import com.typewritermc.types.DeclaredTypeId
 
 /**
- * KSP entrypoint generating page kind providers and discovery bindings from annotated Kotlin declarations. Each
- * compiler environment receives a fresh processor. Processing defers unresolved symbols, validates supported
- * declaration shapes, and generates its output once for the compilation. Generated resources feed manifest
- * discovery so runtime consumers do not scan source annotations.
+ * KSP entrypoint generating page kind markers, [PageProvider] implementations, and discovery bindings from annotated
+ * top level functions. Each generated provider preserves the declaration namespace and source part supplied by the
+ * runtime contribution key, then invokes the original function when a page specification is requested. The emitted
+ * resource is consumed by manifest discovery, so runtime loading does not scan source annotations.
  */
 class TypewriterPageProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor =

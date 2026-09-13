@@ -1,5 +1,9 @@
 const _dateTimePatternLetters = "GyQqMLwWdDFgEecabBhHKkjJmsSAzZOvVXx";
 
+/// Validates date formatting symbols accepted by the panel's date formatter.
+///
+/// Returns a user facing error message, or `null` when [pattern] is valid.
+/// Quoted text is ignored, including escaped quote pairs.
 String? dateTimePatternError(String pattern) {
   var quoted = false;
   for (var index = 0; index < pattern.length; index++) {

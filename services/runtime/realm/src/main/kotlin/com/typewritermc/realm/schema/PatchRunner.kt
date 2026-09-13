@@ -19,6 +19,12 @@ private val PATCH_RUN_FAILURE = ErrorSlug.of("realm-patch-run-failed")
 internal class PatchRunner(
     private val db: Surreal,
 ) {
+    /**
+     * Verifies applied history and applies each pending patch in catalog order.
+     *
+     * The caller can rerun this operation safely after a failed startup. Completed patch records remain durable,
+     * while the failed patch transaction leaves no history record for a retry.
+     */
     context(_: MainSpanScope)
     fun run(patches: List<DatabasePatch>) =
         childSpanBlocking("realm.patch.run") { child ->

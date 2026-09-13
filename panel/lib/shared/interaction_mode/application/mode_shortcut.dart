@@ -1,11 +1,14 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Mixin for interaction modes that provide keyboard shortcuts.
-/// Provides composition-based approach for adding shortcut capabilities to modes.
+/// Adds mode specific keyboard actions to an [InteractionMode].
+///
+/// [GlobalModeShortcut] reads this capability from the current mode and gives
+/// the shortcuts to a managed action set. The set is scoped by focus and is
+/// disabled while realm interaction is suspended.
 mixin ModeShortcut on InteractionMode {
-  /// Returns a list of keyboard shortcuts that this mode provides.
+  /// Creates the actions offered while this mode is current and active.
   ///
-  /// These shortcuts will be automatically registered with the managed action
-  /// system when this mode becomes active, and unregistered when the mode changes.
+  /// Return fresh action values when the mode is projected. Registration and
+  /// removal belong to the surrounding managed action set, not to the mode.
   List<ActionShortcut> getShortcuts();
 }

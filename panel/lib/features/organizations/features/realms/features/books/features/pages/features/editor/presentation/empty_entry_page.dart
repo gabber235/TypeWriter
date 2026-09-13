@@ -2,6 +2,11 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Empty state for a page that has no entries in its selected placement mode.
+///
+/// The action opens the existing add entry flow. This widget does not create
+/// authoring data itself, so cancellation and mutation failures remain owned by
+/// that flow.
 class EmptyEntryPage extends ConsumerWidget {
   const EmptyEntryPage({
     required this.pageId,
@@ -35,6 +40,7 @@ class EmptyEntryPage extends ConsumerWidget {
   }
 }
 
+/// Compact add entry action used where a full empty page is not appropriate.
 class AddEntryButton extends ConsumerWidget {
   const AddEntryButton({
     required this.pageId,

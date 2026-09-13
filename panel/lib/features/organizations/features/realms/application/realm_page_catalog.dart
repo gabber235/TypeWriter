@@ -1,3 +1,6 @@
+// The page catalog is the realm supplied registry for page kinds and their
+// editor contracts. Definitions carry artifact provenance so invalid page
+// declarations can be reported without losing valid page kinds.
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/kernel/v1/page_kind.dart"
@@ -7,6 +10,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "realm_page_catalog.freezed.dart";
 
 @freezed
+/// Stable page kind identity paired with the revision of its contract.
 abstract class PageKindRef with _$PageKindRef {
   const factory PageKindRef({required String id, required int revision}) =
       _PageKindRef;
@@ -23,6 +27,7 @@ abstract class PageKindRef with _$PageKindRef {
 }
 
 @freezed
+/// Editor shape and accepted type references for a page kind.
 sealed class RealmPageEditor with _$RealmPageEditor {
   const factory RealmPageEditor.graph({
     required GraphDirection direction,
@@ -37,6 +42,7 @@ sealed class RealmPageEditor with _$RealmPageEditor {
 }
 
 @freezed
+/// Realm supplied page kind metadata used to choose and configure an editor.
 abstract class RealmPageDefinition with _$RealmPageDefinition {
   const factory RealmPageDefinition({
     required PageKindRef kind,
@@ -51,6 +57,7 @@ abstract class RealmPageDefinition with _$RealmPageDefinition {
 }
 
 @freezed
+/// Diagnostic for a page declaration that could not enter the catalog.
 abstract class RealmPageDiagnostic with _$RealmPageDiagnostic {
   const factory RealmPageDiagnostic({
     required String code,
@@ -63,6 +70,7 @@ abstract class RealmPageDiagnostic with _$RealmPageDiagnostic {
 }
 
 @freezed
+/// All valid page definitions and declaration diagnostics for one realm catalog.
 abstract class RealmPageCatalog with _$RealmPageCatalog {
   const factory RealmPageCatalog({
     @Default({}) Map<PageKindRef, RealmPageDefinition> definitions,

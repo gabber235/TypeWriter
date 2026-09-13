@@ -1,5 +1,10 @@
 part of "../../data_renderer.dart";
 
+/// Publishes a binding under the presentation's local scope binding id.
+///
+/// The projected source is read through the current expression environment and
+/// the alias maps nested writes back to the original reference. This creates a
+/// lexical view for the child without transferring ownership of the value.
 extension ScopedBindingElementRendering on ScopedBindingElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final bindingResult = scope.inspect(binding);

@@ -21,6 +21,12 @@ import kotlinx.serialization.json.Json
  * manifest.
  */
 fun interface CompiledArtifactPublisher {
+    /**
+     * Serializes and stages one manifest with all of its shards for a proposed activation.
+     *
+     * The returned activation is only a set of blob pointers. The compiled content repository remains responsible
+     * for deciding whether those pointers become active.
+     */
     suspend fun store(
         activationRevision: Long,
         manifest: CompiledManifest,

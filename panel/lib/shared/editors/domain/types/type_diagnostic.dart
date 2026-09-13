@@ -3,6 +3,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "type_diagnostic.freezed.dart";
 
+/// Machine readable reason for rejecting or qualifying type work.
 enum TypeDiagnosticCode {
   ambiguousConversion,
   conflictingInheritance,
@@ -31,8 +32,10 @@ enum TypeDiagnosticCode {
   weakenedConstraint,
 }
 
+/// How strongly a caller should treat a diagnostic when presenting it.
 enum TypeDiagnosticSeverity { information, warning, error }
 
+/// A structured diagnostic value that preserves details for clients.
 @freezed
 abstract class TypeDiagnosticDetail with _$TypeDiagnosticDetail {
   const factory TypeDiagnosticDetail({
@@ -41,6 +44,11 @@ abstract class TypeDiagnosticDetail with _$TypeDiagnosticDetail {
   }) = _TypeDiagnosticDetail;
 }
 
+/// A user facing type problem located within a value or type path.
+///
+/// Diagnostics are the recovery boundary for this domain. Callers can retain
+/// all failures, present `path` and `details`, or translate `code` across the
+/// editor protocol without parsing the message.
 @freezed
 abstract class TypeDiagnostic with _$TypeDiagnostic {
   const factory TypeDiagnostic({
@@ -56,6 +64,7 @@ abstract class TypeDiagnostic with _$TypeDiagnostic {
 
   const TypeDiagnostic._();
 
+  /// Prefixes this diagnostic when a nested validator returns it to its caller.
   TypeDiagnostic at(DataPath prefix) => TypeDiagnostic(
     code: code,
     message: message,
@@ -71,6 +80,10 @@ abstract class TypeDiagnostic with _$TypeDiagnostic {
   String toString() => "${code.name} at $path: $message";
 }
 
+/// Either a value or one or more diagnostics explaining why it is unavailable.
+///
+/// A failure is never empty. This keeps validation, resolution, and refinement
+/// callers from mistaking an absent value for a successful operation.
 @freezed
 sealed class TypeResult<T> with _$TypeResult<T> {
   const factory TypeResult.success(T value) = TypeSuccess<T>;

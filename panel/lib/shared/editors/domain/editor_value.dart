@@ -3,6 +3,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "editor_value.freezed.dart";
 
+/// Describes whether a path can currently provide one usable editor value.
+///
+/// [loading] means the source has not produced an observation, [mixed] means
+/// selected owners disagree, and [invalid] preserves path diagnostics. Only
+/// [ready] exposes a value through [valueOrNull], so presentation code cannot
+/// accidentally render a placeholder as editable content.
 @freezed
 sealed class EditorValue with _$EditorValue {
   const EditorValue._();
@@ -19,6 +25,11 @@ sealed class EditorValue with _$EditorValue {
   };
 }
 
+/// Reports whether a proposed local value entered an editor draft.
+///
+/// [applied] is local acceptance, not persistence. [conflict] means the owner
+/// cannot safely apply the edit in its current state. [invalid] carries the
+/// diagnostics that callers should show or use to correct the input.
 @freezed
 sealed class EditorMutationResult with _$EditorMutationResult {
   const EditorMutationResult._();
@@ -30,6 +41,7 @@ sealed class EditorMutationResult with _$EditorMutationResult {
       InvalidEditorMutation;
 }
 
+/// Reads [path] without manufacturing a fallback when the path is unavailable.
 extension DataValueEditorReading on DataValue {
   EditorValue readEditorValue(DataPath path) {
     final result = path.read(this);
@@ -40,6 +52,11 @@ extension DataValueEditorReading on DataValue {
   }
 }
 
+/// Validates one editor value against the type resolved at its path.
+///
+/// Resolution and value validation stay together so callers receive one typed
+/// result before changing a draft. A registry is required when the expression
+/// contains named types whose definitions are outside the expression itself.
 extension TypeExpressionEditorMutationValidation on TypeExpression {
   EditorMutationResult validateEditorMutation(
     DataPath path,

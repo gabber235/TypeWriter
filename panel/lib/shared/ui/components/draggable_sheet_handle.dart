@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
 
+/// Renders the visual grip used to indicate a draggable sheet.
+///
+/// This widget is decorative and does not implement dragging. Attach gesture
+/// ownership to the surrounding sheet or sliver.
 class DraggableSheetHandle extends StatelessWidget {
   const DraggableSheetHandle({
     this.width = 32,
@@ -31,6 +35,10 @@ class DraggableSheetHandle extends StatelessWidget {
   }
 }
 
+/// Keeps a [DraggableSheetHandle] visible as a fixed extent sliver header.
+///
+/// The delegate owns header layout configuration only. Sheet drag behavior
+/// remains with the scrollable or sheet controller.
 class DraggableSheetHandleDelegate extends SliverPersistentHeaderDelegate {
   const DraggableSheetHandleDelegate({
     this.extent = 32,

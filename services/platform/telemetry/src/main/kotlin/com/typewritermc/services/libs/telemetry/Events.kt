@@ -22,6 +22,7 @@ data class SpanPresentation(
     }
 }
 
+/** Severity preserved when a trace event is projected into the host log pipeline. */
 enum class LogSeverity {
     TRACE,
     DEBUG,
@@ -36,8 +37,10 @@ enum class LogSeverity {
  * Log projection uses the same attributes and timestamp as the span event. It does not replace the trace event.
  */
 sealed interface EventProjection {
+    /** Keeps the event on its span without emitting a separate log record. */
     data object TraceOnly : EventProjection
 
+    /** Projects the event into a correlated log record with [severity] and [body]. */
     class Log internal constructor(
         val severity: LogSeverity,
         val body: String,

@@ -21,12 +21,19 @@ import kotlinx.serialization.json.longOrNull
 internal object DataValueDatabaseCodec {
     private val json = Json { classDiscriminator = "kind" }
 
+    /** Encodes a logical value without resolving its separately stored reference edges. */
     fun encode(value: DataValue): Map<String, Any?> =
         mapOf(
             "format" to STORAGE_FORMAT,
             "data" to json.encodeToJsonElement(DataValue.serializer(), value).databaseValue(),
         )
 
+    /**
+     * Decodes only the supported storage format and leaves reference slots as stored values.
+     *
+     * Format rejection is intentional. Silent reinterpretation would make old persisted data look valid while
+     * changing its meaning.
+     */
     fun decode(value: Value): DataValue {
         val stored = value.requireObject()
         require(stored.get("format").getLong() == STORAGE_FORMAT.toLong()) { "Unsupported element value storage format." }

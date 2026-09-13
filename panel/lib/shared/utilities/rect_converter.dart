@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:json_annotation/json_annotation.dart";
 
+/// Encodes nullable rectangles as maps containing four numeric edges.
 class NullableRectConverter
     extends JsonConverter<Rect?, Map<String, dynamic>?> {
   const NullableRectConverter();
@@ -30,6 +31,7 @@ class NullableRectConverter
   }
 }
 
+/// Non nullable counterpart of [NullableRectConverter].
 class RectConverter extends JsonConverter<Rect, Map<String, dynamic>> {
   const RectConverter();
 

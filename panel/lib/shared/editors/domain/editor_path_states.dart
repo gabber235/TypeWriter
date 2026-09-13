@@ -3,10 +3,17 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "editor_path_states.freezed.dart";
 
-/// Tracks the edit lifecycle of every path in an editor draft.
+/// Owns path level save progress and temporary interaction gates.
 ///
-/// Save phases are derived from live facts (dirty, saving, conflicted, ...)
-/// instead of recorded snapshots, so a path can never report a stale phase.
+/// The editor source is the owner of this mutable index. It marks paths as
+/// edits move through local draft, persistence, reconciliation, and recovery.
+/// Queries include descendant records so a container can report the strongest
+/// state affecting its visible subtree. Records disappear when no progress or
+/// gate remains, preventing old status from leaking into a later edit.
+///
+/// Save phases are derived from live facts (dirty, saving, conflicted, and
+/// related states) instead of recorded snapshots, so a path cannot report a
+/// stale phase.
 final class EditorPathStates {
   final Map<DataPath, EditorPathRecord> _records = {};
   final Map<DataPath, EditorContentionDetails> _contentions = {};
@@ -19,6 +26,10 @@ final class EditorPathStates {
     );
   }
 
+  /// Returns dirty paths eligible for the next persistence attempt.
+  ///
+  /// Conflict paths stay excluded until a caller resolves them. A non null
+  /// request narrows the result without adding paths that are not dirty.
   Set<DataPath> flushCandidates(Set<DataPath>? requested) {
     final candidates = _pathsWhere(
       (record) => record.dirty && record.progress is! ConflictedPathProgress,
@@ -33,6 +44,10 @@ final class EditorPathStates {
     );
   }
 
+  /// Summarizes the strongest state at [path] and all descendant paths.
+  ///
+  /// This is a read model for presentation and recovery. It does not mutate
+  /// records or infer persistence from the current value.
   EditorSaveState saveState(DataPath path) {
     var best = const EditorSaveState.idle();
     var bestPriority = _phasePriority(best.phase);
@@ -96,6 +111,10 @@ final class EditorPathStates {
 
   void reset(DataPath path) => _setProgress(path, null);
 
+  /// Installs one reconciliation transition without losing settled paths.
+  ///
+  /// [dirtyPaths], [confirmedPaths], and [conflicts] are the result of one
+  /// remote observation and must be applied together by the editor owner.
   void applyReconciliation({
     required Set<DataPath> dirtyPaths,
     required Set<DataPath> confirmedPaths,

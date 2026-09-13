@@ -4,6 +4,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Local editor for generation options.
+///
+/// Changes are emitted to the route but are not sent to the service until the
+/// user generates a code. Default role selection comes from organization roles;
+/// the service validates the selected role identifiers again.
 class JoinCodeSettings extends HookConsumerWidget {
   const JoinCodeSettings({
     required this.onOptionsChanged,

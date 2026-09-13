@@ -1,3 +1,8 @@
+// Encodes typed panel expressions into the recursive Skir expression union.
+//
+// The encoder shares type, value, and path boundaries so every nested node
+// uses the same catalog semantics. Failure remains a result with diagnostics,
+// which lets callers reject an invalid command before transport.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/binding.dart"
     as wire_binding;
@@ -7,6 +12,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "editor_expression_encoder_operations.dart";
 
+/// Encodes typed expressions, bindings, and collection operations.
 final class SkirExpressionEncoder {
   SkirExpressionEncoder(this.types, this.values)
     : paths = SkirDataPathCodec(values);
@@ -15,6 +21,7 @@ final class SkirExpressionEncoder {
   final SkirDataValueCodec values;
   final SkirDataPathCodec paths;
 
+  /// Encodes a typed expression and its declared result type.
   TypeResult<wire.TypedExpression> encode(TypedExpression value) {
     final type = types.encodeExpression(value.resultType);
     final expression = _expression(value.expression);
@@ -26,6 +33,7 @@ final class SkirExpressionEncoder {
     );
   }
 
+  /// Encodes a binding and its path for use by an expression or action.
   TypeResult<wire_binding.BindingRef> binding(BindingReference value) => paths
       .encode(value.path)
       .mapValue(

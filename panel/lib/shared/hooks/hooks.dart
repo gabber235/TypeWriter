@@ -1,3 +1,8 @@
+/// Reusable Flutter hooks shared by the panel's widgets.
+///
+/// These hooks own widget scoped controllers, listeners, timers, and animation
+/// resources. Call them only during a widget's build method, following the
+/// [flutter_hooks] hook ordering rules.
 library;
 
 export "animated_list.dart";

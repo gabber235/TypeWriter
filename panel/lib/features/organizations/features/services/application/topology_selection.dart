@@ -152,7 +152,11 @@ class RealmInstanceIdentifier extends SelectableIdentifier {
       other is RealmInstanceIdentifier && other.realmId == realmId;
 }
 
-/// Identifies a loader managed execution engine in the topology selection.
+/// Stable selection identity for an observational engine runtime entry.
+///
+/// Resolution joins the engine with its owner host and service for display, but
+/// exposes no mutation because host configuration is the authoritative command
+/// boundary.
 class EngineInstanceIdentifier extends SelectableIdentifier {
   const EngineInstanceIdentifier(this.engineId);
 
@@ -199,6 +203,7 @@ class EngineInstanceIdentifier extends SelectableIdentifier {
       other is EngineInstanceIdentifier && other.engineId == engineId;
 }
 
+/// Builds the selectable target catalog advertised by a set of hosts.
 Map<String, List<String>> _engineTargetCatalog(
   Iterable<TopologySupportedEngine> engines,
 ) {
@@ -212,6 +217,7 @@ Map<String, List<String>> _engineTargetCatalog(
   };
 }
 
+/// Converts host runtime state to the stable label used by inspectors.
 String hostRuntimeStatusLabel(TopologyHostStatus status) => switch (status) {
   TopologyHostStatus.offline => "Offline",
   TopologyHostStatus.reconciling => "Reconciling",
@@ -237,6 +243,7 @@ String childRuntimeStatusLabel(TopologyRuntimeStatus status) =>
       TopologyRuntimeStatus.unknown => "Unknown",
     };
 
+/// Formats a target for display while preserving its engine constraint.
 String _targetLabel(TopologyEngineTarget target) =>
     target.versionConstraint == "*"
     ? target.engineId

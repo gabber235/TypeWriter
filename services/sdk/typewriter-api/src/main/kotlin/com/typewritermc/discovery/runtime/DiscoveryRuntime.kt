@@ -20,6 +20,7 @@ import java.net.URLClassLoader
  * require a public zero argument constructor.
  */
 interface GeneratedDiscoveryModule {
+    /** Builds the Koin module for the generated contribution identified by [contribution]. */
     fun module(contribution: ContributionKey): Module
 }
 
@@ -69,6 +70,12 @@ class DiscoveryDeployment(
  * ownership to the caller.
  */
 class DiscoveryModuleLoader {
+    /**
+     * Loads one supported discovery domain and transfers its resources to the returned deployment.
+     *
+     * The caller must close the result. If loading fails, the loader closes the class loader and any Koin
+     * application created before the failure, attaching cleanup failures to the original exception.
+     */
     fun load(
         artifactPackage: DiscoveryArtifactPackage,
         domain: DiscoveryDomainId,

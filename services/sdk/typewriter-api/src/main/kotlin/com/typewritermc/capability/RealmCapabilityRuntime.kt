@@ -14,18 +14,21 @@ sealed interface RealmCapabilityDescriptor {
     val id: CapabilityId
     val requestType: ResolvedTypeRef
 
+    /** Describes a streamed search and its result type. */
     data class Search(
         override val id: CapabilityId,
         override val requestType: ResolvedTypeRef,
         val resultType: ResolvedTypeRef,
     ) : RealmCapabilityDescriptor
 
+    /** Describes a single result computation and its result type. */
     data class Computation(
         override val id: CapabilityId,
         override val requestType: ResolvedTypeRef,
         val resultType: ResolvedTypeRef,
     ) : RealmCapabilityDescriptor
 
+    /** Describes a command whose observable result is a list of panel instructions. */
     data class Command(
         override val id: CapabilityId,
         override val requestType: ResolvedTypeRef,
@@ -51,6 +54,7 @@ sealed interface RealmCapabilityProvider {
  * resulting search work.
  */
 interface RealmSearchCapabilityProvider : RealmCapabilityProvider {
+    /** Invokes the search and returns a cold stream of structural result updates. */
     fun invoke(
         context: RealmSearchContext,
         prototypes: TypePrototypeRegistry,
@@ -65,6 +69,7 @@ interface RealmSearchCapabilityProvider : RealmCapabilityProvider {
  * Handler and codec failures propagate to the Realm invocation boundary for classification.
  */
 interface RealmComputationCapabilityProvider : RealmCapabilityProvider {
+    /** Invokes the computation with a structural request and returns its structural result. */
     suspend fun invoke(
         context: RealmComputationContext,
         prototypes: TypePrototypeRegistry,
@@ -78,6 +83,7 @@ interface RealmComputationCapabilityProvider : RealmCapabilityProvider {
  * The adapter does not provide a transaction or retry guarantee for handler side effects.
  */
 interface RealmCommandCapabilityProvider : RealmCapabilityProvider {
+    /** Invokes the command and returns panel instructions produced by the handler. */
     suspend fun invoke(
         context: RealmCommandContext,
         prototypes: TypePrototypeRegistry,
@@ -106,16 +112,19 @@ class RealmCapabilityRegistry(
         require(providersById.size == providers.size) { "Realm capability IDs must be unique." }
     }
 
+    /** Returns the search provider for [id], or fails when the id is absent or has another operation kind. */
     fun requireSearch(id: CapabilityId): RealmSearchCapabilityProvider =
         requireNotNull(providersById[id] as? RealmSearchCapabilityProvider) {
             "Realm search capability is unavailable: ${id.value}"
         }
 
+    /** Returns the computation provider for [id], or fails when the id is absent or has another operation kind. */
     fun requireComputation(id: CapabilityId): RealmComputationCapabilityProvider =
         requireNotNull(providersById[id] as? RealmComputationCapabilityProvider) {
             "Realm computation capability is unavailable: ${id.value}"
         }
 
+    /** Returns the command provider for [id], or fails when the id is absent or has another operation kind. */
     fun requireCommand(id: CapabilityId): RealmCommandCapabilityProvider =
         requireNotNull(providersById[id] as? RealmCommandCapabilityProvider) {
             "Realm command capability is unavailable: ${id.value}"

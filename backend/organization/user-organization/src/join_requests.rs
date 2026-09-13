@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use otel_wasi::ResultWithSlug;
 use serde::Deserialize;
 use wasmcloud_utils::{
-    database::{transaction_query, transaction_query_file, RecordId as DatabaseRecordId},
+    database::{RecordId as DatabaseRecordId, transaction_query, transaction_query_file},
     decode_skir, extract_param,
     skir::base::organization::v1::{join_request::*, role::OrganizationRole, user::*},
     skir_domain_result, skir_variant,
@@ -11,10 +11,15 @@ use wasmcloud_utils::{
 };
 
 use wasmcloud_utils::database::organization::{
-    projections::{JoinRequestProjection, OrganizationMemberProjection},
     OrganizationRecord,
+    projections::{JoinRequestProjection, OrganizationMemberProjection},
 };
 
+/// Transaction outcomes for submitting a join code.
+///
+/// The successful variants carry the projection values and sequence numbers produced by the
+/// same transaction. The handler uses those values to publish the user view, the organization
+/// view, and, for a single use code, the code removal without rereading mutable state.
 #[derive(Debug, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 enum JoinSubmissionOutcome {
@@ -42,6 +47,10 @@ enum JoinSubmissionOutcome {
     },
 }
 
+/// Database result from deleting a pending request and advancing both request view sequences.
+///
+/// The request projection is retained so cancellation can publish the organization view after
+/// the edge has been deleted.
 #[derive(Debug, Deserialize)]
 struct CancelledJoinRequest {
     request: JoinRequestProjection,
@@ -49,6 +58,10 @@ struct CancelledJoinRequest {
     organization_sequence: i64,
 }
 
+/// Returns the user's current unexpired join requests.
+///
+/// The snapshot carries the sequence owned by the user request projection. Request creation and
+/// cancellation publish later changes on that same user stream.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_watch(
     msg: BrokerMessage,
@@ -64,6 +77,12 @@ pub async fn handle_watch(
     .await
 }
 
+/// Submits a join code for the user in the message subject.
+///
+/// The transaction rejects expired or invalid admission state, then either creates a pending
+/// request or creates membership with the code's assignable roles. It also advances every affected
+/// projection sequence and atomically consumes a single use code. Successful outcomes publish the
+/// resulting user and organization changes after commit and return the user scoped event.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_request(
     msg: BrokerMessage,
@@ -247,6 +266,11 @@ pub async fn handle_request(
     }
 }
 
+/// Persists the removal event for a consumed single use code.
+///
+/// A sequence is mandatory when the transaction deleted the code. A missing sequence indicates a
+/// mismatch between the transaction result and the publication contract, so it fails rather than
+/// emitting an unsequenced change.
 async fn publish_consumed_code(
     organization_id: &str,
     single_use: bool,
@@ -271,6 +295,11 @@ async fn publish_consumed_code(
     Ok(())
 }
 
+/// Cancels one pending request owned by the user in the message subject.
+///
+/// The transaction deletes the request and advances both the user and organization request
+/// sequences. The handler then persists removal changes to both projections. A missing request is
+/// returned as a domain result and produces no change event.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_cancel(
     msg: BrokerMessage,

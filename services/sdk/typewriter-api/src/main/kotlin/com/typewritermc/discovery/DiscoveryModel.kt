@@ -28,7 +28,10 @@ value class DiscoveryDomainId(
  * Defines the Realm and Execution discovery boundaries used when filtering generated modules and prototypes.
  */
 object DiscoveryDomains {
+    /** Discovery boundary for realm and authoring capabilities. */
     val Realm = DiscoveryDomainId("realm")
+
+    /** Discovery boundary for gameplay and other execution capabilities. */
     val Execution = DiscoveryDomainId("execution")
 }
 
@@ -144,8 +147,13 @@ data class TypeDiscoveryContribution(
     }
 }
 
+/** Schema identifier for [TypeDiscoveryContribution] payloads. */
 const val TYPE_DISCOVERY_SCHEMA = "typewriter.types"
+
+/** Wire version accepted by [TypeDiscoveryContributionCodec]. */
 const val TYPE_DISCOVERY_VERSION = 1
+
+/** Producer identifier used by the type code generator. */
 val TYPE_DISCOVERY_PRODUCER = ProducerId("types")
 
 private fun String.isQualifiedClassName(): Boolean = matches(QUALIFIED_CLASS_PATTERN)

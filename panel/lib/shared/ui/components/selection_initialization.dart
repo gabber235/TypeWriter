@@ -2,6 +2,9 @@ import "dart:async";
 
 import "package:flutter/widgets.dart";
 
+/// Selects whether [SelectionInitialization] may choose a value.
+enum SelectionInitializationPolicy { automatic, explicit }
+
 /// Initializes a controlled input at most once per mounted instance.
 ///
 /// A nonnull [selected] consumes initialization, even if absent from [choices].
@@ -13,8 +16,6 @@ import "package:flutter/widgets.dart";
 /// caller's normal edit and commit policy. Delivery consumes initialization even
 /// if the caller rejects the value. Updates cancel and reconsider pending work;
 /// disposal cancels it. Later updates never reinitialize a consumed instance.
-enum SelectionInitializationPolicy { automatic, explicit }
-
 class SelectionInitialization<T extends Object> extends StatefulWidget {
   const SelectionInitialization({
     required this.selected,
@@ -27,12 +28,26 @@ class SelectionInitialization<T extends Object> extends StatefulWidget {
     super.key,
   });
 
+  /// The controlled value. A nonnull value marks initialization complete.
   final T? selected;
+
+  /// Preferred automatic value. It is used only when present in [choices].
   final T? defaultValue;
+
+  /// Values eligible for automatic selection, deduplicated before evaluation.
   final Iterable<T> choices;
+
+  /// Receives the selected default after the current update completes.
+  /// Receives an eligible candidate after the current widget update completes.
   final ValueChanged<T?>? onSelected;
+
+  /// Whether automatic selection may be attempted for this update.
   final bool enabled;
+
+  /// Chooses between automatic selection and caller controlled selection.
   final SelectionInitializationPolicy policy;
+
+  /// Subtree that receives no additional layout or state from this wrapper.
   final Widget child;
 
   @override

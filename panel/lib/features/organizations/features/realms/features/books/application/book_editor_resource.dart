@@ -1,5 +1,10 @@
 part of "books.dart";
 
+/// Confirmed editor state for one book at an authoring session revision.
+///
+/// The document exposes the inspector representation, not the wire model.
+/// Tag edits use set merge semantics because the complete ordered tag list is
+/// the value being conditionally replaced.
 final class BookEditorSnapshot extends EditorSnapshot {
   const BookEditorSnapshot(this.book, this.revision);
   final Book book;
@@ -14,10 +19,18 @@ final class BookEditorSnapshot extends EditorSnapshot {
   );
 }
 
+/// Adapts one library book to the shared transactional editor lifecycle.
+///
+/// It reads books from library snapshot slices, accepts only book upserts or
+/// removal for its identity from applied changes, and maps editor commits to a
+/// conditional [bookPatchOperation]. Unrelated resource changes are ignored.
+/// A removal ends the resource by returning no snapshot.
 final class BookEditorResource extends AuthoringEditorResource {
   const BookEditorResource(super.repository, super.id);
   @override
   wire.AuthoringSnapshotScope get scope => wire.AuthoringSnapshotScope.library_;
+
+  /// Projects the matching book from a library scoped snapshot.
   @override
   EditorSnapshot? project(wire.AuthoringSnapshot snapshot) {
     for (final slice in snapshot.slices) {
@@ -32,6 +45,7 @@ final class BookEditorResource extends AuthoringEditorResource {
     return null;
   }
 
+  /// Reconciles an applied batch with this resource's identity and revision.
   @override
   EditorSnapshot? projectApplied(
     wire.AuthoringChanged change,
@@ -57,6 +71,7 @@ final class BookEditorResource extends AuthoringEditorResource {
     return null;
   }
 
+  /// Converts the editor commit into a conditional book patch.
   @override
   wire.AuthoringOperation operation(
     EditorSnapshot snapshot,

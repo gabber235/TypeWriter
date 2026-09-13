@@ -1,5 +1,11 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Resolves a presentation binding through the aliases introduced by scoped
+/// and virtual presentations.
+///
+/// Aliases are lexical routing metadata, not additional owners. The returned
+/// reference keeps the child path and points at the binding that owns the
+/// value, so callers can use it for updates, actions, and interaction gates.
 extension BindingReferenceCanonicalization on BindingReference {
   BindingReference canonicalizedWith(Map<BindingId, BindingReference> aliases) {
     final alias = aliases[bindingId];
@@ -7,6 +13,12 @@ extension BindingReferenceCanonicalization on BindingReference {
   }
 }
 
+/// Rewrites every binding address carried by a local action to its owner.
+///
+/// Presentation actions are authored against the current scope. Canonicalizing
+/// all variants before execution prevents scoped inputs from mutating a
+/// temporary binding or routing structural mutations to the wrong root. The
+/// action and its expressions remain otherwise unchanged.
 extension LocalEditorActionCanonicalization on LocalEditorAction {
   LocalEditorAction canonicalizedWith(
     Map<BindingId, BindingReference> aliases,

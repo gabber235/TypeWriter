@@ -3,12 +3,19 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Displays one page using the editor selected by its catalog definition.
+///
+/// The route observes projected metadata so unsaved names and chapters remain
+/// visible, then consults the active realm catalog for the page kind. A missing
+/// definition is rendered as read only because choosing an editor without its
+/// contract would risk interpreting page content incorrectly.
 @RoutePage()
 class PagePage extends HookConsumerWidget {
   const PagePage({@PathParam("pageId") required this.pageId, super.key});
 
   final String pageId;
 
+  /// Builds a page surface or a safe read only fallback when its kind is absent.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final page = ref.watch(projectedPageProvider(recordId("page:$pageId")));

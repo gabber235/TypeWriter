@@ -1,5 +1,11 @@
 part of "presentation_element.dart";
 
+/// Fluent constructors for wrapping a search provider with another stage.
+///
+/// Each operation returns a new immutable provider definition. The application
+/// factory later materializes the nested definition in the same order, so these
+/// helpers do not start queries or allocate cache, history, timer, or network
+/// resources.
 extension SearchProviderComposition on SearchProvider {
   SearchProvider gated({
     required TypedExpression condition,

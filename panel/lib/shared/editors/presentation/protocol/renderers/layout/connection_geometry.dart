@@ -1,5 +1,12 @@
 part of "../../layout_renderer.dart";
 
+/// Resolves declarative connections against the anchors visible to one layer.
+///
+/// This is the connection layer's isolated resolution boundary. It evaluates
+/// visibility and style expressions, validates selector cardinality, computes
+/// strokes and marker placements, and accumulates recoverable presentation
+/// diagnostics. It does not mutate widgets or render objects, so the paint
+/// owner can publish one complete result for the current frame.
 _ConnectionResolution _resolveConnections({
   required List<PresentationConnection> connections,
   required PresentationRenderScope scope,

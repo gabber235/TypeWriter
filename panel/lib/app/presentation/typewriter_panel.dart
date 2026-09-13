@@ -3,8 +3,16 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/app/presentation/route_access/route_access_binding.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Composes the panel application boundary.
+///
+/// This widget watches the router and appearance providers, binds live route
+/// access before router construction, and installs themes, global shortcuts,
+/// responsive breakpoints, scroll behavior, required interaction widgets, and
+/// the NATS connection boundary around routed content. Route navigation also
+/// invalidates route derived providers after the frame completes.
 class TypewriterPanel extends HookConsumerWidget {
   const TypewriterPanel({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);

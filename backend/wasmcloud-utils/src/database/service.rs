@@ -1,3 +1,9 @@
+//! Database record shapes for services and their conversion into public service values.
+//!
+//! These records describe the storage boundary. Conversions into SKIR values are explicit so
+//! database optionality, unknown variants, and invalid stored combinations are handled before
+//! values cross into service responses or publication.
+
 use std::fmt::Display;
 
 use otel_wasi::wasi_error;
@@ -12,12 +18,14 @@ use crate::{
     skir_variant,
 };
 
+/// Stored registration credentials and their expiry.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ServiceRegistrationRecord {
     pub token: String,
     pub expires_at: Datetime,
 }
 
+/// Storage representation of the closed service role kinds.
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum ServiceRoleTypeRecord {
@@ -25,6 +33,7 @@ pub enum ServiceRoleTypeRecord {
     Custom,
 }
 
+/// Stored role data. A custom role requires a name when converted to a service value.
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct ServiceRoleRecord {
     #[serde(rename = "type")]
@@ -34,6 +43,7 @@ pub struct ServiceRoleRecord {
     pub name: Option<String>,
 }
 
+/// Stored service availability state.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum ServiceStatusRecord {
@@ -50,12 +60,17 @@ impl Display for ServiceStatusRecord {
     }
 }
 
+/// Stored service state and the time at which it was last observed.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ServiceStateRecord {
     pub status: ServiceStatusRecord,
     pub last_seen: Datetime,
 }
 
+/// Complete service record returned by database queries.
+///
+/// The record remains a storage value until conversion validates its role and maps its nested
+/// values into the public service contract.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ServiceRecord {
     pub id: RecordId,
@@ -68,9 +83,11 @@ pub struct ServiceRecord {
     pub state: Option<ServiceStateRecord>,
 }
 
+/// Indicates that a public service role cannot be represented by the stored role shape.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct UnknownServiceRoleError;
 
+/// Converts stored role data while rejecting an incomplete custom role.
 impl TryFrom<ServiceRoleRecord> for ServiceRole {
     type Error = otel_wasi::Error;
     fn try_from(value: ServiceRoleRecord) -> Result<Self, Self::Error> {
@@ -89,6 +106,7 @@ impl TryFrom<ServiceRoleRecord> for ServiceRole {
     }
 }
 
+/// Converts a public role into storage data, rejecting unknown protocol variants.
 impl TryFrom<ServiceRole> for ServiceRoleRecord {
     type Error = UnknownServiceRoleError;
     fn try_from(value: ServiceRole) -> Result<Self, Self::Error> {
@@ -129,6 +147,10 @@ impl From<ServiceStateRecord> for ServiceState {
         }
     }
 }
+/// Converts a complete database service into the public service value.
+///
+/// This boundary preserves database failures as conversion errors. It does not publish the value
+/// or assert that any later publication succeeded.
 impl TryFrom<ServiceRecord> for Service {
     type Error = otel_wasi::Error;
     fn try_from(value: ServiceRecord) -> Result<Self, Self::Error> {

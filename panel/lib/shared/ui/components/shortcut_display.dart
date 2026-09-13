@@ -19,18 +19,25 @@ const double _kLabelItemDefaultSpacing = 8;
 // shortcut label in a _MenuItemLabel.
 const double _kLabelItemMinSpacing = 4;
 
+/// Selects the visual treatment used for keyboard shortcut keys.
 @freezed
 sealed class KeyStyle with _$KeyStyle {
+  /// Uses a filled key with an optional shadow.
   const factory KeyStyle.solid({
     Color? backgroundColor,
     Color? foregroundColor,
     Color? shadowColor,
   }) = SolidKeyStyle;
 
+  /// Uses a transparent key with an optional border.
   const factory KeyStyle.outline({Color? foregroundColor, Color? borderColor}) =
       OutlineKeyStyle;
 }
 
+/// Renders one logical keyboard key using a platform familiar symbol when available.
+///
+/// Unknown character producing keys use their uppercase character. Other keys
+/// fall back to [LogicalKeyboardKey.keyLabel].
 class LogicalKeyBoardDisplay extends StatelessWidget {
   const LogicalKeyBoardDisplay({
     required this.keyBoardKey,
@@ -98,12 +105,11 @@ class LogicalKeyBoardDisplay extends StatelessWidget {
         return const Icon(Icons.arrow_forward_rounded);
     }
 
-    // If the trigger is a Unicode-character-producing key, then use the character
+    // If the trigger is a Unicode character producing key, then use the character
     if (keyBoardKey.keyId & LogicalKeyboardKey.planeMask == 0x0) {
       return Text(
-        String.fromCharCode(
-          keyBoardKey.keyId & LogicalKeyboardKey.valueMask,
-        ).toUpperCase(),
+        String.fromCharCode(keyBoardKey.keyId & LogicalKeyboardKey.valueMask)
+            .toUpperCase(),
       );
     }
     // Fallback to key label if no specific case is matched
@@ -111,7 +117,10 @@ class LogicalKeyBoardDisplay extends StatelessWidget {
   }
 }
 
-/// Cycles through a list of shortcuts, showing one at a time with animation.
+/// Cycles through [shortcuts], showing one shortcut at a time.
+///
+/// An empty list renders nothing. A single shortcut renders without a timer;
+/// multiple shortcuts advance after each [interval] and animate the replacement.
 class RotatingShortcuts extends HookWidget {
   const RotatingShortcuts({
     required this.shortcuts,
@@ -121,9 +130,13 @@ class RotatingShortcuts extends HookWidget {
     super.key,
   });
 
+  /// Shortcuts to present in order. An empty list renders nothing.
   final List<ShortcutActivator> shortcuts;
+
   final double size;
   final KeyStyle style;
+
+  /// Delay between displayed shortcuts when there is more than one.
   final Duration interval;
 
   @override
@@ -157,7 +170,10 @@ class RotatingShortcuts extends HookWidget {
   }
 }
 
-/// Displays a single shortcut (label with optional icon) in a pill style.
+/// Displays every key in one [ShortcutActivator] as a compact key sequence.
+///
+/// Character activators append their character after the logical keys. The
+/// widget is informational and does not register or handle the shortcut.
 class ShortcutDisplay extends StatelessWidget {
   const ShortcutDisplay({
     required this.shortcut,
@@ -166,7 +182,9 @@ class ShortcutDisplay extends StatelessWidget {
     super.key,
   });
 
+  /// Shortcut whose keys and character, if any, are shown.
   final ShortcutActivator shortcut;
+
   final KeyStyle style;
   final double size;
 

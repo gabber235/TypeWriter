@@ -1,5 +1,11 @@
 part of "page_elements.dart";
 
+/// Runs a page mutation only while its realm and page projections are ready.
+///
+/// The helper holds the page lease and subscriptions for the operation, and
+/// aborts when organization or realm selection changes. Callers receive the
+/// operation result or a conflict rather than accidentally writing through a
+/// stale page coordinator.
 extension AuthoringPageElementsRef on Ref {
   Future<T> withReadyPageElements<T>(
     String pageId,

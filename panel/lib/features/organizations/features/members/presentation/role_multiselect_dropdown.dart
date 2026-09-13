@@ -3,6 +3,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Dropdown role editor for table and bulk member actions.
+///
+/// It observes the live role catalog, disables protected roles, and emits only
+/// selection intent. The caller decides whether that intent targets one member
+/// or a captured bulk selection and owns mutation errors.
 class RoleMultiselectDropdown extends HookConsumerWidget {
   const RoleMultiselectDropdown({
     required this.selectedRoles,

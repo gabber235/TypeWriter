@@ -1,10 +1,18 @@
 import "package:json_annotation/json_annotation.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Converts the editor type model to the JSON representation used by JSON
+/// catalog and definition boundaries.
+///
+/// The `kind` discriminator selects each structural variant. Nested
+/// expressions and nominal references are converted recursively. Unknown kinds
+/// and malformed required fields throw [FormatException] or a cast error, so
+/// callers should use a protocol decoder when diagnostics are required.
 class TypeExpressionJsonConverter
     extends JsonConverter<TypeExpression, Map<String, Object?>> {
   const TypeExpressionJsonConverter();
 
+  /// Reconstructs a type expression from its discriminated JSON object.
   @override
   TypeExpression fromJson(Map<String, Object?> json) {
     final kind = json["kind"];
@@ -75,6 +83,8 @@ class TypeExpressionJsonConverter
     };
   }
 
+  /// Produces a JSON object that preserves the expression's constraints and
+  /// nested structure.
   @override
   Map<String, Object?> toJson(TypeExpression type) => switch (type) {
     AnyType() => {"kind": "any"},

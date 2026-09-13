@@ -1,6 +1,12 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Displays tree rows in a sliver list while applying keyed insertions and
+/// removals from the previous row projection.
+///
+/// The widget owns only the animated row list. Search state and expansion
+/// state remain owned by the controller, and row updates are reconciled by
+/// [SearchTreeRow.key]. Animations honor the platform reduced motion setting.
 class SearchTreeAnimatedBody extends StatefulWidget {
   const SearchTreeAnimatedBody({
     required this.rows,

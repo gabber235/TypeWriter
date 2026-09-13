@@ -1,3 +1,5 @@
+/// Stable identity used to connect graph elements, edges, and interaction
+/// payloads without relying on widget identity.
 class GraphIdentifier {
   const GraphIdentifier(this.id);
 

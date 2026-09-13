@@ -2,11 +2,18 @@ import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 import "package:flutter_animate/flutter_animate.dart";
 
-/// Corners available for anchoring the bubble.
+/// Corners of the child to which a notification bubble is attached.
 enum NotificationBubbleAnchor { topLeft, topRight, bottomLeft, bottomRight }
 
 enum NotificationSlot { child, bubble }
 
+/// Overlays a notification indicator without changing the child's layout size.
+///
+/// The child remains the only hit tested subtree. [show] controls the bubble's
+/// appearance animation, while [semanticsLabel] gives assistive technology the
+/// meaning of the indicator. Choose a factory when a dot or capped count is
+/// sufficient; [NotificationBubble.custom] is for content with its own
+/// semantics and presentation.
 class NotificationBubble
     extends SlottedMultiChildRenderObjectWidget<NotificationSlot, RenderBox> {
   const NotificationBubble({
@@ -19,7 +26,11 @@ class NotificationBubble
     super.key,
   });
 
-  /// Small circular indicator bubble.
+  /// Builds a circular indicator for presence or unread state.
+  ///
+  /// The dot is hidden from visual output when [show] is false, but its
+  /// semantic label remains the caller's responsibility through
+  /// [semanticsLabel].
   factory NotificationBubble.dot({
     required Widget child,
     NotificationBubbleAnchor anchor = NotificationBubbleAnchor.topRight,
@@ -49,7 +60,11 @@ class NotificationBubble
     );
   }
 
-  /// Numeric badge with optional capping, e.g., "99+".
+  /// Builds a numeric indicator, capping values above [maxCount].
+  ///
+  /// When [hideWhenZero] is true, a zero count is not shown. The displayed
+  /// count is presentation only. The caller owns the underlying notification
+  /// state.
   factory NotificationBubble.count({
     required Widget child,
     required int count,
@@ -175,10 +190,7 @@ class NotificationBubble
 
 class NotificationBubbleRenderBox extends RenderBox
     with SlottedContainerRenderObjectMixin<NotificationSlot, RenderBox> {
-  NotificationBubbleRenderBox({
-    required this._anchor,
-    required this._overlap,
-  });
+  NotificationBubbleRenderBox({required this._anchor, required this._overlap});
 
   NotificationBubbleAnchor _anchor;
   NotificationBubbleAnchor get anchor => _anchor;

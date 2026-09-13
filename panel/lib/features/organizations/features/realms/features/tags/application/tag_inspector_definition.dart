@@ -1,5 +1,10 @@
 part of "tag_selectable.dart";
 
+/// Stable nominal type for the editable tag inspector document.
+///
+/// The representation is the editor boundary, not the wire shape. Identity is
+/// supplied by the selected resource, while name, color, direct parents, and
+/// graph placement are editable fields.
 const tagInspectorTypeRef = ResolvedTypeRef(
   id: QualifiedTypeId(namespace: "panel", name: "Tag"),
   revision: 1,
@@ -59,6 +64,7 @@ final tagInspectorTypeDefinition = TypeDefinition(
 
 final _tagInspectorCatalog = TypeCatalog([tagInspectorTypeDefinition]);
 
+/// Presentation shared by single and compatible multi tag inspection.
 final _tagInspectorPresentation = PresentationDefinition.single(
   id: _tagInspectorPresentationId,
   target: NamedType(tagInspectorTypeRef),
@@ -153,6 +159,12 @@ final _tagLayoutPresentation = PresentationNode(
   ),
 );
 
+/// Builds one inspector for multiple tags without merging their identities.
+///
+/// Common field edits are delegated to the shared multi editor. The collection
+/// is available only when all selected tags expose the same keys and stable row
+/// values. Selectability is intersected, preventing a parent link that is safe
+/// for one selected tag but invalid for another.
 final class TagMultiInspectionDefinition implements MultiInspectionDefinition {
   const TagMultiInspectionDefinition();
 
@@ -194,6 +206,7 @@ final class TagMultiInspectionDefinition implements MultiInspectionDefinition {
   }
 }
 
+/// Derives a collection safe for a shared multi tag editor.
 extension TagSelectionCollectionIntersection on List<TagSelectable> {
   TypeResult<PresentationCollectionSource> get sharedTagCollection {
     final sources = map((selection) => selection.tagCollection).toList();

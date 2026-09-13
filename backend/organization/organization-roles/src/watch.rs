@@ -1,3 +1,9 @@
+//! Implements the role listing action for an organization.
+//!
+//! The organization identifier comes from the broker subject, while the request body is the
+//! empty SKIR request marker. The database query is the authority for the returned role set and
+//! orders it by descending priority so the response matches the organization role presentation.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -12,6 +18,11 @@ use wasmcloud_utils::{
 
 use wasmcloud_utils::database::organization::OrganizationRoleRecord;
 
+/// Lists the roles belonging to the organization named by the message subject.
+///
+/// The actor identifier is recorded for tracing, but this handler does not use it to filter the
+/// result. Unknown organizations therefore produce an empty list, and database or decoding
+/// failures are returned through the dispatch layer as an internal error response.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_watch(
     msg: BrokerMessage,

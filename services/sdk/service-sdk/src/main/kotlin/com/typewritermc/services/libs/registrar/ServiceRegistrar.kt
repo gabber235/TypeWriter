@@ -68,6 +68,7 @@ class ServiceRegistrar(
         scope.launch { commandLoop() }
     }
 
+    /** Latest observable lifecycle snapshot. Collection may skip intermediate transitions. */
     val states: StateFlow<RegistrarSnapshot> = mutableStates
 
     /**
@@ -77,6 +78,7 @@ class ServiceRegistrar(
      */
     suspend fun start(): RegistrarResult<Unit> = request { RegistrarCommand.Start(Context.current(), it) }
 
+    /** Repeats a failed startup attempt without issuing a new identity. */
     suspend fun retry(): RegistrarResult<Unit> = request { RegistrarCommand.Retry(Context.current(), it) }
 
     /**
@@ -130,6 +132,7 @@ class ServiceRegistrar(
     suspend fun releaseAuthorizationRotation(connectionGeneration: Long): RegistrarResult<Unit> =
         request { RegistrarCommand.ReleaseAuthorizationRotation(connectionGeneration, it) }
 
+    /** Stops registration once, bounds cleanup by configuration, and reports every cleanup failure. */
     suspend fun stop(): RegistrarStopResult = request { RegistrarCommand.Stop(it) }
 
     private suspend fun commandLoop() {

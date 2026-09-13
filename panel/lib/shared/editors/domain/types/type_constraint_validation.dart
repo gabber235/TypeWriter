@@ -4,7 +4,21 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "type_constraint_validation_rules.dart";
 
+/// Validates type declarations and resolved values before they enter runtime
+/// resolution.
+///
+/// Constraint validation checks local bounds, nested expressions, parameter
+/// references, and structural recursion. Value validation is separate because
+/// generic and named types need a registry before their concrete values can be
+/// checked. Both operations return all diagnostics they can discover and carry
+/// paths so declaration errors can be located in nested records.
 extension TypeExpressionConstraintValidation on TypeExpression {
+  /// Checks constraints that are meaningful without resolving named types.
+  ///
+  /// [allowedParameters] is the enclosing declaration's parameter namespace.
+  /// A parameterized expression may defer value checks, but it cannot refer to
+  /// an undeclared parameter. [path] identifies this expression's location in
+  /// its enclosing declaration.
   List<TypeDiagnostic> validateConstraints(
     Set<String> allowedParameters, {
     DataPath path = DataPath.root,
@@ -99,6 +113,9 @@ extension TypeExpressionConstraintValidation on TypeExpression {
     return diagnostics;
   }
 
+  /// Whether this expression depends on a generic parameter.
+  ///
+  /// Callers use this to defer checks that require a concrete substitution.
   bool get containsParameter => switch (this) {
     ParameterType() => true,
     ListType(:final element) => element.containsParameter,
@@ -126,6 +143,7 @@ extension TypeExpressionConstraintValidation on TypeExpression {
     _ => false,
   };
 
+  /// Names of generic parameters referenced anywhere in this expression.
   Set<String> get parameterUses => switch (this) {
     ParameterType(:final name) => {name},
     ListType(:final element) => element.parameterUses,
@@ -143,6 +161,12 @@ extension TypeExpressionConstraintValidation on TypeExpression {
     _ => const {},
   };
 
+  /// Validates embedded values after named types can be resolved.
+  ///
+  /// Generic and named expressions are traversed, while value checks are
+  /// performed only where the current type supplies enough concrete context.
+  /// The registry is the authority for nominal type meaning and diagnostics
+  /// retain the nested field path for recovery in authoring UIs.
   List<TypeDiagnostic> validateResolvedValues(
     TypeRegistry registry, {
     DataPath path = DataPath.root,
@@ -183,6 +207,7 @@ extension TypeExpressionConstraintValidation on TypeExpression {
 }
 
 extension StringTypeConstraintValidation on StringType {
+  /// Validates length and regular expression constraints on a string type.
   List<TypeDiagnostic> validateOwnConstraints(DataPath path) => [
     ..._lengthBounds(minimumLength, maximumLength, "String length", path),
     for (final pattern in patterns) ...pattern._validatePattern("String", path),
@@ -190,6 +215,8 @@ extension StringTypeConstraintValidation on StringType {
 }
 
 extension IntegerTypeConstraintValidation on IntegerType {
+  /// Validates integer bounds against the selected machine width and each
+  /// other.
   List<TypeDiagnostic> validateOwnConstraints(DataPath path) => [
     if (minimum case final value?
         when value < width.minimum || value > width.maximum)
@@ -203,6 +230,7 @@ extension IntegerTypeConstraintValidation on IntegerType {
 }
 
 extension FloatTypeConstraintValidation on FloatType {
+  /// Validates finite floating point bounds against the selected width.
   List<TypeDiagnostic> validateOwnConstraints(DataPath path) {
     const float32Maximum = 3.4028234663852886e38;
     return [
@@ -225,6 +253,10 @@ extension FloatTypeConstraintValidation on FloatType {
 }
 
 extension DecimalTypeConstraintValidation on DecimalType {
+  /// Validates decimal syntax, ordering, and scale compatibility.
+  ///
+  /// Decimal bounds remain strings so this check uses exact arithmetic rather
+  /// than Dart floating point conversion.
   List<TypeDiagnostic> validateOwnConstraints(DataPath path) {
     final minimumValid = minimum == null || decimalPattern.hasMatch(minimum!);
     final maximumValid = maximum == null || decimalPattern.hasMatch(maximum!);

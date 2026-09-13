@@ -1,6 +1,15 @@
 part of "transactional_editor_source.dart";
 
+/// Applies remote observations without conflating canonical and local state.
+///
+/// Reconciliation owns the rule that a newer remote revision advances the
+/// canonical document, while the draft keeps local edits unless merge policy
+/// proves them unchanged, already accepted remotely, or conflicting. It also
+/// updates path save state and diagnostics as one owner controlled transition.
+/// No remote observation can erase a local draft silently.
 extension _EditorReconciliation on TransactionalEditorSource {
+  /// Accepts a complete authoritative document when its revision is current or
+  /// newer, preserving local draft work through reconciliation.
   bool _acceptAuthoritativeSnapshot(EditorDocument document) {
     if (_disposed || _deleted || document.revision < _document.revision) {
       return false;
@@ -47,6 +56,11 @@ extension _EditorReconciliation on TransactionalEditorSource {
     return divergent;
   }
 
+  /// Refreshes canonical metadata and value while preserving local ownership.
+  ///
+  /// This path is used when the resource binding is replaced or refreshed. The
+  /// existing draft is not retargeted to a new persistence operation, and any
+  /// in flight operation remains bound to the commit it captured.
   void _refreshDocument(EditorDocument document) {
     if (_disposed) return;
     if (_document.hasSameContent(document)) return;
@@ -67,6 +81,13 @@ extension _EditorReconciliation on TransactionalEditorSource {
     _notify();
   }
 
+  /// Merges a remote value into the canonical document and local draft.
+  ///
+  /// Revision order is monotonic. Same revision and different value is a
+  /// diagnostic rather than a merge input. For a newer revision, the
+  /// reconciler returns the next canonical value, draft, dirty paths,
+  /// confirmed paths, conflicts, and diagnostics together so observers never
+  /// see only part of the transition.
   void _acceptRemote({required int revision, required DataValue value}) {
     if (_disposed || _deleted || revision < _document.revision) return;
     if (revision == _document.revision) {
@@ -104,6 +125,11 @@ extension _EditorReconciliation on TransactionalEditorSource {
     _notify();
   }
 
+  /// Acknowledges the captured commit while retaining edits made in flight.
+  ///
+  /// A path is confirmed only when the returned value still matches the value
+  /// sent and no newer local mutation overlaps it. This prevents an old
+  /// successful response from overwriting a newer draft.
   void _acceptSuccess(
     int revision,
     DataValue value,

@@ -1,8 +1,14 @@
+// Hosts the panel body in the app's single opaque overlay entry.
+//
+// The entry is retained across widget rebuilds so overlay descendants keep
+// their route and focus state. Replacing child updates that entry without
+// replacing the surrounding Overlay.
 import "package:flutter/material.dart";
 
 class AppOverlay extends StatefulWidget {
   const AppOverlay({required this.child, super.key});
 
+  /// The content rendered by the retained overlay entry.
   final Widget child;
 
   @override

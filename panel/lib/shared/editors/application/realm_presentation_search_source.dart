@@ -2,16 +2,27 @@ import "dart:async";
 
 import "package:typewriter_panel/typewriter_panel.dart";
 
-typedef RealmPresentationSearchSourceBuilder =
-    SearchSource Function({
-      required RealmCallbackSearchProvider provider,
-      required BindingId queryBindingId,
-      required ExpressionContext expressions,
-      required TypeRegistry registry,
-      required ExpressionBudget budget,
-      required String providerKey,
-    });
+/// Builds the SearchSource used when a presentation delegates search to Realm.
+///
+/// The builder receives the presentation evaluation context and type budget so
+/// payload and result mapping use the same rules as local presentation
+/// rendering. The returned source owns the resulting subscription lifecycle.
+typedef RealmPresentationSearchSourceBuilder = SearchSource Function({
+  required RealmCallbackSearchProvider provider,
+  required BindingId queryBindingId,
+  required ExpressionContext expressions,
+  required TypeRegistry registry,
+  required ExpressionBudget budget,
+  required String providerKey,
+});
 
+/// Adapts a Realm result stream to the presentation search source contract.
+///
+/// Each search replaces the prior subscription and gets a newer revision and
+/// unique subscription identifier. Payload failures are published before
+/// transport work begins. Later updates are accepted only for the current
+/// attempt, then validated and mapped into renderable search nodes. Disposal
+/// cancels the subscription and suppresses late output.
 final class RealmPresentationSearchSource implements SearchSource {
   RealmPresentationSearchSource({
     required this.provider,
@@ -63,6 +74,11 @@ final class RealmPresentationSearchSource implements SearchSource {
     });
   }
 
+  /// Starts a Realm search and supersedes any earlier search attempt.
+  ///
+  /// The query is evaluated locally to produce a validated payload. Transport
+  /// failures become error snapshots, while stale or mismatched updates are
+  /// ignored so a previous query cannot overwrite the current result.
   @override
   void search(SearchQueryContext query) {
     if (_disposed) {
@@ -208,6 +224,7 @@ final class RealmPresentationSearchSource implements SearchSource {
           )
           .toList(growable: false);
 
+  /// Realm results already contain the data rendered by the presentation.
   @override
   Future<SearchPreviewRequestResult> preview(
     SearchPreviewRequest request,
@@ -229,6 +246,11 @@ final class RealmPresentationSearchSource implements SearchSource {
   }
 }
 
+/// Search source used when the current environment has no Realm transport.
+///
+/// It preserves the provider's selector contract, but reports the capability
+/// failure as a source snapshot so the search UI can render recovery state
+/// without handling a transport exception.
 final class UnavailableRealmPresentationSearchSource implements SearchSource {
   UnavailableRealmPresentationSearchSource({required this.provider});
 

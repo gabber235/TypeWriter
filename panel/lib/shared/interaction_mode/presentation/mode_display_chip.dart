@@ -1,10 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A shared widget for displaying interaction mode information in the app bar.
+/// Renders the compact, shared app bar treatment for an interaction mode.
 ///
-/// This widget provides consistent styling for mode displays across different
-/// interaction modes, with customizable label and color parameters.
+/// [label] is uppercased for presentation. [color] controls the text and
+/// default translucent background; [backgroundColor] overrides that derived
+/// background when a mode needs a stronger visual surface.
 class ModeDisplayChip extends StatelessWidget {
   const ModeDisplayChip({
     required this.label,
@@ -13,13 +14,14 @@ class ModeDisplayChip extends StatelessWidget {
     super.key,
   });
 
-  /// The text label to display in the chip
+  /// Text shown in uppercase inside the chip.
   final String label;
 
-  /// The color theme for the chip
+  /// Foreground color and the basis for the default background.
   final Color color;
 
-  /// The background color for the chip
+  /// Optional explicit background color. When null, a theme aware alpha of
+  /// [color] is used.
   final Color? backgroundColor;
 
   @override
@@ -37,11 +39,8 @@ class ModeDisplayChip extends StatelessWidget {
       ),
       child: Text(
         label.toUpperCase(),
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-          fontSize: 12,
-          color: color,
-          fontWeight: FontWeight.w500,
-        ),
+        style: Theme.of(context).textTheme.bodyMedium!
+            .copyWith(fontSize: 12, color: color, fontWeight: FontWeight.w500),
       ),
     );
   }

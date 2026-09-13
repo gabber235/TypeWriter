@@ -2,6 +2,10 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Draggable visual group used as a graph palette source.
+///
+/// The group does not participate in graph layout. Its [data] is forwarded to
+/// the surrounding [GraphDrag] scope when a drag begins.
 class GraphGroup extends StatelessWidget {
   const GraphGroup({
     required this.title,
@@ -22,9 +26,9 @@ class GraphGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final backgroundColor = Theme.of(
-          context,
-        ).colorScheme.surfaceContainerLowest;
+        final backgroundColor = Theme.of(context)
+            .colorScheme
+            .surfaceContainerLowest;
 
         final child = SizedBox(
           width: constraints.maxWidth,
@@ -71,6 +75,7 @@ class GraphGroup extends StatelessWidget {
   }
 }
 
+/// Paints a group's title band, translucent body, and outline.
 class GraphGroupPainter extends CustomPainter {
   GraphGroupPainter({
     required this.title,

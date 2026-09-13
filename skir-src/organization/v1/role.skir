@@ -1,19 +1,24 @@
+// Organization roles define the labels and assignment policy used by membership operations.
+// Protected roles remain visible in member values but are controlled by organization invariants rather than ordinary role selection.
+
 import { Color } from "kernel/v1/color.skir";
 import { InternalError } from "kernel/v1/errors.skir";
 import { RecordId } from "kernel/v1/record_id.skir";
 
+// One organization role. Assignable controls ordinary administrator selection, while deletable controls role removal policy.
 struct OrganizationRole {
   role_id: RecordId;
   name: string;
   color: Color;
-  // Whether this is the default role assigned to new members
+  // Whether new members receive this role when no explicit role selection is supplied.
   default_role: bool;
-  // Whether this role can be assigned by administrators
+  // Whether administrators may include this role in an ordinary assignment.
   assignable: bool;
-  // Whether this role can be deleted by administrators
+  // Whether administrators may delete this role from the organization.
   deletable: bool;
 }
 
+// Returns the current roles for the selected organization. The response can also carry role changes for streaming consumers.
 method WatchOrganizationRoles(
   struct {}
 ): enum {

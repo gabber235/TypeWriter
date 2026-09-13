@@ -1,3 +1,11 @@
+/// Declarative presentation and expression contracts for the editor panel.
+///
+/// This barrel exposes the shared model used by catalog producers, protocol
+/// codecs, renderers, and action hosts. Presentation trees describe controls
+/// and layout, bindings identify editor owned values, and expressions provide
+/// derived values without storing UI state in the domain model.
+library;
+
 export "action.dart";
 export "action_executor.dart";
 export "action_map_executor.dart";

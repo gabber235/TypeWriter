@@ -16,6 +16,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "nats_realm_editor_catalog_source.freezed.dart";
 
+/// NATS implementation of the realm editor catalog boundary.
+///
+/// This adapter owns wire serialization and decoding only. It translates
+/// catalog fetches and invalidation watches into domain results, preserving
+/// generation mismatches and decode diagnostics for [RealmEditorCatalogCache]
+/// to coordinate. It does not cache definitions or decide when to refresh.
 final class NatsRealmEditorCatalogSource implements RealmEditorCatalogSource {
   const NatsRealmEditorCatalogSource(this.ref);
 

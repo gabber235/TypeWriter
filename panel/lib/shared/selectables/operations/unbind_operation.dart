@@ -6,14 +6,19 @@ import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A selectable-level operation holding the asynchronous unbind callback.
+/// Advertises unbinding for one selectable.
+///
+/// The callback owns the resource side effect. [UnbindOperation] invokes
+/// callbacks serially and keeps failed items selected for retry.
 class UnbindSelectionCapability extends SelectionCapability {
   UnbindSelectionCapability({required this.onUnbind});
   final FutureOr<void> Function() onUnbind;
 }
 
-/// The unbind operation exposed when every selected item provides an
-/// [UnbindSelectionCapability].
+/// Unbinds the selected items when every item supports unbinding.
+///
+/// Successful items are removed from canonical selection. Failed items remain
+/// selected and are reported together after the batch completes.
 class UnbindOperation extends ActivatorShortcutOperation {
   const UnbindOperation();
 
@@ -76,6 +81,7 @@ class UnbindOperation extends ActivatorShortcutOperation {
       UnbindOperationButton(selection: selection, operation: this);
 }
 
+/// Inspector control for [UnbindOperation], including confirmation and count.
 class UnbindOperationButton extends HookConsumerWidget {
   const UnbindOperationButton({
     required this.selection,

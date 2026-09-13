@@ -22,6 +22,13 @@ class RealmCompiler(
     private val artifacts: CompiledArtifactPublisher,
     private val compiler: PageCompiler = PageCompiler(),
 ) {
+    /**
+     * Compiles every document in the snapshot and attempts one activation.
+     *
+     * A single error blocks the complete manifest, while a stale publication returns without changing active
+     * content. Successful results may contain shards reused by input fingerprint and always publish a complete page
+     * set.
+     */
     suspend fun compile(
         snapshot: AuthoringSnapshot,
         catalogRevision: String,

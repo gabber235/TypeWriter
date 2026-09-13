@@ -3,13 +3,12 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:url_launcher/url_launcher.dart";
 
-/// Small tappable text widget that displays a type/kind label with a hover
-/// underline and (optionally) opens a documentation URL when clicked.
+/// Displays a type label that can open its documentation URL.
 ///
-/// Color handling:
-/// - Provide a required [lightColor].
-/// - Optionally provide a [darkColor]; if omitted, [lightColor] is reused.
-/// - The active display color is chosen based on current [ThemeData.brightness].
+/// When [url] is absent the label remains noninteractive. When it is present,
+/// pointer and keyboard focus feedback are exposed through semantics and the
+/// URL is opened only after it passes the platform launch check. [darkColor]
+/// replaces [lightColor] in dark themes when supplied.
 class TypeLink extends HookWidget {
   const TypeLink({
     required this.text,
@@ -22,12 +21,17 @@ class TypeLink extends HookWidget {
     super.key,
   });
 
+  /// Label exposed both visually and to accessibility services.
   final String text;
+
   final Color lightColor;
   final Color? darkColor;
+
+  /// Documentation target. Null disables interaction and focus handling.
   final String? url;
   final TextStyle? style;
   final int maxLines;
+
   final bool openInNewTab;
 
   @override

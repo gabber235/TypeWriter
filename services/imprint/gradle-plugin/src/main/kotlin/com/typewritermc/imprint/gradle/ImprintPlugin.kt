@@ -10,9 +10,16 @@ import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+/** Dependency bucket supplying shared engine core classes. */
 const val ENGINE_CORE_CONFIGURATION = "imprintEngineCore"
+
+/** Dependency bucket supplying extension API classes. */
 const val EXTENSION_API_CONFIGURATION = "imprintExtensionApi"
+
+/** Dependency bucket supplying the host API to hosted artifacts at compile time. */
 const val HOST_API_CONFIGURATION = "imprintHostApi"
+
+/** Dependency bucket supplying KSP processors to each generated source part. */
 const val PROCESSORS_CONFIGURATION = "imprintProcessors"
 
 /**
@@ -65,30 +72,35 @@ open class TypewriterProjectExtension(
     private val declarations = mutableListOf<ArtifactDeclaration>()
     private var engineCoreConfigured = false
 
+    /** Configures the project as the shared engine core consumed by engine and capability artifacts. */
     fun engineCore() {
         requireUndeclared()
         engineCoreConfigured = true
         project.configureEngineCoreProject()
     }
 
+    /** Configures one hosted engine artifact and its direct capability contracts. */
     fun engine(action: Action<EngineDeclaration>) {
         val declaration = EngineDeclaration()
         add(declaration, action)
         project.configureEngineProject(declaration.toModel())
     }
 
+    /** Configures one hosted Realm artifact. */
     fun realm(action: Action<RealmDeclaration>) {
         val declaration = RealmDeclaration()
         add(declaration, action)
         project.configureRealmProject(declaration.toModel())
     }
 
+    /** Configures one reusable capability artifact and its transitive capability requirements. */
     fun engineCapability(action: Action<EngineCapabilityDeclaration>) {
         val declaration = EngineCapabilityDeclaration()
         add(declaration, action)
         project.configureCapabilityProject(declaration.toModel())
     }
 
+    /** Configures one extension artifact with independently targeted source parts. */
     fun extension(action: Action<ExtensionDeclaration>) {
         val declaration = ExtensionDeclaration()
         add(declaration, action)
@@ -135,7 +147,10 @@ open class TypewriterProjectExtension(
 sealed class ArtifactDeclaration(
     private val kind: ArtifactKind,
 ) {
+    /** Stable logical artifact identity written to the manifest and used by discovery. */
     var id: String = ""
+
+    /** Exact semantic version written to the manifest and used for compatibility checks. */
     var version: String = ""
 
     internal open fun relationships(): List<DeclaredRelationship> = emptyList()
@@ -160,6 +175,7 @@ open class RealmDeclaration : HostedArtifactDeclaration(ArtifactKind.REALM)
 sealed class HostedArtifactDeclaration(
     kind: ArtifactKind,
 ) : ArtifactDeclaration(kind) {
+    /** Host API version constraint required by the hosted runtime. */
     var hostApi: String = ""
 
     internal override fun hostApi(): VersionConstraint = validatedConstraint(hostApi, "Host API")
@@ -168,6 +184,7 @@ sealed class HostedArtifactDeclaration(
 open class EngineDeclaration : HostedArtifactDeclaration(ArtifactKind.ENGINE) {
     private val capabilities = mutableListOf<DeclaredRelationship>()
 
+    /** Declares the capability contracts bundled into this engine. */
     fun implements(action: Action<EngineCapabilities>) {
         capabilities += EngineCapabilities.configured(action).relationships
     }
@@ -178,6 +195,7 @@ open class EngineDeclaration : HostedArtifactDeclaration(ArtifactKind.ENGINE) {
 open class EngineCapabilityDeclaration : ArtifactDeclaration(ArtifactKind.CAPABILITY) {
     private val capabilities = mutableListOf<DeclaredRelationship>()
 
+    /** Declares the capability contracts required by this capability artifact. */
     fun requires(action: Action<EngineCapabilities>) {
         capabilities += EngineCapabilities.configured(action).relationships
     }
@@ -188,6 +206,7 @@ open class EngineCapabilityDeclaration : ArtifactDeclaration(ArtifactKind.CAPABI
 open class ExtensionDeclaration : ArtifactDeclaration(ArtifactKind.EXTENSION) {
     private val configuredSourceParts = mutableListOf<DeclaredSourcePart>()
 
+    /** Declares a source part and the engine or capabilities against which it is compiled. */
     fun sourceSet(
         name: String,
         action: Action<ExtensionSourceSetDeclaration>,
@@ -223,6 +242,7 @@ open class ExtensionSourceSetDeclaration internal constructor(
         }
     }
 
+    /** Targets this source part at one engine artifact and version constraint. */
     fun engine(
         dependency: Any,
         version: String,
@@ -234,6 +254,7 @@ open class ExtensionSourceSetDeclaration internal constructor(
         engine = DeclaredRelationship(dependency, validatedConstraint(version, "Engine target"))
     }
 
+    /** Targets this source part at one or more capability artifacts. */
     fun capabilities(action: Action<EngineCapabilities>) {
         if (engine != null) {
             throw GradleException("Extension source set $name cannot target an engine and capabilities.")
@@ -254,6 +275,7 @@ open class ExtensionSourceSetDeclaration internal constructor(
 open class EngineCapabilities {
     internal val relationships = mutableListOf<DeclaredRelationship>()
 
+    /** Adds one capability artifact and version constraint to this relationship group. */
     fun capability(
         dependency: Any,
         version: String,

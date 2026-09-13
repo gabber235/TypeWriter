@@ -138,6 +138,12 @@ data class CompiledPageShard(
     val elements: List<CompiledElement>,
 )
 
+/**
+ * Links a page in the manifest to the semantic digest of its compiled shard.
+ *
+ * The reference is the manifest authority for page membership. The shard payload must be fetched through the
+ * activation pointer and then checked against both this digest and page identity.
+ */
 @Serializable
 data class CompiledPageReference(
     val page: Ref<Page>,
@@ -241,12 +247,22 @@ data class ActivatedCompiledContent(
     }
 }
 
+/** Classifies whether a compilation diagnostic blocks publication. */
 @Serializable
 enum class CompileDiagnosticSeverity {
+    /** A compiler condition that prevents the affected output from being published. */
     ERROR,
+
+    /** A compiler condition that is reported without blocking publication. */
     WARNING,
 }
 
+/**
+ * Records a stable compiler finding for authoring or deployment consumers.
+ *
+ * [source] and [target] are optional because some findings describe the compilation as a whole. The code is the
+ * machine readable category; [message] is diagnostic context rather than a recovery instruction.
+ */
 @Serializable
 data class CompileDiagnostic(
     val code: String,
@@ -263,12 +279,14 @@ data class CompileDiagnostic(
  */
 @Serializable
 sealed interface PageCompileResult {
+    /** A complete shard that may be reused or included in a publication. */
     @Serializable
     @SerialName("success")
     data class Success(
         val shard: CompiledPageShard,
     ) : PageCompileResult
 
+    /** A page that produced no publishable shard and retains the input state that generated its diagnostics. */
     @Serializable
     @SerialName("blocked")
     data class Blocked(

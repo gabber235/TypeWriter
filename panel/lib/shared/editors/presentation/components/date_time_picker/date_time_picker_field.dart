@@ -5,6 +5,15 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/material_symbols.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Edits one date, one time, or one date and time value.
+///
+/// The parent owns [value] and receives valid updates through [onChanged].
+/// This field owns picker visibility and delegates interaction boundaries to
+/// the surrounding editor. Opening starts an interaction, ordinary dismissal
+/// commits it, and cancellation is reported without fabricating a replacement
+/// for a mixed value. The picker uses the current value, or a stable day seed,
+/// while [replacing] communicates that the first selection replaces several
+/// differing values.
 class DateTimePickerField extends HookConsumerWidget {
   const DateTimePickerField({
     required this.value,

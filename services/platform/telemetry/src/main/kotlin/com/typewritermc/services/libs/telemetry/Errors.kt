@@ -15,6 +15,7 @@ value class ErrorSlug private constructor(
     companion object {
         private val pattern = Regex("[a-z0-9]+(?:-[a-z0-9]+)*")
 
+        /** Validates and creates a slug suitable for stable telemetry grouping. */
         fun of(value: String): ErrorSlug {
             require(pattern.matches(value)) { "Error slug must be lowercase kebab-case: $value" }
             return ErrorSlug(value)
@@ -32,6 +33,7 @@ class SluggedException private constructor(
     cause: Throwable,
 ) : RuntimeException(cause.message, cause) {
     companion object {
+        /** Returns the existing classification unchanged, or wraps [cause] with [slug]. */
         fun wrap(
             slug: ErrorSlug,
             cause: Throwable,
@@ -74,6 +76,7 @@ suspend fun <T> withErrorSlugSuspending(
         throw SluggedException.wrap(slug, failure)
     }
 
+/** Classifies a failed result while returning successful values unchanged and preserving exceptional failures. */
 fun <T> Result<T>.withErrorSlug(slug: ErrorSlug): Result<T> =
     fold(
         onSuccess = { Result.success(it) },

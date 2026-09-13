@@ -16,10 +16,13 @@ class HttpHeaders private constructor(
 ) : Iterable<Pair<String, String>> {
     override fun iterator(): Iterator<Pair<String, String>> = entries.iterator()
 
+    /** Returns every value for a case insensitive header name in insertion order. */
     fun values(name: String): List<String> = entries.filter { it.first.equals(name, true) }.map { it.second }
 
+    /** Returns the first value for a case insensitive header name, or null when absent. */
     fun first(name: String): String? = values(name).firstOrNull()
 
+    /** Returns a new header collection with one additional value, preserving repeated headers. */
     fun add(
         name: String,
         value: String,
@@ -30,6 +33,7 @@ class HttpHeaders private constructor(
         value: String,
     ): HttpHeaders = of(entries.filterNot { it.first.equals(name, true) } + (name to value))
 
+    /** Returns a new header collection without any value for the supplied name. */
     fun remove(name: String): HttpHeaders = of(entries.filterNot { it.first.equals(name, true) })
 
     override fun equals(other: Any?): Boolean = other is HttpHeaders && normalized() == other.normalized()
@@ -41,10 +45,13 @@ class HttpHeaders private constructor(
     private fun normalized() = entries.map { it.first.lowercase() to it.second }
 
     companion object {
+        /** Empty validated headers. */
         val Empty = HttpHeaders(emptyList())
 
+        /** Builds validated headers from pairs while preserving their order and duplicates. */
         fun of(vararg entries: Pair<String, String>): HttpHeaders = of(entries.asList())
 
+        /** Builds validated headers and rejects names or values outside the HTTP field syntax. */
         fun of(entries: Iterable<Pair<String, String>>): HttpHeaders {
             val copy = Collections.unmodifiableList(entries.toMutableList())
             copy.forEach { (name, value) ->
@@ -60,6 +67,7 @@ class HttpHeaders private constructor(
     }
 }
 
+/** Stable operation identifier used for HTTP telemetry and failure classification. */
 @JvmInline value class HttpOperation(
     val value: String,
 ) {
@@ -68,6 +76,7 @@ class HttpHeaders private constructor(
     }
 }
 
+/** HTTP methods supported by the bounded service transport. */
 enum class HttpMethod(
     val permitsBody: Boolean,
 ) {

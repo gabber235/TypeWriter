@@ -15,6 +15,7 @@ class VerifiedArtifactCache(
     private val source: BlobEndpoint,
     private val cache: FileDigestBlobStore,
 ) : VerifiedArtifactSource {
+    /** Returns a verified local path, resuming an existing transfer only through the endpoint contract. */
     override suspend fun fetch(digest: ArtifactDigest): Path {
         if (cache.metadata(digest) is BlobResult.Success) return cache.pathFor(digest)
         val metadata = source.metadata(digest).requireSuccess()

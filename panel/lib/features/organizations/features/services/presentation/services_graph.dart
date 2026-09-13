@@ -7,10 +7,18 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Logical pixel size of one cell in the services topology graph.
 const double servicesGraphCellSize = 44;
 const int _nodeWidth = 4;
 const int _nodeHeight = 4;
 
+/// Projects organization services and runtime topology into the shared graph UI.
+///
+/// Service identities are the source for custom service nodes and host labels.
+/// Topology supplies hosts and child runtime observations. A host is linked to
+/// its Realm and engine children only when both endpoints are present, so stale
+/// or partial observations remain visible without drawing false relationships.
+/// Connectivity comes from service heartbeats, not runtime lifecycle status.
 class ServicesGraph extends ConsumerWidget {
   const ServicesGraph({
     required this.services,
@@ -28,8 +36,7 @@ class ServicesGraph extends ConsumerWidget {
       return Center(
         child: EmptyState(
           title: "No services connected",
-          description:
-              "Start a Typewriter service and enter its registration token above.",
+          description: "Start a Typewriter service and enter its registration token above.",
           icon: MaterialSymbols.dns,
         ),
       );
@@ -42,6 +49,12 @@ class ServicesGraph extends ConsumerWidget {
     return Graph(data: data);
   }
 
+  /// Builds a render projection without mutating either provider owned model.
+  ///
+  /// Custom services without a host are included directly. Host nodes join by
+  /// service identity, and child runtime nodes join by owner host identity. The
+  /// resulting edge list is filtered again before layout as a defensive boundary
+  /// against partial topology snapshots.
   _ServicesGraphProjection _project(BuildContext context, WidgetRef ref) {
     final availability = ref.watch(serviceConnectionsProvider);
     final servicesById = {
@@ -119,6 +132,7 @@ class ServicesGraph extends ConsumerWidget {
     );
   }
 
+  /// Creates an edge only when both projected endpoint nodes exist.
   ServicesPackedConnection? _connection({
     required String id,
     required SelectableIdentifier source,
@@ -233,6 +247,10 @@ class ServicesGraph extends ConsumerWidget {
   }
 }
 
+/// Renders one projected service or runtime item inside the shared selector.
+///
+/// Selection is handled by the shared graph interaction model. The node only
+/// supplies labels, status emphasis, and the optional navigation callback.
 class _ServiceGraphNode extends HookWidget {
   const _ServiceGraphNode({required this.item});
 
@@ -274,6 +292,7 @@ class _ServiceGraphNode extends HookWidget {
   }
 }
 
+/// Displays the semantic status tone and label for a graph item.
 class _NodeStatus extends StatelessWidget {
   const _NodeStatus({required this.item, required this.isSelected});
 
@@ -305,9 +324,8 @@ class _NodeStatus extends StatelessWidget {
             item.status,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: foreground),
+            style: Theme.of(context).textTheme.labelSmall
+                ?.copyWith(color: foreground),
           ),
         ),
       ],
@@ -325,6 +343,11 @@ class _ServicesGraphProjection {
   final List<ServicesPackedConnection> connections;
 }
 
+/// Display state for one selectable graph node.
+///
+/// [available] controls the de emphasis applied to stale or offline records.
+/// Selection and navigation remain presentation concerns and do not alter the
+/// underlying service or topology projections.
 class _ServiceGraphItem {
   const _ServiceGraphItem({
     required this.selectableId,
@@ -351,6 +374,7 @@ class _ServiceGraphItem {
   GraphIdentifier get graphId => GraphIdentifier(selectableId.id);
 }
 
+/// Maps operational host states to the limited visual vocabulary of the graph.
 enum _StatusTone { active, warning, error, offline }
 
 _StatusTone _hostTone(TopologyHostStatus status) => switch (status) {

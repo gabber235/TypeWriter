@@ -1,5 +1,9 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Removes duplicate result IDs from a snapshot tree.
+///
+/// The first depth first occurrence wins. Empty sections are removed after
+/// their children have been filtered.
 final class DistinctSearchSource extends DelegatingSearchSource {
   DistinctSearchSource({required super.source});
 
@@ -25,6 +29,7 @@ final class DistinctSearchSource extends DelegatingSearchSource {
   }
 }
 
+/// Adds first occurrence filtering to a source.
 extension DistinctSearchSourceX on SearchSource {
   SearchSource distinct() {
     return DistinctSearchSource(source: this);

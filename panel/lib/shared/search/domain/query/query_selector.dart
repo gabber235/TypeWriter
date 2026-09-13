@@ -8,8 +8,14 @@ part "query_selector.freezed.dart";
 
 const quotes = ["'", '"'];
 
+/// Whether a selector may occur once or repeatedly in one query.
 enum QueryMultiplicity { single, multiple }
 
+/// Grammar and validation policy for one selector.
+///
+/// Definitions are merged by selector ID when sources contribute additional
+/// selector capabilities. The merged definition is the parser authority used
+/// by both query execution and suggestions.
 sealed class QuerySelectorDefinition {
   const QuerySelectorDefinition({
     required this.id,
@@ -23,9 +29,13 @@ sealed class QuerySelectorDefinition {
   final QueryMultiplicity multiplicity;
   final Color? color;
 
+  /// Builds the parser for this selector's key and value syntax.
   Parser<QueryLexerToken> parser();
+
+  /// Combines compatible definitions with the same selector ID.
   QuerySelectorDefinition merge(QuerySelectorDefinition other);
 
+  /// Validates cross occurrence constraints such as multiplicity.
   List<QueryParseIssue> validate(List<QueryLexerSelectorToken> tokens) {
     assert(
       tokens.none((token) => token.selectorId != id),
@@ -51,6 +61,7 @@ sealed class QuerySelectorDefinition {
   }
 }
 
+/// Selector represented as a key with an optional value.
 final class KeyValueSelectorDefinition extends QuerySelectorDefinition {
   const KeyValueSelectorDefinition({
     required super.id,
@@ -194,6 +205,7 @@ final class KeyValueSelectorDefinition extends QuerySelectorDefinition {
 }
 
 extension QuerySelectorDefinitionsX on List<QuerySelectorDefinition> {
+  /// Merges definitions by ID while preserving the first list's ordering.
   List<QuerySelectorDefinition> merge(List<QuerySelectorDefinition> other) {
     final result = <QuerySelectorDefinition>[];
     final otherById = {for (final s in other) s.id: s};
@@ -213,6 +225,7 @@ extension QuerySelectorDefinitionsX on List<QuerySelectorDefinition> {
 }
 
 @freezed
+/// Validation and suggestion policy for a selector value.
 sealed class QuerySelectorValue with _$QuerySelectorValue {
   const factory QuerySelectorValue.freeText() = FreeTextSelectorValue;
 
@@ -221,16 +234,19 @@ sealed class QuerySelectorValue with _$QuerySelectorValue {
 
   const QuerySelectorValue._();
 
+  /// Whether [value] is accepted by this policy.
   bool isValid(String value) => switch (this) {
     FreeTextSelectorValue() => true,
     EnumSelectorValue(:final possibleValues) => possibleValues.contains(value),
   };
 
+  /// Returns candidate values. Free text deliberately has no candidates.
   List<String> suggestions(String partial) => switch (this) {
     FreeTextSelectorValue() => const [],
     EnumSelectorValue(:final possibleValues) => possibleValues,
   };
 
+  /// Combines value policies, with free text taking precedence.
   QuerySelectorValue merge(QuerySelectorValue other) {
     return switch ((this, other)) {
       (FreeTextSelectorValue(), _) => this,

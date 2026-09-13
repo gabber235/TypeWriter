@@ -162,10 +162,13 @@ internal class LibraryContracts(
         )
 }
 
+/** Resolves a request subject while retaining the logical Realm address as its routing key. */
 internal fun requestAddress(suffix: String): AddressTemplate<RealmAddress> = realmRequestAddress(suffix)
 
+/** Resolves the event subject used for publications observed by clients of the logical Realm. */
 internal fun updateAddress(suffix: String): AddressTemplate<RealmAddress> = realmEventAddress(suffix)
 
+/** Encodes a watch update for direct publication outside the request handler. */
 internal fun <Request : Any, Initial : Any, Update : Any> WatchContract<RealmAddress, Request, Initial, Update>.encodeUpdate(
     address: RealmAddress,
     update: Update,

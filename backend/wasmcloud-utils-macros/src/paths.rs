@@ -1,3 +1,9 @@
+//! Resolve paths used by macro expansions.
+//!
+//! Components invoke these macros through `wasmcloud_utils`, while the utility crate also uses
+//! them internally to define its own response implementations. Expansions therefore choose the
+//! caller visible crate path or the current crate path before emitting runtime references.
+
 use syn::{Ident, Path};
 
 pub(crate) fn skir_response_trait_path() -> syn::Path {
@@ -16,12 +22,13 @@ pub(crate) fn utils_path() -> syn::Path {
     syn::parse_quote! { ::wasmcloud_utils }
 }
 
-/// Compute the inner payload type for a skir response variant.
+/// Compute the generated payload type for a SKIR response variant.
 ///
-/// Given a response type like `CancelJoinRequestResponse` and a variant like `Success`,
-/// returns `CancelJoinRequestResponse_Success`.
+/// Given `CancelJoinRequestResponse` and `Success`, this returns
+/// `CancelJoinRequestResponse_Success`. Generic response paths are rejected because the generated
+/// payload naming convention applies to the final type identifier, not to type arguments.
 ///
-/// The `macro_name` parameter is used in error messages.
+/// The `macro_name` parameter identifies the originating macro in diagnostics.
 pub(crate) fn payload_ty(
     response_ty: &Path,
     variant_ident: &Ident,

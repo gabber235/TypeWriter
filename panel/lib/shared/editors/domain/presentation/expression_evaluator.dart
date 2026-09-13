@@ -6,6 +6,17 @@ part "expression_advanced_evaluator.dart";
 part "expression_collection_operations.dart";
 part "expression_collection_evaluator.dart";
 
+/// Evaluates the shared expression tree against an explicit binding context.
+///
+/// Evaluation is pure from the caller's perspective. Temporary collection
+/// bindings are read only, conversions are restricted by locality, and every
+/// result is checked against its declared type before it is returned.
+
+/// Inputs required to evaluate an expression without ambient editor state.
+///
+/// Bindings describe the current value view. Conversions provide only the
+/// definitions available to this consumer, so a missing or Realm owned
+/// conversion becomes an explicit evaluation failure.
 @freezed
 abstract class ExpressionContext with _$ExpressionContext {
   const factory ExpressionContext({

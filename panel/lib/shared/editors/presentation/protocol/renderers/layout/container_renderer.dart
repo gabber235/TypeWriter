@@ -1,5 +1,10 @@
 part of "../../layout_renderer.dart";
 
+/// Projects a container's evaluated visual properties around its child.
+///
+/// Resolution happens during rendering, so expression failures remain in the
+/// presentation diagnostic surface instead of becoming Flutter exceptions.
+/// The child renderer remains responsible for the nested presentation tree.
 extension ContainerElementRendering on ContainerElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final resolvedRadius = radius._resolve(context, scope);

@@ -212,7 +212,12 @@ class Communicator(
             options = options,
         )
 
-    /** Performs a typed unary request. */
+    /**
+     * Performs a typed unary request and returns either the decoded response or an infrastructure failure.
+     *
+     * A domain error is still a successful transport operation and is returned as its typed response. The optional
+     * [timeout] overrides the contract default for this call only.
+     */
     suspend fun <Address : Any, Request : Any, Response : Any> request(
         contract: UnaryContract<Address, Request, Response>,
         address: Address,
@@ -252,7 +257,12 @@ class Communicator(
         }.responseResult()
     }
 
-    /** Publishes a typed event. */
+    /**
+     * Publishes a typed event and reports transport acceptance.
+     *
+     * A successful result does not confirm consumer processing. Codec and transport failures are returned as
+     * [CommunicationResult.Failure] values.
+     */
     suspend fun <Address : Any, Event : Any> publish(
         contract: EventContract<Address, Event>,
         address: Address,
@@ -276,7 +286,12 @@ class Communicator(
             classifyTransport(contract.failureSlug, transport.publish(message))
         }
 
-    /** Publishes an immutable payload that was encoded before the current process lifetime. */
+    /**
+     * Publishes an already encoded payload without reapplying a codec or propagating caller supplied headers.
+     *
+     * Use this for durable or externally prepared bytes whose address is already validated. Success means only that the
+     * transport accepted the publication.
+     */
     suspend fun publishEncoded(publication: EncodedPublication): CommunicationResult<Unit> =
         operation(
             "encoded.publish",
@@ -292,7 +307,11 @@ class Communicator(
             )
         }
 
-    /** Publishes an independent typed watch update. */
+    /**
+     * Publishes a typed update on the update address of a watch contract.
+     *
+     * Updates are classified with the contract's update classifier and do not request an application reply.
+     */
     suspend fun <Address : Any, Request : Any, Initial : Any, Update : Any> publishUpdate(
         contract: WatchContract<Address, Request, Initial, Update>,
         address: Address,
@@ -656,6 +675,13 @@ class Communicator(
     ) : RuntimeException(error.cause)
 }
 
+/**
+ * Defines when a scatter collection stops receiving replies.
+ *
+ * [timeout] bounds the complete collection. [quietPeriod] starts after the first response and ends collection after
+ * a period without another delivery. [completeWhen] can finish earlier when accumulated responses meet the caller's
+ * application rule.
+ */
 data class ScatterPolicy<Response : Any>(
     val timeout: Duration,
     val quietPeriod: Duration? = null,

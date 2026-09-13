@@ -1,3 +1,8 @@
+// Encodes and decodes collection payloads through the shared value codec.
+//
+// Collections recurse through the parent codec because each item may itself
+// be polymorphic or structured. The whole collection fails when any member is
+// invalid, preventing callers from applying a silently incomplete value.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_value_codec.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/type_catalog.dart"
@@ -5,6 +10,7 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
 import "package:typewriter_panel/shared/editors/domain/types/type_diagnostic.dart";
 import "package:typewriter_panel/shared/editors/domain/values/data_value.dart";
 
+/// Handles list, map, and record value payloads.
 final class SkirDataValueCollectionCodec {
   const SkirDataValueCollectionCodec(this.codec);
 

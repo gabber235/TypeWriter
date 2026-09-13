@@ -3,6 +3,11 @@ import "dart:convert";
 import "package:localstorage/localstorage.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Minimal persistence boundary for serialized search history.
+///
+/// Implementations may use browser storage or an ephemeral map. The storage
+/// layer owns the format and treats read and decode failures as an empty
+/// history, so corrupted or obsolete entries cannot prevent searching.
 abstract interface class PresentationSearchHistoryPersistence {
   String? read(String key);
 
@@ -41,6 +46,13 @@ final class PresentationSearchHistoryDefinition {
   final Set<BindingId> bindingIds;
 }
 
+/// Persists typed presentation search results and reconstructs them safely.
+///
+/// History is scoped by [namespace] and provider key. Before a result is
+/// restored, its provider definition, selected value type, every required
+/// binding, and each decoded value are validated against the current catalog.
+/// Entries that no longer match the live definitions are skipped; history is a
+/// convenience cache, never an authority for current provider configuration.
 final class PresentationSearchHistoryStorage implements SearchHistoryStorage {
   PresentationSearchHistoryStorage({
     required this.namespace,
@@ -55,6 +67,11 @@ final class PresentationSearchHistoryStorage implements SearchHistoryStorage {
   final PresentationSearchHistoryPersistence persistence;
   final Map<String, PresentationSearchHistoryDefinition> _definitions = {};
 
+  /// Registers the bindings needed to reconstruct one provider's result.
+  ///
+  /// The mapping binding and context bindings are persisted with each result;
+  /// changing the provider definition consequently invalidates old entries
+  /// rather than restoring an incomplete expression context.
   void register({
     required String providerKey,
     required SearchResultMapping mapping,

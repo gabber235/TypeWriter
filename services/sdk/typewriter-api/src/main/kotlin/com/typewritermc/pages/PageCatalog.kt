@@ -67,6 +67,12 @@ interface PageProvider {
     fun specification(): PageSpec
 }
 
+/**
+ * Explains why a page declaration was omitted from the catalog.
+ *
+ * Provenance fields are populated when the failure is tied to a provider. A duplicate diagnostic retains the
+ * conflicting kind so callers can explain why all declarations for that identity were excluded.
+ */
 data class PageDiagnostic(
     val code: String,
     val message: String,
@@ -95,9 +101,19 @@ data class PageCatalog(
     val definitions: List<PageDescriptor>
         get() = entries.map(PageCatalogEntry::descriptor)
 
+    /**
+     * Finds the descriptor for one exact page kind revision.
+     *
+     * Returns null for an absent identity or revision. It never substitutes another revision.
+     */
     fun definition(kind: PageKindRef): PageDescriptor? = entries.singleOrNull { it.descriptor.kind == kind }?.descriptor
 }
 
+/**
+ * Associates an accepted page descriptor with the artifact and source part that declared it.
+ *
+ * Provenance is retained for catalog consumers even though descriptors are sorted independently of origin.
+ */
 @Serializable
 data class PageCatalogEntry(
     val originArtifactId: String,
@@ -113,6 +129,12 @@ data class PageCatalogEntry(
  * to qualified type identities at revision one.
  */
 object PageCatalogAssembler {
+    /**
+     * Resolves provider specifications into the catalog consumed by editor clients.
+     *
+     * Providers are evaluated in stable provenance order. Invalid providers become diagnostics, and duplicate
+     * kind identities remove every conflicting entry rather than choosing an arbitrary winner.
+     */
     fun assemble(
         providers: Collection<PageProvider>,
         prototypes: TypePrototypeRegistry,

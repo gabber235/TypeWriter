@@ -9,10 +9,11 @@ import skirout.library.v1.authoring.AuthoringInvalid
 import skirout.library.v1.authoring.GetAuthoringSnapshotResponse
 
 /**
- * Maps snapshot and batch requests to transactional authoring and publishes accepted changes afterward.
+ * Owns the messaging boundary for Realm authoring reads and writes.
  *
- * Invalid arguments become protocol diagnostics. Publication and compiler invalidation occur after repository
- * commit, so reply delivery is not an atomic part of the edit; clients recover through batch replay and snapshots.
+ * The repository is authoritative for state and batch atomicity. This class translates invalid arguments into
+ * structured protocol diagnostics, publishes a committed change after the repository returns, and asks the compiler
+ * owner to invalidate only after a successful batch that affects compiled content.
  */
 internal class AuthoringRoutes(
     private val repository: AuthoringRepository,
@@ -21,6 +22,12 @@ internal class AuthoringRoutes(
     private val address: RealmAddress,
     private val onCompilationInvalidated: () -> Unit,
 ) {
+    /**
+     * Adds the snapshot and batch operations to a router being assembled for one Realm address.
+     *
+     * The returned responses are produced by the same repository operation that supplies the publication payload.
+     * Publication failure therefore remains a transport concern rather than changing the committed result.
+     */
     fun register(builder: CommunicatorRoutesBuilder) =
         with(builder) {
             unary(contracts.getAuthoringSnapshot) { call ->

@@ -71,7 +71,9 @@ data class ElementCatalogEntry(
 }
 
 data class KeyedElementContribution(
+    /** Manifest identity used to distinguish contributions from the same artifact. */
     val key: ContributionKey,
+    /** Decoded element descriptors and runtime facet bindings for [key]. */
     val contribution: ElementDiscoveryContribution,
 )
 
@@ -82,6 +84,7 @@ data class KeyedElementContribution(
  * contribution context.
  */
 object ElementContributionReader {
+    /** Reads known contributions and preserves their manifest provenance for catalog assembly. */
     fun read(manifests: Collection<ImprintManifest>): List<KeyedElementContribution> =
         manifests
             .flatMap(ImprintManifest::contributions)
@@ -114,6 +117,7 @@ object ElementContributionReader {
  * sorted by identity, and duplicate element identities across the deployment are rejected.
  */
 object ElementCatalogAssembler {
+    /** Combines generated contributions with source part eligibility and deployment facts. */
     fun assemble(
         contributions: Collection<KeyedElementContribution>,
         sourceParts: Collection<SourcePartCatalogEntry>,
@@ -166,6 +170,7 @@ data class ElementCatalog(
         }
     }
 
+    /** Finds the descriptor whose structural type exactly matches [type], if one exists. */
     fun descriptor(type: ResolvedTypeRef): ElementDescriptor? = entries.singleOrNull { it.descriptor.type == type }?.descriptor
 }
 
@@ -178,11 +183,18 @@ data class ElementCatalog(
 object ElementDiscoveryContributionCodec {
     private val cbor = Cbor { encodeDefaults = true }
 
+    /** Encodes a contribution for the manifest contribution payload. */
     fun encode(contribution: ElementDiscoveryContribution): ByteArray = cbor.encodeToByteArray(contribution)
 
+    /** Decodes one manifest contribution payload, rejecting malformed or unsupported data. */
     fun decode(payload: ByteArray): ElementDiscoveryContribution = cbor.decodeFromByteArray(payload)
 }
 
+/** Schema identifier for generated element discovery contributions. */
 const val ELEMENT_DISCOVERY_SCHEMA = "typewriter.elements"
+
+/** Current encoded shape version for [ELEMENT_DISCOVERY_SCHEMA]. */
 const val ELEMENT_DISCOVERY_VERSION = 1
+
+/** Manifest producer name used to select element discovery contributions. */
 const val ELEMENT_DISCOVERY_PRODUCER = "elements"

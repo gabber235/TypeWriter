@@ -5,8 +5,12 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 /// The default interaction mode that serves as the baseline experience.
 ///
-/// NormalMode is the default state when the application starts and provides
-/// a consistent baseline experience with standard navigation shortcuts.
+/// The mode used when no specialized interaction owns focus.
+///
+/// It is the provider's initial state and the destination for dismiss and
+/// cancel transitions. Its shortcuts cover directional focus movement and
+/// selection clearing. It also supplies the app bar display for this baseline
+/// context.
 class NormalMode extends InteractionMode
     with ModeDisplay, ModeShortcut, DirectionalInteractionMode {
   const NormalMode();
@@ -21,9 +25,8 @@ class NormalMode extends InteractionMode
       color: Theme.of(context).colorScheme.primary,
       backgroundColor: context.isDarkMode
           ? null
-          : Theme.of(
-              context,
-            ).colorScheme.primaryContainer.withValues(alpha: 0.5),
+          : Theme.of(context).colorScheme.primaryContainer
+                .withValues(alpha: 0.5),
     );
   }
 
@@ -100,10 +103,10 @@ class NormalMode extends InteractionMode
       DirectionalFocusIntent(direction);
 }
 
-/// Creates an ActionShortcut that transitions to normal mode when escape is pressed.
+/// Creates the shared Escape action that returns the panel to [NormalMode].
 ///
-/// This utility function provides a standardized way for modes to include
-/// escape-to-normal functionality without implementing it from scratch.
+/// [onInvoke] runs first when supplied. The final transition to normal mode is
+/// unconditional, so a callback cannot leave a specialized mode active.
 ///
 /// Example usage:
 /// ```dart

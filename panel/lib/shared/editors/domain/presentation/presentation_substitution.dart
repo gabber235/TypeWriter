@@ -5,6 +5,13 @@ part "presentation_collection_substitution.dart";
 part "presentation_connection_substitution.dart";
 part "presentation_search_substitution.dart";
 
+/// Rebuilds a presentation with generic type parameters replaced by concrete
+/// types.
+///
+/// Invocation renderers use this after inferring presentation inputs from the
+/// bound value. The operation is immutable and recursive: expressions, nested
+/// nodes, actions, collection providers, and typed fields are copied while
+/// identifiers and runtime binding ownership stay unchanged.
 extension PresentationNodeSubstitution on PresentationNode {
   PresentationNode substitute(Map<String, TypeExpression> substitutions) =>
       PresentationNode(

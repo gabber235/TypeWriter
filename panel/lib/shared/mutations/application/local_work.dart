@@ -11,6 +11,10 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "local_work.freezed.dart";
 part "local_work.g.dart";
 
+/// Scope that determines which authenticated workspace owns local work.
+///
+/// A change to either value replaces the private [LocalWorkSession]. Work is
+/// therefore never carried across users or organizations accidentally.
 @freezed
 abstract class LocalWorkScope with _$LocalWorkScope {
   const factory LocalWorkScope({
@@ -19,6 +23,10 @@ abstract class LocalWorkScope with _$LocalWorkScope {
   }) = _LocalWorkScope;
 }
 
+/// Optional organization and realm scope used to distinguish editor resources.
+///
+/// The scope is part of an [EditorResourceKey], so equal identities in
+/// different resource domains do not share draft or submission state.
 @freezed
 abstract class EditorResourceScope with _$EditorResourceScope {
   const factory EditorResourceScope({
@@ -27,6 +35,11 @@ abstract class EditorResourceScope with _$EditorResourceScope {
   }) = _EditorResourceScope;
 }
 
+/// Stable identity of a resource inside the local work session.
+///
+/// [identity] identifies the resource and [scope] prevents collisions between
+/// domains that use the same identity shape. The key is also the lease and
+/// mutation reservation boundary.
 @freezed
 abstract class EditorResourceKey with _$EditorResourceKey {
   const factory EditorResourceKey({
@@ -36,8 +49,15 @@ abstract class EditorResourceKey with _$EditorResourceKey {
 }
 
 /// A live navigation destination owned by one local work session.
+///
+/// The destination reports whether the resource is currently visible and
+/// opens that exact resource when requested. The resource owner disposes it
+/// when its lease and draft work both end.
 abstract class EditorDestination extends ChangeNotifier {
+  /// Whether this destination currently displays its resource.
   bool get isCurrent;
+
+  /// Navigates to the resource represented by this destination.
   Future<void> open();
 }
 
@@ -48,6 +68,10 @@ LocalWorkScope localWorkScope(Ref ref) => LocalWorkScope(
 );
 
 /// Stable command owner that privately replaces work when its scope changes.
+///
+/// Riverpod keeps this command surface stable for callers. Mutable resources,
+/// reservations, submissions, and editor lifetimes belong to the current
+/// [LocalWorkSession], which is discarded when [localWorkScope] changes.
 @Riverpod(keepAlive: true)
 class LocalWork extends _$LocalWork implements LocalWorkCommands {
   LocalWorkScope? _scope;
@@ -137,6 +161,9 @@ class LocalWork extends _$LocalWork implements LocalWorkCommands {
 }
 
 /// Exposes the stable command owner without exposing its scoped session.
+///
+/// Callers use this provider for commands so they do not retain a session that
+/// may have been invalidated by authentication or organization changes.
 @Riverpod(keepAlive: true)
 LocalWorkCommands localWorkController(Ref ref) {
   ref.watch(localWorkProvider);

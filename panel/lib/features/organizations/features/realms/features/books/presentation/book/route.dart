@@ -29,6 +29,12 @@ part "page_tile.dart";
 part "page_tree.dart";
 part "route.g.dart";
 
+/// Route entry point for a book and its nested page editor.
+///
+/// The route parameters identify the organization, realm, and book. The
+/// surrounding scaffold establishes the realm connection barrier and shared
+/// navigation chrome. The nested router decides whether to show the empty
+/// state or a page editor.
 @RoutePage()
 class BookPage extends HookConsumerWidget {
   const BookPage({

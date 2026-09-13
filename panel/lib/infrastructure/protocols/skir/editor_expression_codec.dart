@@ -1,3 +1,9 @@
+// Decodes typed editor expressions from the shared Skir expression union.
+//
+// Expressions are recursive and carry result types at every node. Decoding
+// resolves those types and nested bindings together, allowing the panel to
+// render and evaluate a domain expression without depending on generated
+// protocol classes.
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/binding.dart"
     as wire_binding;
@@ -7,6 +13,7 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1
     as wire_type;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Decodes typed expressions, bindings, and collection operations.
 final class SkirExpressionDecoder {
   SkirExpressionDecoder(this.typeCodec, this.valueCodec)
     : pathCodec = SkirDataPathCodec(valueCodec);
@@ -15,6 +22,7 @@ final class SkirExpressionDecoder {
   final SkirDataValueCodec valueCodec;
   final SkirDataPathCodec pathCodec;
 
+  /// Decodes a typed expression, including its declared result type.
   TypeResult<TypedExpression> decode(wire.TypedExpression value) {
     final type = typeCodec.decodeExpression(value.resultType);
     final expression = value.expression == null
@@ -25,6 +33,7 @@ final class SkirExpressionDecoder {
     });
   }
 
+  /// Decodes a binding reference and its nested data path.
   TypeResult<BindingReference> binding(wire_binding.BindingRef value) {
     final path = pathCodec.decode(value.path);
     return path.mapValue(

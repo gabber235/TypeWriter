@@ -2,6 +2,10 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Carries the nesting depth used by descendant [DepthBox] surfaces.
+///
+/// The nearest container is authoritative for implicit depth. It is an
+/// inherited layout context, not a shared mutable state store.
 class DepthContainer extends InheritedWidget {
   const DepthContainer({required this.depth, required super.child, super.key});
 
@@ -17,6 +21,11 @@ class DepthContainer extends InheritedWidget {
   }
 }
 
+/// Wraps content in the panel's depth aware surface treatment.
+///
+/// When [depth] is omitted, the value is derived from the nearest
+/// [DepthContainer]. Set [enabled] to false to suppress surface treatment and
+/// depth propagation while retaining the child.
 class DepthBox extends HookWidget {
   const DepthBox({
     required this.child,

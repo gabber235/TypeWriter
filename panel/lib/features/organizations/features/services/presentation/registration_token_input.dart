@@ -6,11 +6,16 @@ import "package:typewriter_panel/typewriter_panel.dart";
 /// Binds a service registration token to the selected organization.
 ///
 /// Validation happens before the request so malformed tokens never reach the
-/// service API. A successful request clears the token while request failures
-/// remain owned by the shared loading button error behavior.
+/// service API. A successful request clears the input after the application
+/// provider accepts the bind. Provider failures are passed to [LoadingButton],
+/// which owns the in progress and error presentation for the request.
 class RegistrationTokenInput extends HookConsumerWidget {
   const RegistrationTokenInput({super.key});
 
+  /// Matches the registration token format accepted by the panel boundary.
+  ///
+  /// Trimming is performed by the submitter, not here, so this predicate also
+  /// remains useful while deciding whether an input error can be cleared.
   bool _isValidToken(String token) => RegExp(r"^[A-Z0-9]{10}$").hasMatch(token);
 
   @override

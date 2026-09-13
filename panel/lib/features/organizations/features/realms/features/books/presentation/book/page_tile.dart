@@ -1,5 +1,10 @@
 part of "route.dart";
 
+/// Full page row used by the expanded sidebar.
+///
+/// It is the interaction boundary for page selection, context actions, page
+/// movement, and entry drops. It renders projected page metadata but sends all
+/// edits through the authoring commands.
 class _PageTile extends HookConsumerWidget {
   const _PageTile({required this.page});
   final Page page;
@@ -140,9 +145,8 @@ class _PageTile extends HookConsumerWidget {
           Expanded(
             child: Text(
               page.name.formatted,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: color),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: color),
             ),
           ),
           SizedBox(width: context.spacing.space2),
@@ -239,6 +243,10 @@ class _PageTile extends HookConsumerWidget {
   }
 }
 
+/// Compact page marker used when the sidebar is collapsed.
+///
+/// Selection remains read from the route provider, while page kind metadata is
+/// resolved from the active realm catalog.
 class _SmallPageTile extends HookConsumerWidget {
   const _SmallPageTile({required this.page});
 
@@ -282,6 +290,3 @@ class _SmallPageTile extends HookConsumerWidget {
     );
   }
 }
-
-// A button for adding a new page.
-// Button has a outline.

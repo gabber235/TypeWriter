@@ -1,5 +1,11 @@
 part of "../app_router.dart";
 
+/// Protects routes scoped to an organization membership.
+///
+/// Invalid route parameters and confirmed nonmembership are cancelled and
+/// redirected to the index. Temporary access unavailability is allowed through
+/// because the startup and binding layers own recovery while a stable
+/// membership change triggers reevaluation.
 final class _OrganizationGuard extends AutoRouteGuard {
   _OrganizationGuard(this.access, this.redirectCoordinator);
 

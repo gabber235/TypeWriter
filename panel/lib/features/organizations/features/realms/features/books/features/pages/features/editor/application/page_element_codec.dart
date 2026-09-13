@@ -1,5 +1,8 @@
 part of "page_elements.dart";
 
+// New elements are initialized from the resolved catalog schema, then encoded
+// into the wire value expected by the authoring service. Diagnostics stay at the
+// boundary so callers can report why creation cannot proceed.
 TypedValue _initialElementValue(
   ElementDefinition definition,
   TypeRegistry registry,
@@ -16,6 +19,9 @@ TypedValue _initialElementValue(
       (throw ApiException.badRequest(encoded.diagnostics.join("; ")));
 }
 
+// Decoding deliberately preserves degraded and cross page states. A missing
+// catalog definition or invalid value must remain visible to the editor rather
+// than silently disappearing from the page projection.
 List<PageElement> _decodePageElements(
   wire.PageDocument document,
   RealmEditorCatalogSnapshot snapshot,

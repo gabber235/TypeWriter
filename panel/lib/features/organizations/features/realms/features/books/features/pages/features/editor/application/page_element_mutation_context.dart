@@ -1,5 +1,10 @@
 part of "page_elements.dart";
 
+/// Shared mutation boundary for page element commands.
+///
+/// It resolves the current catalog and document from the page session instead
+/// of retaining mutable snapshots across operations. Submission preserves the
+/// backend response so conflicts remain visible to callers.
 mixin _PageElementMutationContext on _$PageElements {
   late skir.RecordId _pageId;
   late AuthoringSessionProvider _sessionProvider;

@@ -3,7 +3,12 @@ import "dart:async";
 import "package:flutter/widgets.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
-/// Rebuilds the widget using this hook when a future [refreshAt] is reached.
+/// Rebuilds the widget when [refreshAt] is reached.
+///
+/// The hook owns one scheduled timer. Updating the target cancels the old
+/// timer and schedules the new one; a target that is now or already past does
+/// not schedule a refresh. Supply [now] when the clock must be controlled,
+/// such as in a deterministic test.
 void useRefreshAt(DateTime refreshAt, {DateTime Function()? now}) =>
     use(_RefreshAtHook(refreshAt, now ?? DateTime.now));
 

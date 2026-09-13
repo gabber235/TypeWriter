@@ -7,6 +7,9 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Coordinates join code generation, live projection display, selection, and
+/// bulk revocation for the route. It keeps transient UI intent locally while
+/// [OrganizationJoinCodes] remains the owner of server backed code state.
 class JoinCodesTab extends HookConsumerWidget {
   const JoinCodesTab({super.key});
 
@@ -44,8 +47,7 @@ class JoinCodesTab extends HookConsumerWidget {
         await showConfirmationDialogue(
           context: context,
           title: "Revoke ${codesToRevoke.length} join code(s)?",
-          content:
-              "Are you sure you want to revoke these join codes? They will no longer work.",
+          content: "Are you sure you want to revoke these join codes? They will no longer work.",
           confirmText: "Revoke All",
           confirmIcon: Fa6Solid.link_slash,
           onConfirm: () async {
@@ -74,8 +76,7 @@ class JoinCodesTab extends HookConsumerWidget {
                 children: [
                   SecretField(
                     title: "Join Code",
-                    description:
-                        "Generate a unique join code to invite new members to your organization.",
+                    description: "Generate a unique join code to invite new members to your organization.",
                     prefix: joinCodeUrlPrefix,
                     onGenerate: () => ref
                         .read(organizationJoinCodesProvider.notifier)

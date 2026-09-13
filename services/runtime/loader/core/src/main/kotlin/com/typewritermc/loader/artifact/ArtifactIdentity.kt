@@ -58,6 +58,7 @@ sealed interface ArtifactProvenance {
     ) : ArtifactProvenance
 }
 
+/** Identifies the external repository object recorded as an artifact source. */
 @JvmInline
 @Serializable
 value class RepositoryId(

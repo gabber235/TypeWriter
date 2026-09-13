@@ -1,5 +1,9 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Keeps at most [maximum] results while preserving tree order and sections.
+///
+/// A section survives only when it contains a retained result. The limit is
+/// counted across descendants, not only at the top level.
 final class LimitedSearchSource extends DelegatingSearchSource {
   LimitedSearchSource({required super.source, required this.maximum})
     : assert(maximum >= 0);
@@ -34,6 +38,7 @@ final class LimitedSearchSource extends DelegatingSearchSource {
   }
 }
 
+/// Adds a result count limit to a source.
 extension LimitedSearchSourceX on SearchSource {
   SearchSource limited(int maximum) {
     return LimitedSearchSource(source: this, maximum: maximum);

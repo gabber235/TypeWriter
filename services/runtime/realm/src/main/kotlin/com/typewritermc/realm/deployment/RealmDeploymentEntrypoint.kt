@@ -23,12 +23,16 @@ fun interface RealmRuntimeFactory {
  * Stop is final cleanup; resume may recreate active resources retained only as configuration during quiescence.
  */
 interface ManagedRealmRuntime {
+    /** Starts database, compiler, and route resources for a staged deployment. */
     suspend fun activate()
 
+    /** Stops active Realm work while retaining staged configuration for a possible resume. */
     suspend fun quiesce()
 
+    /** Reestablishes active resources after [quiesce]. */
     suspend fun resume()
 
+    /** Permanently releases staged and active resources. */
     suspend fun stop()
 }
 
@@ -70,6 +74,7 @@ private class RealmDeploymentRuntime(
         mutableHealth.value = RuntimeHealth.Healthy
     }
 
+    /** The loader close operation is terminal and delegates ownership release to the managed Realm. */
     override suspend fun close() {
         realm.stop()
     }

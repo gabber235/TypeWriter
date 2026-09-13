@@ -1,5 +1,10 @@
 part of "route.dart";
 
+/// Form and pending request list for the authenticated user's memberships.
+///
+/// Expired rows disappear locally, while submit and cancel operations delegate to
+/// [UserJoinRequests]. A successful submission clears input; failures remain
+/// visible through the shared panel error surface.
 class _JoinOrganization extends HookConsumerWidget {
   const _JoinOrganization({required this.joinRequests});
 
@@ -226,6 +231,10 @@ class _JoinOrganization extends HookConsumerWidget {
   }
 }
 
+/// Displays one pending request and exposes its cancellation operation.
+///
+/// The countdown only triggers local cleanup when expiry is reached. It does not
+/// imply that the server request was cancelled.
 class _PendingJoinRequestTile extends StatelessWidget {
   const _PendingJoinRequestTile({
     required this.request,

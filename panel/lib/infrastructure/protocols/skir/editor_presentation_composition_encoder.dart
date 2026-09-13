@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes visual composition relationships between presentation nodes.
+///
+/// The protocol carries these relationships as layout data. This adapter keeps
+/// them distinct from value bindings and action ownership.
 extension SkirPresentationCompositionEncoder on SkirPresentationEncoder {
   TypeResult<wire.PresentationElement> _container(ContainerElement value) {
     final child = encodeNode(value.child);

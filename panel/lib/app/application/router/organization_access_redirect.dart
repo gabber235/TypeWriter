@@ -2,6 +2,11 @@ part of "app_router.dart";
 
 enum _AccessDenial { invalidRoute, notAMember, membershipRemoved }
 
+/// Defers access denial redirects until navigation and widget build are stable.
+///
+/// Multiple guard callbacks can observe the same denial. One scheduled callback
+/// owns the redirect and optional explanation, preventing duplicate navigation
+/// and snackbars.
 final class _IndexRedirectCoordinator {
   bool _scheduled = false;
 

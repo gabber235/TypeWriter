@@ -12,6 +12,11 @@ class _EnterIntent extends Intent {
   const _EnterIntent();
 }
 
+/// Receives the labels parsed from the editable multiselect input.
 typedef ChangeTags = void Function(List<String> tags);
-typedef LabelWidgetBuilder =
-    Widget Function(BuildContext context, String label);
+
+/// Builds the inline widget used to display one selected label.
+typedef LabelWidgetBuilder = Widget Function(
+  BuildContext context,
+  String label,
+);

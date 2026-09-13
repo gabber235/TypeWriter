@@ -1,5 +1,11 @@
 part of "../../content_renderer.dart";
 
+/// Renders a protocol chip after validating its dynamic label and color.
+///
+/// Expression failures and values outside the protocol contract stay inside
+/// the presentation diagnostic path. A missing color uses the theme primary
+/// color, and the selected foreground is adjusted for light themes so the
+/// chip remains readable without changing the declared entity color.
 extension ChipElementRendering on ChipElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final resolvedLabel = scope.evaluate(label);

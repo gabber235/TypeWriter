@@ -1,8 +1,15 @@
 part of "sidebar.dart";
 
+/// Renders the resizable desktop navigation sidebar around [child].
+///
+/// The sidebar width comes from [sidebarSizeProvider]. Dragging temporarily
+/// disables the width animation so the handle tracks the pointer directly.
+/// Use [CustomAppBar] on mobile, where this widget is presented in a bottom
+/// sheet instead.
 class Sidebar extends HookConsumerWidget {
   const Sidebar({required this.child, super.key});
 
+  /// Navigation content displayed inside the sidebar pane.
   final Widget child;
 
   @override

@@ -1,5 +1,12 @@
 part of "../../layout_renderer.dart";
 
+/// Owns the widget and render object collaboration for a connection layer.
+///
+/// The render object is authoritative for frame geometry. It discovers anchor
+/// snapshots, resolves connections during paint, updates the stroke and marker
+/// surfaces, and reports diagnostics. This state object only publishes marker
+/// widgets and diagnostics after the frame, avoiding a widget tree mutation
+/// while Flutter is painting.
 final class _ConnectionLayerSurface extends StatefulWidget {
   const _ConnectionLayerSurface({
     required this.connections,
@@ -22,6 +29,11 @@ final class _ConnectionLayerSurfaceState
   _ConnectionOverlay? _pendingOverlay;
   bool _updateScheduled = false;
 
+  /// Coalesces paint results into one post frame widget update.
+  ///
+  /// Marker nodes and diagnostics are derived from render geometry. Deferring
+  /// the state change preserves Flutter's paint lifecycle and drops obsolete
+  /// intermediate results when several paint requests occur in one frame.
   void _handleOverlay(_ConnectionOverlay overlay) {
     if (_overlay == overlay || _pendingOverlay == overlay) return;
     _pendingOverlay = overlay;
@@ -119,6 +131,12 @@ final class _ConnectionLayerRenderSurface
   }
 }
 
+/// Resolves and distributes one layer's connection geometry.
+///
+/// Anchor lookup stops at a nested connection layer. A child layer may expose
+/// only anchors explicitly marked for export, and only to its immediate parent.
+/// The render object owns the last resolution for diagnostics and test
+/// inspection, while the stroke and marker render objects own their painting.
 final class _RenderConnectionLayerSurface extends RenderProxyBox {
   _RenderConnectionLayerSurface({
     required this._connections,
@@ -152,8 +170,15 @@ final class _RenderConnectionLayerSurface extends RenderProxyBox {
     markNeedsPaint();
   }
 
+  /// Rebuilds the overlay from current child geometry before painting children.
+  ///
+  /// Hidden or invalid connections contribute neither strokes nor markers.
+  /// Recoverable resolution failures remain visible through the diagnostic
+  /// overlay, while the child content continues to paint.
   @override
   void paint(PaintingContext context, Offset offset) {
+    // Anchor positions are valid only after child layout. Resolve them during
+    // paint, then defer widget overlay mutation through the callback above.
     final anchors = _collectAnchors();
     final resolution = _resolveConnections(
       connections: _connections,

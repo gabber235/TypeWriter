@@ -1,3 +1,4 @@
+/// Text and scheduling data for a timestamp relative to a reference time.
 class RelativeTimeDescription {
   const RelativeTimeDescription({
     required this.compact,
@@ -10,6 +11,10 @@ class RelativeTimeDescription {
   final DateTime nextRefreshAt;
 }
 
+/// Formats [value] relative to [now] and returns the next useful refresh time.
+///
+/// Past and future values use compact and natural forms. Values below one
+/// minute are shown as `Just now`.
 RelativeTimeDescription describeRelativeTime({
   required DateTime value,
   required DateTime now,

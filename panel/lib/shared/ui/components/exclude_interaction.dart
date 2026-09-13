@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
 
+/// Temporarily removes a subtree from input, focus traversal, and semantics.
+///
+/// Set [excluding] while another owner is animating or replacing the child.
+/// The child stays mounted, so its local state and lifecycle continue normally.
 class ExcludeInteraction extends StatelessWidget {
   const ExcludeInteraction({
     required this.excluding,

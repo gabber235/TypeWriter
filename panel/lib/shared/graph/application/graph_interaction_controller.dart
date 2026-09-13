@@ -4,6 +4,12 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Owns transient graph manipulation state for one mounted [Graph].
+///
+/// The controller creates previews during pointer interactions and converts
+/// them into commit payloads on completion. It does not own canonical graph
+/// data or selection. Its keyboard position map is a session baseline, reset
+/// when keyboard move mode ends or the controller is disposed.
 class GraphInteractionController extends ChangeNotifier {
   Set<GraphIdentifier> _movingIds = const {};
   Offset _moveOffset = Offset.zero;
@@ -16,6 +22,7 @@ class GraphInteractionController extends ChangeNotifier {
   Offset get moveOffset => _moveOffset;
   GraphResizePreview? get resize => _resize;
 
+  /// Projects the current transient state into grid deltas and resize data.
   GraphInteractionPreview preview(double cellSize) {
     return GraphInteractionPreview(
       movingIds: _movingIds,
@@ -27,6 +34,10 @@ class GraphInteractionController extends ChangeNotifier {
     );
   }
 
+  /// Starts moving [origin], selected elements, and elements contained by them.
+  ///
+  /// The origin must exist in [data]. The method clears the previous pointer
+  /// offset and marks the graph as the active drag source.
   void beginMove({
     required GraphData data,
     required GraphIdentifier origin,
@@ -49,12 +60,16 @@ class GraphInteractionController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Updates the pointer displacement in scene pixels.
   void updateMove(Offset offset) {
     if (_movingIds.isEmpty || _moveOffset == offset) return;
     _moveOffset = offset;
     notifyListeners();
   }
 
+  /// Converts the move preview to absolute grid positions and clears it.
+  ///
+  /// Returns no changes when no move is active.
   List<GraphMoveCommitPayload> finishMove(GraphData data) {
     if (_movingIds.isEmpty) return const [];
     final preview = this.preview(data.cellSize);
@@ -75,6 +90,7 @@ class GraphInteractionController extends ChangeNotifier {
     return changes;
   }
 
+  /// Discards the move preview without changing [GraphData].
   void cancelMove() {
     if (_movingIds.isEmpty &&
         _moveOffset == Offset.zero &&
@@ -87,10 +103,12 @@ class GraphInteractionController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Starts a resize preview for [id] at the supplied dimensions.
   void beginResize(GraphIdentifier id, int width, int height) {
     updateResize(id, width, height);
   }
 
+  /// Replaces the active resize preview with positive dimensions.
   void updateResize(GraphIdentifier id, int width, int height) {
     assert(width > 0 && height > 0, "Dimensions must be positive");
     final next = GraphResizePreview(id: id, width: width, height: height);
@@ -103,6 +121,7 @@ class GraphInteractionController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Converts and clears the active resize preview, if one exists.
   GraphResizeCommitPayload? finishResize() {
     final resize = _resize;
     if (resize == null) return null;
@@ -115,12 +134,18 @@ class GraphInteractionController extends ChangeNotifier {
     );
   }
 
+  /// Discards the active resize preview without emitting a commit.
   void cancelResize() {
     if (_resize == null) return;
     _resize = null;
     notifyListeners();
   }
 
+  /// Produces absolute positions for keyboard movement of [ids].
+  ///
+  /// Repeated steps accumulate from the last emitted position rather than the
+  /// unchanged [data] snapshot, allowing the caller to commit each step while
+  /// the source snapshot catches up.
   List<GraphMoveCommitPayload> moveSelection({
     required GraphData data,
     required Set<GraphIdentifier> ids,
@@ -141,10 +166,14 @@ class GraphInteractionController extends ChangeNotifier {
         .toList(growable: false);
   }
 
+  /// Drops accumulated keyboard positions and resumes from the next snapshot.
   void resetKeyboardMovement() {
     _keyboardPositions.clear();
   }
 
+  /// Produces absolute dimensions for keyboard resizing of [ids].
+  ///
+  /// Dimensions are clamped to at least one grid cell.
   List<GraphResizeCommitPayload> resizeSelection({
     required GraphData data,
     required Set<GraphIdentifier> ids,
@@ -172,6 +201,7 @@ class GraphInteractionController extends ChangeNotifier {
   }
 }
 
+/// Creates and disposes an interaction controller with the current hook.
 GraphInteractionController useGraphInteractionController() {
   final controller = useMemoized(GraphInteractionController.new);
   useListenable(controller);

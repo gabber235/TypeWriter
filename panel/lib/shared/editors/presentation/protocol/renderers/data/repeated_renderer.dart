@@ -1,5 +1,10 @@
 part of "../../data_renderer.dart";
 
+/// Expands a list or map expression into one scoped presentation per item.
+///
+/// Each item receives the declared item binding. When the source is a writable
+/// binding, its canonical path and revision are retained so nested controls can
+/// route edits to the source owner. Invalid sources become diagnostics.
 extension RepeatedElementRendering on RepeatedElement {
   Widget render(BuildContext context, PresentationRenderScope scope) =>
       _RepeatedRenderer(element: this, scope: scope);
@@ -60,6 +65,11 @@ class _RepeatedRenderer extends StatelessWidget {
   }
 }
 
+/// Converts supported collection values into item projections for rendering.
+///
+/// Map keys are not exposed as item values. A canonical source path is retained
+/// only when the expression is a direct binding, because derived expressions do
+/// not identify a writable destination.
 extension on DataValue {
   List<_RepeatedItem>? _repeatedItems(
     TypedExpression source,

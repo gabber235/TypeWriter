@@ -1,5 +1,10 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Applies generic type substitutions throughout typed expressions and actions.
+///
+/// This preserves expression meaning while updating declared and nested type
+/// references for an invoked presentation. Unknown or concrete expressions
+/// are copied unchanged, and no binding values are evaluated or mutated.
 extension TypedExpressionPresentationSubstitution on TypedExpression {
   TypedExpression substituteTypes(Map<String, TypeExpression> substitutions) =>
       TypedExpression(

@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes connector overlays without changing the underlying node tree.
+///
+/// Anchor selectors and expression scopes remain protocol data here. Their
+/// rendering and evaluation belong to the presentation runtime.
 extension SkirPresentationConnectionEncoder on SkirPresentationEncoder {
   TypeResult<wire.PresentationElement> _connectionLayer(
     ConnectionLayerElement value,

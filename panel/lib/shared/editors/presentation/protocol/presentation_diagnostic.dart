@@ -1,6 +1,14 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders protocol diagnostics inline at the point where presentation
+/// rendering cannot produce the requested content.
+///
+/// Callers use this for invalid expressions, unavailable bindings, and
+/// unsupported presentation configurations. The function preserves every
+/// diagnostic message in one visible error surface and performs no recovery;
+/// the caller decides whether surrounding content can continue rendering or
+/// whether the failed branch is the complete result.
 Widget presentationDiagnostic(
   BuildContext context,
   Iterable<TypeDiagnostic> diagnostics,

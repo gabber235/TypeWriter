@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Renders an element definition result with namespace, description, and deprecation state.
+///
+/// [fromDefinition] copies the definition's presentation metadata into the result row. The
+/// definition registry remains authoritative for that metadata. Search controls loading,
+/// selection, focus, and navigation, while this widget only projects them.
 class ElementDefinitionSearchResultItem extends StatelessWidget {
   const ElementDefinitionSearchResultItem({
     required this.name,

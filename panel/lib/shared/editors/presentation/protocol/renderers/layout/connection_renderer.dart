@@ -1,5 +1,13 @@
 part of "../../layout_renderer.dart";
 
+/// Projects anchor declarations into render geometry that a connection layer
+/// can discover while painting.
+///
+/// Anchors are observations of the rendered child, not layout owners. The
+/// child keeps its normal rendering and size. Anchor expressions are evaluated
+/// in this node's scope, then the anchor surface maps each visible alignment
+/// and offset into the connection layer's coordinates. This keeps geometry
+/// collection separate from connection path resolution.
 extension PresentationAnchorElementRendering on PresentationAnchorElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final resolved = <_ResolvedAnchorPoint>[];
@@ -21,6 +29,11 @@ extension PresentationAnchorElementRendering on PresentationAnchorElement {
   }
 }
 
+/// Places a connection resolving surface around the rendered child.
+///
+/// The layer owns connections declared at this level. It can resolve anchors
+/// in its child subtree and explicitly exported anchors from one nested layer,
+/// but nested layers remain independent owners of their own connections.
 extension ConnectionLayerElementRendering on ConnectionLayerElement {
   Widget render(BuildContext context, PresentationRenderScope scope) =>
       _ConnectionLayerSurface(
@@ -31,6 +44,11 @@ extension ConnectionLayerElementRendering on ConnectionLayerElement {
 }
 
 extension on PresentationAnchorPoint {
+  /// Resolves visibility and expression driven offset without touching layout.
+  ///
+  /// Invisible anchors remain in the resolved model as hidden points, which
+  /// lets the surface apply one consistent discovery rule and prevents stale
+  /// coordinates from being exposed to a connection layer.
   TypeResult<_ResolvedAnchorPoint> _resolve(PresentationRenderScope scope) {
     final visible = visibleIf == null
         ? const TypeResult<DataValue>.success(BooleanValue(true))
@@ -106,6 +124,11 @@ extension on DataValue? {
   };
 }
 
+/// Anchor values after expression evaluation, before render transforms.
+///
+/// Visibility is retained because hidden anchors must not participate in
+/// selection or connection lookup. [position] applies writing direction to
+/// both the alignment and the configured logical offset.
 final class _ResolvedAnchorPoint {
   const _ResolvedAnchorPoint({
     required this.id,

@@ -3,8 +3,13 @@ import "dart:math" as math;
 import "package:flutter/widgets.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// A placement adjustment applied after the preferred side overflows.
 enum OverflowResolutionStep { flip, shift, resize }
 
+/// Geometry and configuration consumed by [computeAnchoredPlacement].
+///
+/// All rectangles and offsets use the overlay's coordinate space. The child
+/// size is its unconstrained measured size before overflow resizing.
 class AnchoredOverlayPlacementInput {
   const AnchoredOverlayPlacementInput({
     required this.anchorRect,
@@ -21,6 +26,14 @@ class AnchoredOverlayPlacementInput {
   final AnchoredOverlayConfig config;
 }
 
+/// The resolved overlay geometry and the adjustments used to obtain it.
+///
+/// [side] is the side ultimately used for attachment. [appliedSteps] records
+/// overflow corrections, which is useful for diagnostics without changing the
+/// placement contract.
+///
+/// [offset] and [size] are expressed in the coordinate space of
+/// [AnchoredOverlayPlacementInput.overlaySize].
 class AnchoredOverlayPlacementResult {
   const AnchoredOverlayPlacementResult({
     required this.offset,
@@ -35,6 +48,11 @@ class AnchoredOverlayPlacementResult {
   final Set<OverflowResolutionStep> appliedSteps;
 }
 
+/// Resolves an overlay position without touching the render tree.
+///
+/// The engine tries the preferred side first. If it does not fit, it tries the
+/// opposite side, then shifts the result into the boundary, and finally
+/// resizes it when the boundary is smaller than the child.
 AnchoredOverlayPlacementResult computeAnchoredPlacement(
   AnchoredOverlayPlacementInput input,
 ) {
@@ -116,6 +134,7 @@ AnchoredOverlayPlacementResult computeAnchoredPlacement(
   );
 }
 
+/// Applies the anchor width or height before maximum size constraints.
 Size _applySharedAxisSizing({
   required Size childSize,
   required Rect anchorRect,

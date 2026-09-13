@@ -3,6 +3,11 @@ import "package:flutter/services.dart";
 import "package:flutter_reorderable_grid_view/widgets/widgets.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Displays selectable colors with optional removal and reordering actions.
+///
+/// The caller owns [colors]. Selection, deletion, and reordering are reported
+/// through their callbacks. The grid also exposes arrow key navigation, Enter
+/// or Space selection, Delete removal, and primary modifier reordering.
 class ColorSwatchGrid extends StatefulWidget {
   const ColorSwatchGrid({
     required this.label,

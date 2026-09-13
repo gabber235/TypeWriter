@@ -10,6 +10,16 @@ part "query_bar_suggestions.dart";
 part "query_bar_text_controller.dart";
 part "query_bar_view.dart";
 
+/// Provides the panel's controlled query editor, parser feedback, and
+/// completion workflow.
+///
+/// [query] is the source of truth owned by the caller. Every edit, including a
+/// completion, is reported through [onQueryChanged]; callers must feed the
+/// accepted value back into [query]. [selectors] define the query language and
+/// drive both highlighting and suggestions. While the popup is visible,
+/// keyboard navigation changes its active suggestion without moving focus out
+/// of the editor. Submission accepts the active suggestion first, then calls
+/// [onSubmitted] with the resulting query when no suggestion handled it.
 class QueryBar extends HookWidget {
   const QueryBar({
     required this.query,
@@ -31,12 +41,22 @@ class QueryBar extends HookWidget {
     super.key,
   });
 
+  /// Optional owner for the editor's input and surrounding focus lifecycle.
+  ///
+  /// Omit this to let the component create and dispose its local controller.
   final InputFieldController? inputFieldController;
   final String query;
+
+  /// Receives every edited query, including text inserted from a suggestion.
   final void Function(String) onQueryChanged;
   final List<QuerySelectorDefinition> selectors;
   final InputDecoration inputDecoration;
   final EditorTextFieldAutoFocus autofocus;
+
+  /// Receives the query after suggestion handling declines the submission.
+  ///
+  /// When a suggestion is accepted, [onQueryChanged] receives the replacement
+  /// and this callback is not invoked for that same submission.
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onEditingComplete;
   final ValueChanged<String>? onDone;

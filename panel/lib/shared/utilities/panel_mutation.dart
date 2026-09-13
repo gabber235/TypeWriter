@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:flutter/foundation.dart";
 
+/// User visible operation context attached to an unexpected panel mutation error.
 enum PanelMutationOperation {
   createTag,
   deleteService,
@@ -22,9 +23,18 @@ extension on PanelMutationOperation {
   };
 }
 
-typedef PanelMutationRecovery<T> =
-    FutureOr<T> Function(Object error, StackTrace stackTrace);
+/// Handles a mutation failure and returns the caller's recovered result.
+typedef PanelMutationRecovery<T> = FutureOr<T> Function(
+  Object error,
+  StackTrace stackTrace,
+);
 
+/// Runs a panel mutation with one centralized unexpected failure boundary.
+///
+/// Successful results pass through unchanged. Failures are reported with the
+/// safe [operation] description. [recover] may convert a failure into a normal
+/// result and receives the original error and stack. Without [recover], the
+/// original error and stack are rethrown.
 Future<T> runPanelMutation<T>({
   required PanelMutationOperation operation,
   required Future<T> Function() mutation,

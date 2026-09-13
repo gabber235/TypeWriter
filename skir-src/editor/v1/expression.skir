@@ -1,3 +1,13 @@
+// Expressions form the editor's recursive computation tree. Typed values and
+// binding references provide leaves; the remaining nodes compose them into
+// conditionals, collection pipelines, conversions, and presentation values.
+// The panel evaluates this tree locally for rendering, validation, actions, and
+// search, while the schema keeps the tree portable across protocol boundaries.
+//
+// Every nested expression is typed. Collection lambdas and reducers introduce
+// temporary bindings through BindingId slots, and BindingRef resolves values
+// from the caller's binding environment and data path.
+
 import {
   BindingId,
   BindingRef,
@@ -68,6 +78,7 @@ struct ConditionalExpression(810600010) {
   when_false: TypedExpression = 2;
 }
 
+// Collection expressions introduce scoped item bindings for nested expressions.
 struct CollectionMapExpression(810600011) {
   source: TypedExpression = 0;
   transform: TypedExpression = 1;

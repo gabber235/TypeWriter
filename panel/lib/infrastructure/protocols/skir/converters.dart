@@ -1,21 +1,29 @@
+// Bridges panel primitives and shared Skir identity values.
+//
+// This boundary keeps Flutter representations and Surreal record syntax out
+// of domain models. Resource identifiers are generated here so one identity
+// can be reused across an authoring batch and any retry of that batch.
 import "dart:math";
 
 import "package:flutter/material.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
 
+/// Converts the protocol color representation into Flutter's color value.
 extension SkirColorExtension on skir.Color {
   Color toFlutterColor() {
     return Color(argb.toUnsigned(32));
   }
 }
 
+/// Converts a Flutter color into the signed ARGB value required by Skir.
 extension FlutterColorToSkirExtension on Color {
   skir.Color toSkirColor() {
     return skir.Color(argb: toARGB32().toSigned(32));
   }
 }
 
+/// Exposes the route form and query literal form of a Skir record identity.
 extension RecordIdExtension on skir.RecordId {
   /// The opaque string key used by routes and resource references.
   String get id => switch (key) {
@@ -23,16 +31,22 @@ extension RecordIdExtension on skir.RecordId {
     _ => throw StateError("Expected a string record key for $table"),
   };
 
+  /// Formats this identity for SurrealQL record references and queries.
   String toSurrealQl() =>
       "${_formatStringKey(table)}:${_formatRecordIdKey(key)}";
 }
 
+/// Resource tables for identities created by panel authoring.
 enum AuthoringResource { book, tag, page, element }
 
 final _resourceRandom = Random.secure();
 const _resourceAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-/// Allocate once before batch submission, preserving the ID through retries.
+/// Creates an identity for a new authoring resource.
+///
+/// Callers must retain the returned value for the complete submission flow.
+/// Reusing it across retries makes a replay address the same resource instead
+/// of creating a duplicate.
 skir.RecordId newResourceId(AuthoringResource resource) => skir.RecordId(
   table: resource.name,
   key: skir.RecordIdKey.wrapString(
@@ -92,6 +106,10 @@ bool _isSimpleId(String value) {
   return number > _maxInt64 || number < _minInt64;
 }
 
+/// Parses the route form `table:key` into the typed Skir identity.
+///
+/// The key remains opaque. This parser intentionally accepts only the string
+/// key form used by panel routes and throws for malformed input.
 skir.RecordId recordId(String id) {
   final separator = id.indexOf(":");
   if (separator <= 0 || separator == id.length - 1) {

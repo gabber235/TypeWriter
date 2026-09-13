@@ -76,6 +76,7 @@ class PresentationSpec<T : Any> internal constructor(
         require(name.isNotBlank()) { "Presentation names must not be blank." }
     }
 
+    /** Looks up a declared input and verifies its requested Kotlin type. */
     inline fun <reified V : Any> input(name: String): PresentationInputRef<V> {
         val input = inputs.single { it.name == name }
         require(input.type == V::class) { "Presentation input type does not match $name." }
@@ -116,8 +117,10 @@ class PresentationBuilder<T : Any>
 
         private val children = mutableListOf<AuthoredPresentationNode>()
 
+        /** Declares a read only value supplied to this presentation. */
         inline fun <reified V : Any> input(name: String): PresentationInputRef<V> = declareInput(name, V::class, false)
 
+        /** Declares a value that the panel may edit; persistence remains the caller's responsibility. */
         inline fun <reified V : Any> editableInput(name: String): PresentationInputRef<V> = declareInput(name, V::class, true)
 
         @PublishedApi
@@ -130,6 +133,12 @@ class PresentationBuilder<T : Any>
             return PresentationInputRef(name, type, editable, inputs.size.toLong(), context).also(inputs::add)
         }
 
+        /**
+         * Adds an editable text control whose changes are reported through the bound input.
+         *
+         * [multiline] and [label] are presentation metadata. Persistence remains owned by the caller of the
+         * presentation, not by the builder.
+         */
         fun textInput(
             value: PresentationValue<String>,
             multiline: Boolean? = null,
@@ -138,6 +147,12 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.TextInput(value.reference(), multiline, label)
         }
 
+        /**
+         * Adds an editable numeric control whose changes are reported through the bound input.
+         *
+         * The numeric type is retained by [value]. Persistence and range policy remain outside the presentation
+         * builder.
+         */
         fun <V : Number> numericInput(
             value: PresentationValue<V>,
             label: String? = null,
@@ -151,6 +166,7 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.CommitControls(value)
         }
 
+        /** Adds a button whose action sends [payload] through [capability]. */
         fun <V : Any> commandButton(
             label: String,
             capability: RealmCommandCapabilityRef<V>,
@@ -160,6 +176,11 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.CommandButton(label, capability, payload)
         }
 
+        /**
+         * Adds non editable text rendered from [value].
+         *
+         * The node observes the input during rendering and cannot produce an edit or persistence request.
+         */
         fun text(value: PresentationValue<String>) {
             children += AuthoredPresentationNode.Text(value)
         }
@@ -182,10 +203,12 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.SelectInput(value, options, defaultValue, label)
         }
 
+        /** Delegates rendering of [value] to its selected catalog presentation. */
         fun <V : Any> defaultEditor(value: PresentationValue<V>) {
             children += AuthoredPresentationNode.DefaultEditor(value)
         }
 
+        /** Adds a selector and editor for the concrete alternatives declared in [block]. */
         fun <V : Any> polymorphicInput(
             value: PresentationValue<V>,
             block: PolymorphicPresentationBuilder<V>.() -> Unit,
@@ -195,6 +218,7 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.PolymorphicInput(value.reference(), types)
         }
 
+        /** Embeds another presentation and maps its inputs from [arguments]. */
         fun include(
             id: com.typewritermc.types.PresentationId,
             vararg arguments: PresentationArgumentRef,
@@ -202,6 +226,7 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.Invocation(id, arguments.toList())
         }
 
+        /** Groups authored controls under a stable collapsible section identity. */
         fun section(
             key: String,
             title: String? = null,
@@ -213,6 +238,7 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.Section(key, title, initiallyExpanded, content)
         }
 
+        /** Adds a text control bound to a serialized property of the primary input. */
         fun textInput(
             property: KProperty1<T, String>,
             multiline: Boolean? = null,
@@ -221,6 +247,7 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.TextInput(context.field(target, property.name), multiline, label)
         }
 
+        /** Adds a numeric control bound to a serialized property of the primary input. */
         fun numericInput(
             property: KProperty1<T, Number>,
             label: String? = null,
@@ -228,6 +255,7 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.NumericInput(context.field(target, property.name), label)
         }
 
+        /** Adds a button whose request is the primary input and whose action uses [capability]. */
         fun commandButton(
             label: String,
             capability: RealmCommandCapabilityRef<T>,
@@ -236,6 +264,12 @@ class PresentationBuilder<T : Any>
             children += AuthoredPresentationNode.CommandButton(label, capability)
         }
 
+        /**
+         * Adds a search control whose selected result is written to [value] through the presentation binding.
+         *
+         * The Realm capability supplies results asynchronously. [resultKey] identifies each option and [resultLabel]
+         * supplies its display text; the caller still owns persistence of the edited value.
+         */
         fun <Context : Any, Result : Any> realmSearchInput(
             value: PresentationValue<Result>,
             capability: RealmSearchCapabilityRef<Context, Result>,
@@ -255,6 +289,7 @@ class PresentationBuilder<T : Any>
                 )
         }
 
+        /** Adds a realm backed search control bound to a property of the primary input. */
         fun <Result : Any> realmSearchInput(
             property: KProperty1<T, Result>,
             capability: RealmSearchCapabilityRef<T, Result>,
@@ -272,6 +307,7 @@ class PresentationBuilder<T : Any>
                 )
         }
 
+        /** Adds a polymorphic selector bound to a property of the primary input. */
         fun <V : Any> polymorphicInput(
             property: KProperty1<T, V>,
             block: PolymorphicPresentationBuilder<V>.() -> Unit,
@@ -313,6 +349,7 @@ class PolymorphicPresentationBuilder<T : Any> internal constructor(
     @PublishedApi
     internal val types = mutableListOf<ConcretePresentation>()
 
+    /** Adds one concrete alternative and builds its nested editor in the alternative's scope. */
     inline fun <reified C : T> type(
         label: String,
         block: PresentationBuilder<C>.() -> Unit,
@@ -324,6 +361,7 @@ class PolymorphicPresentationBuilder<T : Any> internal constructor(
     internal fun build(): List<ConcretePresentation> = types.toList()
 }
 
+/** Prevents presentation builder scopes from being mixed accidentally. */
 @DslMarker
 annotation class PresentationDsl
 

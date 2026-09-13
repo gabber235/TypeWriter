@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Separates two content regions with a label between the separators.
+///
+/// The default label, [text], communicates an alternative between the regions.
+/// Set [direction] to [Axis.vertical] when the surrounding layout is vertical;
+/// the label and divider order remain the same in either orientation.
 class LabeledDivider extends StatelessWidget {
   const LabeledDivider({
     super.key,
@@ -35,9 +40,8 @@ class LabeledDivider extends StatelessWidget {
         vertical: direction == Axis.vertical ? context.spacing.space2 : 0.0,
       ),
       child: DefaultTextStyle(
-        style: Theme.of(
-          context,
-        ).textTheme.bodyMedium!.copyWith(color: dividerColor),
+        style: Theme.of(context).textTheme.bodyMedium!
+            .copyWith(color: dividerColor),
         child: Text(text, style: textStyle),
       ),
     );

@@ -20,6 +20,12 @@ final _notOperatorParser = [
   string("!"),
 ].toChoiceParser();
 
+/// Tokenizes the structured part of a search query.
+///
+/// Selector definitions provide the primitive parsers. The lexer then adds
+/// grouping, prefix negation, explicit boolean operators, and implicit AND.
+/// Text outside the first valid expression remains free text before or after
+/// the expression.
 class QueryLexer {
   QueryLexer(List<QuerySelectorDefinition> selectors) {
     if (selectors.isEmpty) {
@@ -134,6 +140,7 @@ class QueryLexer {
 
   late final Parser<QueryLexerResult> parser;
 
+  /// Tokenizes [input] and retains the original string in the result.
   QueryLexerResult tokenize(String input) {
     final result = parser.parse(input);
     assert(() {
@@ -156,6 +163,7 @@ class QueryLexer {
   }
 }
 
+/// Parsed query pieces produced by [QueryLexer].
 class QueryLexerResult {
   const QueryLexerResult({
     required this.query,
@@ -177,9 +185,11 @@ class QueryLexerResult {
   /// Original raw input string before parsing.
   final String raw;
 
+  /// Structured selector expression, or null when no selector was parsed.
   final QueryLexerToken? expression;
 }
 
+/// Common view of tokens that represent a selector occurrence.
 abstract interface class QueryLexerSelectorToken {
   String get selectorId;
   String get raw;
@@ -188,6 +198,7 @@ abstract interface class QueryLexerSelectorToken {
 }
 
 @freezed
+/// Immutable syntax tree nodes emitted by [QueryLexer].
 sealed class QueryLexerToken with _$QueryLexerToken {
   @Implements<QueryLexerSelectorToken>()
   @Assert(
@@ -223,9 +234,14 @@ sealed class QueryLexerToken with _$QueryLexerToken {
   }) = QueryLexerNegationToken;
 }
 
+/// Boolean operator represented by a lexer operator node.
 enum QueryLexerOperatorType { and, or }
 
 extension QueryLexerTokenX on QueryLexerToken {
+  /// Returns selector and operator nodes in source order.
+  ///
+  /// Operator nodes remain in the result because their ranges and issues are
+  /// consumed by cursor resolution and parse diagnostics.
   List<QueryLexerToken> flatten() {
     final result = <QueryLexerToken>[];
     _flatten(this, result);

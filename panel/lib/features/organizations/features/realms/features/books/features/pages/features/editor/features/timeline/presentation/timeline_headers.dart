@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Fixed corner header aligned with the ruler height.
 class TimelineTopLeftHeader extends StatelessWidget {
   const TimelineTopLeftHeader({
     required this.viewport,
@@ -26,6 +27,10 @@ class TimelineTopLeftHeader extends StatelessWidget {
   }
 }
 
+/// Scrolls vertically with the plane while remaining fixed horizontally.
+///
+/// Headers consume the same [TimelineTrackGeometry] as the plane, so culling
+/// and vertical alignment stay consistent with rendered elements.
 class TimelineTrackHeaders extends StatelessWidget {
   const TimelineTrackHeaders({
     required this.placement,

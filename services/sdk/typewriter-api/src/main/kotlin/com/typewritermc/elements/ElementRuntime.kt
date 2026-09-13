@@ -9,6 +9,7 @@ import com.typewritermc.discovery.RuntimeScope
  * delivery, persistence, or ordering guarantee across concurrent senders.
  */
 interface EntryOutput {
+    /** Emits one runtime value to the host supplied sink. */
     suspend fun send(value: Any)
 }
 
@@ -19,6 +20,7 @@ interface EntryOutput {
  * not owned by the entry.
  */
 interface EntryExecutionContext : RuntimeScope {
+    /** Sink for values produced by the executing entry. */
     val output: EntryOutput
 }
 

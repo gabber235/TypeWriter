@@ -1,5 +1,12 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Validates expressions and structural invariants before rendering a node.
+///
+/// Validation is deliberately non throwing. It evaluates all relevant
+/// expressions within [budget], checks bindings and control type compatibility,
+/// and returns diagnostics that renderers can localize into a visible failure
+/// element. The editor and Realm remain responsible for authorization and
+/// persistence validation.
 extension PresentationNodeValidation on PresentationNode {
   List<TypeDiagnostic> validatePresentation(
     ExpressionContext context, {
@@ -338,6 +345,8 @@ extension on PresentationElement {
   }
 }
 
+/// Finds slots in a node tree so collection and polymorphic renderers can
+/// verify and populate their template contracts.
 extension PresentationSlotDiscovery on PresentationNode {
   Set<String> get presentationSlotIds => {
     if (header?.title case PresentationHeaderNodeTitle(:final node))

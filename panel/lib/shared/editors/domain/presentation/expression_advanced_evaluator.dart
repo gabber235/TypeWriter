@@ -1,5 +1,8 @@
 part of "expression_evaluator.dart";
 
+// String and regular expression evaluation stays in this part so the main
+// evaluator owns traversal, budgets, and result type validation.
+
 const _maximumRegexPatternLength = 512;
 const _maximumRegexInputLength = 16384;
 const _maximumRegexCaptureGroup = 32;

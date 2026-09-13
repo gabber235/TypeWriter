@@ -1,9 +1,12 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Exposes a live editor through the domain binding inspection contract.
+/// Exposes a live editor subtree to expression evaluation.
 ///
-/// The source never owns or disposes the editor. [prefix] selects the editor
-/// subtree represented by the binding. Value state and writability remain live.
+/// The editor remains authoritative for both the current draft and
+/// writability. This adapter only translates a binding path through [prefix]
+/// and reports the editor's current value, so it never snapshots, mutates, or
+/// disposes [owner]. [revision] is supplied by the caller as the revision
+/// associated with the exposed observation.
 final class EditOwnerBindingSource implements BindingSource {
   const EditOwnerBindingSource({
     required this.owner,

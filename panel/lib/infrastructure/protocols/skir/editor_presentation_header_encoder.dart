@@ -1,5 +1,9 @@
 part of "editor_presentation_encoder.dart";
 
+/// Encodes node headers as transportable presentation chrome.
+///
+/// Header actions remain editor actions and are delegated to the shared action
+/// codec. This boundary only assembles the header contract around them.
 extension on SkirPresentationEncoder {
   TypeResult<wire.PresentationHeader> _header(PresentationHeader value) {
     final binding = value.binding == null

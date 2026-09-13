@@ -1,3 +1,9 @@
+//! Joined database read models for organization related views.
+//!
+//! Projections are query shaped values, not independent sources of truth. They carry the related
+//! records needed by a particular caller and convert into the corresponding public view only at
+//! the storage boundary.
+
 use serde::{Deserialize, Serialize};
 use surrealdb_component_sdk::{Datetime, RecordId};
 
@@ -8,6 +14,7 @@ use crate::skir::base::organization::v1::{
 
 use super::{OrganizationRecord, OrganizationRoleRecord, UserRecord};
 
+/// Join request with the user and organization data needed by either watch direction.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct JoinRequestProjection {
     pub id: RecordId,
@@ -17,6 +24,7 @@ pub struct JoinRequestProjection {
     pub expires_at: Datetime,
 }
 
+/// Organization member with roles joined for the organization members watch.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OrganizationMemberProjection {
     pub user_id: RecordId,
@@ -27,6 +35,7 @@ pub struct OrganizationMemberProjection {
     pub joined_at: Datetime,
 }
 
+/// Converts the projection into the organization facing join request view.
 impl From<JoinRequestProjection> for OrganizationJoinRequest {
     fn from(value: JoinRequestProjection) -> Self {
         Self {
@@ -42,6 +51,7 @@ impl From<JoinRequestProjection> for OrganizationJoinRequest {
     }
 }
 
+/// Converts the same projection into the user facing join request view.
 impl From<JoinRequestProjection> for UserJoinRequest {
     fn from(value: JoinRequestProjection) -> Self {
         Self {
@@ -56,6 +66,7 @@ impl From<JoinRequestProjection> for UserJoinRequest {
     }
 }
 
+/// Converts the joined member projection into the public member view.
 impl From<OrganizationMemberProjection> for OrganizationMember {
     fn from(value: OrganizationMemberProjection) -> Self {
         Self {

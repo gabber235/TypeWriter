@@ -14,16 +14,14 @@ class _SecretFieldView extends StatelessWidget {
       children: [
         Text(
           field.title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleMedium
+              ?.copyWith(fontWeight: FontWeight.w600),
         ),
         SizedBox(height: context.spacing.space1),
         Text(
           field.description,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         SizedBox(height: context.spacing.space3),
         _SecretFieldContent(

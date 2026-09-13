@@ -1,3 +1,10 @@
+//! Messaging helpers shared by wasmCloud components.
+//!
+//! This module owns the transport boundary for broker messages, including trace context
+//! propagation, subject parsing, request and reply error slugs, and typed SKIR replies.
+//! Subject constructors live in [`crate::skir_subjects`], while this module handles the
+//! broker operations they delegate to.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -15,13 +22,13 @@ fn current_trace_context()
     })
 }
 
-/// Parse the subject and collect certain components.
+/// Match a broker subject against a template and return named components.
 ///
-/// If the subject doesn't match the template an error is returned.
-///
-/// When a placeholder like `<action>` is the last part of the template,
-/// it will capture all remaining segments of the subject (greedy match).
-/// This allows for multi-segment actions like `join_requests.list`.
+/// A mismatch returns `subject-parse-failed`. Literal segments must match exactly,
+/// `*` consumes one segment without capturing it, and `>` captures the remaining
+/// segments under the `>` key. A placeholder in the final template position greedily
+/// captures all remaining segments, which supports actions such as
+/// `join_requests.list`. Bracketed template segments are optional.
 ///
 /// Suppose a template is `test.<id>.something.<type>.*.<action>.>`
 /// Then the following subjects will be parsed:
@@ -167,8 +174,7 @@ fn parse_subject_inner(template: &str, subject: &str) -> Result<HashMap<String, 
             continue;
         }
 
-        // If this is the last template part and there are more subject parts,
-        // capture all remaining segments (greedy match for trailing placeholders)
+        // A trailing placeholder owns the remaining subject segments.
         let is_last_template_part = i == template_parts.len() - 1;
         if is_last_template_part && subject_parts.len() > i + 1 {
             let remaining = subject_parts[i..].join(".");
@@ -180,7 +186,11 @@ fn parse_subject_inner(template: &str, subject: &str) -> Result<HashMap<String, 
     Ok(map)
 }
 
-/// Send a message to the reply_to field of the message
+/// Reply on the subject carried by a broker message.
+///
+/// The input must contain `reply_to`. The reply has no nested reply target and uses
+/// `message-reply-failed` for broker failures, or `message-no-reply-to` when the input
+/// cannot be answered.
 pub async fn reply(
     reply_to: types::BrokerMessage,
     data: impl Into<Vec<u8>>,
@@ -204,7 +214,10 @@ pub async fn reply(
     }
 }
 
-/// Send a message with a specific reply_to
+/// Publish a message with an explicit reply subject.
+///
+/// This is the low level operation for callers that need to choose the reply route.
+/// Broker failures are returned as `message-send-failed`.
 pub async fn send(
     subject: String,
     reply_to: String,
@@ -222,7 +235,10 @@ pub async fn send(
     .error_with_slug("message-send-failed")
 }
 
-/// Publish a message without a reply_to.
+/// Publish a message without a reply target.
+///
+/// Use this for notifications and other one way messages. Broker failures are returned
+/// as `message-publish-failed`.
 pub async fn publish(subject: String, data: impl Into<Vec<u8>>) -> Result<(), otel_wasi::Error> {
     consumer::publish(
         types::BrokerMessage {
@@ -236,7 +252,10 @@ pub async fn publish(subject: String, data: impl Into<Vec<u8>>) -> Result<(), ot
     .error_with_slug("message-publish-failed")
 }
 
-/// Request a reply to a message.
+/// Send a request and wait up to five seconds for its broker reply.
+///
+/// The returned message is untyped because the caller owns response decoding. Broker
+/// failures and timeout are returned as `message-request-failed`.
 pub async fn request(
     subject: String,
     data: impl Into<Vec<u8>>,
@@ -246,11 +265,11 @@ pub async fn request(
         .error_with_slug("message-request-failed")
 }
 
-/// Reply to a message with the result of a handler that returns `Result<R, otel_wasi::Error>`.
+/// Serialize and reply with a handler result while preserving typed SKIR outcomes.
 ///
-/// `Ok(response)` is serialized and replied as the selected success or domain outcome.
-/// `Err(error)` is converted to the response enum's generic `InternalError` variant,
-/// replied, and then the original error is returned for logging/tracing.
+/// A successful result is sent as its selected success or domain variant. An error sends
+/// the enum's generic `InternalError` variant, then returns the original error so the
+/// dispatch boundary can retain its logging and tracing context.
 pub async fn reply_handler_result<R>(
     msg: types::BrokerMessage,
     result: Result<R, otel_wasi::Error>,
@@ -301,6 +320,10 @@ where
     }
 }
 
+/// Replace named `{template}` references in a broker subject pattern.
+///
+/// Replacement is literal and single pass over the supplied template list. Unknown
+/// references remain unchanged, allowing callers to layer expansion steps.
 pub fn expand_template_pattern(pattern: &str, templates: &[(&str, &str)]) -> String {
     let mut result = pattern.to_string();
     for (template_name, template_value) in templates {

@@ -1,3 +1,10 @@
+//! Registers the runtime capabilities of a service host.
+//!
+//! Registration is keyed by the service identity, so repeating the same advertisement is
+//! idempotent. A changed advertisement increments the host configuration `revision` and emits a
+//! topology update. It does not change the desired execution topology, which is owned by
+//! `configure_topology`.
+
 use std::collections::HashMap;
 
 use otel_wasi::ResultWithSlug;
@@ -23,6 +30,11 @@ struct RegisterHostResult {
 }
 
 #[tracing::instrument(skip(msg, params))]
+/// Creates or refreshes the host record advertised by a running service.
+///
+/// The host record stores the entrypoint, Realm capability, and supported engine identifiers.
+/// Repeated equal advertisements return the existing revision and publish nothing. Changed
+/// advertisements are committed before the organization topology update is published.
 pub async fn handle(
     msg: BrokerMessage,
     params: HashMap<String, String>,

@@ -2,10 +2,10 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Timeline manipulation modde for moving cues.
+/// Timeline manipulation mode for moving cues.
 ///
-/// This mode provides keyboard shortcuts for moving selected timeline cues
-/// using hjkl and arrow keys.
+/// Directional keyboard shortcuts update the active previews. Escape finishes
+/// the session through the timeline's commit action.
 class TimelineMoveMode extends InteractionMode
     with ModeDisplay, ModeShortcut, DirectionalInteractionMode {
   const TimelineMoveMode();
@@ -65,10 +65,10 @@ class TimelineMoveMode extends InteractionMode
       TimelineMoveIntent(direction: direction);
 }
 
-/// Timeline manipulation mode for resizing segments.
+/// Timeline manipulation mode for resizing segment boundaries.
 ///
-/// This mode provides keyboard shortcuts for resizing selected timeline segments
-/// using hjkl and arrow keys.
+/// Directional keyboard shortcuts update the selected edge previews. Escape
+/// finishes the session through the timeline's commit action.
 class TimelineResizeMode extends InteractionMode
     with ModeDisplay, ModeShortcut, DirectionalInteractionMode {
   const TimelineResizeMode({required this.mode});
@@ -133,14 +133,10 @@ class TimelineResizeMode extends InteractionMode
       TimelineResizeIntent(direction: direction);
 }
 
-/// Invokes a TimelineCommitIntent to commit the current timeline changes.
+/// Dispatches the commit intent from the currently focused Flutter context.
 ///
-/// This method uses the Flutter Actions system to dispatch a TimelineCommitIntent
-/// that can be handled by the timeline widget or its parent components.
-///
-/// Parameters:
-/// - [ref]: A [WidgetRef] giving access to providers needed to evaluate
-///   current selection state or perform the operation when invoked.
+/// If focus has no context, the request is ignored because there is no actions
+/// scope that can own the session. The focused timeline supplies the handler.
 void _invokeTimelineCommitIntent() {
   final currentFocus = FocusManager.instance.primaryFocus;
   if (currentFocus?.context == null) {

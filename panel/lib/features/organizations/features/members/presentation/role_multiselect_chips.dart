@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// A component that displays role selection as FilterChips in a Wrap layout.
+/// Inline role editor for compact member surfaces.
 ///
-/// This is used for mobile/tablet views where inline chip selection is
-/// preferred over a dropdown. Used in:
-/// - Join request approval (selecting roles for new member)
-/// - Member role editing on mobile views
+/// The catalog remains the source of available roles. Non assignable roles are
+/// rendered but disabled, preserving protected role visibility while keeping
+/// ordinary membership edits inside the assignable role boundary. The callback
+/// receives a new selection and does not perform persistence itself.
 class RoleMultiselectChips extends StatelessWidget {
   const RoleMultiselectChips({
     required this.availableRoles,
@@ -17,13 +17,14 @@ class RoleMultiselectChips extends StatelessWidget {
     super.key,
   });
 
-  /// All available roles to select from.
+  /// The current role catalog, including protected roles that cannot be edited.
   final List<OrganizationRole> availableRoles;
 
-  /// Currently selected roles.
+  /// Roles currently projected onto the member or draft selection.
   final List<OrganizationRole> selectedRoles;
 
-  /// Called when the selection changes.
+  /// Receives the requested selection. The owning provider decides whether and
+  /// how to persist it.
   final ValueChanged<List<OrganizationRole>> onRolesChanged;
 
   /// Horizontal spacing between chips.

@@ -1,3 +1,8 @@
+/// Reusable panel capabilities shared by feature routes.
+///
+/// This barrel exposes state owners, domain policies, interaction services, and
+/// UI components. Feature code should depend on the narrowest exported module
+/// that owns the capability it uses.
 library;
 
 export "editors/editors.dart";

@@ -49,6 +49,11 @@ double _contrast(Color first, Color second) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+/// Builds the semantic colors consumed by the panel design system.
+///
+/// Identity colors remain stable across brightnesses. Neutral surfaces and
+/// their derived containers adapt to [brightness], and each semantic family
+/// includes a contrasting foreground for use on its color and container.
 TypewriterColors buildTypewriterColors(Brightness brightness) {
   final neutral = _scheme(const Color(0xFF62646A), brightness);
   final brand = _family(_brandColor, brightness, neutral.surface);
@@ -119,6 +124,11 @@ TypewriterColors buildTypewriterColors(Brightness brightness) {
   );
 }
 
+/// Maps Typewriter semantic tokens into Flutter's Material [ColorScheme].
+///
+/// [colors] is the source of truth for the panel's brand, surface, border, and
+/// error roles. The remaining Material roles continue to come from the seeded
+/// scheme so Material components have complete defaults.
 ColorScheme buildColorScheme(Brightness brightness, TypewriterColors colors) {
   return ColorScheme.fromSeed(
     seedColor: colors.brand,

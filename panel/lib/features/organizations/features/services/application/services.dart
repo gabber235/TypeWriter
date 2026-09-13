@@ -34,6 +34,14 @@ part "topology_selection.dart";
 part "topology_host_selection.dart";
 part "topology_runtime_selection.dart";
 
+/// Owns the organization scoped canonical service identity projection.
+///
+/// The provider combines the backend watch with committed mutation results
+/// published by the resource repository. Its state is canonical, while
+/// [projectedServices] and [projectedService] overlay unsaved editor values for
+/// presentation. Mutations use operation identities and optimistic revisions;
+/// conflicts update this projection with the backend value before returning a
+/// conflict result so the caller can refresh or merge.
 @riverpod
 class CanonicalOrganizationServices extends _$CanonicalOrganizationServices {
   @override
@@ -82,6 +90,12 @@ class CanonicalOrganizationServices extends _$CanonicalOrganizationServices {
     );
   }
 
+  /// Binds a service registration token to this organization.
+  ///
+  /// The token is single use and may be expired. A successful bind invalidates
+  /// the watch so the backend becomes the source of the new service identity;
+  /// invalid tokens are reported as a bad request and uncertain transport
+  /// outcomes remain visible to the mutation coordinator.
   Future<void> bindService(String token) async {
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) throw ApiException.notAuthenticated();
@@ -125,6 +139,11 @@ class CanonicalOrganizationServices extends _$CanonicalOrganizationServices {
     }
   }
 
+  /// Renames a canonical service identity using its current revision.
+  ///
+  /// The name is sent as the complete editable identity. A backend conflict
+  /// replaces the local canonical value and returns both revisions and the
+  /// actual identity value, allowing the editor to recover without guessing.
   Future<TypedMutationResult> updateService(Service service) async {
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) throw ApiException.notAuthenticated();
@@ -207,6 +226,11 @@ class CanonicalOrganizationServices extends _$CanonicalOrganizationServices {
     }
   }
 
+  /// Removes the service binding from this organization.
+  ///
+  /// The local projection removes the service only after the backend confirms
+  /// the unbind. A missing service is surfaced as a not found error, while an
+  /// uncertain response is left to the mutation coordinator for recovery.
   Future<void> deleteService(skir.RecordId serviceId) async {
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) throw ApiException.notAuthenticated();
@@ -259,6 +283,9 @@ class CanonicalOrganizationServices extends _$CanonicalOrganizationServices {
   }
 }
 
+/// Resolves one service from the organization scoped canonical projection.
+///
+/// A missing identifier is a normal absent result, not a transport failure.
 @riverpod
 Future<Service?> canonicalService(Ref ref, skir.RecordId id) async {
   return (await ref.watch(canonicalServicesProvider.future))

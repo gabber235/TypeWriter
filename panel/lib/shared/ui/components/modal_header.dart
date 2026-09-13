@@ -1,6 +1,12 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/app/presentation/theme/theme.dart";
 
+/// Header for modal surfaces with a drag affordance, optional title, and
+/// close action.
+///
+/// If [onClose] is omitted, closing pops the nearest route through the current
+/// navigator. Provide it when the modal has a different dismissal policy or
+/// when closing must update state before the route is removed.
 class ModalHeader extends StatelessWidget {
   const ModalHeader({this.title, this.onClose, super.key});
 

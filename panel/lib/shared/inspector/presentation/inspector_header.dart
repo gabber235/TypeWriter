@@ -2,7 +2,10 @@ import "package:flutter/widgets.dart" hide Title;
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Header for a displaying title and identifier.
+/// Displays a resource title and stable identifier.
+///
+/// This widget is a static projection. Use [ManagedInspectorHeader] when the
+/// title or color must follow an editor's local draft.
 class InspectorHeader extends HookWidget {
   const InspectorHeader({
     required this.id,
@@ -30,6 +33,11 @@ class InspectorHeader extends HookWidget {
 
 String _stringFormatted(String name) => name.formatted;
 
+/// Displays header metadata read from an [EditOwner] local draft.
+///
+/// The fallback values cover loading, missing, and invalid fields. The widget
+/// listens to the owner, so draft edits update the header without rebuilding
+/// the inspection graph.
 class ManagedInspectorHeader extends HookWidget {
   const ManagedInspectorHeader({
     required this.id,

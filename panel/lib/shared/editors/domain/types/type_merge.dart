@@ -1,5 +1,13 @@
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Computes the strongest type expression accepted by both inputs.
+///
+/// This is the meet operation used when [TypeRegistry] combines inherited
+/// representations and when a caller safely refines a type. Scalar bounds are
+/// narrowed, nested structures are intersected recursively, and incompatible
+/// variants return diagnostics instead of an invalid expression. Record fields
+/// are combined by name, with the right initializer taking precedence when it
+/// is present; a record is closed if either input is closed.
 TypeResult<TypeExpression> intersectTypes(
   TypeExpression left,
   TypeExpression right,
@@ -59,6 +67,7 @@ TypeResult<TypeExpression> intersectTypes(
   return _conflict(left, right);
 }
 
+/// Intersects length ranges and requires every pattern from both strings.
 TypeResult<TypeExpression> _intersectStrings(
   StringType left,
   StringType right,
@@ -210,6 +219,8 @@ TypeResult<TypeExpression> _intersectRecords(
   );
 }
 
+/// Reports an empty intersection using the diagnostic consumed by
+/// inheritance and refinement callers.
 TypeFailure<TypeExpression> _conflict(
   TypeExpression left,
   TypeExpression right,

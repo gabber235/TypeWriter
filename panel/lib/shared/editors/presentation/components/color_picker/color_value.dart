@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adapters between Flutter colors and Typewriter's unsigned ARGB values.
+///
+/// Typewriter stores colors as unsigned 32 bit integers in ARGB order. These
+/// extensions centralize that representation so presentation controls do not
+/// duplicate bit layout or formatting rules.
 extension ColorArgbFormatting on Color {
   int get argbValue => toARGB32().toUnsigned(32);
 
@@ -31,6 +36,11 @@ extension DataValueColor on DataValue {
   }
 }
 
+/// Parses a six digit RGB or, when enabled, eight digit ARGB hexadecimal value.
+///
+/// A leading `#` or `0x` is accepted. Six digit input becomes opaque ARGB,
+/// including when alpha capable input is enabled. Invalid syntax or length
+/// throws [FormatException] for the validated field to display as an error.
 Color parseColorHex(String source, {required bool includeAlpha}) {
   var value = source.trim();
   if (value.startsWith("#")) value = value.substring(1);
@@ -50,6 +60,10 @@ Color parseColorHex(String source, {required bool includeAlpha}) {
   return Color(value.length == 6 ? 0xFF000000 | parsed : parsed);
 }
 
+/// Builds a color from byte channels and an alpha percentage.
+///
+/// RGB values are clamped to 0 through 255. Alpha is clamped to 0 through
+/// 100 percent and converted to the nearest representable byte.
 Color colorFromChannels({
   required int red,
   required int green,
@@ -62,6 +76,10 @@ Color colorFromChannels({
   blue.clamp(0, 255),
 );
 
+/// Builds a color from HSL percentages and an alpha percentage.
+///
+/// Hue is clamped to 0 through 360 degrees. Saturation, lightness, and alpha
+/// are clamped to their respective 0 through 100 percent ranges.
 Color colorFromHsl({
   required double hue,
   required double saturationPercent,
@@ -74,6 +92,11 @@ Color colorFromHsl({
   lightnessPercent.clamp(0, 100) / 100,
 ).toColor();
 
+/// Converts [color] to HSV without losing hue when the color is grayscale.
+///
+/// HSV cannot recover a meaningful hue from zero saturation. The picker passes
+/// its last saturated hue as [preservedHue] so changing value or saturation
+/// after grayscale editing does not jump to an arbitrary hue.
 HSVColor hsvWithPreservedHue(Color color, double preservedHue) {
   final hsv = HSVColor.fromColor(color);
   return hsv.saturation > 0.0001 ? hsv : hsv.withHue(preservedHue);

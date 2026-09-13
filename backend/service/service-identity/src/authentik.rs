@@ -11,6 +11,12 @@ use crate::identity::{AccountProvider, ProviderError, ProvisionedAccount};
 const MAX_RESPONSE_BODY: usize = 64 * 1024;
 const MAX_ERROR_FIELDS: usize = 16;
 
+/// Account provider backed by the configured Authentik service.
+///
+/// This adapter owns provider configuration, request construction, response limits, and
+/// status classification. It returns only provider boundary outcomes to the domain
+/// workflow. A successful create response may represent an account that remains present
+/// if later database persistence or compensation fails.
 pub struct AuthentikClient;
 
 struct CompletedResponse {

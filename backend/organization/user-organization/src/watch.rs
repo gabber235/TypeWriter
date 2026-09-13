@@ -9,6 +9,11 @@ use wasmcloud_utils::{
     wasmcloud::messaging::types::BrokerMessage,
 };
 
+/// Returns the current organization list for the user in the message subject.
+///
+/// The snapshot helper reads memberships and the user's organization sequence. Later membership
+/// changes are delivered on the user's organization change stream, so callers can apply deltas or
+/// request a fresh snapshot after a sequence gap.
 #[tracing::instrument(skip(msg, params))]
 pub async fn handle_watch(
     msg: BrokerMessage,

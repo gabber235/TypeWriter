@@ -11,8 +11,17 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "action_shortcuts.freezed.dart";
 part "action_shortcuts.g.dart";
 
+/// Callback invoked by an action with the caller's Riverpod [WidgetRef].
 typedef ActionInvoke = FutureOr<void> Function(WidgetRef ref);
 
+/// A user action that can be invoked by a shortcut and optionally shown in the
+/// global action row.
+///
+/// Use the activator constructor for local keys that are not part of the panel
+/// map. Use [ActionShortcut.intent] when the action should share the panel's
+/// canonical key map. An action is callable only when it has both a callback
+/// and at least one activator. IDs are global within the current provider and
+/// higher priority wins when multiple mounted sets register the same ID.
 @freezed
 abstract class ActionShortcut with _$ActionShortcut {
   @Assert("id != \"\"", "ID must not be empty.")
@@ -45,6 +54,7 @@ abstract class ActionShortcut with _$ActionShortcut {
 
   const ActionShortcut._();
 
+  /// Whether this action has enough information to be invoked.
   bool get canInvoke {
     return onInvoke != null && shortcuts.isNotEmpty;
   }
@@ -58,11 +68,21 @@ abstract class ActionShortcut with _$ActionShortcut {
   }
 }
 
+/// Riverpod registry of mounted action sets and their winning actions.
+///
+/// Each action set owns its registration through a [GlobalKey]. Re registering
+/// replaces that set's previous entries, while [sweep] removes entries whose
+/// owner is no longer mounted. The registry is the shared source for keyboard
+/// actions and the visible [ActionRow].
 @riverpod
 class ActionShortcuts extends _$ActionShortcuts {
   @override
   Map<String, ActionShortcut> build() => {};
 
+  /// Replaces the entries owned by [key] and merges the supplied actions.
+  ///
+  /// When IDs collide, the action with the greater [ActionShortcut.priority]
+  /// remains registered. Equal priorities favor the new registration.
   void register(GlobalKey key, List<ActionShortcut> shortcuts) {
     final updated = Map<String, ActionShortcut>.from(state)
       // We know every shortcut that was managed by this global key is now invalid.
@@ -84,6 +104,7 @@ class ActionShortcuts extends _$ActionShortcuts {
     state = updated;
   }
 
+  /// Removes registered actions whose owning widget has unmounted.
   void sweep() {
     if (state.isEmpty) return;
     final updated = Map<String, ActionShortcut>.from(state)
@@ -103,6 +124,10 @@ class ActionShortcuts extends _$ActionShortcuts {
   }
 }
 
+/// Keeps the global action registry free of unmounted owners.
+///
+/// Place this above action sets. It watches the registry and schedules a sweep
+/// after each relevant frame, avoiding provider mutation during widget build.
 class GlobalActionsManager extends HookConsumerWidget {
   const GlobalActionsManager({required this.child, super.key});
   final Widget child;
@@ -121,6 +146,11 @@ class GlobalActionsManager extends HookConsumerWidget {
   }
 }
 
+/// Enables actions only while this subtree owns focus.
+///
+/// This is the usual wrapper for feature actions. Focused sets register
+/// keyboard actions and appear in [ActionRow]; unfocused sets contribute
+/// neither, preventing inactive surfaces from handling the same key.
 class ManagedActionSet extends HookConsumerWidget {
   const ManagedActionSet({required this.shortcuts, this.child, super.key});
   final List<ActionShortcut> shortcuts;
@@ -143,6 +173,11 @@ class ManagedActionSet extends HookConsumerWidget {
   }
 }
 
+/// Installs callable actions in Flutter's [Shortcuts] and [Actions] layers.
+///
+/// The widget registers only actions with callbacks and enabled registration.
+/// Intent actions reuse [typewriterShortcuts], while activator actions define
+/// their own local key map.
 class RegisteredActionShortcuts extends HookConsumerWidget {
   const RegisteredActionShortcuts({
     required this.shortcuts,
@@ -224,6 +259,10 @@ extension on IntentActionShortcut {
   }
 }
 
+/// Registers [shortcuts] independently of focus and renders [child].
+///
+/// Use this for actions that belong to an always active surface. Use
+/// [ManagedActionSet] when registration must follow subtree focus.
 class ActionSet extends HookConsumerWidget {
   const ActionSet({required this.shortcuts, this.child, super.key});
   final List<ActionShortcut> shortcuts;
@@ -240,6 +279,11 @@ class ActionSet extends HookConsumerWidget {
   }
 }
 
+/// Displays the visible registered actions for desktop sized surfaces.
+///
+/// Actions are ordered by priority and laid out from the right. If the row is
+/// too narrow, lower priority actions are omitted while the highest priority
+/// suffix remains visible. The row is empty on mobile breakpoints.
 class ActionRow extends HookConsumerWidget {
   const ActionRow({this.spacing = 0, super.key});
 

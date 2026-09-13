@@ -1,6 +1,10 @@
 import { InternalError } from "kernel/v1/errors.skir";
 import { ServiceRole } from "service/v1/service.skir";
 
+// Creates the durable identity and initial credentials used by a service registrar.
+// Identity issuance is separate from organization registration: success creates the service record and returns
+// credentials, but does not bind the service to an organization or make it live. Role errors reject the requested
+// identity shape, while provider unavailability means the external account system could not serve the request.
 method IssueServiceIdentity(
   struct {
     role: ServiceRole;

@@ -3,6 +3,7 @@ import "dart:math" as math;
 import "package:flutter/material.dart";
 import "package:material_color_utilities/material_color_utilities.dart";
 
+/// High contrast accent colors suitable for user selectable labels.
 const safeColors = <Color>[
   Colors.pinkAccent,
   Colors.redAccent,
@@ -16,8 +17,12 @@ const safeColors = <Color>[
   Colors.purpleAccent,
 ];
 
+/// Color operations shared by theme and editor presentation code.
 extension ColorsExtension on List<Color> {
-  /// An HSV circular hue mixing algorithm that evenly distributes colors across the color wheel.
+  /// Blends colors by averaging HSV saturation, value, and alpha.
+  ///
+  /// Hue is averaged as a circular value, so red hues near zero do not blend
+  /// through the unrelated colors between them. Throws for an empty list.
   Color mix() {
     if (isEmpty) {
       throw StateError("Cannot mix an empty color list.");
@@ -64,8 +69,13 @@ double _contrastRatio(Color first, Color second) {
       : secondLuminance / firstLuminance;
 }
 
+/// Chooses readable foreground colors for a color used as a background.
 extension ColorExtension on Color {
+  /// Returns a foreground color with sufficient contrast for the current theme.
   Color on(BuildContext context) => onBrightness(Theme.brightnessOf(context));
+
+  /// Returns the dynamic theme foreground when it meets contrast requirements,
+  /// otherwise chooses the higher contrast black or white fallback.
   Color onBrightness(Brightness brightness) {
     final schemeVariant = DynamicSchemeVariant.tonalSpot;
     final contrastLevel = 0.0;

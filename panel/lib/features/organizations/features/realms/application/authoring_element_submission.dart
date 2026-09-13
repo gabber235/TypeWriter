@@ -2,6 +2,13 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v
     as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Converts changed element editor paths into one optimistic patch operation.
+///
+/// Value mutations omit the outer editor wrapper path because the protocol
+/// addresses the element value directly. Every mutation carries the value that
+/// was observed at its path in the captured base. Placement is sent separately
+/// with its complete expected and replacement variants, preserving the server's
+/// conflict boundary for concurrent edits.
 wire.AuthoringOperation elementCommitOperation(
   String id,
   EditorCommit commit,
@@ -47,6 +54,13 @@ wire.AuthoringOperation elementCommitOperation(
   );
 }
 
+/// Translates an element batch response into the editor mutation outcome.
+///
+/// Applied and conflicting responses use the projected authoritative document.
+/// A missing document means the element was deleted. Invalid responses remain
+/// validation failures, while internal and unknown responses are unavailable so
+/// the editor can recover through refresh or explicit retry rather than claiming
+/// that the draft was saved.
 Future<TypedMutationResult> acceptElementCommit(
   wire.ApplyAuthoringBatchResponse response,
   EditorCommit commit,

@@ -31,11 +31,13 @@ fun interface ReferenceSlotAllocator {
 class ReferenceDecomposer(
     private val slotAllocator: ReferenceSlotAllocator = ReferenceSlotAllocator { ReferenceSlotId(UUID.randomUUID().toString()) },
 ) {
+    /** Decomposes a value using the graph root as its expected type. */
     fun decompose(
         graph: TypeGraph,
         logicalValue: DataValue,
     ): StoredElementValue = decompose(graph, graph.root, logicalValue)
 
+    /** Decomposes a nested value using [expression] as its expected type. */
     fun decompose(
         graph: TypeGraph,
         expression: TypeExpression,
@@ -62,6 +64,7 @@ class ReferenceDecomposer(
  * executing it.
  */
 class ReferenceAssembler {
+    /** Reconstructs the logical root value and reports every projection inconsistency found. */
     fun assemble(
         graph: TypeGraph,
         stored: StoredElementValue,
@@ -138,8 +141,11 @@ sealed interface ReferenceAssemblyResult {
 }
 
 data class ReferenceDiagnostic(
+    /** Category used by callers to choose display or recovery behavior. */
     val code: ReferenceDiagnosticCode,
+    /** Slot involved in the diagnostic, when the value identified one. */
     val slot: ReferenceSlotId? = null,
+    /** Target involved in the diagnostic, when an edge supplied one. */
     val target: ResourceId? = null,
 )
 

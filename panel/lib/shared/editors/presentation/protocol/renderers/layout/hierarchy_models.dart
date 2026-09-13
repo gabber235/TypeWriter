@@ -1,7 +1,13 @@
 part of "../../layout_renderer.dart";
 
+/// Determines where each hierarchy child connects to its branch.
 enum _HierarchyAnchorKind { start, center, offset }
 
+/// Authoring values resolved once before the custom hierarchy layout pass.
+///
+/// Nullable styles represent intentionally absent strokes. [diagnostics]
+/// contains expression failures, while geometry failures are produced later
+/// when child sizes make anchor bounds and positions observable.
 final class _ResolvedHierarchyLayout {
   const _ResolvedHierarchyLayout({
     required this.itemSpacing,
@@ -30,6 +36,11 @@ final class _ResolvedHierarchyLayout {
   final List<TypeDiagnostic> diagnostics;
 }
 
+/// Layout output consumed by the hierarchy render object for one pass.
+///
+/// Child offsets and connector strokes share the same surface coordinates, so
+/// they cannot drift between layout and paint. Diagnostics describe only
+/// geometry that could not be produced from otherwise resolved layout values.
 final class _HierarchyGeometry {
   const _HierarchyGeometry({
     required this.size,

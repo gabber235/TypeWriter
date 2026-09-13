@@ -130,4 +130,5 @@ sealed interface ElementPlacement {
     }
 }
 
+/** Creates a typed resource reference to this element instance. */
 fun <T : Element> ElementInstanceId.ref(): Ref<T> = Ref(ResourceId("element", value))

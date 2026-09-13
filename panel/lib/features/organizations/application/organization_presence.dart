@@ -12,12 +12,20 @@ part "organization_presence.g.dart";
 const _heartbeatInterval = Duration(seconds: 15);
 const _presenceExpiry = Duration(seconds: 45);
 
+/// Identifies one panel session in the organization presence projection.
+///
+/// User identity alone is insufficient because one user can have multiple panel
+/// sessions at once.
 @freezed
 abstract class PresenceSessionKey with _$PresenceSessionKey {
   const factory PresenceSessionKey(String userId, String sessionId) =
       _PresenceSessionKey;
 }
 
+/// A remote panel heartbeat together with the time this client observed it.
+///
+/// The observation time is local metadata used only for stale session expiry. It
+/// is not part of the wire presence contract.
 @freezed
 abstract class ActivePanelPresence with _$ActivePanelPresence {
   const factory ActivePanelPresence({
@@ -27,6 +35,13 @@ abstract class ActivePanelPresence with _$ActivePanelPresence {
   }) = _ActivePanelPresence;
 }
 
+/// Publishes and observes ephemeral collaboration presence for one organization.
+///
+/// The provider owns one session identity, its heartbeat timers, subscription,
+/// sequence counter, and cleanup. Heartbeats are best effort and remote sessions
+/// expire locally after missed heartbeats. Presence is never used as durable
+/// organization state, and malformed or out of order observations are discarded
+/// at this boundary.
 @riverpod
 class OrganizationPresence extends _$OrganizationPresence {
   final _sessionId = uuid.v4();
@@ -78,6 +93,10 @@ class OrganizationPresence extends _$OrganizationPresence {
     return const {};
   }
 
+  /// Updates the page mode included in subsequent page presence events.
+  ///
+  /// The current route remains the location authority. Repeating the same mode
+  /// does not publish a redundant heartbeat.
   void setPageActivity(wire.PageActivity activity) {
     if (_activity == activity) return;
     _activity = activity;

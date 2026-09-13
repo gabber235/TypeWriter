@@ -5,7 +5,11 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:pub_semver/pub_semver.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
-/// Version number segment filter abstraction used by the query parser and UI.
+/// One segment of the version filter accepted by the version selector.
+///
+/// A segment can match every value, one value, or an inclusive range. The
+/// parser uses this closed set so display, matching, suggestions, and expansion
+/// share the same semantics.
 sealed class VersionPartFilter {
   const VersionPartFilter();
   bool matches(int value);
@@ -53,7 +57,10 @@ class RangePart extends VersionPartFilter {
   }
 }
 
-/// Query filter across epoch.semanticMajor.minor.patch.
+/// Immutable filter over epoch, semantic major, minor, and patch components.
+///
+/// Unspecified segments match any value. [unwind] removes the most specific
+/// constraint first, which supports stepping back through selector input.
 class VersionFilter {
   const VersionFilter({
     this.epoch = const AnyPart(),
@@ -119,7 +126,11 @@ class VersionFilter {
   }
 }
 
-/// Parser to convert user text patterns into [VersionFilter].
+/// Converts selector text into a tolerant [VersionFilter].
+///
+/// Empty and malformed segments become [AnyPart] rather than throwing, because
+/// this parser runs while the user is typing. Expansion remains strict when a
+/// wildcard would make a finite version list impossible.
 // ignore: avoid_classes_with_only_static_members
 class VersionFilterParser {
   static VersionFilter parse({required String query, required bool hasEpoch}) {
@@ -231,7 +242,9 @@ class VersionFilterParser {
   }
 }
 
-/// Expands a [VersionFilter] with only fixed/range parts into a list of [Version].
+/// Expands a finite [VersionFilter] into concrete versions for suggestions or
+/// selection. Wildcards are rejected by [VersionPartExpansion] because they do
+/// not define a finite result.
 extension VersionFilterExpander on VersionFilter {
   /// Converts [filter] into explicit versions.
   List<Version> expand() {
@@ -257,6 +270,9 @@ extension VersionFilterExpander on VersionFilter {
   }
 }
 
+/// Expands a parsed version part for strict matching and expansion limits.
+///
+/// Wildcards cannot be expanded because they represent an unbounded set.
 extension VersionPartExpansion on VersionPartFilter {
   Iterable<int> expand(String name) sync* {
     switch (this) {
@@ -283,7 +299,9 @@ extension VersionPartExpansion on VersionPartFilter {
   }
 }
 
-/// A reusable filter bar for versions. Updates [filter] as the user types.
+/// Editor control for changing a version filter and choosing its suggestions.
+/// The parent owns the filter notifier; this widget owns only transient focus
+/// and text controller state.
 class VersionFilterBar extends HookWidget {
   const VersionFilterBar({
     required this.filtered,

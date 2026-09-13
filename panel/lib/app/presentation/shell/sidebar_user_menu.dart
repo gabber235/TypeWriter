@@ -1,5 +1,10 @@
 part of "sidebar.dart";
 
+/// Provides the signed in user's account, appearance, support, and logout menu.
+///
+/// Logout failures stay at the menu boundary and become a single user visible
+/// error. Account identity and avatar data come from [authUserInfoProvider],
+/// while appearance changes are written through [appearanceProvider].
 class UserMenu extends HookConsumerWidget {
   const UserMenu({this.compact = false, this.expand = true, super.key});
 

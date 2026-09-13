@@ -7,6 +7,12 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
+/// Adds a corner resize handle and transient outline to a graph element.
+///
+/// Pointer dimensions are rounded to [cellSize] and clamped to one cell. The
+/// callbacks receive preview values during the gesture and the final value on
+/// completion. The parent owns persistence and may omit callbacks to disable
+/// resizing.
 class ResizableElement extends HookConsumerWidget {
   const ResizableElement({
     required this.element,
