@@ -44,7 +44,7 @@ val artifactInboxRoot =
     providers.gradleProperty("typewriterArtifactInbox").map(::file).orElse(
         layout.buildDirectory.dir("development/artifacts/inbox").map { it.asFile },
     )
-val developmentArtifactTarget = artifactInboxRoot.map { it.resolve("development") }
+val manualArtifactTarget = artifactInboxRoot.map { it.resolve("manual") }
 
 tasks.register("assembleDevelopmentArtifacts") {
     val developmentArtifactTasks =
@@ -55,19 +55,19 @@ tasks.register("assembleDevelopmentArtifacts") {
             project(":conformance-extension").tasks.named<Jar>("jar"),
         )
     val developmentArtifactFiles = developmentArtifactTasks.map { it.flatMap(Jar::getArchiveFile) }
+    val publishedArtifactFiles =
+        developmentArtifactFiles.map { artifact ->
+            manualArtifactTarget.map { target -> target.resolve(artifact.get().asFile.name) }
+        }
 
     group = "typewriter"
     description = "Builds development artifacts and publishes complete JARs into an artifact inbox."
     dependsOn(developmentArtifactTasks)
     inputs.files(developmentArtifactFiles)
-    outputs.dir(developmentArtifactTarget)
+    outputs.files(publishedArtifactFiles)
     doLast {
         val sources = developmentArtifactFiles.map { it.get().asFile }
-        val target = developmentArtifactTarget.get().also(File::mkdirs)
-        val expectedNames = sources.mapTo(mutableSetOf(), File::getName)
-        target.listFiles()
-            ?.filter { it.isFile && it.extension == "jar" && it.name !in expectedNames }
-            ?.forEach { stale -> check(stale.delete()) { "Could not remove stale development artifact ${stale.name}." } }
+        val target = manualArtifactTarget.get().also(File::mkdirs)
         sources.forEach { source ->
             val temporary = target.resolve(".${source.name}.partial")
             source.copyTo(temporary, overwrite = true)

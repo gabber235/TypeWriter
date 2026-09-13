@@ -78,7 +78,7 @@ interface CandidateRepository {
 }
 
 /**
- * Imports stable inbox JARs into immutable blob storage and the candidate index.
+ * Imports stable JARs from the manual inbox into immutable blob storage and the candidate index.
  *
  * Two observations separated by [stableDuration] must agree before import. Invalid imports become quarantine
  * diagnostics; accepted files are not moved. Capability JARs are rejected because only engines distribute
@@ -94,7 +94,6 @@ class ArtifactInboxReconciler(
 ) {
     private val inbox = artifactsRoot.resolve("inbox").also(Path::createDirectories)
     private val manualInbox = inbox.resolve("manual").also(Path::createDirectories)
-    private val developmentInbox = inbox.resolve("development").also(Path::createDirectories)
 
     /**
      * Performs one stability check and import pass, then reports observed presence to the repository.
@@ -126,7 +125,7 @@ class ArtifactInboxReconciler(
     suspend fun run() =
         withContext(Dispatchers.IO) {
             inbox.fileSystem.newWatchService().use { watchService ->
-                listOf(inbox, manualInbox, developmentInbox).forEach { directory ->
+                listOf(inbox, manualInbox).forEach { directory ->
                     directory.register(
                         watchService,
                         StandardWatchEventKinds.ENTRY_CREATE,
@@ -211,8 +210,8 @@ class ArtifactInboxReconciler(
     }
 
     private fun scan(): Map<Path, InboxObservation> {
-        if (!Files.isDirectory(inbox)) return emptyMap()
-        return Files.walk(inbox).use { paths ->
+        if (!Files.isDirectory(manualInbox)) return emptyMap()
+        return Files.walk(manualInbox).use { paths ->
             paths
                 .filter { it.isRegularFile() && it.fileName.toString().endsWith(".jar") }
                 .sorted()

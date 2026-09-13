@@ -34,6 +34,9 @@ Build canonical development artifacts:
 ./gradlew assembleDevelopmentArtifacts
 ```
 
+The task publishes into `artifacts/inbox/manual`. It atomically replaces matching generated JARs without removing
+other inbox contents. Obsolete generated JARs must be removed manually.
+
 Verify the Loader distribution:
 
 ```shell

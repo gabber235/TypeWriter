@@ -739,7 +739,7 @@ val ArtifactDistributionTest by testSuite {
             val root = Files.createTempDirectory("typewriter-inbox-removal")
             val candidates = FileCandidateRepository(root)
             val reconciler = ArtifactInboxReconciler(root, FileDigestBlobStore(root), candidates, Duration.ZERO)
-            val artifact = root.resolve("inbox/development/realm.jar")
+            val artifact = root.resolve("inbox/manual/realm.jar")
             writeArtifactJar(
                 artifact,
                 RealmManifest(
@@ -756,6 +756,28 @@ val ArtifactDistributionTest by testSuite {
             candidates.candidates().size shouldBe 1
             reconciler.reconcile()
             candidates.candidates().size shouldBe 0
+        }
+    }
+
+    test("inbox reconciliation ignores artifacts outside the manual inbox") {
+        runTest {
+            val root = Files.createTempDirectory("typewriter-inbox-boundary")
+            val candidates = FileCandidateRepository(root)
+            val reconciler = ArtifactInboxReconciler(root, FileDigestBlobStore(root), candidates, Duration.ZERO)
+            val manifest =
+                RealmManifest(
+                    id = ArtifactId("typewritermc:realm"),
+                    version = ArtifactVersion("1.0.0"),
+                    hostApi = VersionConstraint("^1"),
+                    contributions = emptyList(),
+                )
+            writeArtifactJar(root.resolve("inbox/development/realm.jar"), manifest)
+            writeArtifactJar(root.resolve("inbox/realm.jar"), manifest)
+
+            reconciler.reconcile()
+
+            candidates.candidates() shouldBe emptyList()
+            candidates.diagnostics() shouldBe emptyList()
         }
     }
 

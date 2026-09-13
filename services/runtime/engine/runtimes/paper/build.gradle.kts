@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 plugins {
     id("com.typewritermc.basic-conventions")
     id("com.typewritermc.imprint")
@@ -9,15 +12,32 @@ val loaderPlugin =
         isTransitive = false
     }
 val paperRunDirectory = rootProject.layout.projectDirectory.dir("./build/development/paper")
-val paperDevelopmentInbox = paperRunDirectory.dir("plugins/Typewriter/artifacts/inbox/development")
+val paperManualInbox = paperRunDirectory.dir("plugins/Typewriter/artifacts/inbox/manual")
 val assembleDevelopmentArtifacts = rootProject.tasks.named("assembleDevelopmentArtifacts")
-val stagePaperDevelopmentArtifacts =
-    tasks.register<Sync>("stagePaperDevelopmentArtifacts") {
+val stagedPaperArtifactFiles =
+    assembleDevelopmentArtifacts.map { task ->
+        task.outputs.files.map { artifact -> paperManualInbox.file(artifact.name) }
+    }
+val stagePaperArtifacts =
+    tasks.register("stagePaperArtifacts") {
         group = "typewriter"
-        description = "Stages canonical development artifacts for the local Paper loader."
+        description = "Stages canonical artifacts in the local Paper loader inbox."
         dependsOn(assembleDevelopmentArtifacts)
-        from(assembleDevelopmentArtifacts.map { it.outputs.files.singleFile })
-        into(paperDevelopmentInbox)
+        inputs.files(assembleDevelopmentArtifacts.map { it.outputs.files })
+        outputs.files(stagedPaperArtifactFiles)
+        doLast {
+            val target = paperManualInbox.asFile.also(File::mkdirs)
+            assembleDevelopmentArtifacts.get().outputs.files.forEach { source ->
+                val temporary = target.resolve(".${source.name}.partial")
+                source.copyTo(temporary, overwrite = true)
+                Files.move(
+                    temporary.toPath(),
+                    target.resolve(source.name).toPath(),
+                    StandardCopyOption.ATOMIC_MOVE,
+                    StandardCopyOption.REPLACE_EXISTING,
+                )
+            }
+        }
     }
 
 dependencies {
@@ -40,7 +60,7 @@ tasks.runServer {
     )
     runDirectory.set(paperRunDirectory)
     pluginJars.from(loaderPlugin)
-    dependsOn(stagePaperDevelopmentArtifacts)
+    dependsOn(stagePaperArtifacts)
     environment(
         "TYPEWRITER_CONFIG_FILE",
         rootProject.layout.projectDirectory
