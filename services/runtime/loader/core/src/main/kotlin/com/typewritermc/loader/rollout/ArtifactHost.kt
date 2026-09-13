@@ -25,7 +25,6 @@ import com.typewritermc.loader.deployment.RealmLoaderIntent
 import com.typewritermc.loader.deployment.RealmTopology
 import com.typewritermc.loader.deployment.ResolutionResult
 import com.typewritermc.loader.deployment.resolveDeployment
-import com.typewritermc.services.libs.communicator.client.Communicator
 import com.typewritermc.services.libs.communicator.router.CommunicatorRouter
 import com.typewritermc.services.libs.communicator.router.RouterResult
 import com.typewritermc.services.libs.communicator.router.communicatorRoutes
@@ -43,7 +42,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -283,7 +281,7 @@ internal class AssignmentRuntime(
             },
             projections,
             VerifiedArtifactCache(sharedArtifacts, localBlobs),
-            ParticipantStatePublisher { event ->
+            { event ->
                 status = event.status
                 ReconnectingParticipantStatePublisher(mutableMessaging).publish(event)
             },
