@@ -17,6 +17,7 @@
     "documentation",
     "engine",
     "extensions",
+    "imprint",
     "loader",
     "extensions/_docsextension",
     "extensions/basicextension",
@@ -41,7 +42,8 @@
     "services/platform/service-telemetry",
     "services/platform/service-utils",
     "services/runtime/realm",
-    "skir"
+    "skir",
+    "tools"
   ],
   "scopeRequiredForTypes": ["feat", "fix", "refactor", "perf"]
 }
