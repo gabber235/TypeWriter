@@ -2,10 +2,11 @@ package com.typewritermc.loader.rollout
 
 import com.typewritermc.loader.api.HostedMessagingSession
 import com.typewritermc.loader.api.RuntimePlacement
+import com.typewritermc.services.libs.registrar.ServiceId
 
 /** Identifies the backend service and monotonic assignment revision that produced an execution intent. */
 data class ExecutionRevision(
-    val serviceId: String,
+    val serviceId: ServiceId,
     val value: Long,
 )
 

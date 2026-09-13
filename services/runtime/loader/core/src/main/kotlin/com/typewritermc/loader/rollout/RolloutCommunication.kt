@@ -2,7 +2,6 @@
 
 package com.typewritermc.loader.rollout
 
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.services.libs.communicator.address.AddressTemplate
 import com.typewritermc.services.libs.communicator.address.addressTemplate
 import com.typewritermc.services.libs.communicator.address.addressValuesOf
@@ -19,6 +18,7 @@ import com.typewritermc.services.libs.communicator.contract.ScatterContract
 import com.typewritermc.services.libs.communicator.result.CommunicationResult
 import com.typewritermc.services.libs.communicator.router.CommunicatorRoutesBuilder
 import com.typewritermc.services.libs.communicator.transport.Payload
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.telemetry.ErrorSlug
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
@@ -48,7 +48,7 @@ private val presencePolicy =
     }
 
 private val commandPolicy =
-    ResponsePolicy(CommandAcceptance(HostId("unknown"), false, "Internal rollout command failure", true)) { response ->
+    ResponsePolicy(CommandAcceptance(ServiceId("unknown"), false, "Internal rollout command failure", true)) { response ->
         when {
             response.internalFailure -> internal("failed")
             response.accepted -> success("accepted")
@@ -96,7 +96,7 @@ val ParticipantStatusContract =
         cborCodec(ParticipantStatusReply.serializer()),
         ResponsePolicy(
             ParticipantStatusReply.InternalFailure(
-                HostId("unknown"),
+                ServiceId("unknown"),
                 "Internal participant status failure",
             ),
         ) { response ->
@@ -120,7 +120,7 @@ class CommunicatorRolloutMessenger(
 ) : RolloutMessenger {
     override suspend fun discover(
         probe: ProbeRealmHosts,
-        expected: Set<HostId>,
+        expected: Set<ServiceId>,
         timeout: Duration,
     ): List<RealmHostPresence> =
         communicator
@@ -135,7 +135,7 @@ class CommunicatorRolloutMessenger(
                         expected.isNotEmpty() &&
                             replies
                                 .filterIsInstance<PresenceReply.Present>()
-                                .map { it.presence.hostId }
+                                .map { it.presence.serviceId }
                                 .containsAll(expected)
                     },
                 ),
@@ -153,23 +153,23 @@ class CommunicatorRolloutMessenger(
                 RealmBroadcastAddress(organizationId, envelope.realmId),
                 envelope,
                 ScatterPolicy(timeout) { replies ->
-                    replies.map(CommandAcceptance::hostId).containsAll(envelope.participants)
+                    replies.map(CommandAcceptance::serviceId).containsAll(envelope.participants)
                 },
             ).successfulValues()
 
     override suspend fun statuses(
         probe: ProbeParticipantStatus,
-        expected: Set<HostId>,
+        expected: Set<ServiceId>,
         timeout: Duration,
-    ): Map<HostId, ParticipantStatus> =
+    ): Map<ServiceId, ParticipantStatus> =
         communicator
             .scatter(
                 ParticipantStatusContract,
                 RealmBroadcastAddress(organizationId, probe.realmId),
                 probe,
-                ScatterPolicy(timeout) { replies -> replies.map(ParticipantStatusReply::hostId).containsAll(expected) },
+                ScatterPolicy(timeout) { replies -> replies.map(ParticipantStatusReply::serviceId).containsAll(expected) },
             ).successfulValues()
-            .associate { it.hostId to it.requireStatus() }
+            .associate { it.serviceId to it.requireStatus() }
 }
 
 /**
@@ -194,7 +194,7 @@ class RolloutHostRoutes(
         }
         builder.scatterAt(ParticipantStatusContract, address) { call ->
             if (call.request.realmId == participant.realmId) {
-                ParticipantStatusReply.Status(participant.hostId, participant.currentStatus(call.request.attempt))
+                ParticipantStatusReply.Status(participant.serviceId, participant.currentStatus(call.request.attempt))
             } else {
                 null
             }

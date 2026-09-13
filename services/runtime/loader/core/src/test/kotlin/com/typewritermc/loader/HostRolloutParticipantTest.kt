@@ -10,13 +10,12 @@ import com.typewritermc.loader.api.RuntimeHealth
 import com.typewritermc.loader.api.RuntimePlacement
 import com.typewritermc.loader.api.SourcePartDisposition
 import com.typewritermc.loader.api.StagedHostedRuntime
+import com.typewritermc.loader.api.artifact.ArtifactDigest
 import com.typewritermc.loader.artifact.ArtifactCoordinate
-import com.typewritermc.loader.artifact.ArtifactDigest
 import com.typewritermc.loader.artifact.DeploymentArtifact
 import com.typewritermc.loader.artifact.FileDigestBlobStore
 import com.typewritermc.loader.deployment.DeploymentGeneration
 import com.typewritermc.loader.deployment.HostDeploymentProjection
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.loader.deployment.ProjectedExtension
 import com.typewritermc.loader.deployment.ProjectedRuntime
 import com.typewritermc.loader.deployment.ProjectedSourcePart
@@ -38,6 +37,7 @@ import com.typewritermc.loader.runtime.LoadedHostedRuntime
 import com.typewritermc.loader.shared.FileSharedArtifactRepository
 import com.typewritermc.loader.shared.SharedArtifactService
 import com.typewritermc.services.libs.communicator.contract.ResponseOutcome
+import com.typewritermc.services.libs.registrar.ServiceId
 import de.infix.testBalloon.framework.core.testSuite
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainExactly
@@ -62,8 +62,8 @@ val HostRolloutParticipantTest by testSuite {
         policy
             .classify(
                 ParticipantStatusReply.Status(
-                    HostId("host"),
-                    ParticipantStatus.Idle(RolloutAttempt(1, DeploymentGeneration(1)), HostId("host")),
+                    ServiceId("service"),
+                    ParticipantStatus.Idle(RolloutAttempt(1, DeploymentGeneration(1)), ServiceId("service")),
                 ),
             ).outcome shouldBe ResponseOutcome.SUCCESS
     }
@@ -205,7 +205,8 @@ val HostRolloutParticipantTest by testSuite {
             fixture.participant.handle(fixture.envelope(attempt, reference, RolloutCommand.Stage))
             fixture.participant.handle(fixture.envelope(attempt, reference, RolloutCommand.Commit))
             runCurrent()
-            val rollback = RolloutCommand.Rollback(mapOf(fixture.hostId to RollbackTarget.Projection(fixture.reference("missing"))))
+            val rollback =
+                RolloutCommand.Rollback(mapOf(fixture.serviceId to RollbackTarget.Projection(fixture.reference("missing"))))
 
             val result = fixture.participant.handle(fixture.envelope(attempt, reference, rollback))
 
@@ -234,7 +235,7 @@ val HostRolloutParticipantTest by testSuite {
             fixture.runtimes.single().failOn += "activate"
 
             fixture.participant.handle(fixture.envelope(attempt, reference, RolloutCommand.Commit)).accepted shouldBe false
-            fixture.participant.currentStatus(attempt) shouldBe ParticipantStatus.Idle(attempt, fixture.hostId)
+            fixture.participant.currentStatus(attempt) shouldBe ParticipantStatus.Idle(attempt, fixture.serviceId)
             fixture.runtimes.single().operations shouldContainExactly listOf("activate", "close")
             fixture.stagedContexts.size shouldBe 1
             fixture.participant.close()
@@ -249,10 +250,10 @@ val HostRolloutParticipantTest by testSuite {
             fixture.projections[reference] = fixture.projection(reference)
             fixture.participant.handle(fixture.envelope(attempt, reference, RolloutCommand.Stage))
             fixture.participant.handle(fixture.envelope(attempt, reference, RolloutCommand.Commit))
-            val rollback = RolloutCommand.Rollback(mapOf(fixture.hostId to RollbackTarget.Empty))
+            val rollback = RolloutCommand.Rollback(mapOf(fixture.serviceId to RollbackTarget.Empty))
 
             fixture.participant.handle(fixture.envelope(attempt, reference, rollback)).accepted shouldBe true
-            fixture.participant.currentStatus(attempt) shouldBe ParticipantStatus.Idle(attempt, fixture.hostId)
+            fixture.participant.currentStatus(attempt) shouldBe ParticipantStatus.Idle(attempt, fixture.serviceId)
             fixture.runtimes.single().operations shouldContainExactly listOf("activate", "quiesce", "close")
             fixture.stagedContexts.size shouldBe 1
             fixture.participant.close()
@@ -275,7 +276,7 @@ val HostRolloutParticipantTest by testSuite {
             fixture.participant.handle(fixture.envelope(candidateAttempt, candidate, RolloutCommand.Commit))
             val rollback =
                 RolloutCommand.Rollback(
-                    mapOf(fixture.hostId to RollbackTarget.Projection(baseline)),
+                    mapOf(fixture.serviceId to RollbackTarget.Projection(baseline)),
                 )
 
             fixture.participant.handle(fixture.envelope(candidateAttempt, candidate, rollback)).accepted shouldBe true
@@ -291,7 +292,7 @@ val HostRolloutParticipantTest by testSuite {
 }
 
 private class ParticipantFixture(
-    val hostId: HostId,
+    val serviceId: ServiceId,
     val realmId: RealmId,
     val participant: HostRolloutParticipant,
     val projections: MutableMap<ProjectionReference, HostDeploymentProjection>,
@@ -305,7 +306,7 @@ private class ParticipantFixture(
         ProjectionReference(
             realmId,
             DeploymentGeneration(name.length.toLong()),
-            hostId,
+            serviceId,
             ArtifactDigest.sha256(name.encodeToByteArray()),
         )
 
@@ -313,7 +314,7 @@ private class ParticipantFixture(
         attempt: RolloutAttempt,
         reference: ProjectionReference,
         command: RolloutCommand,
-    ) = RolloutEnvelope(realmId, attempt, setOf(hostId), mapOf(hostId to reference), command)
+    ) = RolloutEnvelope(realmId, attempt, setOf(serviceId), mapOf(serviceId to reference), command)
 
     fun projection(
         reference: ProjectionReference,
@@ -343,7 +344,7 @@ private class ParticipantFixture(
         return HostDeploymentProjection(
             realmId.value,
             reference.generation,
-            hostId,
+            serviceId,
             listOf(ProjectedRuntime.primaryEngine(runtime)),
             extensions,
             emptyMap(),
@@ -367,7 +368,7 @@ private class ParticipantFixture(
 
 private fun participantFixture(scope: TestScope): ParticipantFixture {
     val root = Files.createTempDirectory("participant")
-    val hostId = HostId("host")
+    val serviceId = ServiceId("service")
     val realmId = RealmId("realm")
     val projections = mutableMapOf<ProjectionReference, HostDeploymentProjection>()
     val contexts = mutableListOf<HostedDeploymentContext>()
@@ -393,7 +394,7 @@ private fun participantFixture(scope: TestScope): ParticipantFixture {
     val participant =
         HostRolloutParticipant(
             realmId,
-            hostId,
+            serviceId,
             root,
             host,
             object : ProjectionSource {
@@ -408,7 +409,7 @@ private fun participantFixture(scope: TestScope): ParticipantFixture {
             stager,
             1.seconds,
         )
-    return ParticipantFixture(hostId, realmId, participant, projections, contexts, classPaths, runtimes, events, root)
+    return ParticipantFixture(serviceId, realmId, participant, projections, contexts, classPaths, runtimes, events, root)
 }
 
 private class RecordingRuntime : StagedHostedRuntime {

@@ -40,6 +40,7 @@ import com.typewritermc.services.libs.registrar.RuntimeResult
 import com.typewritermc.services.libs.registrar.RuntimeSetupProgress
 import com.typewritermc.services.libs.registrar.RuntimeSetupProgressSink
 import com.typewritermc.services.libs.registrar.RuntimeStopOperation
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.telemetry.ErrorSlug
 import com.typewritermc.services.libs.telemetry.ServiceTelemetry
 import io.opentelemetry.context.propagation.ContextPropagators
@@ -59,18 +60,14 @@ import kotlin.time.TimeSource
 /** Address identity used to route messaging operations for one registered service. */
 @JvmInline
 value class ServiceAddress(
-    val serviceId: String,
-) {
-    init {
-        require(serviceId.isNotBlank())
-    }
-}
+    val serviceId: ServiceId,
+)
 
 private fun serviceAddress(pattern: String): AddressTemplate<ServiceAddress> =
     addressTemplate(
         pattern,
-        { addressValuesOf("id" to it.serviceId) },
-        { ServiceAddress(it.require("id")) },
+        { addressValuesOf("id" to it.serviceId.value) },
+        { ServiceAddress(ServiceId(it.require("id"))) },
     )
 
 /** Service status requests. */

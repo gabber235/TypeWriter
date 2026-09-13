@@ -649,7 +649,7 @@ private fun fixture(
     initial: CredentialLoadResult = CredentialLoadResult.Missing,
 ) = Fixture(scope, initial)
 
-private fun identity() = ServiceIdentity("service", "Service", "user", ServiceRole.Host("1"))
+private fun identity() = ServiceIdentity(ServiceId("service"), "Service", "user", ServiceRole.Host("1"))
 
 private fun credentials() = IdentityCredentials(identity(), RedactedSecret.AppPassword("password"))
 

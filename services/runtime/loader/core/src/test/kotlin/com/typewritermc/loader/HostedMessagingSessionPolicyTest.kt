@@ -8,6 +8,7 @@ import com.typewritermc.services.libs.registrar.RegistrarFailure
 import com.typewritermc.services.libs.registrar.RegistrarStage
 import com.typewritermc.services.libs.registrar.RegistrarState
 import com.typewritermc.services.libs.registrar.RetrySchedule
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import de.infix.testBalloon.framework.core.testSuite
@@ -27,7 +28,7 @@ val HostedMessagingSessionPolicyTest by testSuite {
 private val binding = OrganizationBinding("organization", "Organization")
 private val readySession =
     ReadySession(
-        ServiceIdentity("service", "Service", "service-user", ServiceRole.Host("1")),
+        ServiceIdentity(ServiceId("service"), "Service", "service-user", ServiceRole.Host("1")),
         binding,
     )
 

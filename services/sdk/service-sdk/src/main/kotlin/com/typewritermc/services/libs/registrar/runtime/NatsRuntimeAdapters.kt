@@ -17,8 +17,8 @@ internal fun serviceNatsConfiguration(
     credentials: IdentityCredentials,
 ) = NatsConnectionConfiguration(
     serverUrl = configuration.natsServerUri.toString(),
-    clientName = credentials.identity.serviceId,
-    inboxPrefix = "_INBOX.${credentials.identity.serviceId}.",
+    clientName = credentials.identity.serviceId.value,
+    inboxPrefix = "_INBOX.${credentials.identity.serviceId.value}.",
     shutdownTimeout = configuration.shutdownTimeout,
 )
 

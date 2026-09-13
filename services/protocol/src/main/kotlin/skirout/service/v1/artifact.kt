@@ -1081,11 +1081,11 @@ sealed class SharedArtifactProvenance private constructor() {
         fun createService(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            hostId: kotlin.String,
+            serviceId: kotlin.String,
             runtimeId: kotlin.String,
         ) = ServiceWrapper(
             skirout.service.v1.artifact.SharedArtifactProvenance.Service(
-                hostId = hostId,
+                serviceId = serviceId,
                 runtimeId = runtimeId,
             )
         );
@@ -1413,7 +1413,7 @@ sealed class SharedArtifactProvenance private constructor() {
     }
 
     sealed interface Service_OrMutable {
-        val hostId: kotlin.String;
+        val serviceId: kotlin.String;
         val runtimeId: kotlin.String;
 
         fun toFrozen(): skirout.service.v1.artifact.SharedArtifactProvenance.Service;
@@ -1422,7 +1422,7 @@ sealed class SharedArtifactProvenance private constructor() {
     /** Deeply immutable. */
     @kotlin.Suppress("UNUSED_PARAMETER")
     class Service private constructor(
-        override val hostId: kotlin.String,
+        override val serviceId: kotlin.String,
         override val runtimeId: kotlin.String,
         private val _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.artifact.SharedArtifactProvenance.Service>? =
             null,
@@ -1430,12 +1430,12 @@ sealed class SharedArtifactProvenance private constructor() {
         constructor(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            hostId: kotlin.String,
+            serviceId: kotlin.String,
             runtimeId: kotlin.String,
             _unrecognizedFields: _UnrecognizedFields<skirout.service.v1.artifact.SharedArtifactProvenance.Service>? =
                 null,
         ): this(
-            hostId,
+            serviceId,
             runtimeId,
             _unrecognizedFields,
         ) {}
@@ -1445,7 +1445,7 @@ sealed class SharedArtifactProvenance private constructor() {
 
         /** Returns a mutable shallow copy of this instance */
         fun toMutable() = Mutable(
-            hostId = this.hostId,
+            serviceId = this.serviceId,
             runtimeId = this.runtimeId,
         );
 
@@ -1453,12 +1453,12 @@ sealed class SharedArtifactProvenance private constructor() {
         fun copy(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            hostId: kotlin.String =
-                this.hostId,
+            serviceId: kotlin.String =
+                this.serviceId,
             runtimeId: kotlin.String =
                 this.runtimeId,
         ) = skirout.service.v1.artifact.SharedArtifactProvenance.Service(
-            hostId,
+            serviceId,
             runtimeId,
             this._unrecognizedFields,
         );
@@ -1467,11 +1467,11 @@ sealed class SharedArtifactProvenance private constructor() {
         fun copy() = this;
 
         override fun equals(other: kotlin.Any?): kotlin.Boolean {
-            return this === other || (other is skirout.service.v1.artifact.SharedArtifactProvenance.Service && this.hostId == other.hostId && this.runtimeId == other.runtimeId);
+            return this === other || (other is skirout.service.v1.artifact.SharedArtifactProvenance.Service && this.serviceId == other.serviceId && this.runtimeId == other.runtimeId);
         }
 
         override fun hashCode(): kotlin.Int {
-            return kotlin.collections.listOf<kotlin.Any?>(this.hostId, this.runtimeId).hashCode();
+            return kotlin.collections.listOf<kotlin.Any?>(this.serviceId, this.runtimeId).hashCode();
         }
 
         override fun toString(): kotlin.String {
@@ -1485,7 +1485,7 @@ sealed class SharedArtifactProvenance private constructor() {
         class Mutable internal constructor(
             _mustNameArguments: _MustNameArguments =
                 _MustNameArguments,
-            override var hostId: kotlin.String =
+            override var serviceId: kotlin.String =
                 "",
             override var runtimeId: kotlin.String =
                 "",
@@ -1494,7 +1494,7 @@ sealed class SharedArtifactProvenance private constructor() {
         ): skirout.service.v1.artifact.SharedArtifactProvenance.Service_OrMutable {
             /** Returns a deeply immutable copy of this instance */
             override fun toFrozen() = skirout.service.v1.artifact.SharedArtifactProvenance.Service(
-                hostId = this.hostId,
+                serviceId = this.serviceId,
                 runtimeId = this.runtimeId,
                 _unrecognizedFields = this._unrecognizedFields,
             );
@@ -1518,12 +1518,12 @@ sealed class SharedArtifactProvenance private constructor() {
             fun partial(
                 _mustNameArguments: _MustNameArguments =
                     _MustNameArguments,
-                hostId: kotlin.String =
+                serviceId: kotlin.String =
                     "",
                 runtimeId: kotlin.String =
                     "",
             ) = skirout.service.v1.artifact.SharedArtifactProvenance.Service(
-                hostId = hostId,
+                serviceId = serviceId,
                 runtimeId = runtimeId,
                 _unrecognizedFields = null,
             );
@@ -1546,13 +1546,13 @@ sealed class SharedArtifactProvenance private constructor() {
 
             init {
                 serializerImpl.addField(
-                    "host_id",
-                    "hostId",
+                    "service_id",
+                    "serviceId",
                     0,
                     build.skir.Serializers.string,
                     "",
-                    { it.hostId },
-                    { mut, v -> mut.hostId = v },
+                    { it.serviceId },
+                    { mut, v -> mut.serviceId = v },
                 );
                 serializerImpl.addField(
                     "runtime_id",

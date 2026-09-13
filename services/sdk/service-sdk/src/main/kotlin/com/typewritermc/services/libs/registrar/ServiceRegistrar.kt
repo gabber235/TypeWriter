@@ -1121,7 +1121,7 @@ private fun readyAttributes(
 ): Attributes =
     Attributes
         .builder()
-        .put("service.id", session.identity.serviceId)
+        .put("service.id", session.identity.serviceId.value)
         .put("user.org.id", session.binding.organizationId)
         .put("registrar.connection.generation", generation)
         .build()

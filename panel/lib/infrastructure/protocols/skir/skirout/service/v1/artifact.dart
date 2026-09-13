@@ -1037,7 +1037,7 @@ final class SharedArtifactProvenance_Panel_mutable implements SharedArtifactProv
 // -----------------------------------------------------------------------------
 
 sealed class SharedArtifactProvenance_Service_orMutable {
-  _core.String get hostId;
+  _core.String get serviceId;
   _core.String get runtimeId;
 
   SharedArtifactProvenance_Service toFrozen();
@@ -1046,21 +1046,21 @@ sealed class SharedArtifactProvenance_Service_orMutable {
 /// Deeply immutable.
 final class SharedArtifactProvenance_Service implements SharedArtifactProvenance_Service_orMutable {
   @_core.override
-  final _core.String hostId;
+  final _core.String serviceId;
   @_core.override
   final _core.String runtimeId;
   _skir.internal__UnrecognizedFields? _u;
 
   factory SharedArtifactProvenance_Service({
-    required _core.String hostId,
+    required _core.String serviceId,
     required _core.String runtimeId,
   }) => SharedArtifactProvenance_Service._(
-    hostId,
+    serviceId,
     runtimeId,
   );
 
   SharedArtifactProvenance_Service._(
-    this.hostId,
+    this.serviceId,
     this.runtimeId,
   );
 
@@ -1084,7 +1084,7 @@ final class SharedArtifactProvenance_Service implements SharedArtifactProvenance
 
   /// Returns a mutable shallow copy of this instance.
   SharedArtifactProvenance_Service_mutable toMutable() => SharedArtifactProvenance_Service_mutable._(
-    this.hostId,
+    this.serviceId,
     this.runtimeId,
   );
 
@@ -1099,7 +1099,7 @@ final class SharedArtifactProvenance_Service implements SharedArtifactProvenance
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
   _core.List get _equality_proxy => [
-    this.hostId,
+    this.serviceId,
     this.runtimeId,
   ];
 
@@ -1110,13 +1110,13 @@ final class SharedArtifactProvenance_Service implements SharedArtifactProvenance
   static _skir.StructSerializer<SharedArtifactProvenance_Service, SharedArtifactProvenance_Service_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
-        "host_id",
-        "hostId",
+        "service_id",
+        "serviceId",
         0,
         _skir.Serializers.string,
         "",
-        (it) => it.hostId,
-        (it, v) => it.hostId = v,
+        (it) => it.serviceId,
+        (it, v) => it.serviceId = v,
       );
       _serializerBuilder.addField(
         "runtime_id",
@@ -1145,19 +1145,19 @@ final class SharedArtifactProvenance_Service implements SharedArtifactProvenance
 
 /// Mutable version of [SharedArtifactProvenance_Service].
 final class SharedArtifactProvenance_Service_mutable implements SharedArtifactProvenance_Service_orMutable {
-  _core.String hostId;
+  _core.String serviceId;
   _core.String runtimeId;
   _skir.internal__UnrecognizedFields? _u;
 
   SharedArtifactProvenance_Service_mutable._(
-    this.hostId,
+    this.serviceId,
     this.runtimeId,
   );
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
   SharedArtifactProvenance_Service toFrozen() => SharedArtifactProvenance_Service(
-    hostId: this.hostId,
+    serviceId: this.serviceId,
     runtimeId: this.runtimeId,
   ).._u = this._u;
 }
@@ -1217,11 +1217,11 @@ sealed class SharedArtifactProvenance {
 
   /// Same as `wrapService(SharedArtifactProvenance_Service(...))`.
   factory SharedArtifactProvenance.createService({
-    required _core.String hostId,
+    required _core.String serviceId,
     required _core.String runtimeId,
   }) => SharedArtifactProvenance.wrapService(
     SharedArtifactProvenance_Service(
-      hostId: hostId,
+      serviceId: serviceId,
       runtimeId: runtimeId,
     )
   );

@@ -299,7 +299,7 @@ impl SharedArtifactProvenance_Panel {
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct SharedArtifactProvenance_Service {
-    pub host_id: String,
+    pub service_id: String,
     pub runtime_id: String,
     /// Set this to None when you're creating a struct.
     pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<SharedArtifactProvenance_Service>>,
@@ -1976,7 +1976,7 @@ fn initialize_module_serializers() {
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<SharedArtifactProvenance_Service> = SharedArtifactProvenance_Service::_adapter() as *const _ as *mut _;
-                (*a).add_field("host_id", 0, crate::skir_client::Serializer::string(), "", |x: &SharedArtifactProvenance_Service| &x.host_id, |x: &mut SharedArtifactProvenance_Service, v| x.host_id = v);
+                (*a).add_field("service_id", 0, crate::skir_client::Serializer::string(), "", |x: &SharedArtifactProvenance_Service| &x.service_id, |x: &mut SharedArtifactProvenance_Service, v| x.service_id = v);
                 (*a).add_field("runtime_id", 1, crate::skir_client::Serializer::string(), "", |x: &SharedArtifactProvenance_Service| &x.runtime_id, |x: &mut SharedArtifactProvenance_Service, v| x.runtime_id = v);
                 (*a).finalize();
             }

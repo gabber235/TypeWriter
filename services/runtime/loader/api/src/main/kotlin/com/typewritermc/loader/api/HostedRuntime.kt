@@ -91,10 +91,10 @@ data class HostedDeploymentContext(
 /**
  * Separates the physical host, logical Realm, and placement of one runtime.
  *
- * Use the Realm id for Realm routing and the host id for participant coordination.
+ * Use the Realm id for Realm routing and the service id for participant coordination.
  */
 data class HostedRuntimeIdentity(
-    val hostId: String,
+    val serviceId: String,
     val realmId: String,
     val placement: RuntimePlacement,
 )

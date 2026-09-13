@@ -21,6 +21,7 @@ import com.typewritermc.services.libs.registrar.RuntimeCloseResult
 import com.typewritermc.services.libs.registrar.RuntimeConnectivity
 import com.typewritermc.services.libs.registrar.RuntimeResult
 import com.typewritermc.services.libs.registrar.RuntimeStopOperation
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import com.typewritermc.services.libs.telemetry.testing.TelemetryTestHarness
@@ -48,7 +49,7 @@ import kotlin.time.TestTimeSource
 
 private val runtimeCredentials =
     IdentityCredentials(
-        ServiceIdentity("service-id", "Service Name", "service-user", ServiceRole.Custom("realm", "1.0.0")),
+        ServiceIdentity(ServiceId("service-id"), "Service Name", "service-user", ServiceRole.Custom("realm", "1.0.0")),
         RedactedSecret.AppPassword("app-password"),
     )
 
@@ -118,7 +119,7 @@ private suspend fun runtimeFixture(): RuntimeFixture {
     return RuntimeFixture(
         TypewriterRegistrarRuntime(
             Communicator(transport, harness.telemetry, harness.openTelemetry.propagators),
-            ServiceAddress("service-id"),
+            ServiceAddress(ServiceId("service-id")),
             nats,
             access,
             sentinel,

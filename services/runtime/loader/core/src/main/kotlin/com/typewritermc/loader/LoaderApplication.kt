@@ -4,7 +4,6 @@ import com.typewritermc.imprint.ArtifactId
 import com.typewritermc.imprint.ArtifactRequirement
 import com.typewritermc.imprint.VersionConstraint
 import com.typewritermc.loader.api.RuntimePlacement
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.loader.deployment.PrimaryEngineTarget
 import com.typewritermc.loader.deployment.RealmLoaderIntent
 import com.typewritermc.loader.rollout.ArtifactHost
@@ -13,11 +12,14 @@ import com.typewritermc.loader.rollout.ArtifactHostAssignmentSource
 import com.typewritermc.loader.rollout.BackendArtifactHostAssignmentSource
 import com.typewritermc.loader.rollout.DesiredHostExecution
 import com.typewritermc.loader.rollout.RealmId
+import com.typewritermc.services.libs.registrar.RegistrarResult
 import com.typewritermc.services.libs.telemetry.ServiceTelemetry
 import com.typewritermc.services.libs.telemetry.koin.serviceTelemetryModule
 import io.opentelemetry.api.OpenTelemetry
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.withContext
 import org.koin.core.KoinApplication
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -25,9 +27,8 @@ import org.koin.dsl.onClose
 import java.nio.file.Path
 
 /**
- * Assembles and starts the shared artifact host for a process entrypoint. Restores persistent host identity,
- * creates registration and assignment dependencies, and returns a [RunningHost] whose stop action owns host
- * teardown. Local Realm assignment overrides apply only to the standalone entrypoint.
+ * Assembles and starts the shared artifact host for a process entrypoint. Registration supplies the durable service
+ * identity before identity dependent workers start. Local Realm assignment overrides apply only to standalone.
  */
 internal class ArtifactLoaderBootstrap(
     private val serviceFactory: LoaderServiceFactory,
@@ -39,17 +40,31 @@ internal class ArtifactLoaderBootstrap(
         scope: CoroutineScope,
     ): RunningHost {
         val service = serviceFactory.create(workDirectory, scope)
-        val identity = HostIdentityStore(workDirectory.resolve("state/host-id"))
-        val hostId = HostId(identity.load() ?: "local-${entrypoint.name.lowercase()}".also(identity::save))
+        val ready =
+            when (val result = service.start()) {
+                is RegistrarResult.Success -> result.value
+                is RegistrarResult.Failure -> error("Loader service is unavailable: ${result.failure}")
+            }
         val host =
             ArtifactHost(
-                hostId,
+                ready.identity.serviceId,
                 workDirectory,
                 service,
                 assignments(entrypoint, service),
                 scope,
             )
-        host.start()
+        try {
+            host.start()
+        } catch (failure: Throwable) {
+            withContext(NonCancellable) {
+                try {
+                    host.stop()
+                } catch (cleanupFailure: Throwable) {
+                    failure.addSuppressed(cleanupFailure)
+                }
+            }
+            throw failure
+        }
         return RunningHost(service, host::stop)
     }
 

@@ -5,6 +5,7 @@ import com.typewritermc.services.libs.registrar.CredentialStorageError
 import com.typewritermc.services.libs.registrar.CredentialStoreResult
 import com.typewritermc.services.libs.registrar.IdentityCredentials
 import com.typewritermc.services.libs.registrar.RedactedSecret
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import de.infix.testBalloon.framework.core.testSuite
@@ -19,7 +20,7 @@ import java.nio.file.Files
 private fun credentials(id: String = "service-id") =
     IdentityCredentials(
         ServiceIdentity(
-            id,
+            ServiceId(id),
             "Service Name",
             "service-user",
             ServiceRole.Custom("custom_role", "7.8.9"),
@@ -52,7 +53,7 @@ val FileCredentialStorageTest by testSuite {
                     )
                 storage.store(credentials()) shouldBe CredentialStoreResult.Success
                 val loaded = storage.load() as CredentialLoadResult.Loaded
-                loaded.credentials.identity.serviceId shouldBe "service-id"
+                loaded.credentials.identity.serviceId shouldBe ServiceId("service-id")
                 loaded.credentials.identity.displayName shouldBe "Service Name"
                 loaded.credentials.identity.username shouldBe "service-user"
                 loaded.credentials.identity.role shouldBe ServiceRole.Custom("custom_role", "7.8.9")
@@ -75,7 +76,7 @@ val FileCredentialStorageTest by testSuite {
                 storage.store(credentials("first")) shouldBe CredentialStoreResult.Success
                 storage.store(credentials("second")) shouldBe CredentialStoreResult.Success
                 val loaded = storage.load() as CredentialLoadResult.Loaded
-                loaded.credentials.identity.serviceId shouldBe "second"
+                loaded.credentials.identity.serviceId shouldBe ServiceId("second")
                 Files.list(directory).use { it.count() } shouldBe 1L
             }
         } finally {

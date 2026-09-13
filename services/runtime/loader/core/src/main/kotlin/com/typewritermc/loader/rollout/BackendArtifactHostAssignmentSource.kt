@@ -6,7 +6,6 @@ import com.typewritermc.imprint.VersionConstraint
 import com.typewritermc.loader.HostEntrypoint
 import com.typewritermc.loader.LoaderServiceConnection
 import com.typewritermc.loader.api.RuntimePlacement
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.loader.deployment.PrimaryEngineTarget
 import com.typewritermc.loader.deployment.RealmLoaderIntent
 import com.typewritermc.services.libs.communicator.address.AddressTemplate
@@ -24,6 +23,7 @@ import com.typewritermc.services.libs.communicator.skir.skirUnaryContract
 import com.typewritermc.services.libs.communicator.skir.skirWatchContract
 import com.typewritermc.services.libs.registrar.RegistrarResult
 import com.typewritermc.services.libs.registrar.RegistrarState
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.telemetry.ErrorSlug
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -52,7 +52,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @JvmInline
 private value class HostExecutionAddress(
-    val serviceId: String,
+    val serviceId: ServiceId,
 )
 
 private val hostExecutionRequestAddress = hostExecutionAddress("cloud.to.service.{service}.execution.watch")
@@ -124,7 +124,7 @@ class BackendArtifactHostAssignmentSource(
     private val entrypoint: HostEntrypoint,
 ) : ArtifactHostAssignmentSource {
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun assignments(hostId: HostId): Flow<DesiredHostExecution> =
+    override fun assignments(): Flow<DesiredHostExecution> =
         service.states
             .flatMapLatest { snapshot ->
                 val ready = snapshot.state as? RegistrarState.Ready ?: return@flatMapLatest emptyFlow()
@@ -180,7 +180,7 @@ class BackendArtifactHostAssignmentSource(
 /** Converts the backend topology projection into a host intent, preserving an empty desired assignment. */
 internal fun WatchHostExecutionResponse.toDesiredHostExecution(
     panelEngine: ArtifactRequirement,
-    serviceId: String,
+    serviceId: ServiceId,
 ): DesiredHostExecution? {
     val desired = (this as? WatchHostExecutionResponse.DesiredWrapper)?.value ?: return null
     val realm = desired.realm
@@ -354,8 +354,8 @@ private fun RecordId.stringKey(): String =
 private fun hostExecutionAddress(pattern: String): AddressTemplate<HostExecutionAddress> =
     addressTemplate(
         pattern,
-        { addressValuesOf("service" to it.serviceId) },
-        { HostExecutionAddress(it.require("service")) },
+        { addressValuesOf("service" to it.serviceId.value) },
+        { HostExecutionAddress(ServiceId(it.require("service"))) },
     )
 
 private fun classification(

@@ -20,7 +20,6 @@ import com.typewritermc.loader.deployment.CandidateIndex
 import com.typewritermc.loader.deployment.DeploymentContentCodec
 import com.typewritermc.loader.deployment.DeploymentGeneration
 import com.typewritermc.loader.deployment.DeploymentSnapshot
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.loader.deployment.PrimaryEngineTarget
 import com.typewritermc.loader.deployment.RealmLoaderIntent
 import com.typewritermc.loader.deployment.RealmTopology
@@ -32,6 +31,7 @@ import com.typewritermc.services.libs.communicator.router.RouterResult
 import com.typewritermc.services.libs.communicator.router.communicatorRoutes
 import com.typewritermc.services.libs.registrar.RegistrarResult
 import com.typewritermc.services.libs.registrar.RegistrarState
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.telemetry.ServiceTelemetry
 import com.typewritermc.services.libs.utils.rethrowExceptionalThrowable
 import io.opentelemetry.api.OpenTelemetry
@@ -76,7 +76,7 @@ data class ArtifactHostAssignment(
  * The artifact host owns applying changes and releasing prior assignment resources.
  */
 fun interface ArtifactHostAssignmentSource {
-    fun assignments(hostId: HostId): Flow<DesiredHostExecution>
+    fun assignments(): Flow<DesiredHostExecution>
 }
 
 /**
@@ -87,7 +87,7 @@ fun interface ArtifactHostAssignmentSource {
  * through [stop].
  */
 class ArtifactHost(
-    private val hostId: HostId,
+    private val serviceId: ServiceId,
     private val workDirectory: Path,
     private val service: LoaderService,
     private val assignments: ArtifactHostAssignmentSource,
@@ -103,7 +103,7 @@ class ArtifactHost(
         HostExecutionOwner { assignment ->
             AssignmentRuntime(
                 assignment,
-                hostId,
+                serviceId,
                 workDirectory,
                 artifactsRoot,
                 service.openTelemetry,
@@ -124,7 +124,6 @@ class ArtifactHost(
     private var sessionJob: Job? = null
 
     suspend fun start() {
-        service.start().requireSuccess()
         inboxJob = scope.launch { inbox.run() }
         sessionJob =
             scope.launch {
@@ -155,7 +154,7 @@ class ArtifactHost(
             }
         assignmentJob =
             scope.launch {
-                assignments.assignments(hostId).collect { desiredExecution.value = it }
+                assignments.assignments().collect { desiredExecution.value = it }
             }
         reconciliationJob =
             scope.launch {
@@ -174,7 +173,7 @@ class ArtifactHost(
                                     "artifact-assignment-lifecycle-failed",
                                 ) { span ->
                                     span?.annotate {
-                                        attribute("host.id", hostId.value)
+                                        attribute("service.id", serviceId.value)
                                         attribute("host.expected_revision", desired.revision?.value ?: 0L)
                                         attribute("realm.id", desired.assignment?.realmId?.value ?: "unassigned")
                                         attribute(
@@ -255,7 +254,7 @@ internal fun RegistrarState.invalidatesHostedMessagingSession(): Boolean =
 
 internal class AssignmentRuntime(
     override val assignment: ArtifactHostAssignment,
-    private val hostId: HostId,
+    private val serviceId: ServiceId,
     private val workDirectory: Path,
     private val artifactsRoot: Path,
     openTelemetry: OpenTelemetry,
@@ -275,7 +274,7 @@ internal class AssignmentRuntime(
     private val participant =
         HostRolloutParticipant(
             assignment.realmId,
-            hostId,
+            serviceId,
             workDirectory,
             object : HostedRuntimeHost {
                 override val messaging: StateFlow<HostedMessagingSession?> = mutableMessaging.asStateFlow()
@@ -333,7 +332,7 @@ internal class AssignmentRuntime(
                         } else {
                             RealmHostPresence(
                                 probe.probeId,
-                                hostId,
+                                serviceId,
                                 ArtifactVersion(HOST_API_VERSION),
                                 assignment.roles,
                                 participant.activeProjection,
@@ -370,7 +369,7 @@ internal class AssignmentRuntime(
                 ) { span ->
                     span?.annotate {
                         attribute("realm.id", assignment.realmId.value)
-                        attribute("host.id", hostId.value)
+                        attribute("service.id", serviceId.value)
                     }
                     resolveDeployment(CandidateIndex(candidates.candidates()), topology, primaryEngine, intent)
                 }
@@ -460,7 +459,7 @@ internal class AssignmentRuntime(
             val deleted = localBlobs.collectGarbage(protection.protectedDigests())
             span?.annotate {
                 attribute("realm.id", assignment.realmId.value)
-                attribute("host.id", hostId.value)
+                attribute("service.id", serviceId.value)
                 attribute("maintenance.expired_transfer_count", expiredTransfers.toLong())
                 attribute("maintenance.deleted_count", deleted.toLong())
             }
@@ -469,19 +468,19 @@ internal class AssignmentRuntime(
 }
 
 internal fun List<RealmHostPresence>.toReadyTopology(): RealmTopology? {
-    val responsesByHost = groupBy(RealmHostPresence::hostId)
-    if (responsesByHost.values.any { it.size != 1 }) return null
-    val active = responsesByHost.mapValues { it.value.single() }
+    val responsesByService = groupBy(RealmHostPresence::serviceId)
+    if (responsesByService.values.any { it.size != 1 }) return null
+    val active = responsesByService.mapValues { it.value.single() }
     val realmHosts = active.values.filter { RuntimePlacement.REALM in it.assignedRoles }
     if (realmHosts.size != 1) return null
     val primaryHosts =
         active.values
             .filter { RuntimePlacement.PRIMARY_ENGINE in it.assignedRoles }
-            .mapTo(linkedSetOf(), RealmHostPresence::hostId)
+            .mapTo(linkedSetOf(), RealmHostPresence::serviceId)
     return RealmTopology(
-        realmHost = realmHosts.single().hostId,
-        primaryEngineHosts = primaryHosts,
-        hostApis = active.mapValues { it.value.hostApi },
+        realmService = realmHosts.single().serviceId,
+        primaryEngineServices = primaryHosts,
+        serviceApis = active.mapValues { it.value.hostApi },
     )
 }
 

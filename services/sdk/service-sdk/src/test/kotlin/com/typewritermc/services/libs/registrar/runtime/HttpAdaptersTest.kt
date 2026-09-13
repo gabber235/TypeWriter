@@ -12,6 +12,7 @@ import com.typewritermc.services.libs.registrar.IdentityIssueResult
 import com.typewritermc.services.libs.registrar.IdentityRejectionReason
 import com.typewritermc.services.libs.registrar.RedactedSecret
 import com.typewritermc.services.libs.registrar.SentinelFailureReason
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import com.typewritermc.services.libs.telemetry.testing.TelemetryTestHarness
@@ -25,7 +26,7 @@ import skirout.service.v1.service.ServiceRole as SkirRole
 
 private val httpCredentials =
     IdentityCredentials(
-        ServiceIdentity("service-id", "Service Name", "service-user", ServiceRole.Custom("realm", "1.0")),
+        ServiceIdentity(ServiceId("service-id"), "Service Name", "service-user", ServiceRole.Custom("realm", "1.0")),
         RedactedSecret.AppPassword("app-password"),
     )
 
@@ -75,7 +76,7 @@ val HttpAdaptersTest by testSuite {
             val result =
                 TypewriterIdentityIssuer(fixture.client, URI("https://api.example.test/service/identity/issue"))
                     .issue(role) as IdentityIssueResult.Success
-            result.credentials.identity.serviceId shouldBe "service-id"
+            result.credentials.identity.serviceId shouldBe ServiceId("service-id")
             result.credentials.revealAppPassword() shouldBe "private-token"
             val action = fixture.transport.actions.single()
             action.headers.first("Content-Type") shouldBe "application/octet-stream"

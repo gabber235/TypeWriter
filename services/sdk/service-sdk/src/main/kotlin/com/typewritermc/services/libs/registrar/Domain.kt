@@ -1,5 +1,20 @@
 package com.typewritermc.services.libs.registrar
 
+import kotlinx.serialization.Serializable
+
+/** Durable identifier issued once by the identity service and reused across restarts. */
+@JvmInline
+@Serializable
+value class ServiceId(
+    val value: String,
+) {
+    init {
+        requireTrimmedNonblank(value, "serviceId")
+    }
+
+    override fun toString(): String = value
+}
+
 /** A service role sent to identity issuance and retained with the issued identity. */
 sealed interface ServiceRole {
     val version: String
@@ -26,13 +41,12 @@ sealed interface ServiceRole {
 
 /** Durable public attributes issued by the identity service and reused across restarts. */
 class ServiceIdentity(
-    val serviceId: String,
+    val serviceId: ServiceId,
     val displayName: String,
     val username: String,
     val role: ServiceRole,
 ) {
     init {
-        requireTrimmedNonblank(serviceId, "serviceId")
         requireTrimmedNonblank(displayName, "displayName")
         requireTrimmedNonblank(username, "username")
     }

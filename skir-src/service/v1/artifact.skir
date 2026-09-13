@@ -42,7 +42,7 @@ enum SharedArtifactProvenance(812100006) {
     user_id: string = 0;
   } = 2;
   service: struct {
-    host_id: string = 0;
+    service_id: string = 0;
     runtime_id: string = 1;
   } = 3;
 }

@@ -12,6 +12,7 @@ import com.typewritermc.services.libs.registrar.RegistrarState
 import com.typewritermc.services.libs.registrar.RegistrarStopResult
 import com.typewritermc.services.libs.registrar.RegistrationToken
 import com.typewritermc.services.libs.registrar.RetrySchedule
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import de.infix.testBalloon.framework.core.testSuite
@@ -151,7 +152,7 @@ val StatusCommandTest by testSuite {
 
 private val identity =
     ServiceIdentity(
-        serviceId = "service123",
+        serviceId = ServiceId("service123"),
         displayName = "Loader Service",
         username = "loader_service",
         role = ServiceRole.Host("1.0.0"),

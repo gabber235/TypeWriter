@@ -3,6 +3,7 @@ package com.typewritermc.services.libs.registrar.console
 import com.typewritermc.services.libs.registrar.RegistrarSnapshot
 import com.typewritermc.services.libs.registrar.RegistrarState
 import com.typewritermc.services.libs.registrar.RegistrationToken
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import de.infix.testBalloon.framework.core.testSuite
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.flowOf
 
 private val identity =
     ServiceIdentity(
-        "service-id",
+        ServiceId("service-id"),
         "Service Name",
         "service-user",
         ServiceRole.Custom("realm", "1.0.0"),

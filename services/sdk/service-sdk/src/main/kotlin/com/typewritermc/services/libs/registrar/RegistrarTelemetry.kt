@@ -122,11 +122,11 @@ private fun RegistrarState.attributes(attributes: TelemetryEventAttributes) {
         -> {}
 
         is RegistrarState.PersistingIdentity -> {
-            attributes.attribute("service.id", identity.serviceId)
+            attributes.attribute("service.id", identity.serviceId.value)
         }
 
         is RegistrarState.AcquiringAccessToken -> {
-            attributes.attribute("service.id", identity.serviceId)
+            attributes.attribute("service.id", identity.serviceId.value)
         }
 
         is RegistrarState.Connecting -> {
@@ -134,7 +134,7 @@ private fun RegistrarState.attributes(attributes: TelemetryEventAttributes) {
         }
 
         is RegistrarState.AwaitingBinding -> {
-            attributes.attribute("service.id", identity.serviceId)
+            attributes.attribute("service.id", identity.serviceId.value)
         }
 
         is RegistrarState.Reauthorizing -> {
@@ -142,7 +142,7 @@ private fun RegistrarState.attributes(attributes: TelemetryEventAttributes) {
         }
 
         is RegistrarState.Ready -> {
-            attributes.attribute("service.id", session.identity.serviceId)
+            attributes.attribute("service.id", session.identity.serviceId.value)
             attributes.attribute("user.org.id", session.binding.organizationId)
             attributes.attribute("registrar.connection.generation", connectionGeneration)
             attributes.attribute("operation.outcome", "ready")
@@ -156,7 +156,7 @@ private fun RegistrarState.attributes(attributes: TelemetryEventAttributes) {
         is RegistrarState.DegradedAfterReady -> {
             attributes.degraded(stage, retry, failure)
             attributes.attribute("registrar.previously_ready", true)
-            attributes.attribute("service.id", session.identity.serviceId)
+            attributes.attribute("service.id", session.identity.serviceId.value)
             attributes.attribute("user.org.id", session.binding.organizationId)
         }
 

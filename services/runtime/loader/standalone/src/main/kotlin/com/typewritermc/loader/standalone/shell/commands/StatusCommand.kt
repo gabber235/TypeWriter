@@ -55,12 +55,12 @@ class StatusCommand(
 
             is RegistrarState.PersistingIdentity -> {
                 echo("Status: Persisting Identity")
-                displayIdentity(state.identity.serviceId, state.identity.displayName)
+                displayIdentity(state.identity.serviceId.value, state.identity.displayName)
             }
 
             is RegistrarState.AcquiringAccessToken -> {
                 echo("Status: Acquiring Access Token")
-                displayIdentity(state.identity.serviceId, state.identity.displayName)
+                displayIdentity(state.identity.serviceId.value, state.identity.displayName)
             }
 
             RegistrarState.AcquiringSentinelCredentials -> {
@@ -74,7 +74,7 @@ class StatusCommand(
 
             is RegistrarState.AwaitingBinding -> {
                 echo("Status: Awaiting Binding")
-                displayIdentity(state.identity.serviceId, state.identity.displayName)
+                displayIdentity(state.identity.serviceId.value, state.identity.displayName)
                 echo("Token: [REDACTED]")
             }
 
@@ -85,7 +85,7 @@ class StatusCommand(
 
             is RegistrarState.Ready -> {
                 echo("Status: Ready")
-                displayIdentity(state.session.identity.serviceId, state.session.identity.displayName)
+                displayIdentity(state.session.identity.serviceId.value, state.session.identity.displayName)
                 displayBinding(state.session.binding.organizationId, state.session.binding.organizationName)
                 echo("Connection Generation: ${state.connectionGeneration}")
             }
@@ -104,7 +104,7 @@ class StatusCommand(
                 echo("Error: ${state.failure.displayName()}")
                 echo("Retry Attempt: ${state.retry.attempt}")
                 echo("Retry Delay: ${state.retry.delay}")
-                displayIdentity(state.session.identity.serviceId, state.session.identity.displayName)
+                displayIdentity(state.session.identity.serviceId.value, state.session.identity.displayName)
                 displayBinding(state.session.binding.organizationId, state.session.binding.organizationName)
             }
 

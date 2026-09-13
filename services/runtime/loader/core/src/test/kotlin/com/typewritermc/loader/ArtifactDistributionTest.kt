@@ -33,7 +33,6 @@ import com.typewritermc.loader.deployment.DeploymentContent
 import com.typewritermc.loader.deployment.DeploymentContentCodec
 import com.typewritermc.loader.deployment.DeploymentGeneration
 import com.typewritermc.loader.deployment.DeploymentSnapshot
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.loader.deployment.RealmTopology
 import com.typewritermc.loader.deployment.projectFor
 import com.typewritermc.loader.rollout.ActiveBaseline
@@ -60,6 +59,7 @@ import com.typewritermc.loader.rollout.toDesiredHostExecution
 import com.typewritermc.loader.rollout.toReadyTopology
 import com.typewritermc.loader.shared.FileSharedArtifactRepository
 import com.typewritermc.loader.shared.SharedArtifactService
+import com.typewritermc.services.libs.registrar.ServiceId
 import de.infix.testBalloon.framework.core.testSuite
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainExactly
@@ -93,7 +93,7 @@ import kotlin.time.TestTimeSource
 val ArtifactDistributionTest by testSuite {
     test("Realm topology requires one unambiguous Realm host and permits no primary engine") {
         val realmId = RealmId("realm")
-        val host = HostId("combined")
+        val host = ServiceId("combined")
         val probe = ProbeRealmHosts(realmId)
         val realmOnly =
             RealmHostPresence(
@@ -111,6 +111,37 @@ val ArtifactDistributionTest by testSuite {
         listOf(realmOnly, combined).toReadyTopology() shouldBe null
         listOf(combined).toReadyTopology() shouldBe
             RealmTopology(host, setOf(host), mapOf(host to ArtifactVersion("1.0.0")))
+    }
+
+    test("distinct service identities remain distinct rollout participants") {
+        val realmId = RealmId("realm")
+        val probe = ProbeRealmHosts(realmId)
+        val standalone = ServiceId("standalone-service")
+        val paper = ServiceId("paper-service")
+        val topology =
+            listOf(
+                RealmHostPresence(
+                    probe.probeId,
+                    standalone,
+                    ArtifactVersion("1.0.0"),
+                    setOf(RuntimePlacement.REALM),
+                    null,
+                ),
+                RealmHostPresence(
+                    probe.probeId,
+                    paper,
+                    ArtifactVersion("1.0.0"),
+                    setOf(RuntimePlacement.PRIMARY_ENGINE),
+                    null,
+                ),
+            ).toReadyTopology()
+
+        topology shouldBe
+            RealmTopology(
+                realmService = standalone,
+                primaryEngineServices = setOf(paper),
+                serviceApis = mapOf(standalone to ArtifactVersion("1.0.0"), paper to ArtifactVersion("1.0.0")),
+            )
     }
 
     test("shared artifact contracts use valid telemetry slugs") {
@@ -146,12 +177,12 @@ val ArtifactDistributionTest by testSuite {
         val primary = artifact("typewritermc:paper", ArtifactKind.ENGINE, "paper")
         val content = DeploymentContent(realm = realm, primaryEngine = primary, panelEngine = panel, extensions = emptyList())
         val snapshot = DeploymentSnapshot(DeploymentGeneration(1), DeploymentContentCodec.digest(content), content)
-        val host = HostId("combined")
+        val host = ServiceId("combined")
         val topology =
             RealmTopology(
-                realmHost = host,
-                primaryEngineHosts = setOf(host),
-                hostApis = mapOf(host to ArtifactVersion("1.0.0")),
+                realmService = host,
+                primaryEngineServices = setOf(host),
+                serviceApis = mapOf(host to ArtifactVersion("1.0.0")),
             )
         val manifests =
             mapOf(
@@ -168,7 +199,7 @@ val ArtifactDistributionTest by testSuite {
 
         val projection = snapshot.projectFor("realm", topology, host, manifests)
 
-        projection.hostId shouldBe host
+        projection.serviceId shouldBe host
         projection.runtimes.map { it.placement } shouldContainExactly
             listOf(
                 RuntimePlacement.PANEL_ENGINE,
@@ -202,7 +233,7 @@ val ArtifactDistributionTest by testSuite {
             val primary = artifact("typewritermc:paper", ArtifactKind.ENGINE, "paper")
             val content = DeploymentContent(realm = realm, primaryEngine = primary, panelEngine = panel, extensions = emptyList())
             val snapshot = DeploymentSnapshot(DeploymentGeneration(1), DeploymentContentCodec.digest(content), content)
-            val host = HostId("combined")
+            val host = ServiceId("combined")
             val projection =
                 snapshot.projectFor(
                     "realm",
@@ -226,7 +257,7 @@ val ArtifactDistributionTest by testSuite {
 
             repository.fetch(reference) shouldBe projection
             shouldThrow<IllegalArgumentException> {
-                repository.fetch(reference.copy(hostId = HostId("another")))
+                repository.fetch(reference.copy(serviceId = ServiceId("another")))
             }
         }
     }
@@ -235,7 +266,7 @@ val ArtifactDistributionTest by testSuite {
         runTest {
             val root = Files.createTempDirectory("typewriter-realm-only-rollout")
             val realmId = RealmId("realm")
-            val host = HostId("realm-host")
+            val host = ServiceId("realm-service")
             val hostApi = ArtifactVersion("1.0.0")
             val assignedRoles = setOf(RuntimePlacement.REALM, RuntimePlacement.PANEL_ENGINE)
             val presence = RealmHostPresence(ProbeRealmHosts(realmId).probeId, host, hostApi, assignedRoles, null)
@@ -264,7 +295,7 @@ val ArtifactDistributionTest by testSuite {
                 object : RolloutMessenger {
                     override suspend fun discover(
                         probe: ProbeRealmHosts,
-                        expected: Set<HostId>,
+                        expected: Set<ServiceId>,
                         timeout: Duration,
                     ) = listOf(presence.copy(probeId = probe.probeId))
 
@@ -302,9 +333,9 @@ val ArtifactDistributionTest by testSuite {
 
                     override suspend fun statuses(
                         probe: ProbeParticipantStatus,
-                        expected: Set<HostId>,
+                        expected: Set<ServiceId>,
                         timeout: Duration,
-                    ): Map<HostId, ParticipantStatus> = currentStatus?.let { mapOf(host to it) }.orEmpty()
+                    ): Map<ServiceId, ParticipantStatus> = currentStatus?.let { mapOf(host to it) }.orEmpty()
                 }
             val projectionRepository = BlobProjectionRepository(FileDigestBlobStore(root))
             val rollout =
@@ -335,7 +366,7 @@ val ArtifactDistributionTest by testSuite {
         runTest {
             val root = Files.createTempDirectory("typewriter-rollout")
             val realmId = RealmId("realm")
-            val host = HostId("combined")
+            val host = ServiceId("combined")
             val topology = RealmTopology(host, setOf(host), mapOf(host to ArtifactVersion("1.0.0")))
             val realm = artifact("typewritermc:realm", ArtifactKind.REALM, "realm")
             val panel = artifact("typewritermc:panel", ArtifactKind.ENGINE, "panel")
@@ -363,7 +394,7 @@ val ArtifactDistributionTest by testSuite {
                 object : RolloutMessenger {
                     override suspend fun discover(
                         probe: ProbeRealmHosts,
-                        expected: Set<HostId>,
+                        expected: Set<ServiceId>,
                         timeout: Duration,
                     ) = listOf(
                         RealmHostPresence(
@@ -432,9 +463,9 @@ val ArtifactDistributionTest by testSuite {
 
                     override suspend fun statuses(
                         probe: ProbeParticipantStatus,
-                        expected: Set<HostId>,
+                        expected: Set<ServiceId>,
                         timeout: Duration,
-                    ): Map<HostId, ParticipantStatus> = currentStatus?.let { mapOf(host to it) }.orEmpty()
+                    ): Map<ServiceId, ParticipantStatus> = currentStatus?.let { mapOf(host to it) }.orEmpty()
                 }
             val blobs = FileDigestBlobStore(root)
 
@@ -518,7 +549,7 @@ val ArtifactDistributionTest by testSuite {
         runTest {
             val root = Files.createTempDirectory("typewriter-stabilization")
             val realmId = RealmId("realm")
-            val host = HostId("combined")
+            val host = ServiceId("combined")
             val topology = RealmTopology(host, setOf(host), mapOf(host to ArtifactVersion("1.0.0")))
             val realm = artifact("typewritermc:realm", ArtifactKind.REALM, "realm")
             val panel = artifact("typewritermc:panel", ArtifactKind.ENGINE, "panel")
@@ -545,7 +576,7 @@ val ArtifactDistributionTest by testSuite {
                 object : RolloutMessenger {
                     override suspend fun discover(
                         probe: ProbeRealmHosts,
-                        expected: Set<HostId>,
+                        expected: Set<ServiceId>,
                         timeout: Duration,
                     ) = listOf(
                         RealmHostPresence(
@@ -590,9 +621,9 @@ val ArtifactDistributionTest by testSuite {
 
                     override suspend fun statuses(
                         probe: ProbeParticipantStatus,
-                        expected: Set<HostId>,
+                        expected: Set<ServiceId>,
                         timeout: Duration,
-                    ): Map<HostId, ParticipantStatus> {
+                    ): Map<ServiceId, ParticipantStatus> {
                         val current = status ?: return emptyMap()
                         if (current is ParticipantStatus.Active) {
                             activeStatusCalls++
@@ -649,7 +680,7 @@ val ArtifactDistributionTest by testSuite {
         val desired =
             WatchHostExecutionResponse
                 .createDesired(topologyRevision = 1, realm = realm, engine = engine)
-                .toDesiredHostExecution(panel, "service-id")
+                .toDesiredHostExecution(panel, ServiceId("service-id"))
 
         val assignment = desired?.assignment
         assignment?.realmId shouldBe RealmId("realm")
@@ -657,31 +688,31 @@ val ArtifactDistributionTest by testSuite {
         assignment?.primaryEngine?.id shouldBe ArtifactId("typewritermc:paper")
         assignment?.intent?.panelEngine shouldBe panel
         desired?.revision?.value shouldBe 1
-        desired?.revision?.serviceId shouldBe "service-id"
+        desired?.revision?.serviceId shouldBe ServiceId("service-id")
         val removal =
             WatchHostExecutionResponse
                 .createDesired(topologyRevision = 2, realm = null, engine = null)
-                .toDesiredHostExecution(panel, "service-id")
+                .toDesiredHostExecution(panel, ServiceId("service-id"))
         removal?.assignment shouldBe null
         removal?.revision?.value shouldBe 2
-        removal?.revision?.serviceId shouldBe "service-id"
+        removal?.revision?.serviceId shouldBe ServiceId("service-id")
     }
 
     test("participant health maps to backend execution state") {
-        val hostId = HostId("host")
+        val serviceId = ServiceId("service")
         val generation = DeploymentGeneration(1)
         val reference =
             ProjectionReference(
                 realmId = RealmId("realm"),
                 generation = generation,
-                hostId = hostId,
+                serviceId = serviceId,
                 blob = ArtifactDigest.sha256("projection".encodeToByteArray()),
                 runtimeVersions = mapOf(RuntimePlacement.PRIMARY_ENGINE to ArtifactVersion("1.2.3")),
             )
         val status =
             ParticipantStatus.Active(
                 attempt = RolloutAttempt(1, generation),
-                hostId = hostId,
+                serviceId = serviceId,
                 current = ActiveProjectionReference(reference, RuntimeHealthSnapshot.Healthy),
                 retained = RetainedProjection.None,
             )

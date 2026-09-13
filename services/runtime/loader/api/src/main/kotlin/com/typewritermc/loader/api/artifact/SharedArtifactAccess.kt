@@ -203,7 +203,7 @@ sealed interface SharedArtifactProvenance {
 
     @Serializable
     data class HostedRuntime(
-        val hostId: String,
+        val serviceId: String,
         val runtimeId: String,
     ) : SharedArtifactProvenance
 

@@ -183,7 +183,7 @@ private fun SharedArtifactProvenance.toSkir(): SkirSharedArtifactProvenance =
         }
 
         is SharedArtifactProvenance.HostedRuntime -> {
-            SkirSharedArtifactProvenance.createService(hostId = hostId, runtimeId = runtimeId)
+            SkirSharedArtifactProvenance.createService(serviceId = serviceId, runtimeId = runtimeId)
         }
     }
 
@@ -191,6 +191,6 @@ private fun SkirSharedArtifactProvenance.toApi(): SharedArtifactProvenance =
     when (this) {
         is SkirSharedArtifactProvenance.LocalInboxWrapper -> SharedArtifactProvenance.LocalInbox(value.relativePath)
         is SkirSharedArtifactProvenance.PanelWrapper -> SharedArtifactProvenance.PanelUpload(value.userId)
-        is SkirSharedArtifactProvenance.ServiceWrapper -> SharedArtifactProvenance.HostedRuntime(value.hostId, value.runtimeId)
+        is SkirSharedArtifactProvenance.ServiceWrapper -> SharedArtifactProvenance.HostedRuntime(value.serviceId, value.runtimeId)
         else -> error("Unknown shared artifact provenance.")
     }

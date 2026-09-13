@@ -8,7 +8,7 @@ import kotlin.time.Duration.Companion.seconds
 
 val DomainTest by testSuite {
     test("secret diagnostics are redacted") {
-        val identity = ServiceIdentity("service", "Service", "user", ServiceRole.Host("1"))
+        val identity = ServiceIdentity(ServiceId("service"), "Service", "user", ServiceRole.Host("1"))
         val credentials = IdentityCredentials(identity, RedactedSecret.AppPassword("password"))
         credentials.toString().contains("password") shouldBe false
         RegistrationToken("token").toString().contains("token") shouldBe false
@@ -24,6 +24,8 @@ val DomainTest by testSuite {
         messaging.toString().contains("sensitive-token") shouldBe false
     }
     test("configuration validates backend role invariants") {
+        shouldThrow<IllegalArgumentException> { ServiceId(" ") }
+        shouldThrow<IllegalArgumentException> { ServiceId(" service") }
         shouldThrow<IllegalArgumentException> { ServiceRole.Host(" ") }
         shouldThrow<IllegalArgumentException> { ServiceRole.Custom("Bad", "1") }
         shouldThrow<IllegalArgumentException> { ServiceRole.Custom("valid_name", " 1") }

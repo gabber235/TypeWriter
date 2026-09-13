@@ -6,6 +6,7 @@ import com.typewritermc.services.libs.registrar.CredentialStorageError
 import com.typewritermc.services.libs.registrar.CredentialStoreResult
 import com.typewritermc.services.libs.registrar.IdentityCredentials
 import com.typewritermc.services.libs.registrar.RedactedSecret
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import com.typewritermc.services.libs.utils.rethrowExceptionalThrowable
@@ -139,7 +140,7 @@ private data class StoredCredential(
 ) {
     fun toCredentials(): IdentityCredentials =
         IdentityCredentials(
-            ServiceIdentity(serviceId, displayName, username, issuedServiceRole.toRole()),
+            ServiceIdentity(ServiceId(serviceId), displayName, username, issuedServiceRole.toRole()),
             RedactedSecret.AppPassword(token),
         )
 
@@ -147,7 +148,7 @@ private data class StoredCredential(
         fun from(credentials: IdentityCredentials) =
             StoredCredential(
                 FORMAT_VERSION,
-                credentials.identity.serviceId,
+                credentials.identity.serviceId.value,
                 credentials.identity.displayName,
                 credentials.identity.username,
                 StoredServiceRole.from(credentials.identity.role),

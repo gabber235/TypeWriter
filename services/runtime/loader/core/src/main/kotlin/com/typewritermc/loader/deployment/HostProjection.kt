@@ -10,43 +10,35 @@ import com.typewritermc.imprint.ImprintManifest
 import com.typewritermc.loader.api.RuntimePlacement
 import com.typewritermc.loader.api.SourcePartDisposition
 import com.typewritermc.loader.artifact.DeploymentArtifact
+import com.typewritermc.services.libs.registrar.ServiceId
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
-/** Identifies a host participating in one Realm topology. */
-@JvmInline
-@Serializable
-value class HostId(
-    val value: String,
-) {
-    init {
-        require(value.isNotBlank()) { "Host id must not be blank." }
-    }
-}
-
 /**
- * Describes host assignments, API versions, and deployment facts.
+ * Describes service assignments, API versions, and deployment facts.
  *
  * Every assigned host must have an API version. The Realm host receives the panel engine as well; primary engines
  * use their own host set.
  */
 @Serializable
 data class RealmTopology(
-    val realmHost: HostId,
-    val primaryEngineHosts: Set<HostId>,
-    val hostApis: Map<HostId, com.typewritermc.imprint.ArtifactVersion>,
-    val factsByHost: Map<HostId, Map<String, String>> = emptyMap(),
+    val realmService: ServiceId,
+    val primaryEngineServices: Set<ServiceId>,
+    val serviceApis: Map<ServiceId, com.typewritermc.imprint.ArtifactVersion>,
+    val factsByService: Map<ServiceId, Map<String, String>> = emptyMap(),
 ) {
     init {
-        require(hostApis.keys.containsAll(assignedHosts())) { "Every assigned host must declare its host API version." }
+        require(serviceApis.keys.containsAll(assignedServices())) {
+            "Every assigned service must declare its host API version."
+        }
     }
 
-    fun assignedHosts(): Set<HostId> = primaryEngineHosts + realmHost
+    fun assignedServices(): Set<ServiceId> = primaryEngineServices + realmService
 
-    fun factsFor(hostId: HostId): Map<String, String> = factsByHost[hostId].orEmpty()
+    fun factsFor(serviceId: ServiceId): Map<String, String> = factsByService[serviceId].orEmpty()
 }
 
 /** Assigns one selected artifact to the role it performs on a host. */
@@ -88,7 +80,7 @@ data class ProjectedExtension(
 data class HostDeploymentProjection(
     val realmId: String,
     val generation: DeploymentGeneration,
-    val hostId: HostId,
+    val serviceId: ServiceId,
     val runtimes: List<ProjectedRuntime>,
     val extensions: List<ProjectedExtension>,
     val facts: Map<String, String>,
@@ -129,32 +121,32 @@ object HostDeploymentProjectionCodec {
 fun DeploymentSnapshot.projectFor(
     realmId: String,
     topology: RealmTopology,
-    hostId: HostId,
+    serviceId: ServiceId,
     manifests: Map<ArtifactId, ImprintManifest>,
 ): HostDeploymentProjection {
-    require(hostId in topology.assignedHosts()) { "Cannot project a deployment for an unassigned host." }
-    val runtimes = projectedRuntimes(topology, hostId)
+    require(serviceId in topology.assignedServices()) { "Cannot project a deployment for an unassigned service." }
+    val runtimes = projectedRuntimes(topology, serviceId)
     val extensions = projectedExtensions(runtimes, manifests)
     return HostDeploymentProjection(
         realmId = realmId,
         generation = generation,
-        hostId = hostId,
+        serviceId = serviceId,
         runtimes = runtimes,
         extensions = extensions,
-        facts = topology.factsFor(hostId),
+        facts = topology.factsFor(serviceId),
     ).canonical()
 }
 
 private fun DeploymentSnapshot.projectedRuntimes(
     topology: RealmTopology,
-    hostId: HostId,
+    serviceId: ServiceId,
 ): List<ProjectedRuntime> =
     buildList {
-        if (hostId == topology.realmHost) {
+        if (serviceId == topology.realmService) {
             add(ProjectedRuntime.realm(content.realm))
             add(ProjectedRuntime.panelEngine(content.panelEngine))
         }
-        if (hostId in topology.primaryEngineHosts) {
+        if (serviceId in topology.primaryEngineServices) {
             add(ProjectedRuntime.primaryEngine(content.primaryEngine))
         }
     }

@@ -2,16 +2,16 @@
 
 package com.typewritermc.loader.rollout
 
+import com.typewritermc.loader.api.artifact.ArtifactDigest
+import com.typewritermc.loader.api.artifact.BlobEndpoint
+import com.typewritermc.loader.api.artifact.BlobMetadata
 import com.typewritermc.loader.api.artifact.BlobResult
-import com.typewritermc.loader.artifact.ArtifactDigest
-import com.typewritermc.loader.artifact.BlobEndpoint
-import com.typewritermc.loader.artifact.BlobMetadata
-import com.typewritermc.loader.artifact.DEFAULT_CHUNK_SIZE
-import com.typewritermc.loader.artifact.TransferId
+import com.typewritermc.loader.api.artifact.DEFAULT_CHUNK_SIZE
+import com.typewritermc.loader.api.artifact.TransferId
 import com.typewritermc.loader.deployment.DeploymentGeneration
 import com.typewritermc.loader.deployment.HostDeploymentProjection
 import com.typewritermc.loader.deployment.HostDeploymentProjectionCodec
-import com.typewritermc.loader.deployment.HostId
+import com.typewritermc.services.libs.registrar.ServiceId
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
@@ -52,7 +52,7 @@ class BlobProjectionRepository(
         return ProjectionReference(
             RealmId(projection.realmId),
             projection.generation,
-            projection.hostId,
+            projection.serviceId,
             digest,
             projection.runtimes.associate { it.placement to it.artifact.coordinate.version },
         )
@@ -74,7 +74,7 @@ class BlobProjectionRepository(
         return HostDeploymentProjectionCodec.decode(bytes).also { projection ->
             require(projection.realmId == reference.realmId.value) { "Deployment projection belongs to another Realm." }
             require(projection.generation == reference.generation) { "Deployment projection generation does not match." }
-            require(projection.hostId == reference.hostId) { "Deployment projection belongs to another host." }
+            require(projection.serviceId == reference.serviceId) { "Deployment projection belongs to another service." }
         }
     }
 }
@@ -102,7 +102,7 @@ class FileRolloutStateRepository(
 
     override suspend fun persist(rollout: PersistedRollout) = update { it.copy(rollout = rollout) }
 
-    override suspend fun participantStatuses(attempt: RolloutAttempt): Map<HostId, ParticipantStatus> =
+    override suspend fun participantStatuses(attempt: RolloutAttempt): Map<ServiceId, ParticipantStatus> =
         mutex.withLock { stored.participants[attempt.ordinal].orEmpty() }
 
     override suspend fun committed(): CommittedDeployment? = mutex.withLock { stored.current }
@@ -116,7 +116,7 @@ class FileRolloutStateRepository(
         if (event.realmId != realmId) return
         update { current ->
             val attempt = event.status.attempt.ordinal
-            val statuses = current.participants[attempt].orEmpty() + (event.status.hostId to event.status)
+            val statuses = current.participants[attempt].orEmpty() + (event.status.serviceId to event.status)
             current.copy(participants = current.participants + (attempt to statuses))
         }
     }
@@ -148,7 +148,7 @@ private data class StoredRolloutState(
     val rollout: PersistedRollout? = null,
     val current: CommittedDeployment? = null,
     val previous: CommittedDeployment? = null,
-    val participants: Map<Long, Map<HostId, ParticipantStatus>> = emptyMap(),
+    val participants: Map<Long, Map<ServiceId, ParticipantStatus>> = emptyMap(),
 )
 
 internal val rolloutCbor = Cbor { encodeDefaults = true }

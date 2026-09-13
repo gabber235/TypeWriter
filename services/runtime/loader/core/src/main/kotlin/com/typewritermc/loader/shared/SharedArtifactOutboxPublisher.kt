@@ -181,6 +181,6 @@ private fun SharedArtifactProvenance.toSkir(): SkirSharedArtifactProvenance =
         }
 
         is SharedArtifactProvenance.HostedRuntime -> {
-            SkirSharedArtifactProvenance.createService(hostId = hostId, runtimeId = runtimeId)
+            SkirSharedArtifactProvenance.createService(serviceId = serviceId, runtimeId = runtimeId)
         }
     }

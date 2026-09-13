@@ -12,12 +12,12 @@ import com.typewritermc.loader.api.RuntimePlacement
 import com.typewritermc.loader.api.SourcePartDisposition
 import com.typewritermc.loader.artifactSpan
 import com.typewritermc.loader.deployment.HostDeploymentProjection
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.loader.deployment.ProjectedExtension
 import com.typewritermc.loader.deployment.ProjectedRuntime
 import com.typewritermc.loader.runtime.HostedRuntimeLoader
 import com.typewritermc.loader.runtime.HostedRuntimeStager
 import com.typewritermc.loader.runtime.LoadedHostedRuntime
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.telemetry.ErrorSlug
 import com.typewritermc.services.libs.telemetry.MainSpanScope
 import com.typewritermc.services.libs.telemetry.ServiceTelemetry
@@ -53,7 +53,7 @@ interface ProjectionSource {
  * The file must remain available during loading; the caller does not own deletion of shared cache content.
  */
 interface VerifiedArtifactSource {
-    suspend fun fetch(digest: com.typewritermc.loader.artifact.ArtifactDigest): Path
+    suspend fun fetch(digest: com.typewritermc.loader.api.artifact.ArtifactDigest): Path
 }
 
 /**
@@ -74,7 +74,7 @@ fun interface ParticipantStatePublisher {
  */
 class HostRolloutParticipant(
     internal val realmId: RealmId,
-    internal val hostId: HostId,
+    internal val serviceId: ServiceId,
     private val workDirectory: Path,
     private val host: HostedRuntimeHost,
     private val projections: ProjectionSource,
@@ -98,22 +98,22 @@ class HostRolloutParticipant(
         get() = currentActiveProjection
 
     /** Rejects commands addressed to another Realm or host before taking the lifecycle mutex. */
-    fun accepts(envelope: RolloutEnvelope): Boolean = envelope.realmId == realmId && hostId in envelope.participants
+    fun accepts(envelope: RolloutEnvelope): Boolean = envelope.realmId == realmId && serviceId in envelope.participants
 
     /** Returns the local state for probe [attempt], including the active projection health when present. */
     suspend fun currentStatus(attempt: RolloutAttempt): ParticipantStatus =
         commands.withLock {
             when (val state = localState) {
                 LocalParticipantState.Empty -> {
-                    ParticipantStatus.Idle(attempt, hostId)
+                    ParticipantStatus.Idle(attempt, serviceId)
                 }
 
                 is LocalParticipantState.Staged -> {
-                    ParticipantStatus.Staged(state.attempt, hostId, state.reference, state.baseline.toContract())
+                    ParticipantStatus.Staged(state.attempt, serviceId, state.reference, state.baseline.toContract())
                 }
 
                 is LocalParticipantState.Active -> {
-                    state.toContract(hostId)
+                    state.toContract(serviceId)
                 }
             }
         }
@@ -126,7 +126,7 @@ class HostRolloutParticipant(
         ) { span ->
             span?.annotate {
                 attribute("realm.id", realmId.value)
-                attribute("host.id", hostId.value)
+                attribute("service.id", serviceId.value)
                 attribute("rollout.attempt", envelope.attempt.ordinal)
                 attribute("deployment.generation", envelope.attempt.generation.value)
                 attribute("rollout.command", envelope.command.kind.name)
@@ -145,14 +145,14 @@ class HostRolloutParticipant(
     ): CommandAcceptance {
         require(accepts(envelope)) { "Host is not a participant in this rollout." }
         return commands.withLock {
-            val reference = envelope.projections.getValue(hostId)
+            val reference = envelope.projections.getValue(serviceId)
             if (envelope.attempt.ordinal < latestAttemptOrdinal) {
                 span?.annotate { attribute("rollout.command_stale", true) }
-                return@withLock CommandAcceptance(hostId, false, "Rollout attempt is stale.")
+                return@withLock CommandAcceptance(serviceId, false, "Rollout attempt is stale.")
             }
             if (envelope.attempt.ordinal == latestAttemptOrdinal && latestAttemptReference != null && latestAttemptReference != reference) {
                 span?.annotate { attribute("rollout.command_conflict", true) }
-                return@withLock CommandAcceptance(hostId, false, "Rollout attempt conflicts with another projection.")
+                return@withLock CommandAcceptance(serviceId, false, "Rollout attempt conflicts with another projection.")
             }
             latestAttemptOrdinal = envelope.attempt.ordinal
             latestAttemptReference = reference
@@ -161,11 +161,11 @@ class HostRolloutParticipant(
                     RolloutCommand.Stage -> stage(envelope.attempt, reference)
                     RolloutCommand.Commit -> commit(envelope.attempt, reference)
                     RolloutCommand.Abort -> abort(envelope.attempt, reference)
-                    is RolloutCommand.Rollback -> rollback(envelope.attempt, reference, command.targets.getValue(hostId))
+                    is RolloutCommand.Rollback -> rollback(envelope.attempt, reference, command.targets.getValue(serviceId))
                 }
-                CommandAcceptance(hostId, true)
+                CommandAcceptance(serviceId, true)
             } catch (rejection: CommandRejectedException) {
-                CommandAcceptance(hostId, false, rejection.message)
+                CommandAcceptance(serviceId, false, rejection.message)
             } catch (failure: Throwable) {
                 rethrowExceptionalThrowable(failure)
                 span?.recordDegraded(ErrorSlug.of("artifact-rollout-command-internal-failure"), failure)
@@ -173,13 +173,13 @@ class HostRolloutParticipant(
                 publish(
                     ParticipantStatus.Failed(
                         attempt = envelope.attempt,
-                        hostId = hostId,
+                        serviceId = serviceId,
                         command = envelope.command.kind,
                         recoverable = recoverable,
                         reason = failure.message ?: "Rollout command failed.",
                     ),
                 )
-                CommandAcceptance(hostId, false, failure.message, internalFailure = true)
+                CommandAcceptance(serviceId, false, failure.message, internalFailure = true)
             }
         }
     }
@@ -193,7 +193,7 @@ class HostRolloutParticipant(
                 if (state.reference == reference && state.attempt == attempt) return
                 if (state.reference == reference && attempt.ordinal > state.attempt.ordinal) {
                     localState = state.copy(attempt = attempt)
-                    publish(ParticipantStatus.Staged(attempt, hostId, reference, state.baseline.toContract()))
+                    publish(ParticipantStatus.Staged(attempt, serviceId, reference, state.baseline.toContract()))
                     return
                 }
                 rejectUnless(attempt.ordinal > state.attempt.ordinal) { "The rollout attempt conflicts with another staged projection." }
@@ -206,7 +206,7 @@ class HostRolloutParticipant(
             LocalParticipantState.Empty -> {}
         }
         val baseline = localState.activeOrNull()
-        publish(ParticipantStatus.Staging(attempt, hostId, reference, baseline.toContract()))
+        publish(ParticipantStatus.Staging(attempt, serviceId, reference, baseline.toContract()))
         val projection = projections.fetch(reference)
         val replacement = stageProjection(reference, projection)
         val previousStaged = localState as? LocalParticipantState.Staged
@@ -217,7 +217,7 @@ class HostRolloutParticipant(
             throw failure
         }
         localState = LocalParticipantState.Staged(attempt, reference, replacement, baseline)
-        publish(ParticipantStatus.Staged(attempt, hostId, reference, baseline.toContract()))
+        publish(ParticipantStatus.Staged(attempt, serviceId, reference, baseline.toContract()))
     }
 
     private suspend fun commit(
@@ -231,7 +231,7 @@ class HostRolloutParticipant(
         requireNotNull(staged)
         rejectUnless(staged.reference == reference) { "Another projection is staged." }
         rejectUnless(staged.attempt == attempt) { "The staged projection belongs to another rollout attempt." }
-        publish(ParticipantStatus.Committing(attempt, hostId, reference, staged.baseline.toContract()))
+        publish(ParticipantStatus.Committing(attempt, serviceId, reference, staged.baseline.toContract()))
         val baseline = staged.baseline
         try {
             baseline?.projection?.quiesce()
@@ -256,7 +256,7 @@ class HostRolloutParticipant(
     ) {
         val staged = localState as? LocalParticipantState.Staged
         if (staged == null || staged.reference != reference) return
-        publish(ParticipantStatus.Aborting(attempt, hostId, reference, staged.baseline.toContract()))
+        publish(ParticipantStatus.Aborting(attempt, serviceId, reference, staged.baseline.toContract()))
         staged.projection.close()
         localState = staged.baseline?.copy(attempt = attempt) ?: LocalParticipantState.Empty
         publishCurrent(attempt)
@@ -290,7 +290,7 @@ class HostRolloutParticipant(
                 rejectUnless(active.retained?.reference == target.reference) { "Retained projection differs from the rollback target." }
             }
         }
-        publish(ParticipantStatus.RollingBack(attempt, hostId, failedReference, target))
+        publish(ParticipantStatus.RollingBack(attempt, serviceId, failedReference, target))
         stopHealthMonitor()
         when (target) {
             RollbackTarget.Empty -> {
@@ -306,7 +306,7 @@ class HostRolloutParticipant(
                     localState = LocalParticipantState.Empty
                     currentActiveProjection = null
                 }
-                publish(ParticipantStatus.Idle(attempt, hostId))
+                publish(ParticipantStatus.Idle(attempt, serviceId))
             }
 
             is RollbackTarget.Projection -> {
@@ -339,7 +339,7 @@ class HostRolloutParticipant(
         ) { span ->
             span?.annotate {
                 attribute("realm.id", realmId.value)
-                attribute("host.id", hostId.value)
+                attribute("service.id", serviceId.value)
                 attribute("projection.digest", reference.blob.value)
                 attribute("deployment.generation", reference.generation.value)
             }
@@ -376,7 +376,7 @@ class HostRolloutParticipant(
                         .also(Path::createDirectories)
                 val context =
                     HostedDeploymentContext(
-                        identity = HostedRuntimeIdentity(hostId.value, realmId.value, runtime.placement),
+                        identity = HostedRuntimeIdentity(serviceId.value, realmId.value, runtime.placement),
                         directories = HostedRuntimeDirectories(stateDirectory, deploymentDirectory),
                         artifacts = artifactPackage,
                         facts = projection.facts,
@@ -449,7 +449,7 @@ class HostRolloutParticipant(
                             (localState as? LocalParticipantState.Active)?.takeIf { it.reference == active.reference }
                         } ?: return@collect
                     currentActiveProjection = ActiveProjectionReference(current.reference, health)
-                    publish(current.toContract(hostId, health))
+                    publish(current.toContract(serviceId, health))
                 }
             }
     }
@@ -457,15 +457,15 @@ class HostRolloutParticipant(
     private suspend fun publishCurrent(attempt: RolloutAttempt) {
         when (val current = localState) {
             LocalParticipantState.Empty -> {
-                publish(ParticipantStatus.Idle(attempt, hostId))
+                publish(ParticipantStatus.Idle(attempt, serviceId))
             }
 
             is LocalParticipantState.Staged -> {
-                publish(ParticipantStatus.Staged(current.attempt, hostId, current.reference, current.baseline.toContract()))
+                publish(ParticipantStatus.Staged(current.attempt, serviceId, current.reference, current.baseline.toContract()))
             }
 
             is LocalParticipantState.Active -> {
-                publish(current.toContract(hostId))
+                publish(current.toContract(serviceId))
             }
         }
     }
@@ -505,11 +505,11 @@ class HostRolloutParticipant(
             val retained: Active?,
         ) : LocalParticipantState {
             fun toContract(
-                hostId: HostId,
+                serviceId: ServiceId,
                 health: RuntimeHealthSnapshot = projection.health.value,
             ) = ParticipantStatus.Active(
                 attempt,
-                hostId,
+                serviceId,
                 ActiveProjectionReference(reference, health),
                 retained?.let { RetainedProjection.Present(it.reference) } ?: RetainedProjection.None,
             )

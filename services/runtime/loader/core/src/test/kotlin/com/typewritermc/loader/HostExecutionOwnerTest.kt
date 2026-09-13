@@ -10,6 +10,7 @@ import com.typewritermc.loader.rollout.HostExecutionObservation
 import com.typewritermc.loader.rollout.HostExecutionOwner
 import com.typewritermc.loader.rollout.ParticipantStatus
 import com.typewritermc.loader.rollout.RealmId
+import com.typewritermc.services.libs.registrar.ServiceId
 import de.infix.testBalloon.framework.core.testSuite
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
@@ -104,7 +105,7 @@ private val assignment = ArtifactHostAssignment(RealmId("realm"), setOf(RuntimeP
 private fun desired(
     revision: Long,
     assignment: ArtifactHostAssignment?,
-) = DesiredHostExecution(ExecutionRevision("service", revision), assignment)
+) = DesiredHostExecution(ExecutionRevision(ServiceId("service"), revision), assignment)
 
 private class TestRuntime(
     override val assignment: ArtifactHostAssignment,

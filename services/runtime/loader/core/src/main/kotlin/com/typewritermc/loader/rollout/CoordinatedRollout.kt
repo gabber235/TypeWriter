@@ -6,9 +6,9 @@ import com.typewritermc.loader.artifactSpan
 import com.typewritermc.loader.deployment.DeploymentGeneration
 import com.typewritermc.loader.deployment.DeploymentSnapshot
 import com.typewritermc.loader.deployment.HostDeploymentProjection
-import com.typewritermc.loader.deployment.HostId
 import com.typewritermc.loader.deployment.RealmTopology
 import com.typewritermc.loader.deployment.projectFor
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.telemetry.ServiceTelemetry
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
@@ -26,7 +26,7 @@ import kotlin.time.TimeSource
 interface RolloutMessenger {
     suspend fun discover(
         probe: ProbeRealmHosts,
-        expected: Set<HostId>,
+        expected: Set<ServiceId>,
         timeout: Duration,
     ): List<RealmHostPresence>
 
@@ -37,9 +37,9 @@ interface RolloutMessenger {
 
     suspend fun statuses(
         probe: ProbeParticipantStatus,
-        expected: Set<HostId>,
+        expected: Set<ServiceId>,
         timeout: Duration,
-    ): Map<HostId, ParticipantStatus>
+    ): Map<ServiceId, ParticipantStatus>
 }
 
 /**
@@ -60,7 +60,7 @@ interface RolloutStateRepository {
 
     suspend fun persist(rollout: PersistedRollout)
 
-    suspend fun participantStatuses(attempt: RolloutAttempt): Map<HostId, ParticipantStatus>
+    suspend fun participantStatuses(attempt: RolloutAttempt): Map<ServiceId, ParticipantStatus>
 
     suspend fun committed(): CommittedDeployment?
 
@@ -207,8 +207,8 @@ class CoordinatedRollout(
 
     private suspend fun awaitRecovered(
         attempt: RolloutAttempt,
-        previous: Map<HostId, ProjectionReference>,
-        participants: Set<HostId>,
+        previous: Map<ServiceId, ProjectionReference>,
+        participants: Set<ServiceId>,
     ) = awaitStatuses(attempt, participants) { host, status ->
         val target = previous[host]
         if (target == null) {
@@ -221,48 +221,48 @@ class CoordinatedRollout(
     }
 
     /** Uses a fresh probe to define the responding participant set for this attempt. */
-    private suspend fun discover(): Map<HostId, RealmHostPresence> {
+    private suspend fun discover(): Map<ServiceId, RealmHostPresence> {
         val probe = ProbeRealmHosts(realmId)
-        val assigned = topology.assignedHosts()
+        val assigned = topology.assignedServices()
         val active =
             messenger
                 .discover(probe, assigned, requestTimeout)
-                .filter { it.probeId == probe.probeId && it.hostId in assigned }
-                .associateBy(RealmHostPresence::hostId)
-        require(topology.realmHost in active) { "The Realm host did not answer its rollout presence probe." }
+                .filter { it.probeId == probe.probeId && it.serviceId in assigned }
+                .associateBy(RealmHostPresence::serviceId)
+        require(topology.realmService in active) { "The Realm service did not answer its rollout presence probe." }
         return active
     }
 
     private suspend fun publishProjections(
         snapshot: DeploymentSnapshot,
-        participants: Set<HostId>,
-    ): Map<HostId, ProjectionReference> =
+        participants: Set<ServiceId>,
+    ): Map<ServiceId, ProjectionReference> =
         participants.associateWith { host ->
             projections.publish(snapshot.projectFor(realmId.value, topology, host, manifests))
         }
 
     private fun envelope(
         attempt: RolloutAttempt,
-        references: Map<HostId, ProjectionReference>,
+        references: Map<ServiceId, ProjectionReference>,
         command: RolloutCommand,
     ) = RolloutEnvelope(realmId, attempt, references.keys, references, command)
 
-    private fun Map<HostId, RealmHostPresence>.baselines(): Map<HostId, ProjectionReference> =
+    private fun Map<ServiceId, RealmHostPresence>.baselines(): Map<ServiceId, ProjectionReference> =
         mapNotNull { (host, presence) -> presence.activeProjection?.projection?.let { host to it } }.toMap()
 
     private fun requireAccepted(
         replies: List<CommandAcceptance>,
-        expected: Set<HostId>,
+        expected: Set<ServiceId>,
     ) {
-        val byHost = replies.associateBy(CommandAcceptance::hostId)
-        require(byHost.keys.containsAll(expected)) { "Not every rollout participant replied." }
-        require(expected.all { byHost.getValue(it).accepted }) { "A rollout participant rejected the command." }
+        val byService = replies.associateBy(CommandAcceptance::serviceId)
+        require(byService.keys.containsAll(expected)) { "Not every rollout participant replied." }
+        require(expected.all { byService.getValue(it).accepted }) { "A rollout participant rejected the command." }
     }
 
     /** Requires every participant to report the requested projection as healthy continuously for [healthyDuration]. */
     private suspend fun awaitStableHealthy(
         attempt: RolloutAttempt,
-        references: Map<HostId, ProjectionReference>,
+        references: Map<ServiceId, ProjectionReference>,
     ) {
         var healthySince: TimeMark? = null
         val deadline = timeSource.markNow()
@@ -288,8 +288,8 @@ class CoordinatedRollout(
 
     private suspend fun awaitStatuses(
         attempt: RolloutAttempt,
-        participants: Set<HostId>,
-        condition: (HostId, ParticipantStatus) -> Boolean,
+        participants: Set<ServiceId>,
+        condition: (ServiceId, ParticipantStatus) -> Boolean,
     ) {
         val deadline = timeSource.markNow()
         while (deadline.elapsedNow() < participantDeadline) {

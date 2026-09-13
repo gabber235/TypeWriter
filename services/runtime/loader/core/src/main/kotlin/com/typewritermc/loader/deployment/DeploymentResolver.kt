@@ -97,7 +97,7 @@ fun resolveDeployment(
 
     val realm =
         realms
-            .filter { it.supports(topology.hostApis.getValue(topology.realmHost)) }
+            .filter { it.supports(topology.serviceApis.getValue(topology.realmService)) }
             .maxByOrNull { it.artifact.coordinate.version }
             ?: run {
                 problems += "No Realm artifact supports the Realm host API."
@@ -108,7 +108,7 @@ fun resolveDeployment(
             .engines(primaryEngine.id)
             .filter { primaryEngine.version.accepts(it.artifact.coordinate.version) }
             .filter { candidate ->
-                topology.primaryEngineHosts.all { host -> candidate.supports(topology.hostApis.getValue(host)) }
+                topology.primaryEngineServices.all { service -> candidate.supports(topology.serviceApis.getValue(service)) }
             }.maxByOrNull { it.artifact.coordinate.version }
             ?: run {
                 problems += "No compatible primary engine satisfies ${primaryEngine.id} ${primaryEngine.version}."
@@ -118,7 +118,7 @@ fun resolveDeployment(
         candidates
             .engines(intent.panelEngine.id)
             .filter { intent.panelEngine.version.accepts(it.artifact.coordinate.version) }
-            .filter { it.supports(topology.hostApis.getValue(topology.realmHost)) }
+            .filter { it.supports(topology.serviceApis.getValue(topology.realmService)) }
             .maxByOrNull { it.artifact.coordinate.version }
             ?: run {
                 problems += "No compatible panel engine satisfies ${intent.panelEngine.id} ${intent.panelEngine.version}."

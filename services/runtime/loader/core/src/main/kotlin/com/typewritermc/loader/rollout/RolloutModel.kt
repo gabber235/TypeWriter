@@ -2,10 +2,10 @@ package com.typewritermc.loader.rollout
 
 import com.typewritermc.imprint.ArtifactVersion
 import com.typewritermc.loader.api.RuntimePlacement
-import com.typewritermc.loader.artifact.ArtifactDigest
+import com.typewritermc.loader.api.artifact.ArtifactDigest
 import com.typewritermc.loader.deployment.DeploymentGeneration
 import com.typewritermc.loader.deployment.HostDeploymentProjection
-import com.typewritermc.loader.deployment.HostId
+import com.typewritermc.services.libs.registrar.ServiceId
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
@@ -41,17 +41,17 @@ data class ProbeParticipantStatus(
 /** Separates a participant status from a host side failure in scatter responses. */
 @Serializable
 sealed interface ParticipantStatusReply {
-    val hostId: HostId
+    val serviceId: ServiceId
 
     @Serializable
     data class Status(
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val status: ParticipantStatus,
     ) : ParticipantStatusReply
 
     @Serializable
     data class InternalFailure(
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val reason: String,
     ) : ParticipantStatusReply
 }
@@ -66,7 +66,7 @@ sealed interface ParticipantStatusReply {
 data class ProjectionReference(
     val realmId: RealmId,
     val generation: DeploymentGeneration,
-    val hostId: HostId,
+    val serviceId: ServiceId,
     val blob: ArtifactDigest,
     val runtimeVersions: Map<RuntimePlacement, ArtifactVersion> = emptyMap(),
 )
@@ -101,7 +101,7 @@ data class ActiveProjectionReference(
 @Serializable
 data class RealmHostPresence(
     val probeId: String,
-    val hostId: HostId,
+    val serviceId: ServiceId,
     val hostApi: ArtifactVersion,
     val assignedRoles: Set<RuntimePlacement>,
     val activeProjection: ActiveProjectionReference?,
@@ -183,7 +183,7 @@ sealed interface RolloutCommand {
 
     @Serializable
     data class Rollback(
-        val targets: Map<HostId, RollbackTarget>,
+        val targets: Map<ServiceId, RollbackTarget>,
     ) : RolloutCommand {
         override val kind = RolloutCommandKind.ROLLBACK
     }
@@ -199,8 +199,8 @@ sealed interface RolloutCommand {
 data class RolloutEnvelope(
     val realmId: RealmId,
     val attempt: RolloutAttempt,
-    val participants: Set<HostId>,
-    val projections: Map<HostId, ProjectionReference>,
+    val participants: Set<ServiceId>,
+    val projections: Map<ServiceId, ProjectionReference>,
     val command: RolloutCommand,
 ) {
     init {
@@ -219,7 +219,7 @@ data class RolloutEnvelope(
  */
 @Serializable
 data class CommandAcceptance(
-    val hostId: HostId,
+    val serviceId: ServiceId,
     val accepted: Boolean,
     val reason: String? = null,
     val internalFailure: Boolean = false,
@@ -282,18 +282,18 @@ sealed interface RecoverableParticipantState {
 @Serializable
 sealed interface ParticipantStatus {
     val attempt: RolloutAttempt
-    val hostId: HostId
+    val serviceId: ServiceId
 
     @Serializable
     data class Idle(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
     ) : ParticipantStatus
 
     @Serializable
     data class Staging(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val candidate: ProjectionReference,
         val baseline: ActiveBaseline,
     ) : ParticipantStatus
@@ -301,7 +301,7 @@ sealed interface ParticipantStatus {
     @Serializable
     data class Staged(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val candidate: ProjectionReference,
         val baseline: ActiveBaseline,
     ) : ParticipantStatus
@@ -309,7 +309,7 @@ sealed interface ParticipantStatus {
     @Serializable
     data class Committing(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val candidate: ProjectionReference,
         val baseline: ActiveBaseline,
     ) : ParticipantStatus
@@ -317,7 +317,7 @@ sealed interface ParticipantStatus {
     @Serializable
     data class Active(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val current: ActiveProjectionReference,
         val retained: RetainedProjection,
     ) : ParticipantStatus
@@ -325,7 +325,7 @@ sealed interface ParticipantStatus {
     @Serializable
     data class Aborting(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val candidate: ProjectionReference,
         val baseline: ActiveBaseline,
     ) : ParticipantStatus
@@ -333,7 +333,7 @@ sealed interface ParticipantStatus {
     @Serializable
     data class RollingBack(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val failed: ProjectionReference,
         val target: RollbackTarget,
     ) : ParticipantStatus
@@ -341,7 +341,7 @@ sealed interface ParticipantStatus {
     @Serializable
     data class Failed(
         override val attempt: RolloutAttempt,
-        override val hostId: HostId,
+        override val serviceId: ServiceId,
         val command: RolloutCommandKind,
         val recoverable: RecoverableParticipantState,
         val reason: String,
@@ -379,8 +379,8 @@ data class PersistedRollout(
     val realmId: RealmId,
     val attempt: RolloutAttempt,
     val phase: RolloutPhase,
-    val projections: Map<HostId, ProjectionReference>,
-    val previous: Map<HostId, ProjectionReference>,
+    val projections: Map<ServiceId, ProjectionReference>,
+    val previous: Map<ServiceId, ProjectionReference>,
     val failure: String? = null,
 )
 
@@ -392,5 +392,5 @@ data class PersistedRollout(
 @Serializable
 data class CommittedDeployment(
     val snapshot: com.typewritermc.loader.deployment.DeploymentSnapshot,
-    val projections: Map<HostId, ProjectionReference>,
+    val projections: Map<ServiceId, ProjectionReference>,
 )

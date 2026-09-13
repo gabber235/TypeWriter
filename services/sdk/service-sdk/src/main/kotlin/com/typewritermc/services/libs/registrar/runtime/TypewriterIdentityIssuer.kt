@@ -12,6 +12,7 @@ import com.typewritermc.services.libs.registrar.IdentityIssueResult
 import com.typewritermc.services.libs.registrar.IdentityIssuer
 import com.typewritermc.services.libs.registrar.IdentityRejectionReason
 import com.typewritermc.services.libs.registrar.RedactedSecret
+import com.typewritermc.services.libs.registrar.ServiceId
 import com.typewritermc.services.libs.registrar.ServiceIdentity
 import com.typewritermc.services.libs.registrar.ServiceRole
 import com.typewritermc.services.libs.telemetry.ErrorSlug
@@ -112,7 +113,7 @@ private fun mapIdentityResponse(
             val value = response.value
             IdentityIssueResult.Success(
                 IdentityCredentials(
-                    ServiceIdentity(value.serviceId, value.displayName, value.username, role),
+                    ServiceIdentity(ServiceId(value.serviceId), value.displayName, value.username, role),
                     RedactedSecret.AppPassword(value.token),
                 ),
             )
