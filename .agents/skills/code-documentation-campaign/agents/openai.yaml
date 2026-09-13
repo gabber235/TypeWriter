@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Documentation Campaign"
+  short_description: "Audit and repair Typewriter code documentation"
+  default_prompt: "Use $code-documentation-campaign to audit and improve current Typewriter code documentation."
