@@ -12,6 +12,9 @@ on:
       - "CONTRIBUTING.md"
       - "LICENSE"
   push:
+    branches:
+      - main
+      - develop
     paths-ignore:
       - "**/*.md"
       - "docs/**"
