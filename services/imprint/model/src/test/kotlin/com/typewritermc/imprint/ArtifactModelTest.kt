@@ -1,6 +1,7 @@
 package com.typewritermc.imprint
 
 import de.infix.testBalloon.framework.core.testSuite
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
@@ -43,5 +44,52 @@ val ArtifactModelTest by testSuite {
             )
 
         ImprintManifestCodec.decode(ImprintManifestCodec.encode(manifest)) shouldBe manifest
+    }
+
+    test("hosted manifest codec preserves its runtime entrypoint") {
+        val manifest =
+            RealmManifest(
+                id = ArtifactId("typewritermc:realm"),
+                version = ArtifactVersion("1.0.0"),
+                hostApi = VersionConstraint("^1"),
+                runtimeEntrypointClass = "example.RealmEntrypoint",
+                contributions = emptyList(),
+            )
+
+        ImprintManifestCodec.decode(ImprintManifestCodec.encode(manifest)) shouldBe manifest
+    }
+
+    test("runtime entrypoint metadata codec preserves all generated classes") {
+        val metadata = HostedRuntimeEntrypointMetadata(listOf("example.First", "example.Second"))
+
+        HostedRuntimeEntrypointMetadataCodec.decode(HostedRuntimeEntrypointMetadataCodec.encode(metadata)) shouldBe metadata
+    }
+
+    test("hosted manifests require a runtime entrypoint") {
+        shouldThrow<IllegalArgumentException> {
+            RealmManifest(
+                id = ArtifactId("typewritermc:realm"),
+                version = ArtifactVersion("1.0.0"),
+                hostApi = VersionConstraint("^1"),
+                runtimeEntrypointClass = " ",
+                contributions = emptyList(),
+            )
+        }
+    }
+
+    test("manifest decoder rejects a non current format") {
+        val manifest =
+            CapabilityManifest(
+                format = 999,
+                id = ArtifactId("typewritermc:items"),
+                version = ArtifactVersion("1.2.3"),
+                directRequirements = emptyList(),
+                resolvedCapabilities = emptyList(),
+                contributions = emptyList(),
+            )
+
+        shouldThrow<IllegalArgumentException> {
+            ImprintManifestCodec.decode(ImprintManifestCodec.encode(manifest))
+        }
     }
 }

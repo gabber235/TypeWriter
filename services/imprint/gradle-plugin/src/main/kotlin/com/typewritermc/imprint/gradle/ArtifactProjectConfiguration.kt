@@ -5,6 +5,7 @@ import com.google.devtools.ksp.gradle.KspAATask
 import com.typewritermc.imprint.ArtifactKind
 import com.typewritermc.imprint.IMPRINT_CONTRIBUTIONS_PATH
 import com.typewritermc.imprint.IMPRINT_MANIFEST_PATH
+import com.typewritermc.imprint.IMPRINT_RUNTIME_ENTRYPOINTS_PATH
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -199,6 +200,7 @@ internal fun Project.configureThinJar(
             copy.rename { IMPRINT_MANIFEST_PATH.substringAfterLast('/') }
         }
         jar.exclude("$IMPRINT_CONTRIBUTIONS_PATH/**")
+        jar.exclude(IMPRINT_RUNTIME_ENTRYPOINTS_PATH)
         jar.dependsOn(manifest)
     }
 }
@@ -211,6 +213,7 @@ private fun Project.configureHostedJar(manifest: org.gradle.api.tasks.TaskProvid
             jar.mergeServiceFiles()
             jar.exclude(IMPRINT_MANIFEST_PATH)
             jar.exclude("$IMPRINT_CONTRIBUTIONS_PATH/**")
+            jar.exclude(IMPRINT_RUNTIME_ENTRYPOINTS_PATH)
             jar.from(manifest.flatMap(GenerateImprintManifestTask::outputFile)) { copy ->
                 copy.into(IMPRINT_MANIFEST_PATH.substringBeforeLast('/'))
                 copy.rename { IMPRINT_MANIFEST_PATH.substringAfterLast('/') }

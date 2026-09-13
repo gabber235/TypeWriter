@@ -15,9 +15,7 @@ import com.typewritermc.discovery.runtime.DiscoveryDeployment
 import com.typewritermc.discovery.runtime.DiscoveryModuleLoader
 import com.typewritermc.imprint.EngineManifest
 import com.typewritermc.imprint.ExtensionManifest
-import com.typewritermc.imprint.IMPRINT_MANIFEST_PATH
-import com.typewritermc.imprint.ImprintManifest
-import com.typewritermc.imprint.ImprintManifestCodec
+import com.typewritermc.loader.api.HostedArtifact
 import com.typewritermc.loader.api.HostedDeploymentContext
 import com.typewritermc.loader.api.SourcePartDisposition
 import com.typewritermc.pages.PageCatalogAssembler
@@ -56,7 +54,6 @@ import org.koin.dsl.module
 import org.koin.dsl.onClose
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.zip.ZipFile
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -88,13 +85,14 @@ class DefaultRealmRuntimeFactory : RealmRuntimeFactory {
                     context.host.openTelemetry,
                     Level.toLevel(configuration.diagnosticLevel.name, Level.WARN),
                 )
-            val catalogPaths =
+            val catalogArtifacts =
                 (
                     listOf(context.artifacts.runtimeArtifact) +
                         context.artifacts.catalogArtifacts +
-                        context.artifacts.extensions.map { it.path }
-                ).distinct()
-            val manifests = catalogPaths.map(::readManifest)
+                        context.artifacts.extensions.map { HostedArtifact(it.path, it.manifest) }
+                ).distinctBy { it.path }
+            val catalogPaths = catalogArtifacts.map { it.path }
+            val manifests = catalogArtifacts.map { it.manifest }
             val sourceParts =
                 context.artifacts.extensions.flatMap { extension ->
                     extension.sourceParts.map { sourcePart ->
@@ -304,12 +302,6 @@ private fun RealmDatabaseConfiguration.resolveAgainst(workDirectory: Path): Real
     )
 
 private fun Path.resolveAgainst(workDirectory: Path): Path = if (isAbsolute) normalize() else workDirectory.resolve(this).normalize()
-
-private fun readManifest(path: Path): ImprintManifest =
-    ZipFile(path.toFile()).use { archive ->
-        val entry = requireNotNull(archive.getEntry(IMPRINT_MANIFEST_PATH)) { "Artifact ${path.fileName} has no Imprint manifest." }
-        ImprintManifestCodec.decode(archive.getInputStream(entry).readBytes())
-    }
 
 private suspend fun stopRealm(
     telemetry: ServiceTelemetry,

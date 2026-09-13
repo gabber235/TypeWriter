@@ -4,3 +4,4 @@ com.typewritermc.elements.codegen.TypewriterElementProcessorProvider
 com.typewritermc.pages.codegen.TypewriterPageProcessorProvider
 com.typewritermc.presentation.codegen.TypewriterPresentationProcessorProvider
 com.typewritermc.capability.codegen.TypewriterCapabilityProcessorProvider
+com.typewritermc.imprint.codegen.ImprintRuntimeEntrypointProcessorProvider

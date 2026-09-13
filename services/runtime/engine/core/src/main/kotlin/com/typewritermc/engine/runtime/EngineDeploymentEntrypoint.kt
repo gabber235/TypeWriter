@@ -13,30 +13,31 @@ import com.typewritermc.elements.ElementCatalogAssembler
 import com.typewritermc.elements.ElementContributionReader
 import com.typewritermc.imprint.EngineManifest
 import com.typewritermc.imprint.ExtensionManifest
-import com.typewritermc.imprint.IMPRINT_MANIFEST_PATH
-import com.typewritermc.imprint.ImprintManifest
-import com.typewritermc.imprint.ImprintManifestCodec
+import com.typewritermc.imprint.ImprintRuntimeEntrypoint
+import com.typewritermc.loader.api.HostedArtifact
 import com.typewritermc.loader.api.HostedDeploymentContext
-import com.typewritermc.loader.api.HostedRuntimeProvider
+import com.typewritermc.loader.api.HostedRuntimeEntrypoint
 import com.typewritermc.loader.api.SourcePartDisposition
 import com.typewritermc.loader.api.StagedHostedRuntime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import java.nio.file.Path
-import java.util.zip.ZipFile
 
 /**
- * Stages an engine by reading artifact manifests and loading execution discovery into an isolated deployment.
+ * Stages an engine from loader supplied manifests and loads execution discovery into an isolated deployment.
  *
  * The package must contain one engine plus extensions. Staging constructs the content gateway and delivery adapter
  * but registration starts on activation. Failure during runtime construction cancels its parent scope and closes
  * discovery resources.
  */
-class EngineDeploymentEntrypoint : HostedRuntimeProvider {
+@ImprintRuntimeEntrypoint
+class EngineDeploymentEntrypoint : HostedRuntimeEntrypoint {
     override suspend fun stage(context: HostedDeploymentContext): StagedHostedRuntime {
-        val artifactPaths = listOf(context.artifacts.runtimeArtifact) + context.artifacts.extensions.map { it.path }
-        val manifests = artifactPaths.map(::readManifest)
+        val artifactFiles =
+            listOf(context.artifacts.runtimeArtifact) +
+                context.artifacts.extensions.map { HostedArtifact(it.path, it.manifest) }
+        val artifactPaths = artifactFiles.map { it.path }
+        val manifests = artifactFiles.map { it.manifest }
         val engine = manifests.filterIsInstance<EngineManifest>().single()
         val extensions = manifests.filterIsInstance<ExtensionManifest>()
         require(manifests.size == 1 + extensions.size) {
@@ -94,12 +95,3 @@ class EngineDeploymentEntrypoint : HostedRuntimeProvider {
         }
     }
 }
-
-private fun readManifest(path: Path): ImprintManifest =
-    ZipFile(path.toFile()).use { archive ->
-        val entry =
-            requireNotNull(archive.getEntry(IMPRINT_MANIFEST_PATH)) {
-                "Hosted artifact ${path.fileName} does not contain an Imprint manifest."
-            }
-        ImprintManifestCodec.decode(archive.getInputStream(entry).readBytes())
-    }

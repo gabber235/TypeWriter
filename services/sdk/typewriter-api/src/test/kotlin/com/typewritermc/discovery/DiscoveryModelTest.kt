@@ -49,6 +49,7 @@ val DiscoveryModelTest by testSuite {
                 id = ArtifactId("typewriter:paper"),
                 version = ArtifactVersion("1.0.0"),
                 hostApi = VersionConstraint("^1"),
+                runtimeEntrypointClass = "example.EngineEntrypoint",
                 directCapabilities = emptyList(),
                 resolvedCapabilities = listOf(capability),
                 bundledComponents = listOf(capability),

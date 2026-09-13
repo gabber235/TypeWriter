@@ -1,45 +1,57 @@
 package com.typewritermc.loader.runtime
 
 import com.typewritermc.loader.api.HostedDeploymentContext
-import com.typewritermc.loader.api.HostedRuntimeProvider
+import com.typewritermc.loader.api.HostedRuntimeEntrypoint
 import com.typewritermc.loader.api.StagedHostedRuntime
+import java.lang.reflect.Modifier
 import java.net.URLClassLoader
-import java.nio.file.Path
-import java.util.ServiceLoader
 
 /**
- * Stages a runtime from resolved context and executable paths.
+ * Stages a runtime from the resolved deployment context.
  *
  * Success transfers runtime and class loader ownership to the caller. Failure must release resources acquired
  * while staging.
  */
 fun interface HostedRuntimeStager {
-    suspend fun stage(
-        context: HostedDeploymentContext,
-        classPath: List<Path>,
-    ): LoadedHostedRuntime
+    suspend fun stage(context: HostedDeploymentContext): LoadedHostedRuntime
 }
 
 /**
- * Loads exactly one hosted provider through ServiceLoader in a new URL class loader.
+ * Loads the manifest selected hosted entrypoint in a new URL class loader containing only the runtime artifact.
  *
  * The parent supplies shared API types. Staging failure closes the loader with cleanup causes preserved; success
  * must be released through [LoadedHostedRuntime].
  */
 class HostedRuntimeLoader(
-    private val parentClassLoader: ClassLoader = HostedRuntimeProvider::class.java.classLoader,
+    private val parentClassLoader: ClassLoader = HostedRuntimeEntrypoint::class.java.classLoader,
 ) : HostedRuntimeStager {
-    override suspend fun stage(
-        context: HostedDeploymentContext,
-        classPath: List<Path>,
-    ): LoadedHostedRuntime {
-        val classLoader = URLClassLoader(classPath.map { it.toUri().toURL() }.toTypedArray(), parentClassLoader)
+    override suspend fun stage(context: HostedDeploymentContext): LoadedHostedRuntime {
+        val runtimeManifest = context.artifacts.runtimeArtifact.manifest
+        val classLoader =
+            URLClassLoader(
+                arrayOf(
+                    context.artifacts.runtimeArtifact.path
+                        .toUri()
+                        .toURL(),
+                ),
+                parentClassLoader,
+            )
         try {
-            val providers = ServiceLoader.load(HostedRuntimeProvider::class.java, classLoader).toList()
-            require(providers.size == 1) {
-                "A hosted artifact must provide exactly one HostedRuntimeProvider, but found ${providers.size}."
+            val entrypointClass =
+                Class.forName(
+                    runtimeManifest.runtimeEntrypointClass,
+                    false,
+                    classLoader,
+                )
+            require(HostedRuntimeEntrypoint::class.java.isAssignableFrom(entrypointClass)) {
+                "Hosted runtime entrypoint ${runtimeManifest.runtimeEntrypointClass} does not implement HostedRuntimeEntrypoint."
             }
-            return LoadedHostedRuntime(providers.single().stage(context), classLoader)
+            val constructor = entrypointClass.getDeclaredConstructor()
+            require(Modifier.isPublic(constructor.modifiers)) {
+                "Hosted runtime entrypoint ${runtimeManifest.runtimeEntrypointClass} requires a public zero argument constructor."
+            }
+            val entrypoint = constructor.newInstance() as HostedRuntimeEntrypoint
+            return LoadedHostedRuntime(entrypoint.stage(context), classLoader)
         } catch (failure: Throwable) {
             runCatching { classLoader.close() }.exceptionOrNull()?.let(failure::addSuppressed)
             throw failure

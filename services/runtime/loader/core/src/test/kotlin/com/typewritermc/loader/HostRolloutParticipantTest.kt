@@ -3,8 +3,18 @@ package com.typewritermc.loader
 import com.typewritermc.imprint.ArtifactId
 import com.typewritermc.imprint.ArtifactKind
 import com.typewritermc.imprint.ArtifactVersion
+import com.typewritermc.imprint.CommonExtensionSourcePart
+import com.typewritermc.imprint.EngineManifest
+import com.typewritermc.imprint.ExtensionManifest
+import com.typewritermc.imprint.IMPRINT_MANIFEST_PATH
+import com.typewritermc.imprint.ImprintManifest
+import com.typewritermc.imprint.ImprintManifestCodec
+import com.typewritermc.imprint.VersionConstraint
+import com.typewritermc.loader.api.HostedArtifact
+import com.typewritermc.loader.api.HostedArtifactPackage
 import com.typewritermc.loader.api.HostedDeploymentContext
 import com.typewritermc.loader.api.HostedMessagingSession
+import com.typewritermc.loader.api.HostedRuntimeEntrypoint
 import com.typewritermc.loader.api.HostedRuntimeHost
 import com.typewritermc.loader.api.RuntimeHealth
 import com.typewritermc.loader.api.RuntimePlacement
@@ -32,6 +42,7 @@ import com.typewritermc.loader.rollout.RolloutAttempt
 import com.typewritermc.loader.rollout.RolloutCommand
 import com.typewritermc.loader.rollout.RolloutEnvelope
 import com.typewritermc.loader.rollout.VerifiedArtifactSource
+import com.typewritermc.loader.runtime.HostedRuntimeLoader
 import com.typewritermc.loader.runtime.HostedRuntimeStager
 import com.typewritermc.loader.runtime.LoadedHostedRuntime
 import com.typewritermc.loader.shared.FileSharedArtifactRepository
@@ -52,10 +63,82 @@ import kotlinx.coroutines.test.runTest
 import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 val HostRolloutParticipantTest by testSuite {
+    test("manifest selects the hosted entrypoint without scanning extension services") {
+        runTest {
+            val fixture = participantFixture(this)
+            val artifact = fixture.root.resolve("runtime.jar")
+            ZipOutputStream(Files.newOutputStream(artifact)).use { archive ->
+                archive.putNextEntry(ZipEntry("META-INF/services/com.typewritermc.loader.api.HostedRuntimeEntrypoint"))
+                archive.write("missing.ServiceDescriptor".encodeToByteArray())
+                archive.closeEntry()
+            }
+            val manifest =
+                EngineManifest(
+                    id = ArtifactId("typewritermc:paper"),
+                    version = ArtifactVersion("1.0.0"),
+                    hostApi = VersionConstraint("^1"),
+                    runtimeEntrypointClass = TestHostedRuntimeEntrypoint::class.qualifiedName!!,
+                    directCapabilities = emptyList(),
+                    resolvedCapabilities = emptyList(),
+                    bundledComponents = emptyList(),
+                    contributions = emptyList(),
+                )
+            val context = fixture.context(artifact, manifest)
+
+            val loaded = HostedRuntimeLoader(TestHostedRuntimeEntrypoint::class.java.classLoader).stage(context)
+            loaded.runtime shouldBe TestHostedRuntimeEntrypoint.stagedRuntime
+            loaded.close()
+        }
+    }
+
+    test("rejects a manifest entrypoint that does not implement the runtime contract") {
+        runTest {
+            val fixture = participantFixture(this)
+            val artifact = fixture.root.resolve("runtime.jar")
+            ZipOutputStream(Files.newOutputStream(artifact)).use { }
+            val manifest = fixture.engineManifest("java.lang.String")
+
+            shouldThrow<IllegalArgumentException> {
+                HostedRuntimeLoader(HostedRuntimeEntrypoint::class.java.classLoader)
+                    .stage(fixture.context(artifact, manifest))
+            }
+        }
+    }
+
+    test("rejects a manifest entrypoint without a public zero argument constructor") {
+        runTest {
+            val fixture = participantFixture(this)
+            val artifact = fixture.root.resolve("runtime.jar")
+            ZipOutputStream(Files.newOutputStream(artifact)).use { }
+            val manifest = fixture.engineManifest(NoZeroArgumentHostedRuntimeEntrypoint::class.qualifiedName!!)
+
+            shouldThrow<NoSuchMethodException> {
+                HostedRuntimeLoader(NoZeroArgumentHostedRuntimeEntrypoint::class.java.classLoader)
+                    .stage(fixture.context(artifact, manifest))
+            }
+        }
+    }
+
+    test("closes the new loader when entrypoint staging fails") {
+        runTest {
+            val fixture = participantFixture(this)
+            val artifact = fixture.root.resolve("runtime.jar")
+            ZipOutputStream(Files.newOutputStream(artifact)).use { }
+            val manifest = fixture.engineManifest(ThrowingHostedRuntimeEntrypoint::class.qualifiedName!!)
+
+            shouldThrow<IllegalStateException> {
+                HostedRuntimeLoader(ThrowingHostedRuntimeEntrypoint::class.java.classLoader)
+                    .stage(fixture.context(artifact, manifest))
+            }
+        }
+    }
+
     test("participant status contract classifies its typed internal failure") {
         val policy = ParticipantStatusContract.responsePolicy
         policy.classify(policy.internalFailureResponse).outcome shouldBe ResponseOutcome.INTERNAL_ERROR
@@ -134,6 +217,18 @@ val HostRolloutParticipantTest by testSuite {
 
             val context = fixture.stagedContexts.single()
             val extension = context.artifacts.extensions.single()
+            context.artifacts.runtimeArtifact.manifest shouldBe
+                EngineManifest(
+                    id = ArtifactId("typewritermc:paper"),
+                    version = ArtifactVersion("1.0.0"),
+                    hostApi = VersionConstraint("^1"),
+                    runtimeEntrypointClass = "fixture.Runtime",
+                    directCapabilities = emptyList(),
+                    resolvedCapabilities = emptyList(),
+                    bundledComponents = emptyList(),
+                    contributions = emptyList(),
+                )
+            extension.manifest.id shouldBe ArtifactId("typewritermc:extension")
             extension.sourceParts.map { it.name } shouldContainExactly listOf("paper", "panel")
             extension.sourceParts[0].disposition shouldBe SourcePartDisposition.Eligible(setOf(RuntimePlacement.PRIMARY_ENGINE))
             extension.sourceParts[1].disposition shouldBe
@@ -294,13 +389,14 @@ val HostRolloutParticipantTest by testSuite {
 private class ParticipantFixture(
     val serviceId: ServiceId,
     val realmId: RealmId,
+    val host: HostedRuntimeHost,
     val participant: HostRolloutParticipant,
     val projections: MutableMap<ProjectionReference, HostDeploymentProjection>,
     val stagedContexts: MutableList<HostedDeploymentContext>,
     val classPaths: MutableList<List<Path>>,
     val runtimes: MutableList<RecordingRuntime>,
     val events: MutableList<ParticipantStateChanged>,
-    private val root: Path,
+    val root: Path,
 ) {
     fun reference(name: String) =
         ProjectionReference(
@@ -309,6 +405,38 @@ private class ParticipantFixture(
             serviceId,
             ArtifactDigest.sha256(name.encodeToByteArray()),
         )
+
+    fun engineManifest(entrypointClass: String) =
+        EngineManifest(
+            id = ArtifactId("typewritermc:paper"),
+            version = ArtifactVersion("1.0.0"),
+            hostApi = VersionConstraint("^1"),
+            runtimeEntrypointClass = entrypointClass,
+            directCapabilities = emptyList(),
+            resolvedCapabilities = emptyList(),
+            bundledComponents = emptyList(),
+            contributions = emptyList(),
+        )
+
+    fun context(
+        artifact: Path,
+        manifest: EngineManifest,
+    ) = HostedDeploymentContext(
+        identity =
+            com.typewritermc.loader.api.HostedRuntimeIdentity(
+                serviceId.value,
+                realmId.value,
+                RuntimePlacement.PRIMARY_ENGINE,
+            ),
+        directories =
+            com.typewritermc.loader.api.HostedRuntimeDirectories(
+                root.resolve("state"),
+                root.resolve("deployment"),
+            ),
+        artifacts = HostedArtifactPackage(HostedArtifact(artifact, manifest), emptyList(), emptyList()),
+        facts = emptyMap(),
+        host = host,
+    )
 
     fun envelope(
         attempt: RolloutAttempt,
@@ -384,9 +512,9 @@ private fun participantFixture(scope: TestScope): ParticipantFixture {
             override val sharedArtifacts = shared
         }
     val stager =
-        HostedRuntimeStager { context, classPath ->
+        HostedRuntimeStager { context ->
             contexts += context
-            classPaths += classPath
+            classPaths += context.artifacts.executableArtifacts
             val runtime = RecordingRuntime()
             runtimes += runtime
             LoadedHostedRuntime(runtime, URLClassLoader(emptyArray<java.net.URL>()))
@@ -402,14 +530,62 @@ private fun participantFixture(scope: TestScope): ParticipantFixture {
             },
             object : VerifiedArtifactSource {
                 override suspend fun fetch(digest: ArtifactDigest): Path =
-                    root.resolve(digest.value).also { Files.write(it, byteArrayOf()) }
+                    root.resolve(digest.value).also { path ->
+                        if (Files.notExists(path)) {
+                            val manifest =
+                                if (digest == ArtifactDigest.sha256("extension".encodeToByteArray())) {
+                                    ExtensionManifest(
+                                        id = ArtifactId("typewritermc:extension"),
+                                        version = ArtifactVersion("1.0.0"),
+                                        sourceParts = listOf(CommonExtensionSourcePart),
+                                        buildProvenance = emptyList(),
+                                        contributions = emptyList(),
+                                    )
+                                } else {
+                                    EngineManifest(
+                                        id = ArtifactId("typewritermc:paper"),
+                                        version = ArtifactVersion("1.0.0"),
+                                        hostApi = VersionConstraint("^1"),
+                                        runtimeEntrypointClass = "fixture.Runtime",
+                                        directCapabilities = emptyList(),
+                                        resolvedCapabilities = emptyList(),
+                                        bundledComponents = emptyList(),
+                                        contributions = emptyList(),
+                                    )
+                                }
+                            Files.createDirectories(path.parent)
+                            ZipOutputStream(Files.newOutputStream(path)).use { archive ->
+                                archive.putNextEntry(ZipEntry(IMPRINT_MANIFEST_PATH))
+                                archive.write(ImprintManifestCodec.encode(manifest))
+                                archive.closeEntry()
+                            }
+                        }
+                    }
             },
             { event -> events += event },
             scope,
             stager,
             1.seconds,
         )
-    return ParticipantFixture(serviceId, realmId, participant, projections, contexts, classPaths, runtimes, events, root)
+    return ParticipantFixture(serviceId, realmId, host, participant, projections, contexts, classPaths, runtimes, events, root)
+}
+
+class TestHostedRuntimeEntrypoint : HostedRuntimeEntrypoint {
+    override suspend fun stage(context: HostedDeploymentContext): StagedHostedRuntime = RecordingRuntime().also { stagedRuntime = it }
+
+    companion object {
+        var stagedRuntime: StagedHostedRuntime? = null
+    }
+}
+
+class NoZeroArgumentHostedRuntimeEntrypoint(
+    private val marker: String,
+) : HostedRuntimeEntrypoint {
+    override suspend fun stage(context: HostedDeploymentContext): StagedHostedRuntime = error(marker)
+}
+
+class ThrowingHostedRuntimeEntrypoint : HostedRuntimeEntrypoint {
+    override suspend fun stage(context: HostedDeploymentContext): StagedHostedRuntime = error("fixture stage failure")
 }
 
 private class RecordingRuntime : StagedHostedRuntime {

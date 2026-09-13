@@ -1,7 +1,8 @@
 package com.typewritermc.realm.deployment
 
+import com.typewritermc.imprint.ImprintRuntimeEntrypoint
 import com.typewritermc.loader.api.HostedDeploymentContext
-import com.typewritermc.loader.api.HostedRuntimeProvider
+import com.typewritermc.loader.api.HostedRuntimeEntrypoint
 import com.typewritermc.loader.api.RuntimeHealth
 import com.typewritermc.loader.api.StagedHostedRuntime
 import com.typewritermc.realm.DefaultRealmRuntimeFactory
@@ -37,14 +38,15 @@ interface ManagedRealmRuntime {
 }
 
 /**
- * Exposes Realm staging through the shared hosted provider contract.
+ * Exposes Realm staging through the shared hosted entrypoint contract.
  *
  * The adapter reports activation success or failure as loader health. It does not continuously aggregate compiler
  * or route health into that signal.
  */
+@ImprintRuntimeEntrypoint
 class RealmDeploymentEntrypoint(
     private val factory: RealmRuntimeFactory = DefaultRealmRuntimeFactory(),
-) : HostedRuntimeProvider {
+) : HostedRuntimeEntrypoint {
     override suspend fun stage(context: HostedDeploymentContext): StagedHostedRuntime = RealmDeploymentRuntime(factory.stage(context))
 }
 

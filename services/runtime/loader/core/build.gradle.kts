@@ -16,6 +16,7 @@ buildConfig {
 
 dependencies {
     api(project(":loader-api"))
+    implementation("com.typewritermc:imprint-archive")
     api("com.typewritermc:imprint-model")
     implementation(project(":typewriter-api"))
     api(libs.kotlin.coroutines.core)

@@ -1,6 +1,9 @@
 package com.typewritermc.loader.api
 
 import com.typewritermc.imprint.ArtifactId
+import com.typewritermc.imprint.ExtensionManifest
+import com.typewritermc.imprint.HostedArtifactManifest
+import com.typewritermc.imprint.ImprintManifest
 import com.typewritermc.loader.api.artifact.SharedArtifactAccess
 import com.typewritermc.services.libs.communicator.address.AddressTemplate
 import com.typewritermc.services.libs.communicator.address.addressTemplate
@@ -111,19 +114,26 @@ data class HostedRuntimeDirectories(
 )
 
 /**
- * Separates runtime and extension artifacts from catalog only artifact paths.
+ * Separates executable artifacts from the complete manifest catalog.
  *
  * [executableArtifacts] includes the runtime plus extensions with at least one eligible source part. Consumers
- * must still apply domain and placement rules when loading generated contributions.
+ * must still apply domain and placement rules when loading generated contributions. Every artifact carries the
+ * manifest decoded from its materialized bytes.
  */
 data class HostedArtifactPackage(
-    val runtimeArtifact: Path,
+    val runtimeArtifact: HostedArtifact<HostedArtifactManifest>,
     val extensions: List<HostedExtensionArtifact>,
-    val catalogArtifacts: List<Path>,
+    val catalogArtifacts: List<HostedArtifact<ImprintManifest>>,
 ) {
     val executableArtifacts: List<Path>
-        get() = listOf(runtimeArtifact) + extensions.filter(HostedExtensionArtifact::hasEligibleSourcePart).map { it.path }
+        get() = listOf(runtimeArtifact.path) + extensions.filter(HostedExtensionArtifact::hasEligibleSourcePart).map { it.path }
 }
+
+/** A materialized artifact path paired with the manifest read from those exact bytes. */
+data class HostedArtifact<out Manifest : ImprintManifest>(
+    val path: Path,
+    val manifest: Manifest,
+)
 
 /**
  * Carries one extension artifact and the loader resolved source part dispositions.
@@ -134,8 +144,15 @@ data class HostedArtifactPackage(
 data class HostedExtensionArtifact(
     val id: ArtifactId,
     val path: Path,
+    val manifest: ExtensionManifest,
     val sourceParts: List<HostedSourcePart>,
 ) {
+    init {
+        require(manifest.id == id) {
+            "Hosted extension $id does not match its manifest identity ${manifest.id}."
+        }
+    }
+
     val hasEligibleSourcePart: Boolean
         get() = sourceParts.any { it.disposition is SourcePartDisposition.Eligible }
 }
@@ -197,12 +214,12 @@ interface HostedRuntimeHost {
 }
 
 /**
- * ServiceLoader entry point for staging a hosted artifact.
+ * Manifest selected entry point for staging a hosted artifact.
  *
- * The loader requires exactly one provider on the runtime classpath. A successful [stage] transfers the returned
+ * The loader instantiates the class named by the runtime manifest. A successful [stage] transfers the returned
  * runtime to the loader; failure must release resources acquired before returning.
  */
-interface HostedRuntimeProvider {
+interface HostedRuntimeEntrypoint {
     suspend fun stage(context: HostedDeploymentContext): StagedHostedRuntime
 }
 

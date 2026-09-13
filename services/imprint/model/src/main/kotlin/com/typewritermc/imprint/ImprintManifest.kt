@@ -13,6 +13,9 @@ const val IMPRINT_MANIFEST_PATH = "META-INF/typewriter/manifest.cbor"
 /** JAR directory containing raw processor contributions before manifest generation. */
 const val IMPRINT_CONTRIBUTIONS_PATH = "META-INF/typewriter/contributions"
 
+/** Intermediate KSP output naming the hosted runtime entrypoints before manifest generation. */
+const val IMPRINT_RUNTIME_ENTRYPOINTS_PATH = "META-INF/typewriter/hosted-runtime-entrypoints.cbor"
+
 /** Current envelope version accepted by [ImprintManifestCodec]. */
 const val CURRENT_IMPRINT_FORMAT = 1
 
@@ -32,11 +35,12 @@ sealed interface ImprintManifest {
 /**
  * Manifest for a runtime started through the stable loader API. [hostApi] declares the compatible host contract
  * range; it is independent of the artifact version. Packaging validates that hosted artifacts expose exactly one
- * runtime provider.
+ * generated runtime entrypoint.
  */
 @Serializable
 sealed interface HostedArtifactManifest : ImprintManifest {
     val hostApi: VersionConstraint
+    val runtimeEntrypointClass: String
 }
 
 /** Describes the Realm runtime hosted beside the panel engine. */
@@ -47,8 +51,15 @@ data class RealmManifest(
     override val id: ArtifactId,
     override val version: ArtifactVersion,
     override val hostApi: VersionConstraint,
+    override val runtimeEntrypointClass: String,
     override val contributions: List<GeneratedContribution>,
-) : HostedArtifactManifest
+) : HostedArtifactManifest {
+    init {
+        require(runtimeEntrypointClass.isNotBlank()) {
+            "A Realm manifest must declare a runtime entrypoint class."
+        }
+    }
+}
 
 /**
  * Manifest for an engine and its bundled component graph. Direct capabilities preserve declared constraints,
@@ -62,12 +73,16 @@ data class EngineManifest(
     override val id: ArtifactId,
     override val version: ArtifactVersion,
     override val hostApi: VersionConstraint,
+    override val runtimeEntrypointClass: String,
     val directCapabilities: List<ArtifactRequirement>,
     val resolvedCapabilities: List<ResolvedArtifact>,
     val bundledComponents: List<ResolvedArtifact>,
     override val contributions: List<GeneratedContribution>,
 ) : HostedArtifactManifest {
     init {
+        require(runtimeEntrypointClass.isNotBlank()) {
+            "An engine manifest must declare a runtime entrypoint class."
+        }
         require(resolvedCapabilities.all { it.kind == ArtifactKind.CAPABILITY }) {
             "An engine capability graph may contain only capability artifacts."
         }

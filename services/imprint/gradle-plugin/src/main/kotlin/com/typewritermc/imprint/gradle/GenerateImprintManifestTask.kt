@@ -12,13 +12,17 @@ import com.typewritermc.imprint.EngineManifest
 import com.typewritermc.imprint.ExtensionManifest
 import com.typewritermc.imprint.ExtensionSourcePart
 import com.typewritermc.imprint.GeneratedContribution
+import com.typewritermc.imprint.HostedRuntimeEntrypointMetadataCodec
 import com.typewritermc.imprint.IMPRINT_CONTRIBUTIONS_PATH
 import com.typewritermc.imprint.IMPRINT_MANIFEST_PATH
+import com.typewritermc.imprint.IMPRINT_RUNTIME_ENTRYPOINTS_PATH
 import com.typewritermc.imprint.ImprintManifest
 import com.typewritermc.imprint.ImprintManifestCodec
 import com.typewritermc.imprint.RealmManifest
 import com.typewritermc.imprint.ResolvedArtifact
 import com.typewritermc.imprint.VersionConstraint
+import com.typewritermc.imprint.archive.ImprintArchive
+import com.typewritermc.imprint.archive.ImprintArchiveInspection
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.Project
@@ -38,12 +42,10 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.util.zip.ZipFile
 
-private const val HOSTED_RUNTIME_PROVIDER = "META-INF/services/com.typewritermc.loader.api.HostedRuntimeProvider"
-
 /**
  * Wires manifest generation to production KSP outputs and resolved artifact relationships. Nested inputs preserve
- * source part, expected kind, constraint, and the direct artifact provider. Hosted artifacts also
- * provide service registration inputs so generation can verify the runtime provider contract.
+ * source part, expected kind, constraint, and the direct artifact provider. Hosted artifacts also provide generated
+ * entrypoint metadata so the canonical manifest owns runtime bootstrap selection.
  */
 internal fun Project.registerManifestTask(
     declaration: DeclaredArtifact,
@@ -60,6 +62,13 @@ internal fun Project.registerManifestTask(
         fileTree(layout.buildDirectory.dir("generated/ksp")) {
             it.include("*/resources/$IMPRINT_CONTRIBUTIONS_PATH/**")
         }
+    val runtimeEntrypointFiles =
+        files(
+            fileTree(layout.buildDirectory.dir("generated/ksp")) {
+                it.include("*/resources/$IMPRINT_RUNTIME_ENTRYPOINTS_PATH")
+            },
+            fileTree("src/main/resources") { it.include(IMPRINT_RUNTIME_ENTRYPOINTS_PATH) },
+        )
     return tasks.register("generateImprintManifest", GenerateImprintManifestTask::class.java) { task ->
         task.artifactKind.set(declaration.kind.name)
         task.artifactId.set(declaration.id.value)
@@ -102,13 +111,8 @@ internal fun Project.registerManifestTask(
         )
         task.graphArtifacts.from(relationships.map(ConfiguredRelationship::configuration))
         task.contributionFiles.from(contributionFiles)
+        task.runtimeEntrypointFiles.from(runtimeEntrypointFiles)
         task.engineCoreArtifacts.from(engineCoreArtifacts)
-        if (declaration.kind == ArtifactKind.REALM || declaration.kind == ArtifactKind.ENGINE) {
-            task.providerArtifacts.from(
-                configurations.getByName("runtimeClasspath"),
-                fileTree("src/main/resources") { it.include(HOSTED_RUNTIME_PROVIDER) },
-            )
-        }
         task.outputFile.set(layout.buildDirectory.file("generated/imprint/artifact.cbor"))
         val kspTasks = productionParts.map { part -> if (part == "main") "kspKotlin" else "ksp${part.capitalized()}Kotlin" }
         task.dependsOn(tasks.matching { it.name in kspTasks })
@@ -118,8 +122,8 @@ internal fun Project.registerManifestTask(
 /**
  * Produces the canonical manifest after validating the resolved artifact graph and generated contributions.
  * Rejects conflicting identities, incompatible constraints, dependency cycles, unsafe contribution keys, and
- * unsupported source part inclusions before writing CBOR. Hosted artifacts must expose exactly one runtime
- * provider. Stable sorting makes manifest ordering independent of file enumeration.
+ * unsupported source part inclusions before writing CBOR. Hosted artifacts must expose exactly one generated runtime
+ * entrypoint. Stable sorting makes manifest ordering independent of file enumeration.
  */
 @CacheableTask
 abstract class GenerateImprintManifestTask : DefaultTask() {
@@ -151,11 +155,11 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
 
     @get:InputFiles
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    abstract val engineCoreArtifacts: ConfigurableFileCollection
+    abstract val runtimeEntrypointFiles: ConfigurableFileCollection
 
     @get:InputFiles
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    abstract val providerArtifacts: ConfigurableFileCollection
+    abstract val engineCoreArtifacts: ConfigurableFileCollection
 
     @get:OutputFile
     abstract val outputFile: RegularFileProperty
@@ -169,9 +173,7 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
         val relationships = readRelationships(allManifests)
         val localContributions = readContributions(id)
         val engineCoreContributions = if (kind == ArtifactKind.ENGINE) readEngineCoreContributions(id) else emptyList()
-        if (kind in setOf(ArtifactKind.REALM, ArtifactKind.ENGINE)) {
-            validateHostedRuntimeProvider()
-        }
+        val runtimeEntrypointClass = readRuntimeEntrypointClass(kind)
         val manifest =
             when (kind) {
                 ArtifactKind.REALM -> {
@@ -179,12 +181,20 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
                         id = id,
                         version = version,
                         hostApi = requiredHostApi(),
+                        runtimeEntrypointClass = runtimeEntrypointClass,
                         contributions = canonicalContributions(localContributions),
                     )
                 }
 
                 ArtifactKind.ENGINE -> {
-                    engineManifest(id, version, relationships, allManifests, localContributions + engineCoreContributions)
+                    engineManifest(
+                        id,
+                        version,
+                        relationships,
+                        allManifests,
+                        runtimeEntrypointClass,
+                        localContributions + engineCoreContributions,
+                    )
                 }
 
                 ArtifactKind.CAPABILITY -> {
@@ -201,45 +211,56 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
         }
     }
 
-    private fun validateHostedRuntimeProvider() {
-        val providers =
-            providerArtifacts.files
-                .flatMap { file ->
-                    when {
-                        file.isDirectory -> {
-                            file
-                                .resolve(HOSTED_RUNTIME_PROVIDER)
-                                .takeIf(File::isFile)
-                                ?.readLines()
-                                .orEmpty()
-                        }
-
-                        file.isFile && file.invariantSeparatorsPath.endsWith(HOSTED_RUNTIME_PROVIDER) -> {
-                            file.readLines()
-                        }
-
-                        file.isFile && file.name.endsWith(".jar") -> {
-                            ZipFile(file).use { archive ->
-                                archive
-                                    .getEntry(HOSTED_RUNTIME_PROVIDER)
-                                    ?.let { entry ->
-                                        archive.getInputStream(entry).bufferedReader().readLines()
-                                    }.orEmpty()
-                            }
-                        }
-
-                        else -> {
-                            emptyList()
-                        }
-                    }
-                }.map(String::trim)
-                .filter { it.isNotEmpty() && !it.startsWith('#') }
-                .distinct()
-        if (providers.size != 1) {
+    private fun readRuntimeEntrypointClass(kind: ArtifactKind): String {
+        val local = runtimeEntrypointFiles.files.flatMap(::readRuntimeEntrypoints)
+        val core = if (kind == ArtifactKind.ENGINE) readEngineCoreEntrypoints() else emptyList()
+        val classes = local + core
+        if (kind !in setOf(ArtifactKind.REALM, ArtifactKind.ENGINE)) {
+            if (classes.isNotEmpty()) {
+                throw GradleException("Only hosted Imprint artifacts may declare a runtime entrypoint.")
+            }
+            return ""
+        }
+        if (classes.size != 1) {
             throw GradleException(
-                "A hosted artifact must supply exactly one HostedRuntimeProvider, but found ${providers.size}.",
+                "A hosted artifact must declare exactly one runtime entrypoint, but found ${classes.size}.",
             )
         }
+        return classes.single()
+    }
+
+    private fun readRuntimeEntrypoints(file: File): List<String> =
+        try {
+            validateRuntimeEntrypoints(HostedRuntimeEntrypointMetadataCodec.decode(file.readBytes()).classes, file.name)
+        } catch (failure: Exception) {
+            throw GradleException("Cannot read runtime entrypoint metadata from ${file.name}.", failure)
+        }
+
+    private fun readEngineCoreEntrypoints(): List<String> {
+        if (engineCoreArtifacts.isEmpty) return emptyList()
+        val artifact =
+            engineCoreArtifacts.files.singleOrNull()
+                ?: throw GradleException("An engine must resolve exactly one direct engine core artifact.")
+        return ImprintArchive
+            .readEntries(artifact.toPath(), IMPRINT_RUNTIME_ENTRYPOINTS_PATH)
+            .flatMap { bytes ->
+                try {
+                    HostedRuntimeEntrypointMetadataCodec.decode(bytes).classes
+                } catch (failure: Exception) {
+                    throw GradleException("Cannot read runtime entrypoint metadata from ${artifact.name}.", failure)
+                }
+            }.let { validateRuntimeEntrypoints(it, artifact.name) }
+    }
+
+    private fun validateRuntimeEntrypoints(
+        classes: List<String>,
+        source: String,
+    ): List<String> {
+        val normalized = classes.map(String::trim)
+        if (normalized.any(String::isEmpty)) {
+            throw GradleException("Runtime entrypoint metadata in $source contains a blank class name.")
+        }
+        return normalized
     }
 
     private fun requiredHostApi(): VersionConstraint {
@@ -298,6 +319,7 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
         version: ArtifactVersion,
         relationships: List<ResolvedRelationship>,
         allManifests: Map<ArtifactId, ImprintManifest>,
+        runtimeEntrypointClass: String,
         localContributions: List<GeneratedContribution>,
     ): EngineManifest {
         val direct = canonicalRequirements(relationships.map(ResolvedRelationship::requirement), id.value)
@@ -308,6 +330,7 @@ abstract class GenerateImprintManifestTask : DefaultTask() {
             id = id,
             version = version,
             hostApi = requiredHostApi(),
+            runtimeEntrypointClass = runtimeEntrypointClass,
             directCapabilities = direct,
             resolvedCapabilities = graph,
             bundledComponents = graph,
@@ -616,12 +639,8 @@ private fun ImprintManifest.descriptor(): ResolvedArtifact =
 
 private fun readManifestOrNull(file: File): ImprintManifest? {
     if (!file.isFile || !file.name.endsWith(".jar")) return null
-    return ZipFile(file).use { archive ->
-        val entry = archive.getEntry(IMPRINT_MANIFEST_PATH) ?: return@use null
-        try {
-            ImprintManifestCodec.decode(archive.getInputStream(entry).readBytes())
-        } catch (exception: Exception) {
-            throw GradleException("Cannot read Imprint manifest from ${file.name}: ${exception.message}", exception)
-        }
+    return when (val inspection = ImprintArchive.inspect(file.toPath())) {
+        ImprintArchiveInspection.Absent -> null
+        is ImprintArchiveInspection.Present -> inspection.manifest
     }
 }

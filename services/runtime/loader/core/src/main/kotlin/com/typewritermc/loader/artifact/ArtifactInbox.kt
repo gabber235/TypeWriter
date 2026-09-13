@@ -4,10 +4,9 @@ import com.typewritermc.imprint.ArtifactKind
 import com.typewritermc.imprint.CapabilityManifest
 import com.typewritermc.imprint.EngineManifest
 import com.typewritermc.imprint.ExtensionManifest
-import com.typewritermc.imprint.IMPRINT_MANIFEST_PATH
 import com.typewritermc.imprint.ImprintManifest
-import com.typewritermc.imprint.ImprintManifestCodec
 import com.typewritermc.imprint.RealmManifest
+import com.typewritermc.imprint.archive.ImprintArchive
 import com.typewritermc.loader.api.artifact.ArtifactDigest
 import com.typewritermc.loader.api.artifact.BlobEndpoint
 import com.typewritermc.loader.api.artifact.BlobMetadata
@@ -19,6 +18,7 @@ import com.typewritermc.loader.artifactSpan
 import com.typewritermc.loader.deployment.ArtifactCandidate
 import com.typewritermc.services.libs.telemetry.ServiceTelemetry
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
@@ -27,15 +27,14 @@ import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.security.DigestInputStream
 import java.security.MessageDigest
-import java.time.Duration
 import java.util.concurrent.TimeUnit
-import java.util.zip.ZipFile
-import kotlin.coroutines.coroutineContext
 import kotlin.io.path.createDirectories
 import kotlin.io.path.fileSize
 import kotlin.io.path.getLastModifiedTime
 import kotlin.io.path.inputStream
 import kotlin.io.path.isRegularFile
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @kotlinx.serialization.Serializable
 data class InboxDiagnostic(
@@ -94,8 +93,8 @@ class ArtifactInboxReconciler(
     artifactsRoot: Path,
     private val blobs: BlobEndpoint,
     private val candidates: CandidateRepository,
-    private val stableDuration: kotlin.time.Duration = kotlin.time.Duration.parse("2s"),
-    private val scanInterval: Duration = Duration.ofSeconds(30),
+    private val stableDuration: Duration = 2.seconds,
+    private val scanInterval: Duration = 30.seconds,
     private val telemetry: ServiceTelemetry? = null,
 ) {
     private val inbox = artifactsRoot.resolve("inbox").also(Path::createDirectories)
@@ -143,7 +142,7 @@ class ArtifactInboxReconciler(
                 reconcile()
                 while (true) {
                     coroutineContext.ensureActive()
-                    watchService.poll(scanInterval.toMillis(), TimeUnit.MILLISECONDS)?.reset()
+                    watchService.poll(scanInterval.inWholeMilliseconds, TimeUnit.MILLISECONDS)?.reset()
                     reconcile()
                 }
             }
@@ -188,7 +187,7 @@ class ArtifactInboxReconciler(
             )
             ImportOutcome.ACCEPTED
         } catch (failure: Throwable) {
-            coroutineContext.ensureActive()
+            currentCoroutineContext().ensureActive()
             candidates.quarantine(InboxDiagnostic(relative, failure.message ?: failure::class.simpleName.orEmpty()))
             ImportOutcome.QUARANTINED
         }
@@ -251,14 +250,7 @@ class ArtifactInboxReconciler(
         return ArtifactDigest(DigestAlgorithm.SHA_256, digest.digest().joinToString("") { "%02x".format(it) })
     }
 
-    private fun readManifest(path: Path): ImprintManifest =
-        ZipFile(path.toFile()).use { archive ->
-            val entry =
-                requireNotNull(archive.getEntry(IMPRINT_MANIFEST_PATH)) {
-                    "Inbox artifact does not contain $IMPRINT_MANIFEST_PATH."
-                }
-            ImprintManifestCodec.decode(archive.getInputStream(entry).readBytes())
-        }
+    private fun readManifest(path: Path): ImprintManifest = ImprintArchive.require(path)
 }
 
 private enum class ImportOutcome {

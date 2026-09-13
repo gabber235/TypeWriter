@@ -8,7 +8,8 @@ plugins {
 
 rootProject.name = "imprint"
 
-include(":imprint-model", ":imprint-gradle-plugin", ":imprint-testing")
+include(":imprint-model", ":imprint-archive", ":imprint-gradle-plugin", ":imprint-testing")
 project(":imprint-model").projectDir = file("model")
+project(":imprint-archive").projectDir = file("archive")
 project(":imprint-gradle-plugin").projectDir = file("gradle-plugin")
 project(":imprint-testing").projectDir = file("testing")

@@ -1,5 +1,11 @@
 package com.typewritermc.loader.rollout
 
+import com.typewritermc.imprint.ArtifactKind
+import com.typewritermc.imprint.ExtensionManifest
+import com.typewritermc.imprint.HostedArtifactManifest
+import com.typewritermc.imprint.ImprintManifest
+import com.typewritermc.imprint.archive.ImprintArchive
+import com.typewritermc.loader.api.HostedArtifact
 import com.typewritermc.loader.api.HostedArtifactPackage
 import com.typewritermc.loader.api.HostedDeploymentContext
 import com.typewritermc.loader.api.HostedExtensionArtifact
@@ -10,6 +16,7 @@ import com.typewritermc.loader.api.HostedSourcePart
 import com.typewritermc.loader.api.RuntimeHealth
 import com.typewritermc.loader.api.RuntimePlacement
 import com.typewritermc.loader.api.SourcePartDisposition
+import com.typewritermc.loader.artifact.DeploymentArtifact
 import com.typewritermc.loader.artifactSpan
 import com.typewritermc.loader.deployment.HostDeploymentProjection
 import com.typewritermc.loader.deployment.ProjectedExtension
@@ -356,11 +363,29 @@ class HostRolloutParticipant(
             projection.extensions.associate { extension ->
                 extension.artifact.coordinate.id to artifacts.fetch(extension.artifact.digest)
             }
+        val manifestByPath =
+            (runtimePaths.values + extensionPaths.values)
+                .distinct()
+                .associateWith(ImprintArchive::require)
+        runtimePaths.forEach { (runtime, path) ->
+            validateManifest(runtime.artifact, path, manifestByPath.getValue(path))
+        }
+        projection.extensions.forEach { extension ->
+            val path = extensionPaths.getValue(extension.artifact.coordinate.id)
+            validateManifest(extension.artifact, path, manifestByPath.getValue(path))
+        }
         val loaded = mutableListOf<LoadedHostedRuntime>()
         try {
             projection.runtimes.forEach { runtime ->
                 val runtimePath = runtimePaths.getValue(runtime)
-                val artifactPackage = projection.artifactPackage(runtime, runtimePath, runtimePaths.values.toList(), extensionPaths)
+                val artifactPackage =
+                    projection.artifactPackage(
+                        runtime,
+                        runtimePath,
+                        runtimePaths.values.toList(),
+                        extensionPaths,
+                        manifestByPath,
+                    )
                 val deploymentDirectory =
                     workDirectory
                         .resolve("runtime")
@@ -382,7 +407,7 @@ class HostRolloutParticipant(
                         facts = projection.facts,
                         host = host,
                     )
-                loaded += runtimeLoader.stage(context, artifactPackage.executableArtifacts)
+                loaded += runtimeLoader.stage(context)
             }
             require(loaded.all { it.runtime.health.value == RuntimeHealth.Staged }) {
                 "Every local runtime must report staged before the projection is accepted."
@@ -401,19 +426,55 @@ class HostRolloutParticipant(
         runtimePath: Path,
         catalogArtifacts: List<Path>,
         extensionPaths: Map<com.typewritermc.imprint.ArtifactId, Path>,
+        manifestByPath: Map<Path, ImprintManifest>,
     ): HostedArtifactPackage =
         HostedArtifactPackage(
-            runtimeArtifact = runtimePath,
-            catalogArtifacts = catalogArtifacts,
+            runtimeArtifact =
+                HostedArtifact(
+                    runtimePath,
+                    manifestByPath.getValue(runtimePath) as? HostedArtifactManifest
+                        ?: error("Hosted runtime ${runtime.artifact.coordinate.id} has a non hosted manifest."),
+                ),
+            catalogArtifacts =
+                catalogArtifacts
+                    .distinct()
+                    .map { path -> HostedArtifact(path, manifestByPath.getValue(path)) },
             extensions =
                 extensions.map { extension ->
+                    val path = extensionPaths.getValue(extension.artifact.coordinate.id)
                     HostedExtensionArtifact(
                         id = extension.artifact.coordinate.id,
-                        path = extensionPaths.getValue(extension.artifact.coordinate.id),
+                        path = path,
+                        manifest =
+                            manifestByPath.getValue(path) as? ExtensionManifest
+                                ?: error("Hosted extension ${extension.artifact.coordinate.id} has a non extension manifest."),
                         sourceParts = extension.sourceParts.map { it.forRuntime(runtime.placement) },
                     )
                 },
         )
+
+    private fun validateManifest(
+        artifact: DeploymentArtifact,
+        path: Path,
+        manifest: ImprintManifest,
+    ) {
+        require(manifest.id == artifact.coordinate.id) {
+            "Artifact ${path.fileName} manifest id ${manifest.id} differs from ${artifact.coordinate.id}."
+        }
+        require(manifest.version == artifact.coordinate.version) {
+            "Artifact ${path.fileName} manifest version ${manifest.version} differs from ${artifact.coordinate.version}."
+        }
+        val kind =
+            when (manifest) {
+                is com.typewritermc.imprint.RealmManifest -> ArtifactKind.REALM
+                is com.typewritermc.imprint.EngineManifest -> ArtifactKind.ENGINE
+                is com.typewritermc.imprint.CapabilityManifest -> ArtifactKind.CAPABILITY
+                is com.typewritermc.imprint.ExtensionManifest -> ArtifactKind.EXTENSION
+            }
+        require(kind == artifact.kind) {
+            "Artifact ${path.fileName} manifest kind $kind differs from ${artifact.kind}."
+        }
+    }
 
     private fun com.typewritermc.loader.deployment.ProjectedSourcePart.forRuntime(placement: RuntimePlacement): HostedSourcePart {
         val current = disposition

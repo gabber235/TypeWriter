@@ -6,10 +6,14 @@ import com.typewritermc.imprint.ArtifactVersion
 import com.typewritermc.imprint.CapabilityManifest
 import com.typewritermc.imprint.EngineManifest
 import com.typewritermc.imprint.ExtensionManifest
+import com.typewritermc.imprint.HostedRuntimeEntrypointMetadata
+import com.typewritermc.imprint.HostedRuntimeEntrypointMetadataCodec
 import com.typewritermc.imprint.IMPRINT_CONTRIBUTIONS_PATH
 import com.typewritermc.imprint.IMPRINT_MANIFEST_PATH
+import com.typewritermc.imprint.IMPRINT_RUNTIME_ENTRYPOINTS_PATH
 import com.typewritermc.imprint.ImprintManifest
 import com.typewritermc.imprint.ImprintManifestCodec
+import com.typewritermc.imprint.RealmManifest
 import de.infix.testBalloon.framework.core.testSuite
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -156,6 +160,69 @@ val ImprintPluginTest by testSuite {
         jar.entries().contains("fixture/core/CoreType.class") shouldBe false
     }
 
+    test("Realm manifest receives the generated runtime entrypoint") {
+        val fixture = fixture("realm")
+        fixture.writeBuild(
+            "realm",
+            """
+            plugins { id("com.typewritermc.imprint") }
+            typewriter {
+                realm {
+                    id = "typewritermc:realm"
+                    version = "1.0.0"
+                    hostApi = "^1"
+                }
+            }
+            """.trimIndent(),
+        )
+        fixture.writeRuntimeEntrypoints("realm", "fixture.RealmEntrypoint")
+
+        fixture.run(":realm:shadowJar")
+        val jar = fixture.singleJar("realm/build/libs")
+        val manifest = jar.readManifest() as RealmManifest
+
+        manifest.runtimeEntrypointClass shouldBe "fixture.RealmEntrypoint"
+        jar.entries().contains(IMPRINT_RUNTIME_ENTRYPOINTS_PATH) shouldBe false
+    }
+
+    test("hosted manifest generation rejects missing and multiple runtime entrypoints") {
+        val missing = fixture("realm")
+        missing.writeBuild(
+            "realm",
+            """
+            plugins { id("com.typewritermc.imprint") }
+            typewriter {
+                realm {
+                    id = "typewritermc:realm"
+                    version = "1.0.0"
+                    hostApi = "^1"
+                }
+            }
+            """.trimIndent(),
+        )
+        missing.run(":realm:shadowJar", expectFailure = true).output shouldContain
+            "must declare exactly one runtime entrypoint, but found 0"
+
+        val multiple = fixture("realm")
+        multiple.writeBuild(
+            "realm",
+            """
+            plugins { id("com.typewritermc.imprint") }
+            typewriter {
+                realm {
+                    id = "typewritermc:realm"
+                    version = "1.0.0"
+                    hostApi = "^1"
+                }
+            }
+            """.trimIndent(),
+        )
+        multiple.writeRuntimeEntrypoints("realm", "fixture.First", "fixture.Second")
+
+        multiple.run(":realm:shadowJar", expectFailure = true).output shouldContain
+            "must declare exactly one runtime entrypoint, but found 2"
+    }
+
     test("engine Shadow JAR bundles core capabilities and one merged manifest") {
         val fixture = fixture("engineCore", "base", "capability", "engine")
         fixture.writeBuild(
@@ -202,7 +269,12 @@ val ImprintPluginTest by testSuite {
             """.trimIndent(),
         )
         fixture.write("engine/src/main/java/fixture/paper/PaperEngine.java", javaType("fixture.paper", "PaperEngine"))
-        fixture.writeHostedProvider("engine")
+        fixture.writeBytes(
+            "engineCore/src/main/resources/$IMPRINT_RUNTIME_ENTRYPOINTS_PATH",
+            HostedRuntimeEntrypointMetadataCodec.encode(
+                HostedRuntimeEntrypointMetadata(listOf("fixture.EngineEntrypoint")),
+            ),
+        )
 
         fixture.run(":engine:shadowJar")
         val jar = fixture.singleJar("engine/build/libs")
@@ -213,6 +285,7 @@ val ImprintPluginTest by testSuite {
         jar.entries().contains("fixture/items/ItemType.class") shouldBe true
         jar.entries().contains("fixture/paper/PaperEngine.class") shouldBe true
         jar.entries().count { it == IMPRINT_MANIFEST_PATH } shouldBe 1
+        jar.entries().contains(IMPRINT_RUNTIME_ENTRYPOINTS_PATH) shouldBe false
         manifest.resolvedCapabilities.map { it.id.value } shouldContainExactly
             listOf("typewritermc:base", "typewritermc:items")
         val coreContribution = manifest.contributions.single { it.name == "core/pages.cbor" }
@@ -316,7 +389,7 @@ val ImprintPluginTest by testSuite {
             """.trimIndent(),
         )
         incorrect.writeBuild("extension", extensionWithCapability("project(\":engine\")"))
-        incorrect.writeHostedProvider("engine")
+        incorrect.writeRuntimeEntrypoints("engine", "fixture.EngineEntrypoint")
 
         incorrect.run(":extension:jar", expectFailure = true).output shouldContain
             "requires CAPABILITY but paper is ENGINE"
@@ -435,7 +508,7 @@ val ImprintPluginTest by testSuite {
             }
             """.trimIndent(),
         )
-        fixture.writeHostedProvider("paper")
+        fixture.writeRuntimeEntrypoints("paper", "fixture.EngineEntrypoint")
         fixture.write(
             "extension/src/minecraft/kotlin/fixture/MinecraftSupport.kt",
             "package fixture\nclass MinecraftSupport",
@@ -656,11 +729,24 @@ private class FunctionalFixture(
         }
     }
 
-    fun writeHostedProvider(project: String) {
-        write(
-            "$project/src/main/resources/META-INF/services/com.typewritermc.loader.api.HostedRuntimeProvider",
-            "fixture.HostedRuntimeProvider",
+    fun writeRuntimeEntrypoints(
+        project: String,
+        vararg classes: String,
+    ) {
+        writeBytes(
+            "$project/build/generated/ksp/main/resources/$IMPRINT_RUNTIME_ENTRYPOINTS_PATH",
+            HostedRuntimeEntrypointMetadataCodec.encode(HostedRuntimeEntrypointMetadata(classes.toList())),
         )
+    }
+
+    fun writeBytes(
+        path: String,
+        content: ByteArray,
+    ) {
+        directory.resolve(path).apply {
+            parentFile.mkdirs()
+            writeBytes(content)
+        }
     }
 
     fun build(
