@@ -33,17 +33,19 @@ class InspectorScaffold extends HookConsumerWidget {
   const InspectorScaffold({
     required this.child,
     this.margin = const EdgeInsets.only(top: 8, bottom: 8, right: 8),
+    this.realmRuntime,
     super.key,
   });
 
   final EdgeInsets margin;
 
   final Widget child;
+  final EditorRealmRuntime? realmRuntime;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return EditorRoot(
-      create: SelectionEditorSource.new,
+    return ProviderScope(
+      overrides: [editorRealmRuntimeProvider.overrideWithValue(realmRuntime)],
       child: LayoutBuilder(
         builder: (context, constraints) {
           return constraints.maxWidth < 3 * kInspectorMinSize
@@ -373,19 +375,33 @@ class _InspectorContent extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: Add shimmer when loading.
-    final selectedHeader = ref.watch(inspectedHeaderProvider);
-    final selectedRootType = ref.watch(inspectedRootTypeProvider);
+    final session = ref.watch(inspectionSessionProvider);
+    final runtime = ref.watch(editorRealmRuntimeProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: context.spacing.space3,
-      children: [
-        ?selectedHeader,
-        if (selectedRootType != null) const TypedEditor(),
-        const SizedBox(height: 5),
-        InspectorOperations(),
-        const SizedBox(height: 30),
-      ],
+    return ListenableBuilder(
+      listenable: session,
+      builder: (context, _) {
+        final model = session.model;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: context.spacing.space3,
+          children: [
+            ?session.header,
+            if (model != null)
+              ComposedEditor(
+                key: ValueKey(ref.watch(selectionProvider)),
+                model: model,
+                runtime: runtime?.executeAction,
+                realmSearchSourceBuilder: runtime?.searchSourceBuilder,
+                executePanelInstruction: runtime?.executePanelInstruction,
+              ),
+            const SizedBox(height: 5),
+            InspectorOperations(),
+            const SizedBox(height: 30),
+          ],
+        );
+      },
     );
   }
 }

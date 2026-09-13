@@ -19,6 +19,7 @@ void main() {
     expect(result.query, isEmpty);
     expect(result.queryBefore, isEmpty);
     expect(result.queryAfter, isEmpty);
+
     expect(result.raw, "");
     expect(result.issues, isEmpty);
     expect(result.cursorContext, isNull);
@@ -34,6 +35,7 @@ void main() {
     expect(result.query, isEmpty);
     expect(result.queryBefore, isEmpty);
     expect(result.queryAfter, isEmpty);
+
     expect(result.raw, "");
     expect(result.issues, isEmpty);
     expect(result.cursorContext, isNull);
@@ -112,6 +114,7 @@ void main() {
     expect(selector.value, isNull);
     expect(selector.valueRange, isNull);
     expect(result.issues, hasLength(1));
+
     expect(result.issues.first.code, QueryIssueCode.missingSelectorValue);
   });
 

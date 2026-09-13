@@ -139,6 +139,7 @@ void main() {
     await tester.pump();
     oldOrganizations.add([_organization("old")]);
     await tester.pump();
+
     await tester.pump();
     expect(
       access.organizations.decisionFor("old"),
@@ -167,6 +168,7 @@ void main() {
     );
     newOrganizations.add([_organization("new")]);
     await tester.pump();
+
     expect(
       access.organizations.decisionFor("old"),
       OrganizationRouteDecision.nonMember,
@@ -197,6 +199,7 @@ void main() {
     await tester.pump();
     principal.complete("user");
     await tester.pump();
+
     organizations.add([_organization("new")]);
     await tester.pump();
     await tester.pump();
@@ -235,6 +238,7 @@ void main() {
     );
     final decisionAtUnmount = access.authentication.decision;
     container.read(mounted.notifier).state = false;
+
     await tester.pump();
 
     container.read(_authenticationDependency.notifier).state = Future.value(

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'roles.dart';
@@ -9,6 +9,7 @@ part of 'roles.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OrganizationRoleCopyWith<OrganizationRole> get copyWith => _$OrganizationRoleCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationRole&&(identical(other.roleId, roleId) || other.roleId == roleId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.defaultRole, defaultRole) || other.defaultRole == defaultRole)&&(identical(other.assignable, assignable) || other.assignable == assignable)&&(identical(other.deletable, deletable) || other.deletable == deletable));
+  final _this = this as OrganizationRole;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationRole&&(identical(other.roleId, _this.roleId) || other.roleId == _this.roleId)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.defaultRole, _this.defaultRole) || other.defaultRole == _this.defaultRole)&&(identical(other.assignable, _this.assignable) || other.assignable == _this.assignable)&&(identical(other.deletable, _this.deletable) || other.deletable == _this.deletable));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,roleId,name,color,defaultRole,assignable,deletable);
+int get hashCode {
+  final _this = this as OrganizationRole;
+  return Object.hash(runtimeType,_this.roleId,_this.name,_this.color,_this.defaultRole,_this.assignable,_this.deletable);
+}
 
 @override
 String toString() {
-  return 'OrganizationRole(roleId: $roleId, name: $name, color: $color, defaultRole: $defaultRole, assignable: $assignable, deletable: $deletable)';
+  final _this = this as OrganizationRole;
+  return 'OrganizationRole(roleId: ${_this.roleId}, name: ${_this.name}, color: ${_this.color}, defaultRole: ${_this.defaultRole}, assignable: ${_this.assignable}, deletable: ${_this.deletable})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OrganizationRoleCopyWithImpl<$Res>
 /// Create a copy of OrganizationRole
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? roleId = null,Object? name = null,Object? color = null,Object? defaultRole = null,Object? assignable = null,Object? deletable = null,}) {
-  return _then(_self.copyWith(
+  return _then(OrganizationRole(
 roleId: null == roleId ? _self.roleId : roleId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
@@ -212,7 +218,7 @@ return $default(_that.roleId,_that.name,_that.color,_that.defaultRole,_that.assi
 
 class _OrganizationRole extends OrganizationRole {
   const _OrganizationRole({required this.roleId, required this.name, required this.color, this.defaultRole = false, this.assignable = false, this.deletable = false}): assert(name != "", 'Name must not be empty.'),super._();
-  
+
 
 @override final  skir.RecordId roleId;
 @override final  String name;
@@ -231,16 +237,18 @@ _$OrganizationRoleCopyWith<_OrganizationRole> get copyWith => __$OrganizationRol
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationRole&&(identical(other.roleId, roleId) || other.roleId == roleId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.defaultRole, defaultRole) || other.defaultRole == defaultRole)&&(identical(other.assignable, assignable) || other.assignable == assignable)&&(identical(other.deletable, deletable) || other.deletable == deletable));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationRole&&(identical(other.roleId, roleId) || other.roleId == roleId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.defaultRole, defaultRole) || other.defaultRole == defaultRole)&&(identical(other.assignable, assignable) || other.assignable == assignable)&&(identical(other.deletable, deletable) || other.deletable == deletable));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,roleId,name,color,defaultRole,assignable,deletable);
+int get hashCode {
+    return Object.hash(runtimeType,roleId,name,color,defaultRole,assignable,deletable);
+}
 
 @override
 String toString() {
-  return 'OrganizationRole(roleId: $roleId, name: $name, color: $color, defaultRole: $defaultRole, assignable: $assignable, deletable: $deletable)';
+    return 'OrganizationRole(roleId: $roleId, name: $name, color: $color, defaultRole: $defaultRole, assignable: $assignable, deletable: $deletable)';
 }
 
 

@@ -18,6 +18,7 @@ class QueryEngine {
 
   QueryParseResult parse(String input, {int? cursorOffset}) {
     final clamped = cursorOffset?.clamp(0, input.length);
+
     if (input.trim().isEmpty) {
       if (cursorOffset == null) {
         return QueryParseResult.empty();

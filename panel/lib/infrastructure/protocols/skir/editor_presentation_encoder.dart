@@ -67,6 +67,14 @@ final class SkirPresentationEncoder {
         PresentationAnchorElement() => _anchor(value),
         ConnectionLayerElement() => _connectionLayer(value),
         PaddingElement() => _padding(value),
+        CommitControlsElement() =>
+          expressions
+              .binding(value.binding)
+              .mapValue(
+                (binding) => wire.PresentationElement.createCommitControls(
+                  binding: binding,
+                ),
+              ),
         PresentationSlotElement() => _slot(value),
         TabsElement() => _tabs(value),
         DividerElement() => const TypeResult.success(
@@ -80,6 +88,9 @@ final class SkirPresentationEncoder {
         BadgeElement() => _badge(value),
         ChipElement() => _chip(value),
         ProgressElement() => _progress(value),
+        StatusElement() => _status(value),
+        DateTimeElement() => _dateTime(value),
+        RelativeTimeElement() => _relativeTime(value),
         TypedFieldElement() => _typedField(value),
         ConditionalElement() => _conditional(value),
         RepeatedElement() => _repeated(value),
@@ -126,6 +137,7 @@ final class SkirPresentationEncoder {
         MenuElement() => _menu(value),
         TooltipElement() => _tooltip(value),
         DefaultPresentationElement() => _defaultPresentation(value),
+        PresentationInvocationElement() => _invocation(value),
         DiagnosticElement() => _diagnostic(value),
       };
 

@@ -115,7 +115,8 @@ extension on PresentationBorderSide {
       return TypeResult.failure(diagnostics);
     }
     final value = resolved.valueOrNull;
-    final resolvedColor = value is IntegerValue ? value.colorOrNull : null;
+
+    final resolvedColor = value?.asColorOrNull;
     if (resolvedColor == null) {
       return TypeResult.failure([
         const TypeDiagnostic(
@@ -166,9 +167,13 @@ class _SectionBorderPainter extends CustomPainter {
     canvas
       ..save()
       ..clipRRect(bounds);
+
     _paintTop(canvas, size, bounds, border.top);
+
     _paintVertical(canvas, size, bounds, left, true, border);
+
     _paintVertical(canvas, size, bounds, right, false, border);
+
     _paintBottom(canvas, size, bounds, border.bottom);
     canvas.restore();
   }
@@ -222,7 +227,9 @@ class _SectionBorderPainter extends CustomPainter {
     final inset = side.width / 2;
     final x = left ? inset : size.width - inset;
     final topRadius = left ? bounds.tlRadiusY : bounds.trRadiusY;
+
     final bottomRadius = left ? bounds.blRadiusY : bounds.brRadiusY;
+
     final top = border.top == null ? 0.0 : topRadius;
     final bottom = border.bottom == null
         ? size.height

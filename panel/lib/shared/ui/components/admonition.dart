@@ -8,14 +8,13 @@ enum _AdmonitionKind { custom, info, warning, danger }
 
 class Admonition extends StatelessWidget {
   const Admonition({
-    required Color color,
+    required Color this._color,
     required this.icon,
     required this.child,
     this.animationDuration = const Duration(milliseconds: 500),
     this.onTap,
     super.key,
-  }) : _color = color,
-       _kind = _AdmonitionKind.custom;
+  }) : _kind = _AdmonitionKind.custom;
 
   const Admonition.info({
     required this.child,

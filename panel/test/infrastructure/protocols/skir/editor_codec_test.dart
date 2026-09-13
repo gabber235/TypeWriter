@@ -20,6 +20,7 @@ void main() {
 
   test("maps every type expression variant and its fields", () {
     final expressions = <(TypeExpression, wire_type.TypeExpression_kind)>[
+      (const AnyType(), wire_type.TypeExpression_kind.anyConst),
       (const UnitType(), wire_type.TypeExpression_kind.unitConst),
       (const BooleanType(), wire_type.TypeExpression_kind.booleanConst),
       (
@@ -103,18 +104,22 @@ void main() {
 
     for (final (expression, expectedKind) in expressions) {
       final result = codec.typeCodec.encodeExpression(expression);
+
       expect(
         result.valueOrNull,
         isNotNull,
         reason: "${expression.runtimeType}: ${result.diagnostics}",
       );
       final encoded = result.valueOrNull!;
+
       expect(
         encoded.kind,
         expectedKind,
         reason: expression.runtimeType.toString(),
       );
+
       final decoded = codec.typeCodec.decodeExpression(encoded).valueOrNull!;
+
       expect(typeExpressionsEqual(decoded, expression), isTrue);
     }
   });
@@ -187,6 +192,7 @@ void main() {
 
     for (final (value, expectedKind) in values) {
       final encoded = codec.encodeValue(value).valueOrNull!;
+
       expect(encoded.kind, expectedKind, reason: value.runtimeType.toString());
       expect(codec.decodeValue(encoded).valueOrNull, value);
     }
@@ -221,6 +227,7 @@ void main() {
     );
     expect(encoded.revision, 1);
     expect(encoded.arguments, hasLength(1));
+
     expect(
       encoded.arguments.single.kind,
       wire_type.TypeExpression_kind.namedWrapper,
@@ -263,6 +270,7 @@ void main() {
     final resolved =
         (outcomes[0] as wire_binding.BindingResolution_resolvedWrapper).value;
     expect(resolved.reference, binding);
+
     expect(
       resolved.valueType.kind,
       wire_type.TypeExpression_kind.stringWrapper,

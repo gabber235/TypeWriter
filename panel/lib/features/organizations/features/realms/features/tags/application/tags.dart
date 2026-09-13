@@ -1,9 +1,12 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:riverpod/riverpod.dart";
 import "package:riverpod_annotation/riverpod_annotation.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
     as skir;
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v1/authoring.dart"
+    as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 
 part "tags.freezed.dart";
@@ -14,41 +17,24 @@ part "tag_inspector_presentation.dart";
 part "tag_inheritance_presentation.dart";
 
 @riverpod
-class Tags extends _$Tags {
+class CanonicalTags extends _$CanonicalTags {
   @override
-  Stream<List<Tag>> build() async* {
+  Future<List<Tag>> build() async {
     final organizationId = ref.watch(organizationIdProvider);
     final realmId = ref.watch(realmIdProvider);
-    if (realmId == null || organizationId == null) {
-      yield [];
-      return;
+    if (organizationId == null || realmId == null) {
+      return [];
     }
-
-    final request = skir.WatchTagsRequest();
-    yield* ref.watchRequest(
-      subject:
-          "service.to.${realmId.id}.organization.${organizationId.id}.realm.tag.watch",
-      listenSubject:
-          "service.from.${realmId.id}.organization.${organizationId.id}.realm.tag.watch",
-      requestBytes: skir.WatchTagsRequest.serializer.toBytes(request),
-      serializer: skir.WatchTagsResponse.serializer,
-      transformer: (previous, response) {
-        switch (response) {
-          case skir.WatchTagsResponse_unknown():
-            throw ApiException.unknownResponseMessage();
-          case skir.WatchTagsResponse_internalErrorWrapper():
-            throw ApiException.internalServerError();
-          case skir.WatchTagsResponse_listWrapper(:final value):
-            return value.map(Tag.fromSkir).toList();
-          case skir.WatchTagsResponse_addWrapper(:final value):
-            return _upsertCanonicalTag(previous, Tag.fromSkir(value)).values;
-          case skir.WatchTagsResponse_updateWrapper(:final value):
-            return _upsertCanonicalTag(previous, Tag.fromSkir(value)).values;
-          case skir.WatchTagsResponse_removeWrapper(:final value):
-            return previous?.where((tag) => tag.tagId != value).toList() ?? [];
-        }
-      },
+    final provider = authoringSessionProvider(organizationId, realmId);
+    ref.listen(provider, (_, value) {
+      if (value.sequence != null) state = AsyncData(_projectTags(value));
+    });
+    final lease = ref.watch(
+      authoringLibraryScopeProvider(organizationId, realmId),
     );
+
+    await lease.ready;
+    return _projectTags(ref.read(provider));
   }
 
   Future<Tag> createTag({
@@ -61,202 +47,147 @@ class Tags extends _$Tags {
     int height = 1,
   }) async {
     state.ensureReady();
-    final organizationId = ref.read(organizationIdProvider);
-    final realmId = ref.read(realmIdProvider);
-    if (realmId == null) throw ApiException.badRequest("No realm selected");
-    if (organizationId == null) throw ApiException.noOrganization();
-
-    final request = skir.CreateTagRequest(
+    final tag = Tag(
+      tagId: newResourceId(AuthoringResource.tag),
       name: name,
-      color: color?.toSkirColor(),
+      color: color ?? Colors.grey,
       parentIds: parentIds,
-      placement: skir.Placement(x: x, y: y, width: width, height: height),
+      placement: Placement(x: x, y: y, width: width, height: height),
     );
-
-    final response = await runPanelMutation(
-      operation: PanelMutationOperation.createTag,
-      mutation: () => ref.requestSkir(
-        "service.to.${realmId.id}.organization.${organizationId.id}.realm.tag.create",
-        skir.CreateTagRequest.serializer.toBytes(request),
-        skir.CreateTagResponse.serializer,
-      ),
+    final response = await ref.readAuthoringSession().notifier.createTag(
+      tag.toWire(),
     );
-
-    switch (response) {
-      case skir.CreateTagResponse_unknown():
-        throw ApiException.unknownResponseMessage();
-      case skir.CreateTagResponse_internalErrorWrapper():
-        throw ApiException.internalServerError();
-      case skir.CreateTagResponse_parentsNotFoundErrorWrapper():
-        throw ApiException.notFound("Parent tags");
-      case skir.CreateTagResponse_validationErrorWrapper(:final value):
-        throw _tagValidationException(value);
-      case skir.CreateTagResponse_invalidRecordIdErrorWrapper(:final value):
-        throw ApiException.invalidRecordId(value);
-      case skir.CreateTagResponse_successWrapper(:final value):
-        final tag = Tag.fromSkir(value);
-        final upsert = _upsertCanonicalTag(state.requireValue, tag);
-        state = AsyncData(upsert.values);
-        return upsert.canonical;
-    }
+    response.requireApplied(conflictMessage: "The tag already exists");
+    return tag;
   }
 
-  Future<TypedMutationResult> updateTag(Tag tag) async {
+  Future<TypedMutationResult> updateTag(Tag tag, {Tag? expected}) async {
     state.ensureReady();
-    final organizationId = ref.read(organizationIdProvider);
-    final realmId = ref.read(realmIdProvider);
-    if (realmId == null) throw ApiException.badRequest("No realm selected");
-    if (organizationId == null) throw ApiException.noOrganization();
-
-    final request = skir.UpdateTagRequest(
-      tagId: tag.tagId,
-      expectedRevision: tag.revision,
-      name: tag.name,
-      color: tag.color.toSkirColor(),
-      parentIds: tag.parentIds,
-      placement: tag.placement.toSkir(),
+    final session = ref.readAuthoringSession();
+    final current = session.state.tags[tag.tagId];
+    if (current == null || session.state.sequence == null) {
+      throw ApiException.notFound("Tag");
+    }
+    final before = expected ?? Tag.fromWire(current);
+    final commands = session.notifier;
+    final owners = EditorOwnerRegistry(
+      workspace: ref.read(localWorkControllerProvider),
     );
-
-    final response = await runPanelMutation<skir.UpdateTagResponse?>(
-      operation: PanelMutationOperation.updateTag,
-      mutation: () => ref.requestSkir(
-        "service.to.${realmId.id}.organization.${organizationId.id}.realm.tag.update",
-        skir.UpdateTagRequest.serializer.toBytes(request),
-        skir.UpdateTagResponse.serializer,
-      ),
-      recover: (_, _) => null,
-    );
-
-    switch (response) {
-      case null:
-        return unavailableMutation("The tag update could not be completed");
-      case skir.UpdateTagResponse_unknown():
-        return unavailableMutation("The server returned an unknown response");
-      case skir.UpdateTagResponse_internalErrorWrapper():
-        return unavailableMutation("The server could not update the tag");
-      case skir.UpdateTagResponse_conflictErrorWrapper(:final value):
-        final actual = Tag.fromSkir(value.actual);
-        final upsert = _upsertCanonicalTag(state.requireValue, actual);
-        state = AsyncData(upsert.values);
-        return TypedMutationResult.conflict(
-          expectedRevision: value.expectedRevision,
-          actualRevision: upsert.canonical.revision,
-          actualValue: upsert.canonical.inspectorValue,
-        );
-      case skir.UpdateTagResponse_tagNotFoundErrorWrapper():
-        return unavailableMutation(
-          "The tag no longer exists",
-          targetDeleted: true,
-        );
-      case skir.UpdateTagResponse_parentsNotFoundErrorWrapper():
-        return invalidMutation("One or more parent tags no longer exist");
-      case skir.UpdateTagResponse_validationErrorWrapper(:final value):
-        return invalidMutation(_tagValidationMessage(value));
-      case skir.UpdateTagResponse_invalidRecordIdErrorWrapper():
-        return invalidMutation("The tag contains an invalid reference");
-      case skir.UpdateTagResponse_successWrapper(:final value):
-        final updatedTag = Tag.fromSkir(value);
-        final upsert = _upsertCanonicalTag(state.requireValue, updatedTag);
-        state = AsyncData(upsert.values);
-        return TypedMutationResult.success(
-          revision: upsert.canonical.revision,
-          value: upsert.canonical.inspectorValue,
-        );
+    try {
+      final owner = owners.editor(
+        TagSelectable(
+          resource: TagEditorResource(
+            ref
+                .read(resourceRepositoriesProvider)
+                .authoring(commands.organizationId, commands.realmId),
+            tag.tagId,
+          ),
+          onDelete: () => deleteTag(tag.tagId),
+          id: TagIdentifier(tag.tagId),
+          tag: before,
+          revision: session.state.sequence!,
+          tagCollection: state.requireValue.presentationCollection(),
+        ),
+      );
+      return await owner.applyChanges(
+        editorValueChanges(before.inspectorValue, tag.inspectorValue),
+      );
+    } finally {
+      owners.dispose();
     }
   }
 
   Future<void> toggleTagParent(
+    List<Tag> tags,
     skir.RecordId childId,
     skir.RecordId parentId,
   ) async {
     state.ensureReady();
-    final tags = state.requireValue;
     final action = tagParentDropAction(
       tags,
       childId: childId,
       parentId: parentId,
     );
     if (action == null) return;
-
     final child = tags.firstWhere((tag) => tag.tagId == childId);
-    final parentIds = switch (action) {
+    final parents = switch (action) {
       TagParentDropAction.link => [...child.parentIds, parentId],
       TagParentDropAction.unlink =>
         child.parentIds.where((id) => id != parentId).toList(),
     };
-    await updateTag(child.copyWith(parentIds: parentIds));
+
+    await updateTag(child.copyWith(parentIds: parents), expected: child);
   }
 
   Future<void> deleteTag(skir.RecordId tagId) async {
     state.ensureReady();
-    final organizationId = ref.read(organizationIdProvider);
-    final realmId = ref.read(realmIdProvider);
-    if (realmId == null) throw ApiException.badRequest("No realm selected");
-    if (organizationId == null) throw ApiException.noOrganization();
-
-    final removed = state.requireValue.firstWhere((tag) => tag.tagId == tagId);
-    state = AsyncData(
-      state.requireValue.where((tag) => tag.tagId != tagId).toList(),
-    );
-    final request = skir.DeleteTagRequest(tagId: tagId);
-
-    final response = await runPanelMutation(
-      operation: PanelMutationOperation.deleteTag,
-      mutation: () => ref.requestSkir(
-        "service.to.${realmId.id}.organization.${organizationId.id}.realm.tag.delete",
-        skir.DeleteTagRequest.serializer.toBytes(request),
-        skir.DeleteTagResponse.serializer,
-      ),
-      recover: (error, stackTrace) {
-        _restoreTag(removed);
-        Error.throwWithStackTrace(error, stackTrace);
-      },
-    );
-
-    switch (response) {
-      case skir.DeleteTagResponse_unknown():
-        _restoreTag(removed);
-        throw ApiException.unknownResponseMessage();
-      case skir.DeleteTagResponse_internalErrorWrapper():
-        _restoreTag(removed);
-        throw ApiException.internalServerError();
-      case skir.DeleteTagResponse_tagNotFoundErrorWrapper():
-        _restoreTag(removed);
-        throw ApiException.notFound("Tag");
-      case skir.DeleteTagResponse_invalidRecordIdErrorWrapper(:final value):
-        _restoreTag(removed);
-        throw ApiException.invalidRecordId(value);
-      case skir.DeleteTagResponse_successWrapper():
-    }
-  }
-
-  void _restoreTag(Tag removed) {
-    final current = state.value;
-    if (current == null) return;
-    state = AsyncData(_upsertCanonicalTag(current, removed).values);
+    final response = await ref.readAuthoringSession().notifier.deleteTag(tagId);
+    response.requireApplied(conflictMessage: "The tag changed before deletion");
   }
 }
 
 @riverpod
-Future<Tag?> tag(Ref ref, skir.RecordId tagId) async {
-  final tags = await ref.watch(tagsProvider.future);
+Future<Tag?> canonicalTag(Ref ref, skir.RecordId tagId) async {
+  final tags = await ref.watch(canonicalTagsProvider.future);
   return tags.firstWhereOrNull((tag) => tag.tagId == tagId);
 }
 
-ApiException _tagValidationException(skir.TagValidationError error) {
-  return ApiException.badRequest(_tagValidationMessage(error));
+List<Tag> _projectTags(AuthoringSessionState value) {
+  return value.tags.values.map(Tag.fromWire).toList();
 }
 
-String _tagValidationMessage(skir.TagValidationError error) {
-  return switch (error.kind) {
-    skir.TagValidationError_kind.unknown =>
-      "The server returned an unknown Tag validation error",
-    skir.TagValidationError_kind.nameRequiredConst => "Tag name is required",
-    skir.TagValidationError_kind.widthInvalidConst =>
-      "Tag width must be greater than zero",
-    skir.TagValidationError_kind.heightInvalidConst =>
-      "Tag height must be greater than zero",
-    skir.TagValidationError_kind.inheritanceCycleConst =>
-      "Tag parents cannot create an inheritance cycle",
-  };
+extension AuthoringTagValue on AuthoringSessionState {
+  AuthoringValue<Tag>? tagEditorValue(skir.RecordId tagId) {
+    final value = tags[tagId];
+    final revision = sequence;
+    if (value == null || revision == null) return null;
+    return AuthoringValue(value: Tag.fromWire(value), revision: revision);
+  }
+}
+
+@riverpod
+AsyncValue<List<Tag>> projectedTags(Ref ref) {
+  final canonicalTags = ref.watch(canonicalTagsProvider);
+  if (canonicalTags.mapUnready<List<Tag>>() case final value?) return value;
+
+  final local = ref.watch(
+    localWorkProvider.select((state) => state.editorValues),
+  );
+  final organizationId = ref.watch(organizationIdProvider);
+  final realmId = ref.watch(realmIdProvider);
+  if (organizationId == null || realmId == null) {
+    return AsyncData(canonicalTags.requireValue);
+  }
+  return AsyncData([
+    for (final tag in canonicalTags.requireValue)
+      tag.projected(
+        local[EditorResourceKey(
+          scope: EditorResourceScope(
+            organizationId: organizationId,
+            realmId: realmId,
+          ),
+          identity: tag.tagId,
+        )],
+      ),
+  ]);
+}
+
+@riverpod
+AsyncValue<Tag?> projectedTag(Ref ref, skir.RecordId tagId) {
+  final canonical = ref.watch(canonicalTagProvider(tagId));
+  if (canonical.mapUnready<Tag?>() case final value?) return value;
+  final organizationId = ref.watch(organizationIdProvider);
+  final realmId = ref.watch(realmIdProvider);
+  if (organizationId == null || realmId == null) return canonical;
+  final key = EditorResourceKey(
+    scope: EditorResourceScope(
+      organizationId: organizationId,
+      realmId: realmId,
+    ),
+    identity: tagId,
+  );
+  final local = ref.watch(
+    localWorkProvider.select((state) => state.editorValues[key]),
+  );
+  return AsyncData(canonical.requireValue?.projected(local));
 }

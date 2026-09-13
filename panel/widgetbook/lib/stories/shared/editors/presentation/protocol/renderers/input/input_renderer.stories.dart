@@ -57,6 +57,7 @@ Widget _dateTimeRendererStory(BuildContext context) {
     min: 280,
     max: 760,
   );
+
   final timestamp =
       DateTime.tryParse(timestampDraft)?.toUtc() ??
       DateTime.utc(2026, 8, 12, 18, 30, 45, 123, 456);
@@ -104,12 +105,13 @@ Widget colorInputRendererUseCase(BuildContext context) {
     max: 760,
   );
   final sampleLibrary = context.knobs.boolean(label: "Sample library");
+
   final base = inputRendererScenarios[7];
   final scenario = RendererStoryScenario(
     kind: base.kind,
     name: base.name,
     type: base.type,
-    value: color.integerValue,
+    value: color.asValue,
     definitions: base.definitions,
     presentation: storyNode(
       "colorInput",

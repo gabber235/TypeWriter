@@ -24,6 +24,24 @@ ActionShortcut testAction(
 }
 
 void main() {
+  test("primary action uses adaptive Enter keys without repeats", () {
+    final shortcuts = shortcutsFor(PrimaryActionIntent);
+
+    expect(shortcuts, hasLength(2));
+    expect(
+      shortcuts,
+      everyElement(
+        isA<SingleActivator>()
+            .having((value) => value.control || value.meta, "modifier", isTrue)
+            .having((value) => value.includeRepeats, "includeRepeats", isFalse),
+      ),
+    );
+    expect(
+      shortcuts.map((value) => (value as SingleActivator).trigger),
+      containsAll([LogicalKeyboardKey.enter, LogicalKeyboardKey.numpadEnter]),
+    );
+  });
+
   group("ActionShortcuts Registration", () {
     testWidgets("registers an action shortcut", (tester) async {
       final shortcut = testAction(0);

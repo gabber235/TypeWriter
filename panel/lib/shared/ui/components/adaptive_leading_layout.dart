@@ -63,12 +63,10 @@ class AdaptiveLeadingLayout
 class _RenderAdaptiveLeadingLayout extends RenderBox
     with SlottedContainerRenderObjectMixin<_ElementSlot, RenderBox> {
   _RenderAdaptiveLeadingLayout({
-    required EdgeInsets padding,
-    required EdgeInsets compactPadding,
-    required double minCenterWidth,
-  }) : _padding = padding,
-       _compactPadding = compactPadding,
-       _minCenterWidth = minCenterWidth;
+    required this._padding,
+    required this._compactPadding,
+    required this._minCenterWidth,
+  });
 
   EdgeInsets _padding;
   EdgeInsets get padding => _padding;

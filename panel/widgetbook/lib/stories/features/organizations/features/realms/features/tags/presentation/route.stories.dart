@@ -20,14 +20,17 @@ Widget tagsPageStory({
   DisplayState tagsState = DisplayState.fewItems,
   RealmConnectionState connectionState = RealmConnectionState.online,
 }) {
+  final tags = tagsState.generateReadyBatch(generateTagBatch);
   return FakeApp(
     overrides: [
+      ...authoringSessionMockOverrides(tags: tags ?? const []),
       realmInteractionProvider.overrideWith(
         (ref) => RealmInteractionState(connectionState: connectionState),
       ),
-      ...tagsProviderOverrides(state: tagsState),
-      ...servicesProviderOverrides(state: DisplayState.manyItems),
-      ...realmProviderOverrides(),
+      ...tagsProviderOverrides(state: tagsState, tags: tags),
+      ...canonicalServicesProviderOverrides(state: DisplayState.manyItems),
+      realmIdProvider.overrideWithValue(recordId("service:widgetbook")),
+      selectedRealmProvider.overrideWith((ref) async => null),
       ...organizationProviderOverrides(),
       ...organizationsProviderOverrides(state: DisplayState.fewItems),
       ...authProviderOverrides(),

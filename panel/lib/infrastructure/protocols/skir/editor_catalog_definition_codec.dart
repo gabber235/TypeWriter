@@ -1,6 +1,8 @@
 import "package:typewriter_panel/infrastructure/protocols/skir/editor_codec_support.dart";
-import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/catalog.dart"
-    as wire_catalog;
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/binding.dart"
+    as wire_binding;
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/capability.dart"
+    as wire_capability;
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/presentation.dart"
     as wire_presentation;
 import "package:typewriter_panel/infrastructure/protocols/skir/skirout/editor/v1/type_catalog.dart"
@@ -29,13 +31,54 @@ final class SkirCatalogDefinitionCodec {
       value.presentationId.namespace,
       value.presentationId.name,
     );
-    final target = types.decodeExpression(value.target);
-    return combineResults(
-      id,
-      target,
-      (id, target) => PresentationDefinition(
-        id: PresentationId(namespace: id.$1, name: id.$2),
-        target: target,
+    final inputs = <PresentationInputParameter>[];
+    final diagnostics = [...id.diagnostics];
+    for (final input in value.inputs) {
+      final type = types.decodeExpression(input.valueType);
+      diagnostics.addAll(type.diagnostics);
+      final access = switch (input.access) {
+        wire_presentation.PresentationInputAccess.read =>
+          PresentationInputAccess.read,
+        wire_presentation.PresentationInputAccess.edit =>
+          PresentationInputAccess.edit,
+        _ => null,
+      };
+      if (access == null ||
+          input.name.isEmpty ||
+          input.bindingId.value < 0 ||
+          inputs.any(
+            (existing) =>
+                existing.id.value == input.bindingId.value ||
+                existing.name == input.name,
+          )) {
+        return invalidWire("Invalid or duplicate presentation input");
+      }
+      if (type.valueOrNull case final type?) {
+        inputs.add(
+          PresentationInputParameter(
+            id: BindingId(input.bindingId.value),
+            name: input.name,
+            type: type,
+            access: access,
+          ),
+        );
+      }
+    }
+    if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+    final primary = value.primaryInput;
+
+    if (primary != null &&
+        !inputs.any((input) => input.id.value == primary.value)) {
+      return invalidWire("Primary presentation input is not declared");
+    }
+    return TypeResult.success(
+      PresentationDefinition(
+        id: PresentationId(
+          namespace: id.valueOrNull!.$1,
+          name: id.valueOrNull!.$2,
+        ),
+        inputs: inputs,
+        primaryInput: primary == null ? null : BindingId(primary.value),
         root: presentations.decodeNode(value.root),
       ),
     );
@@ -44,72 +87,99 @@ final class SkirCatalogDefinitionCodec {
   TypeResult<wire_presentation.PresentationDefinition> encodePresentation(
     PresentationDefinition value,
   ) {
-    final target = types.encodeExpression(value.target);
-    final root = presentationEncoder.encodeNode(value.root);
-    return combineResults(
-      target,
-      root,
-      (target, root) => wire_presentation.PresentationDefinition(
-        presentationId: wire_type.PresentationId(
-          namespace: value.id.namespace,
-          name: value.id.name,
+    final inputs = <wire_presentation.PresentationInput>[];
+    for (final input in value.inputs) {
+      final type = types.encodeExpression(input.type);
+      if (type case TypeFailure(:final diagnostics)) {
+        return TypeResult.failure(diagnostics);
+      }
+      inputs.add(
+        wire_presentation.PresentationInput(
+          bindingId: wire_binding.BindingId(value: input.id.value),
+          name: input.name,
+          valueType: type.valueOrNull!,
+          access: switch (input.access) {
+            PresentationInputAccess.read =>
+              wire_presentation.PresentationInputAccess.read,
+            PresentationInputAccess.edit =>
+              wire_presentation.PresentationInputAccess.edit,
+          },
         ),
-        target: target,
-        root: root,
-      ),
-    );
-  }
-
-  TypeResult<RealmActionDefinition> decodeRealmAction(
-    wire_catalog.RealmActionDefinition value,
-  ) {
-    final id = _decodeQualified(
-      value.realmActionId.namespace,
-      value.realmActionId.name,
-    );
-    final payload = types.decodeReference(value.payloadType);
-    final result = value.resultType == null
-        ? const TypeResult<ResolvedTypeRef?>.success(null)
-        : types.decodeReference(value.resultType).mapValue((value) => value);
-    final diagnostics = [
-      ...id.diagnostics,
-      ...payload.diagnostics,
-      ...result.diagnostics,
-    ];
-    return diagnostics.isEmpty
-        ? TypeResult.success(
-            RealmActionDefinition(
-              id: RealmActionId(
-                namespace: id.valueOrNull!.$1,
-                name: id.valueOrNull!.$2,
-              ),
-              payloadType: payload.valueOrNull!,
-              resultType: result.valueOrNull,
+      );
+    }
+    return presentationEncoder
+        .encodeNode(value.root)
+        .mapValue(
+          (root) => wire_presentation.PresentationDefinition(
+            presentationId: wire_type.PresentationId(
+              namespace: value.id.namespace,
+              name: value.id.name,
             ),
-          )
-        : TypeResult.failure(diagnostics);
+            inputs: inputs,
+            primaryInput: value.primaryInput == null
+                ? null
+                : wire_binding.BindingId(value: value.primaryInput!.value),
+            root: root,
+            dependencies: wire_presentation.PresentationDependencies(
+              types: const [],
+              presentations: const [],
+              conversions: const [],
+              capabilities: const [],
+            ),
+          ),
+        );
   }
 
-  TypeResult<wire_catalog.RealmActionDefinition> encodeRealmAction(
-    RealmActionDefinition value,
-  ) {
-    final payload = types.encodeReference(value.payloadType);
-    final result = value.resultType == null
-        ? const TypeResult<wire_type.ResolvedTypeRef?>.success(null)
-        : types.encodeReference(value.resultType!).mapValue((value) => value);
-    return combineResults(
-      payload,
-      result,
-      (payload, result) => wire_catalog.RealmActionDefinition(
-        realmActionId: wire_type.RealmActionId(
-          namespace: value.id.namespace,
-          name: value.id.name,
-        ),
-        payloadType: payload,
-        resultType: result,
+  TypeResult<CapabilityDefinition> decodeCapability(
+    wire_capability.CapabilityDefinition value,
+  ) => switch (value) {
+    wire_capability.CapabilityDefinition_searchWrapper(:final value) =>
+      _decodeCapabilityTypes(
+        value.capabilityId.value,
+        value.requestType,
+        value.resultType,
+        CapabilityDefinition.search,
       ),
-    );
-  }
+    wire_capability.CapabilityDefinition_computationWrapper(:final value) =>
+      _decodeCapabilityTypes(
+        value.capabilityId.value,
+        value.requestType,
+        value.resultType,
+        CapabilityDefinition.computation,
+      ),
+    wire_capability.CapabilityDefinition_commandWrapper(:final value) =>
+      types
+          .decodeReference(value.requestType)
+          .mapValue(
+            (requestType) => CapabilityDefinition.command(
+              id: CapabilityId(value.capabilityId.value),
+              requestType: requestType,
+            ),
+          ),
+    wire_capability.CapabilityDefinition_unknown() => invalidWire(
+      "Unknown capability definition",
+    ),
+  };
+
+  TypeResult<CapabilityDefinition> _decodeCapabilityTypes(
+    String id,
+    wire_type.ResolvedTypeRef request,
+    wire_type.ResolvedTypeRef result,
+    CapabilityDefinition Function({
+      required CapabilityId id,
+      required ResolvedTypeRef requestType,
+      required ResolvedTypeRef resultType,
+    })
+    create,
+  ) => combineResults(
+    types.decodeReference(request),
+    types.decodeReference(result),
+    (requestType, resultType) => create(
+      id: CapabilityId(id),
+      requestType: requestType,
+      resultType: resultType,
+    ),
+  );
 
   TypeResult<TypedValueEnvelope> decodeEnvelope(
     wire_value.TypedValueEnvelope value,

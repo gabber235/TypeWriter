@@ -54,6 +54,7 @@ final class EditorReconciler {
         confirmed.add(path);
         continue;
       }
+
       final policy = _policyFor(path, baseValue, mergePolicies);
       final merged = _merge(
         path: path,
@@ -63,7 +64,9 @@ final class EditorReconciler {
         policy: policy,
         mergePolicies: mergePolicies,
       );
+
       draft = _replace(draft, path, merged.value, diagnostics);
+
       remaining.addAll(merged.dirtyPaths);
       conflicts.addAll(merged.conflicts);
     }
@@ -118,6 +121,7 @@ final class EditorReconciler {
     };
     final fields = Map<String, DataValue>.of(remote.fields);
     final dirty = <DataPath>{};
+
     final conflicts = <DataPath, EditorPathConflict>{};
     for (final name in names) {
       final childPath = path.field(name);
@@ -127,12 +131,14 @@ final class EditorReconciler {
       if (baseChild == null || localChild == null || remoteChild == null) {
         return _conflict(path, base, local, remote);
       }
+
       if (localChild == baseChild) continue;
       if (remoteChild == baseChild) {
         fields[name] = localChild;
         dirty.add(childPath);
         continue;
       }
+
       if (remoteChild == localChild) continue;
       final merged = _merge(
         path: childPath,
@@ -142,7 +148,9 @@ final class EditorReconciler {
         policy: _policyFor(childPath, baseChild, policies),
         mergePolicies: policies,
       );
+
       fields[name] = merged.value;
+
       dirty.addAll(merged.dirtyPaths);
       conflicts.addAll(merged.conflicts);
     }
@@ -169,7 +177,9 @@ final class EditorReconciler {
       final inBase = base.values.contains(candidate);
       final inLocal = local.values.contains(candidate);
       final inRemote = remote.values.contains(candidate);
+
       final localChanged = inLocal != inBase;
+
       final present = localChanged ? inLocal : inRemote;
       if (present) merged.add(candidate);
     }

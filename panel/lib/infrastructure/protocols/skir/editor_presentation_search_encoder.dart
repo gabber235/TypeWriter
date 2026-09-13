@@ -10,7 +10,9 @@ extension SkirPresentationSearchEncoder on SkirPresentationEncoder {
         : encodeNode(value.summary!).mapValue((value) => value);
     final placeholder = _optional(value.placeholder);
     final customValue = _optional(value.customValue);
+
     final initialQuery = _optional(value.initialQuery);
+
     final diagnostics = [
       ...control.diagnostics,
       ...maximumExtent.diagnostics,

@@ -39,6 +39,8 @@ abstract class OrganizationData with _$OrganizationData {
 
 @riverpod
 class Organizations extends _$Organizations {
+  final _sequenceState = SequencedCollection<List<OrganizationData>>();
+
   @override
   Stream<List<OrganizationData>> build() async* {
     final userId = await ref.watch(userIdProvider.future);
@@ -47,33 +49,32 @@ class Organizations extends _$Organizations {
       return;
     }
 
-    yield* ref.watchRequest(
+    yield* ref.watchSequencedRequest(
       subject: "cloud.to.user.$userId.organization.watch",
-      listenSubject: "cloud.from.user.$userId.organization.watch",
+      eventSubject: "cloud.from.user.$userId.organizations.changed",
       requestBytes: skir.WatchUserOrganizationsRequest.serializer.toBytes(
         skir.WatchUserOrganizationsRequest(),
       ),
-      serializer: skir.WatchUserOrganizationsResponse.serializer,
-      transformer: (previous, response) {
-        switch (response) {
-          case skir.WatchUserOrganizationsResponse_unknown():
-            throw ApiException.unknownResponseMessage();
-          case skir.WatchUserOrganizationsResponse_internalErrorWrapper():
-            throw ApiException.internalServerError();
-          case skir.WatchUserOrganizationsResponse_listWrapper(:final value):
-            return value.map(OrganizationData.fromSkir).toList();
-          case skir.WatchUserOrganizationsResponse_addWrapper(:final value):
-            return previous.upsertByKey(
-              (org) => org.organizationId,
-              OrganizationData.fromSkir(value),
-            );
-          case skir.WatchUserOrganizationsResponse_removeWrapper(:final value):
-            return previous
-                    ?.where((org) => org.organizationId != value)
-                    .toList() ??
-                [];
-        }
+      responseSerializer: skir.WatchUserOrganizationsResponse.serializer,
+      eventSerializer: skir.UserOrganizationsChanged.serializer,
+      snapshot: (response) {
+        return switch (response) {
+          skir.WatchUserOrganizationsResponse_unknown() =>
+            throw ApiException.unknownResponseMessage(),
+          skir.WatchUserOrganizationsResponse_internalErrorWrapper() =>
+            throw ApiException.internalServerError(),
+          skir.WatchUserOrganizationsResponse_snapshotWrapper(:final value) =>
+            SequencedSnapshot(
+              sequence: value.sequence,
+              value: value.values.map(OrganizationData.fromSkir).toList(),
+            ),
+          skir.WatchUserOrganizationsResponse_changedWrapper() =>
+            throw StateError("Snapshot request returned a delta"),
+        };
       },
+      eventSequence: (event) => event.sequence,
+      reduce: _reduceOrganizations,
+      sequenceState: _sequenceState,
     );
   }
 
@@ -95,6 +96,7 @@ class Organizations extends _$Organizations {
     }
 
     final request = skir.CreateOrganizationRequest(
+      operationId: uuid.v4(),
       name: name,
       logoUrl: logoUrl,
     );
@@ -103,27 +105,76 @@ class Organizations extends _$Organizations {
       "Creating organization with name: '$name' and logoUrl: '$logoUrl'",
     );
 
-    final response = await ref.requestSkir(
+    final response = await ref.mutateSkir(
       "cloud.to.user.$userId.organization.create",
       skir.CreateOrganizationRequest.serializer.toBytes(request),
       skir.CreateOrganizationResponse.serializer,
+      submissionId: request.operationId,
+      replay: SubmissionReplay.identicalRequest,
+      label: "Create organization",
+      classify: (response) => switch (response) {
+        skir.CreateOrganizationResponse_invalidOperationIdErrorWrapper() ||
+        skir.CreateOrganizationResponse_operationIdentityReusedErrorWrapper() =>
+          MutationResponseDisposition.rejected,
+        skir.CreateOrganizationResponse_successWrapper() =>
+          MutationResponseDisposition.confirmed,
+        skir.CreateOrganizationResponse_unknown() ||
+        skir.CreateOrganizationResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+      },
     );
 
     switch (response) {
+      case skir.CreateOrganizationResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.CreateOrganizationResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.CreateOrganizationResponse_unknown():
         throw ApiException.unknownResponseMessage();
       case skir.CreateOrganizationResponse_internalErrorWrapper():
         throw ApiException.internalServerError();
       case skir.CreateOrganizationResponse_successWrapper(:final value):
-        state = AsyncValue.data(
-          state.requireValue.upsertByKey(
-            (org) => org.organizationId,
-            OrganizationData.fromSkir(value),
-          ),
-        );
-        return value.organizationId;
+        _applyEvent(value.event);
+        return value.organization.organizationId;
     }
   }
+
+  void _applyEvent(skir.UserOrganizationsChanged event) {
+    switch (_sequenceState.apply(
+      sequence: event.sequence,
+      reduce: (organizations) => _reduceOrganizations(organizations, event),
+    )) {
+      case SequencedEventResult.duplicate:
+        return;
+      case SequencedEventResult.applied:
+        state = AsyncData(_sequenceState.value);
+      case SequencedEventResult.gap:
+        ref.invalidateSelf();
+    }
+  }
+}
+
+List<OrganizationData> _reduceOrganizations(
+  List<OrganizationData> organizations,
+  skir.UserOrganizationsChanged event,
+) {
+  return event.changes.fold(organizations, (current, change) {
+    return switch (change) {
+      skir.UserOrganizationsChange_unknown() =>
+        throw ApiException.unknownResponseMessage(),
+      skir.UserOrganizationsChange_addWrapper(:final value) =>
+        current.upsertByKey(
+          (organization) => organization.organizationId,
+          OrganizationData.fromSkir(value),
+        ),
+      skir.UserOrganizationsChange_removeWrapper(:final value) =>
+        current
+            .where((organization) => organization.organizationId != value)
+            .toList(),
+    };
+  });
 }
 
 @riverpod

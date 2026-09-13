@@ -53,6 +53,8 @@ abstract class UserJoinRequest with _$UserJoinRequest {
 
 @riverpod
 class UserJoinRequests extends _$UserJoinRequests {
+  final _sequenceState = SequencedCollection<List<UserJoinRequest>>();
+
   @override
   Stream<List<UserJoinRequest>> build() async* {
     final userId = await ref.watch(userIdProvider.future);
@@ -62,30 +64,32 @@ class UserJoinRequests extends _$UserJoinRequests {
     }
 
     final request = skir.WatchUserJoinRequestsRequest();
-    yield* ref.watchRequest(
+    yield* ref.watchSequencedRequest(
       subject: "cloud.to.user.$userId.organization.join_requests.watch",
-      listenSubject: "cloud.from.user.$userId.organization.join_requests.watch",
+      eventSubject: "cloud.from.user.$userId.join_requests.changed",
       requestBytes: skir.WatchUserJoinRequestsRequest.serializer.toBytes(
         request,
       ),
-      serializer: skir.WatchUserJoinRequestsResponse.serializer,
-      transformer: (previous, response) {
-        switch (response) {
-          case skir.WatchUserJoinRequestsResponse_unknown():
-            throw ApiException.unknownResponseMessage();
-          case skir.WatchUserJoinRequestsResponse_internalErrorWrapper():
-            throw ApiException.internalServerError();
-          case skir.WatchUserJoinRequestsResponse_listWrapper(:final value):
-            return value.map(UserJoinRequest.fromSkir).toList();
-          case skir.WatchUserJoinRequestsResponse_addWrapper(:final value):
-            return previous.upsertByKey(
-              (request) => request.requestId,
-              UserJoinRequest.fromSkir(value),
-            );
-          case skir.WatchUserJoinRequestsResponse_removeWrapper(:final value):
-            return previous?.where((r) => r.requestId != value).toList() ?? [];
-        }
+      responseSerializer: skir.WatchUserJoinRequestsResponse.serializer,
+      eventSerializer: skir.UserJoinRequestsChanged.serializer,
+      snapshot: (response) {
+        return switch (response) {
+          skir.WatchUserJoinRequestsResponse_unknown() =>
+            throw ApiException.unknownResponseMessage(),
+          skir.WatchUserJoinRequestsResponse_internalErrorWrapper() =>
+            throw ApiException.internalServerError(),
+          skir.WatchUserJoinRequestsResponse_snapshotWrapper(:final value) =>
+            SequencedSnapshot(
+              sequence: value.sequence,
+              value: value.values.map(UserJoinRequest.fromSkir).toList(),
+            ),
+          skir.WatchUserJoinRequestsResponse_changedWrapper() =>
+            throw StateError("Snapshot request returned a delta"),
+        };
       },
+      eventSequence: (event) => event.sequence,
+      reduce: _reduceUserJoinRequests,
+      sequenceState: _sequenceState,
     );
   }
 
@@ -102,15 +106,36 @@ class UserJoinRequests extends _$UserJoinRequests {
     final code = _extractCode(urlOrCode);
     final codeId = recordId("organization_join_code:$code");
 
-    final request = skir.SubmitUserJoinRequestRequest(code: codeId);
+    final request = skir.SubmitUserJoinRequestRequest(
+      operationId: uuid.v4(),
+      code: codeId,
+    );
 
-    final response = await ref.requestSkir(
+    final response = await ref.mutateSkir(
       "cloud.to.user.$userId.organization.join_requests.request",
       skir.SubmitUserJoinRequestRequest.serializer.toBytes(request),
       skir.SubmitUserJoinRequestResponse.serializer,
+      submissionId: request.operationId,
+      replay: SubmissionReplay.identicalRequest,
+      label: "Request membership",
+      classify: (response) => switch (response) {
+        skir.SubmitUserJoinRequestResponse_requestMadeWrapper() ||
+        skir.SubmitUserJoinRequestResponse_autoAcceptedWrapper() =>
+          MutationResponseDisposition.confirmed,
+        skir.SubmitUserJoinRequestResponse_unknown() ||
+        skir.SubmitUserJoinRequestResponse_internalErrorWrapper() =>
+          MutationResponseDisposition.uncertain,
+        _ => MutationResponseDisposition.rejected,
+      },
     );
 
     switch (response) {
+      case skir.SubmitUserJoinRequestResponse_invalidOperationIdErrorWrapper():
+        throw ApiException.badRequest("Operation identity is required");
+      case skir.SubmitUserJoinRequestResponse_operationIdentityReusedErrorWrapper():
+        throw ApiException.conflict(
+          "Operation identity was reused with different input",
+        );
       case skir.SubmitUserJoinRequestResponse_unknown():
         throw ApiException.unknownResponseMessage();
       case skir.SubmitUserJoinRequestResponse_codeNotFoundErrorWrapper():
@@ -136,12 +161,7 @@ class UserJoinRequests extends _$UserJoinRequests {
           "You already have a pending join request for this organization",
         );
       case skir.SubmitUserJoinRequestResponse_requestMadeWrapper(:final value):
-        state = AsyncValue.data(
-          state.requireValue.upsertByKey(
-            (request) => request.requestId,
-            UserJoinRequest.fromSkir(value),
-          ),
-        );
+        _applyEvent(value.event);
       case skir.SubmitUserJoinRequestResponse_autoAcceptedWrapper():
         debugPrint("User was auto-accepted as a member");
     }
@@ -162,15 +182,35 @@ class UserJoinRequests extends _$UserJoinRequests {
     );
 
     try {
-      final request = skir.CancelUserJoinRequestRequest(requestId: requestId);
+      final request = skir.CancelUserJoinRequestRequest(
+        operationId: uuid.v4(),
+        requestId: requestId,
+      );
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.join_requests.cancel",
         skir.CancelUserJoinRequestRequest.serializer.toBytes(request),
         skir.CancelUserJoinRequestResponse.serializer,
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
+        label: "Cancel membership request",
+        classify: (response) => switch (response) {
+          skir.CancelUserJoinRequestResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.CancelUserJoinRequestResponse_unknown() ||
+          skir.CancelUserJoinRequestResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {
+        case skir.CancelUserJoinRequestResponse_invalidOperationIdErrorWrapper():
+          throw ApiException.badRequest("Operation identity is required");
+        case skir.CancelUserJoinRequestResponse_operationIdentityReusedErrorWrapper():
+          throw ApiException.conflict(
+            "Operation identity was reused with different input",
+          );
         case skir.CancelUserJoinRequestResponse_unknown():
           throw ApiException.unknownResponseMessage();
         case skir.CancelUserJoinRequestResponse_internalErrorWrapper():
@@ -181,13 +221,28 @@ class UserJoinRequests extends _$UserJoinRequests {
           throw ApiException.invalidRecordId(value);
         case skir.CancelUserJoinRequestResponse_requestNotFoundErrorWrapper():
           throw ApiException.notFound("Join request not found");
-        case skir.CancelUserJoinRequestResponse_successWrapper():
+        case skir.CancelUserJoinRequestResponse_successWrapper(:final value):
+          _applyEvent(value.event);
           debugPrint("Join request $requestId cancelled successfully");
       }
     } catch (e) {
       state = previousState;
       ref.invalidateSelf();
       rethrow;
+    }
+  }
+
+  void _applyEvent(skir.UserJoinRequestsChanged event) {
+    switch (_sequenceState.apply(
+      sequence: event.sequence,
+      reduce: (requests) => _reduceUserJoinRequests(requests, event),
+    )) {
+      case SequencedEventResult.duplicate:
+        return;
+      case SequencedEventResult.applied:
+        state = AsyncData(_sequenceState.value);
+      case SequencedEventResult.gap:
+        ref.invalidateSelf();
     }
   }
 
@@ -208,4 +263,23 @@ class UserJoinRequests extends _$UserJoinRequests {
       state.requireValue.where((request) => !request.isExpired).toList(),
     );
   }
+}
+
+List<UserJoinRequest> _reduceUserJoinRequests(
+  List<UserJoinRequest> requests,
+  skir.UserJoinRequestsChanged event,
+) {
+  return event.changes.fold(requests, (current, change) {
+    return switch (change) {
+      skir.UserJoinRequestsChange_unknown() =>
+        throw ApiException.unknownResponseMessage(),
+      skir.UserJoinRequestsChange_addWrapper(:final value) =>
+        current.upsertByKey(
+          (request) => request.requestId,
+          UserJoinRequest.fromSkir(value),
+        ),
+      skir.UserJoinRequestsChange_removeWrapper(:final value) =>
+        current.where((request) => request.requestId != value).toList(),
+    };
+  });
 }

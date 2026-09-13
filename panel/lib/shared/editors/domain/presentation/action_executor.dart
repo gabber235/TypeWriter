@@ -3,7 +3,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "action_list_reorder_executor.dart";
 
 extension LocalEditorActionExecution on LocalEditorAction {
-  TypedMutationResult execute(
+  LocalMutationResult execute(
     ExpressionContext context, {
     required TypeRegistry? registry,
     ExpressionBudget budget = const ExpressionBudget(),
@@ -11,7 +11,7 @@ extension LocalEditorActionExecution on LocalEditorAction {
 }
 
 extension on LocalAction {
-  TypedMutationResult _execute(
+  LocalMutationResult _execute(
     ExpressionContext context,
     TypeRegistry? registry,
     ExpressionBudget budget,
@@ -60,14 +60,14 @@ extension on LocalAction {
 }
 
 extension on SetValueAction {
-  TypedMutationResult _set(
+  LocalMutationResult _set(
     ExpressionContext context,
     TypeRegistry? registry,
     ExpressionBudget budget,
   ) {
-    final binding = _resolved(target, context);
+    final binding = _resolved(target, context, registry);
     if (binding case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     final evaluated = value.evaluate(
       context,
@@ -75,7 +75,7 @@ extension on SetValueAction {
       budget: budget,
     );
     if (evaluated case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     return target.replaceValue(
       binding.valueOrNull!.type,
@@ -87,18 +87,18 @@ extension on SetValueAction {
 }
 
 extension on InsertListItemAction {
-  TypedMutationResult _insert(
+  LocalMutationResult _insert(
     ExpressionContext context,
     TypeRegistry? registry,
     ExpressionBudget budget,
   ) {
-    final binding = _resolved(target, context);
+    final binding = _resolved(target, context, registry);
     if (binding case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     final position = index._integer(context, registry, budget);
     if (position case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     return _insertValue(
       binding.valueOrNull!,
@@ -112,18 +112,18 @@ extension on InsertListItemAction {
 }
 
 extension on AppendListItemAction {
-  TypedMutationResult _append(
+  LocalMutationResult _append(
     ExpressionContext context,
     TypeRegistry? registry,
     ExpressionBudget budget,
   ) {
-    final binding = _resolved(target, context);
+    final binding = _resolved(target, context, registry);
     if (binding case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     final resolved = binding.valueOrNull!;
     if (resolved.value is! ListValue) {
-      return invalidMutation("Append target must be a list");
+      return invalidLocalMutation("Append target must be a list");
     }
     return _insertValue(
       resolved,
@@ -137,28 +137,32 @@ extension on AppendListItemAction {
 }
 
 extension on RemoveListItemAction {
-  TypedMutationResult _remove(
+  LocalMutationResult _remove(
     ExpressionContext context,
     TypeRegistry? registry,
     ExpressionBudget budget,
   ) {
-    final binding = _resolved(target, context);
+    final binding = _resolved(target, context, registry);
     if (binding case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
     final position = index._integer(context, registry, budget);
     if (position case TypeFailure(:final diagnostics)) {
-      return MutationInvalid(diagnostics);
+      return LocalMutationInvalid(diagnostics);
     }
+
     final resolved = binding.valueOrNull!;
     if (resolved.type is! ListType || resolved.value is! ListValue) {
-      return invalidMutation("Remove target must be a list");
+      return invalidLocalMutation("Remove target must be a list");
     }
+
     final values = List<DataValue>.of((resolved.value as ListValue).values);
+
     final offset = position.valueOrNull!;
     if (offset < 0 || offset >= values.length) {
-      return invalidMutation("Remove index is outside the list");
+      return invalidLocalMutation("Remove index is outside the list");
     }
+
     values.removeAt(offset);
     return target.replaceValue(
       resolved.type,
@@ -172,8 +176,9 @@ extension on RemoveListItemAction {
 TypeResult<ResolvedBinding> _resolved(
   BindingReference reference,
   ExpressionContext context,
+  TypeRegistry? registry,
 ) {
-  final resolved = context.bindings.resolve(reference);
+  final resolved = context.bindings.resolve(reference, registry: registry);
   if (resolved case TypeSuccess(:final value) when !value.writable) {
     return TypeResult.failure([
       const TypeDiagnostic(
@@ -182,10 +187,15 @@ TypeResult<ResolvedBinding> _resolved(
       ),
     ]);
   }
+  if (resolved case TypeSuccess(:final value)) {
+    return TypeResult.success(
+      value.copyWith(type: value.type.bindingRepresentation(registry)),
+    );
+  }
   return resolved;
 }
 
-TypedMutationResult _insertValue(
+LocalMutationResult _insertValue(
   ResolvedBinding binding,
   int index,
   TypedExpression value,
@@ -194,22 +204,25 @@ TypedMutationResult _insertValue(
   ExpressionBudget budget,
 ) {
   if (binding.type is! ListType || binding.value is! ListValue) {
-    return invalidMutation("Insert target must be a list");
+    return invalidLocalMutation("Insert target must be a list");
   }
   final type = binding.type as ListType;
   final values = List<DataValue>.of((binding.value as ListValue).values);
   if (index < 0 || index > values.length) {
-    return invalidMutation("Insert index is outside the list");
+    return invalidLocalMutation("Insert index is outside the list");
   }
+
   final evaluated = value.evaluate(context, registry: registry, budget: budget);
   if (evaluated case TypeFailure(:final diagnostics)) {
-    return MutationInvalid(diagnostics);
+    return LocalMutationInvalid(diagnostics);
   }
   final diagnostics = evaluated.valueOrNull!.validateAgainst(
     type.element,
     registry: registry,
   );
-  if (diagnostics.isNotEmpty) return MutationInvalid(diagnostics);
+
+  if (diagnostics.isNotEmpty) return LocalMutationInvalid(diagnostics);
+
   values.insert(index, evaluated.valueOrNull!);
   return binding.reference.replaceValue(
     type,

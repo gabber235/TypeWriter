@@ -46,6 +46,7 @@ void main() {
     expect(context.partialValue, "a");
     expect(context.keyRange.start, 0);
     expect(context.keyRange.end, 1);
+
     expect(context.activeRange.start, 1);
     expect(context.activeRange.end, 2);
   });
@@ -63,6 +64,7 @@ void main() {
     expect(context.selectorId, "role");
     expect(context.partialValue, "");
     expect(context.activeRange.start, 5);
+
     expect(context.activeRange.end, 5);
   });
 
@@ -184,6 +186,7 @@ void main() {
     expect(result.queryAfter, isEmpty);
     expect(context.cursorOffset, 8);
     expect(context.partial, "ov");
+
     expect(context.activeRange.start, 6);
     expect(context.activeRange.end, 10);
   });

@@ -92,6 +92,7 @@ class _CreateOrganization extends HookConsumerWidget {
     if (!RegExp(r"^[a-z0-9][a-z0-9_]{1,}[a-z0-9]$").hasMatch(value)) {
       return "Name must be at least 3 characters, start and end with a letter or number, and only contain underscores in between.";
     }
+
     return null;
   }
 

@@ -64,9 +64,10 @@ class ValidatedTextField<T> extends HookConsumerWidget {
     this.textAlign = TextAlign.start,
     this.readOnly = false,
     this.selectAllOnFocus = false,
+    this.mixed = false,
     super.key,
-  });
-  final T value;
+  }) : assert((value == null) == mixed);
+  final T? value;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final InputFieldController? inputFieldController;
@@ -115,6 +116,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
   final TextAlign textAlign;
   final bool readOnly;
   final bool selectAllOnFocus;
+  final bool mixed;
 
   _State _parse(String value) {
     try {
@@ -143,7 +145,10 @@ class ValidatedTextField<T> extends HookConsumerWidget {
         inputFieldController?.inputFocusNode ?? focusNode ?? fallbackFocus;
     final state = useState<_State>(_initial);
 
-    final formattedValue = deserialize?.call(value) ?? value.toString();
+    final current = value;
+    final formattedValue = current == null
+        ? null
+        : deserialize?.call(current) ?? current.toString();
 
     useFocusedChange(focus, ({required hasFocus}) {
       if (!hasFocus && !keepErrorVisibleWhenUnfocused) {
@@ -151,12 +156,18 @@ class ValidatedTextField<T> extends HookConsumerWidget {
         return;
       }
 
-      if (hasFocus && keepValidVisibleWhileFocused && state.value == _initial) {
+      if (hasFocus &&
+          formattedValue != null &&
+          keepValidVisibleWhileFocused &&
+          state.value == _initial) {
         _updateState(formattedValue, state);
       }
     }, [formattedValue]);
 
-    final baseDecoration = decoration ?? const InputDecoration();
+    final suppliedDecoration = decoration ?? const InputDecoration();
+    final baseDecoration = mixed
+        ? suppliedDecoration.forMixedValue
+        : suppliedDecoration;
     final effectiveDecoration = baseDecoration.copyWith(
       prefixIcon:
           baseDecoration.prefixIcon ??
@@ -217,7 +228,7 @@ class ValidatedTextField<T> extends HookConsumerWidget {
         _StateText(
           name: name,
           state: state.value,
-          value: formatted?.call(value),
+          value: current == null ? null : formatted?.call(current),
           keepValidVisible: keepValidVisibleWhileFocused,
         ),
       ],
@@ -250,9 +261,8 @@ class _StateText extends HookWidget {
               ),
               child: Text(
                 value ?? state.cast<_Valid>()?.message ?? "",
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: context.colors.success),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: context.colors.success),
               ),
             )
             .animate()

@@ -5,23 +5,21 @@ import "package:flutter_test/flutter_test.dart" hide Tags;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:iconify_flutter_plus/icons/heroicons_solid.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 import "../../../../../../../support/test_utils.dart";
 
-class _Tags extends Tags {
+class _Tags extends CanonicalTags {
   _Tags(this.tags);
 
   final List<Tag> tags;
 
   @override
-  Stream<List<Tag>> build() => Stream.value(tags);
+  Future<List<Tag>> build() async => tags;
 }
-
-final _refProvider = Provider<Ref>((ref) => ref);
 
 Tag _tag(String id, {List<String> parents = const []}) => Tag(
   tagId: recordId("tag:$id"),
-  revision: 1,
   name: id,
   color: Colors.blue,
   parentIds: parents.map((parent) => recordId("tag:$parent")).toList(),
@@ -37,8 +35,7 @@ void main() {
       final current = _tag("current", parents: ["parent"]);
       final parent = _tag("parent");
       final descendant = _tag("descendant", parents: ["current"]);
-      final source = tagPresentationCollection(
-        [current, parent, descendant],
+      final source = [current, parent, descendant].presentationCollection(
         editingTagId: current.tagId,
         existingParentIds: current.parentIds,
       );
@@ -49,22 +46,19 @@ void main() {
 
       expect(snapshot.diagnostics, isEmpty);
       expect(_selectable(snapshot, "current"), isFalse);
-      expect(_reason(snapshot, "current"), contains("itself"));
       expect(_selectable(snapshot, "descendant"), isFalse);
-      expect(_reason(snapshot, "descendant"), contains("descendant"));
       expect(_selectable(snapshot, "parent"), isTrue);
-      expect(_reason(snapshot, "parent"), isNull);
     },
   );
 
   test(
     "effective inheritance deduplicates ancestors and retains every path",
     () async {
-      final source = tagPresentationCollection([
+      final source = [
         _tag("story", parents: ["shared"]),
         _tag("combat", parents: ["shared"]),
         _tag("shared"),
-      ]);
+      ].presentationCollection();
 
       final snapshot = await source
           .watch(
@@ -90,35 +84,79 @@ void main() {
     },
   );
 
+  test("Tag multi inspection intersects candidate selectability", () async {
+    final first = _tag("first");
+    final second = _tag("second");
+    final tags = [first, second];
+    final selections = [
+      _tagSelection(
+        first,
+        tags.presentationCollection(editingTagId: first.tagId),
+      ),
+      _tagSelection(
+        second,
+        tags.presentationCollection(editingTagId: second.tagId),
+      ),
+    ];
+
+    final result = selections.sharedTagCollection;
+    final source = result.valueOrNull!;
+    final snapshot = await source
+        .watch(const PresentationCollectionQuery.all())
+        .first;
+
+    expect(result.diagnostics, isEmpty);
+    expect(_selectable(snapshot, "first"), isFalse);
+    expect(_selectable(snapshot, "second"), isFalse);
+  });
+
   test(
     "Tag inspector exposes parent collection and collapsed layout",
     () async {
       final tag = _tag("current", parents: ["parent"]);
       final container = ProviderContainer.test(
         overrides: [
-          tagsProvider.overrideWith(() => _Tags([tag, _tag("parent")])),
+          canonicalTagsProvider.overrideWith(
+            () => _Tags([tag, _tag("parent")]),
+          ),
+          organizationIdProvider.overrideWith(
+            (ref) => recordId("organization:test"),
+          ),
+          realmIdProvider.overrideWith((ref) => recordId("realm:test")),
+          authoringSessionProvider(
+            recordId("organization:test"),
+            recordId("realm:test"),
+          ).overrideWithValue(
+            AuthoringSessionState(sequence: 1, tags: {tag.tagId: tag.toWire()}),
+          ),
+          userIdProvider.overrideWith((ref) async => "user"),
+          natsProvider.overrideWithValue(FakeNatsClient()),
+          panelTelemetryProvider.overrideWithValue(
+            const AsyncData(NoopPanelTelemetry()),
+          ),
         ],
       );
       final subscription = container.listen(
-        tagsProvider,
+        canonicalTagsProvider,
         (_, _) {},
         fireImmediately: true,
       );
       addTearDown(subscription.close);
-      await container.read(tagsProvider.future);
+      await container.read(canonicalTagsProvider.future);
       container
           .read(selectionProvider.notifier)
           .select(TagIdentifier(tag.tagId));
 
       final selected = await _selected(container);
-      final document = (selected as TagSelectable).document;
-      final resolved = TypeRegistry(
-        document.typeCatalog,
-      ).resolve(document.rootType as NamedType);
-      final root = document.presentations.single.root.element as ColumnElement;
+      final inspector = selected as TagSelectable;
+      final document = inspector.document;
+      final resolved = TypeRegistry(document.typeCatalog)
+          .resolve(document.rootType as NamedType);
+      final root = inspector.presentations.single.root.element as ColumnElement;
       final layoutNode = root.children.singleWhere(
         (node) => node.id == "tag.layout",
       );
+
       final layout = layoutNode.element as SectionElement;
       final layoutGrid = layout.child.element as GridElement;
       final directParents =
@@ -136,10 +174,11 @@ void main() {
                   )
                   .element
               as ConditionalElement;
+
       final inheritanceSection = inheritance.whenTrue.element as SectionElement;
       final graph = inheritanceSection.child.element as CollectionGraphElement;
 
-      expect(document.collections.single.id, tagCollectionSourceId);
+      expect(inspector.collections.single.id, tagCollectionSourceId);
       expect(resolved.diagnostics, isEmpty);
       expect(resolved.valueOrNull, isNotNull);
       expect(document.mergePolicies, {
@@ -151,6 +190,7 @@ void main() {
       );
       final summaryLayout =
           summary.presentation.layout as PresentationStandardSequenceLayout;
+
       expect(summaryLayout.layout, isA<PresentationWrapLayout>());
       expect(summary.presentation.empty, isNotNull);
       _expectTagChip(summaryLookup.found.element as ChipElement);
@@ -158,6 +198,7 @@ void main() {
       expect(graph.childBindingId, const BindingId(46));
       final rootSequence =
           graph.rootSequence.layout as PresentationStandardSequenceLayout;
+
       final rootColumn = rootSequence.layout as PresentationColumnLayout;
       expect(rootColumn.spacing, 12);
       expect(graph.node.presentationSlotIds, {"tag.inheritance.children"});
@@ -168,18 +209,21 @@ void main() {
         hierarchy.layout.crossAxisAlignment,
         PresentationCrossAxisAlignment.stretch,
       );
+
       final branching = graph.node.element as ConditionalElement;
       final branchNode = branching.whenTrue;
       final branch = branchNode.element as SectionElement;
       expect(branch.border, isA<PresentationBorderSides>());
       final branchBorder = branch.border! as PresentationBorderSides;
       expect(branchBorder.top, isNull);
+
       expect(branchBorder.start?.width, 4);
       expect(branchBorder.end, isNull);
       expect(branchBorder.bottom, isNull);
       expect(branch.child.element, isA<PresentationSlotElement>());
       final branchTitle = branchNode.header!.title;
       expect(branchTitle, isA<PresentationHeaderNodeTitle>());
+
       final containerNode = (branchTitle! as PresentationHeaderNodeTitle).node;
       expect(containerNode.element, isA<ContainerElement>());
 
@@ -189,6 +233,7 @@ void main() {
       expect(layoutGrid.verticalSpacing, 12);
       _expectPositionControl(layoutGrid, "x", "X", "X position");
       _expectPositionControl(layoutGrid, "y", "Y", "Y position");
+
       _expectDimensionControl(layoutGrid, "width", "Width");
       _expectDimensionControl(layoutGrid, "height", "Height");
     },
@@ -198,18 +243,23 @@ void main() {
     "empty parents stay editable while inheritance hides and layout uses a grid",
     (tester) async {
       final tag = _tag("current");
-      final container = ProviderContainer.test();
       final selected = TagSelectable(
-        ref: container.read(_refProvider),
+        resource: FakeEditableResource(
+          key: EditorResourceKey(scope: null, identity: tag.tagId),
+          current: TagEditorSnapshot(tag, 1),
+          commit: (_) async =>
+              throw StateError("No save in this rendering test"),
+        ),
+        onDelete: () async =>
+            throw StateError("No deletion in this rendering test"),
         id: TagIdentifier(tag.tagId),
         tag: tag,
-        tagCollection: tagPresentationCollection([
-          tag,
-        ], editingTagId: tag.tagId),
+        revision: 1,
+        tagCollection: [tag].presentationCollection(editingTagId: tag.tagId),
       );
 
       await tester.pumpTestApp(
-        child: SizedBox(width: 400, child: _render(selected.document)),
+        child: SizedBox(width: 400, child: _render(selected)),
         settle: false,
       );
       await tester.pump();
@@ -227,6 +277,7 @@ void main() {
       expect(find.text("Y position"), findsNothing);
       expect(find.text("Width"), findsOneWidget);
       expect(find.text("Height"), findsOneWidget);
+
       expect(find.bySemanticsLabel("X position"), findsWidgets);
       expect(find.bySemanticsLabel("Y position"), findsWidgets);
 
@@ -240,6 +291,7 @@ void main() {
       expect(fields[1].decoration?.prefixIcon, isNotNull);
       expect(fields[2].decoration?.prefixIcon, isNull);
       expect(fields[2].icon, HeroiconsSolid.hashtag);
+
       expect(fields[3].decoration?.prefixIcon, isNull);
       expect(fields[3].icon, HeroiconsSolid.hashtag);
 
@@ -253,10 +305,27 @@ void main() {
       expect(positions[2].dy, positions[3].dy);
       expect(positions[2].dx, lessThan(positions[3].dx));
       expect(positions[2].dy, greaterThan(positions[0].dy));
+
       expect(tester.takeException(), isNull);
     },
   );
 }
+
+TagSelectable _tagSelection(
+  Tag tag,
+  PresentationCollectionSource tagCollection,
+) => TagSelectable(
+  resource: FakeEditableResource(
+    key: EditorResourceKey(scope: null, identity: tag.tagId),
+    current: TagEditorSnapshot(tag, 1),
+    commit: (_) async => throw StateError("No save in this domain test"),
+  ),
+  onDelete: () async => throw StateError("No delete in this domain test"),
+  id: TagIdentifier(tag.tagId),
+  tag: tag,
+  revision: 1,
+  tagCollection: tagCollection,
+);
 
 void _expectTagChip(ChipElement chip) {
   expect(chip.color, isNotNull);
@@ -302,18 +371,6 @@ bool _selectable(PresentationCollectionSnapshot snapshot, String id) {
   return (value as BooleanValue).value;
 }
 
-String? _reason(PresentationCollectionSnapshot snapshot, String id) {
-  final value = _field(snapshot, id, "unavailableReason");
-  return switch (value) {
-    PolymorphicValue(value: UnitValue()) => null,
-    PolymorphicValue(
-      value: RecordValue(fields: {"value": StringValue(:final value)}),
-    ) =>
-      value,
-    _ => throw StateError("Unexpected unavailable reason: $value"),
-  };
-}
-
 DataValue _field(
   PresentationCollectionSnapshot snapshot,
   String id,
@@ -342,14 +399,14 @@ Future<Selectable> _selected(ProviderContainer container) async {
   }
 }
 
-EditorProtocolRenderer _render(EditorDocument document) =>
+EditorProtocolRenderer _render(EditableSelectable inspector) =>
     EditorProtocolRenderer(
       envelope: TypedValueEnvelope(
-        rootType: (document.rootType as NamedType).reference,
-        rootValue: document.confirmedValue,
+        rootType: (inspector.document.rootType as NamedType).reference,
+        rootValue: inspector.document.confirmedValue,
       ),
-      typeCatalog: document.typeCatalog,
-      collections: document.collections,
-      presentations: document.presentations,
-      presentation: document.presentations.single.root,
+      typeCatalog: inspector.document.typeCatalog,
+      collections: inspector.collections,
+      presentations: inspector.presentations,
+      presentation: inspector.presentations.single.root,
     );

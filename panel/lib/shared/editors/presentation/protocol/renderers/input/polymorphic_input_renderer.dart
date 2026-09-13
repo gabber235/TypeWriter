@@ -7,36 +7,48 @@ extension PolymorphicInputElementRendering on PolymorphicInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     final element = this;
     return BoundControlShell(
+      nominal: true,
       control: element.control,
       scope: scope,
       shapeMismatch: (binding) =>
-          binding.type is NamedType && binding.value is PolymorphicValue
+          binding.type is NamedType &&
+              (binding.value is MixedEditorValue ||
+                  binding.value.valueOrNull is PolymorphicValue)
           ? null
           : "Polymorphic control requires a named polymorphic binding",
       builder: (context, field) {
-        final value = field.binding.value as PolymorphicValue;
+        final value = field.value as PolymorphicValue?;
         final selectedIndex = element.concreteTypes.indexWhere(
-          (candidate) => candidate.type == value.concreteType,
+          (candidate) => candidate.type == value?.concreteType,
         );
         final selected = element.concreteTypes
-            .where((candidate) => candidate.type == value.concreteType)
+            .where((candidate) => candidate.type == value?.concreteType)
             .firstOrNull;
-        final content = switch (selected?.presentation) {
-          final presentation? => PresentationNodeRenderer(
-            node: presentation.localizeFailures(
-              scope.expressions,
-              registry: scope.registry,
-              budget: scope.budget,
-            ),
-            scope: scope,
-          ),
-          null => value._defaultConcreteEditor(field.binding, element, scope),
-        };
+        final content = value == null
+            ? const SizedBox.shrink()
+            : switch (selected?.presentation) {
+                final presentation? => PresentationNodeRenderer(
+                  node: presentation.localizeFailures(
+                    scope.expressions,
+                    registry: scope.registry,
+                    budget: scope.budget,
+                  ),
+                  scope: scope,
+                ),
+                null => value._defaultConcreteEditor(
+                  field.binding.resolvedOrNull!,
+                  element,
+                  scope,
+                ),
+              };
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             AdaptiveChoiceControl<ResolvedTypeRef>(
-              selected: value.concreteType,
+              selected: value?.concreteType,
+              initialization: field.mixed
+                  ? SelectionInitializationPolicy.explicit
+                  : SelectionInitializationPolicy.automatic,
               choices: {
                 for (final candidate in element.concreteTypes)
                   candidate.type: scope.expressionText(candidate.label),
@@ -44,11 +56,12 @@ extension PolymorphicInputElementRendering on PolymorphicInputElement {
               enabled: field.editable,
               onSelected: (type) => type._replace(element, scope),
             ),
+            if (field.mixed) const MixedValueMessage(),
             SizedBox(height: context.spacing.space3),
             DirectionalContentSwitcher(
               index: selectedIndex,
               child: KeyedSubtree(
-                key: ValueKey(value.concreteType),
+                key: ValueKey(value?.concreteType),
                 child: content,
               ),
             ),
@@ -73,12 +86,13 @@ extension on PolymorphicValue {
     }
     const payloadBindingId = BindingId(2147483647);
     const payloadReference = BindingReference(bindingId: payloadBindingId);
-    final representation = concrete.valueOrNull!.representation;
+
+    final nominalType = NamedType(concreteType);
     final childScope = scope.withVirtualBinding(
       VirtualBindingHost(
         id: payloadBindingId,
         snapshot: BindingSnapshot(
-          type: representation,
+          type: nominalType,
           value: value,
           revision: binding.revision,
           writable: binding.writable,
@@ -89,16 +103,14 @@ extension on PolymorphicValue {
         ),
         interactionTarget: scope.canonical(element.control.binding),
       ),
+      source: element.control.binding,
     );
-    return ResolvedBinding(
-      reference: payloadReference,
-      type: representation,
-      value: value,
-      revision: binding.revision,
-      writable: binding.writable,
-    ).renderDefaultPresentation(
-      childScope,
-      nodeId: "polymorphic.${concreteType.id}",
+    return PresentationNodeRenderer(
+      node: PresentationNode(
+        id: "polymorphic.${concreteType.id}",
+        element: const DefaultPresentationElement(binding: payloadReference),
+      ),
+      scope: childScope,
     );
   }
 }
@@ -112,10 +124,12 @@ extension on ResolvedTypeRef? {
     final type = this!;
     final concrete = scope.registry.resolve(NamedType(type));
     final resolved = concrete.valueOrNull;
+
     if (resolved == null || !resolved.isConcrete) return;
     final initial = resolved.representation
         .createInitialValue(registry: scope.registry)
         .valueOrNull;
+
     if (initial == null) return;
     scope.update(
       element.control.binding,

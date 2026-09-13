@@ -165,6 +165,7 @@ final class SkirExpressionEncoder {
   TypeResult<wire.Expression> _interpolation(List<InterpolationPart> parts) {
     final values = <wire.InterpolationPart>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final part in parts) {
       switch (part) {
         case InterpolationText(:final value):
@@ -177,6 +178,7 @@ final class SkirExpressionEncoder {
           }
       }
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(wire.Expression.createInterpolation(parts: values))
         : TypeResult.failure(diagnostics);

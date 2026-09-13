@@ -58,9 +58,8 @@ impl WatchUserOrganizationsRequest {
 pub enum WatchUserOrganizationsResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<WatchUserOrganizationsResponse>>),
     InternalError(Box<crate::skirout::base::kernel::v1::errors::InternalError>),
-    List(Vec<crate::skirout::base::organization::v1::organization::Organization>),
-    Add(Box<crate::skirout::base::organization::v1::organization::Organization>),
-    Remove(Box<crate::skirout::base::kernel::v1::record_id::RecordId>),
+    Snapshot(Box<crate::skirout::base::organization::v1::organization::UserOrganizationsSnapshot>),
+    Changed(Box<crate::skirout::base::organization::v1::organization::UserOrganizationsChanged>),
 }
 
 impl Default for WatchUserOrganizationsResponse {
@@ -77,9 +76,8 @@ impl WatchUserOrganizationsResponse {
                     |x: &WatchUserOrganizationsResponse| match x {
                         WatchUserOrganizationsResponse::Unknown(_) => 0,
                         WatchUserOrganizationsResponse::InternalError(_) => 1,
-                        WatchUserOrganizationsResponse::List(_) => 2,
-                        WatchUserOrganizationsResponse::Add(_) => 3,
-                        WatchUserOrganizationsResponse::Remove(_) => 4,
+                        WatchUserOrganizationsResponse::Snapshot(_) => 2,
+                        WatchUserOrganizationsResponse::Changed(_) => 3,
                     },
                     |u| WatchUserOrganizationsResponse::Unknown(Some(u)),
                     |x: &WatchUserOrganizationsResponse| match x { WatchUserOrganizationsResponse::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
@@ -141,9 +139,8 @@ impl WatchUserJoinRequestsRequest {
 pub enum WatchUserJoinRequestsResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<WatchUserJoinRequestsResponse>>),
     InternalError(Box<crate::skirout::base::kernel::v1::errors::InternalError>),
-    List(Vec<crate::skirout::base::organization::v1::join_request::UserJoinRequest>),
-    Add(Box<crate::skirout::base::organization::v1::join_request::UserJoinRequest>),
-    Remove(Box<crate::skirout::base::kernel::v1::record_id::RecordId>),
+    Snapshot(Box<crate::skirout::base::organization::v1::join_request::UserJoinRequestsSnapshot>),
+    Changed(Box<crate::skirout::base::organization::v1::join_request::UserJoinRequestsChanged>),
 }
 
 impl Default for WatchUserJoinRequestsResponse {
@@ -160,9 +157,8 @@ impl WatchUserJoinRequestsResponse {
                     |x: &WatchUserJoinRequestsResponse| match x {
                         WatchUserJoinRequestsResponse::Unknown(_) => 0,
                         WatchUserJoinRequestsResponse::InternalError(_) => 1,
-                        WatchUserJoinRequestsResponse::List(_) => 2,
-                        WatchUserJoinRequestsResponse::Add(_) => 3,
-                        WatchUserJoinRequestsResponse::Remove(_) => 4,
+                        WatchUserJoinRequestsResponse::Snapshot(_) => 2,
+                        WatchUserJoinRequestsResponse::Changed(_) => 3,
                     },
                     |u| WatchUserJoinRequestsResponse::Unknown(Some(u)),
                     |x: &WatchUserJoinRequestsResponse| match x { WatchUserJoinRequestsResponse::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
@@ -185,6 +181,7 @@ impl WatchUserJoinRequestsResponse {
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct SubmitUserJoinRequestRequest {
+    pub operation_id: String,
     pub code: crate::skirout::base::kernel::v1::record_id::RecordId,
     /// Set this to None when you're creating a struct.
     pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<SubmitUserJoinRequestRequest>>,
@@ -214,6 +211,158 @@ impl SubmitUserJoinRequestRequest {
     pub fn serializer() -> crate::skir_client::Serializer<SubmitUserJoinRequestRequest> {
         initialize_module_serializers();
         crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestRequest::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct SubmitUserJoinRequestResponse.InvalidOperationIdError
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct SubmitUserJoinRequestResponse_InvalidOperationIdError {
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<SubmitUserJoinRequestResponse_InvalidOperationIdError>>,
+}
+
+impl SubmitUserJoinRequestResponse_InvalidOperationIdError {
+    pub fn default_ref() -> &'static SubmitUserJoinRequestResponse_InvalidOperationIdError {
+        static D: std::sync::LazyLock<SubmitUserJoinRequestResponse_InvalidOperationIdError> = std::sync::LazyLock::new(SubmitUserJoinRequestResponse_InvalidOperationIdError::default);
+        &D
+    }
+}
+
+impl SubmitUserJoinRequestResponse_InvalidOperationIdError {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_InvalidOperationIdError> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_InvalidOperationIdError>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/user.skir",
+                    "SubmitUserJoinRequestResponse.InvalidOperationIdError",
+                    "",
+                    |x: &SubmitUserJoinRequestResponse_InvalidOperationIdError| &x._unrecognized,
+                    |x: &mut SubmitUserJoinRequestResponse_InvalidOperationIdError, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<SubmitUserJoinRequestResponse_InvalidOperationIdError> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_InvalidOperationIdError::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct SubmitUserJoinRequestResponse.OperationIdentityReusedError
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct SubmitUserJoinRequestResponse_OperationIdentityReusedError {
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<SubmitUserJoinRequestResponse_OperationIdentityReusedError>>,
+}
+
+impl SubmitUserJoinRequestResponse_OperationIdentityReusedError {
+    pub fn default_ref() -> &'static SubmitUserJoinRequestResponse_OperationIdentityReusedError {
+        static D: std::sync::LazyLock<SubmitUserJoinRequestResponse_OperationIdentityReusedError> = std::sync::LazyLock::new(SubmitUserJoinRequestResponse_OperationIdentityReusedError::default);
+        &D
+    }
+}
+
+impl SubmitUserJoinRequestResponse_OperationIdentityReusedError {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_OperationIdentityReusedError> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_OperationIdentityReusedError>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/user.skir",
+                    "SubmitUserJoinRequestResponse.OperationIdentityReusedError",
+                    "",
+                    |x: &SubmitUserJoinRequestResponse_OperationIdentityReusedError| &x._unrecognized,
+                    |x: &mut SubmitUserJoinRequestResponse_OperationIdentityReusedError, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<SubmitUserJoinRequestResponse_OperationIdentityReusedError> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_OperationIdentityReusedError::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct SubmitUserJoinRequestResponse.RequestMade
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct SubmitUserJoinRequestResponse_RequestMade {
+    pub request: crate::skirout::base::organization::v1::join_request::UserJoinRequest,
+    pub event: crate::skirout::base::organization::v1::join_request::UserJoinRequestsChanged,
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<SubmitUserJoinRequestResponse_RequestMade>>,
+}
+
+impl SubmitUserJoinRequestResponse_RequestMade {
+    pub fn default_ref() -> &'static SubmitUserJoinRequestResponse_RequestMade {
+        static D: std::sync::LazyLock<SubmitUserJoinRequestResponse_RequestMade> = std::sync::LazyLock::new(SubmitUserJoinRequestResponse_RequestMade::default);
+        &D
+    }
+}
+
+impl SubmitUserJoinRequestResponse_RequestMade {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_RequestMade> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_RequestMade>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/user.skir",
+                    "SubmitUserJoinRequestResponse.RequestMade",
+                    "",
+                    |x: &SubmitUserJoinRequestResponse_RequestMade| &x._unrecognized,
+                    |x: &mut SubmitUserJoinRequestResponse_RequestMade, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<SubmitUserJoinRequestResponse_RequestMade> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_RequestMade::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct SubmitUserJoinRequestResponse.AutoAccepted
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct SubmitUserJoinRequestResponse_AutoAccepted {
+    pub member: crate::skirout::base::organization::v1::join_request::AutoAcceptedMember,
+    pub event: crate::skirout::base::organization::v1::organization::UserOrganizationsChanged,
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<SubmitUserJoinRequestResponse_AutoAccepted>>,
+}
+
+impl SubmitUserJoinRequestResponse_AutoAccepted {
+    pub fn default_ref() -> &'static SubmitUserJoinRequestResponse_AutoAccepted {
+        static D: std::sync::LazyLock<SubmitUserJoinRequestResponse_AutoAccepted> = std::sync::LazyLock::new(SubmitUserJoinRequestResponse_AutoAccepted::default);
+        &D
+    }
+}
+
+impl SubmitUserJoinRequestResponse_AutoAccepted {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_AutoAccepted> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_AutoAccepted>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/user.skir",
+                    "SubmitUserJoinRequestResponse.AutoAccepted",
+                    "",
+                    |x: &SubmitUserJoinRequestResponse_AutoAccepted| &x._unrecognized,
+                    |x: &mut SubmitUserJoinRequestResponse_AutoAccepted, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<SubmitUserJoinRequestResponse_AutoAccepted> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_AutoAccepted::_adapter())
     }
 }
 
@@ -410,9 +559,11 @@ impl SubmitUserJoinRequestResponse_PendingRequestExistsError {
 #[derive(Debug, Clone, PartialEq)]
 pub enum SubmitUserJoinRequestResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<SubmitUserJoinRequestResponse>>),
+    InvalidOperationIdError(Box<SubmitUserJoinRequestResponse_InvalidOperationIdError>),
+    OperationIdentityReusedError(Box<SubmitUserJoinRequestResponse_OperationIdentityReusedError>),
     InternalError(Box<crate::skirout::base::kernel::v1::errors::InternalError>),
-    RequestMade(Box<crate::skirout::base::organization::v1::join_request::UserJoinRequest>),
-    AutoAccepted(Box<crate::skirout::base::organization::v1::join_request::AutoAcceptedMember>),
+    RequestMade(Box<SubmitUserJoinRequestResponse_RequestMade>),
+    AutoAccepted(Box<SubmitUserJoinRequestResponse_AutoAccepted>),
     CodeNotFoundError(Box<SubmitUserJoinRequestResponse_CodeNotFoundError>),
     AlreadyMemberError(Box<SubmitUserJoinRequestResponse_AlreadyMemberError>),
     NoAssignableRolesError(Box<SubmitUserJoinRequestResponse_NoAssignableRolesError>),
@@ -434,15 +585,17 @@ impl SubmitUserJoinRequestResponse {
                 crate::skir_client::internal::EnumAdapter::new(
                     |x: &SubmitUserJoinRequestResponse| match x {
                         SubmitUserJoinRequestResponse::Unknown(_) => 0,
-                        SubmitUserJoinRequestResponse::InternalError(_) => 1,
-                        SubmitUserJoinRequestResponse::RequestMade(_) => 2,
-                        SubmitUserJoinRequestResponse::AutoAccepted(_) => 3,
-                        SubmitUserJoinRequestResponse::CodeNotFoundError(_) => 4,
-                        SubmitUserJoinRequestResponse::AlreadyMemberError(_) => 5,
-                        SubmitUserJoinRequestResponse::NoAssignableRolesError(_) => 6,
-                        SubmitUserJoinRequestResponse::MaxPendingRequestsError(_) => 7,
-                        SubmitUserJoinRequestResponse::PendingRequestExistsError(_) => 8,
-                        SubmitUserJoinRequestResponse::InvalidRecordIdError(_) => 9,
+                        SubmitUserJoinRequestResponse::InvalidOperationIdError(_) => 1,
+                        SubmitUserJoinRequestResponse::OperationIdentityReusedError(_) => 2,
+                        SubmitUserJoinRequestResponse::InternalError(_) => 3,
+                        SubmitUserJoinRequestResponse::RequestMade(_) => 4,
+                        SubmitUserJoinRequestResponse::AutoAccepted(_) => 5,
+                        SubmitUserJoinRequestResponse::CodeNotFoundError(_) => 6,
+                        SubmitUserJoinRequestResponse::AlreadyMemberError(_) => 7,
+                        SubmitUserJoinRequestResponse::NoAssignableRolesError(_) => 8,
+                        SubmitUserJoinRequestResponse::MaxPendingRequestsError(_) => 9,
+                        SubmitUserJoinRequestResponse::PendingRequestExistsError(_) => 10,
+                        SubmitUserJoinRequestResponse::InvalidRecordIdError(_) => 11,
                     },
                     |u| SubmitUserJoinRequestResponse::Unknown(Some(u)),
                     |x: &SubmitUserJoinRequestResponse| match x { SubmitUserJoinRequestResponse::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
@@ -465,6 +618,7 @@ impl SubmitUserJoinRequestResponse {
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct CancelUserJoinRequestRequest {
+    pub operation_id: String,
     pub request_id: crate::skirout::base::kernel::v1::record_id::RecordId,
     /// Set this to None when you're creating a struct.
     pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<CancelUserJoinRequestRequest>>,
@@ -498,11 +652,86 @@ impl CancelUserJoinRequestRequest {
 }
 
 // ==============================================================================
+// struct CancelUserJoinRequestResponse.InvalidOperationIdError
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct CancelUserJoinRequestResponse_InvalidOperationIdError {
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<CancelUserJoinRequestResponse_InvalidOperationIdError>>,
+}
+
+impl CancelUserJoinRequestResponse_InvalidOperationIdError {
+    pub fn default_ref() -> &'static CancelUserJoinRequestResponse_InvalidOperationIdError {
+        static D: std::sync::LazyLock<CancelUserJoinRequestResponse_InvalidOperationIdError> = std::sync::LazyLock::new(CancelUserJoinRequestResponse_InvalidOperationIdError::default);
+        &D
+    }
+}
+
+impl CancelUserJoinRequestResponse_InvalidOperationIdError {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<CancelUserJoinRequestResponse_InvalidOperationIdError> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<CancelUserJoinRequestResponse_InvalidOperationIdError>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/user.skir",
+                    "CancelUserJoinRequestResponse.InvalidOperationIdError",
+                    "",
+                    |x: &CancelUserJoinRequestResponse_InvalidOperationIdError| &x._unrecognized,
+                    |x: &mut CancelUserJoinRequestResponse_InvalidOperationIdError, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<CancelUserJoinRequestResponse_InvalidOperationIdError> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_InvalidOperationIdError::_adapter())
+    }
+}
+
+// ==============================================================================
+// struct CancelUserJoinRequestResponse.OperationIdentityReusedError
+// ==============================================================================
+
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct CancelUserJoinRequestResponse_OperationIdentityReusedError {
+    /// Set this to None when you're creating a struct.
+    pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<CancelUserJoinRequestResponse_OperationIdentityReusedError>>,
+}
+
+impl CancelUserJoinRequestResponse_OperationIdentityReusedError {
+    pub fn default_ref() -> &'static CancelUserJoinRequestResponse_OperationIdentityReusedError {
+        static D: std::sync::LazyLock<CancelUserJoinRequestResponse_OperationIdentityReusedError> = std::sync::LazyLock::new(CancelUserJoinRequestResponse_OperationIdentityReusedError::default);
+        &D
+    }
+}
+
+impl CancelUserJoinRequestResponse_OperationIdentityReusedError {
+    fn _adapter() -> &'static crate::skir_client::internal::StructAdapter<CancelUserJoinRequestResponse_OperationIdentityReusedError> {
+        static ADAPTER: std::sync::LazyLock<crate::skir_client::internal::StructAdapter<CancelUserJoinRequestResponse_OperationIdentityReusedError>> =
+            std::sync::LazyLock::new(|| {
+                crate::skir_client::internal::StructAdapter::new(
+                    "organization/v1/user.skir",
+                    "CancelUserJoinRequestResponse.OperationIdentityReusedError",
+                    "",
+                    |x: &CancelUserJoinRequestResponse_OperationIdentityReusedError| &x._unrecognized,
+                    |x: &mut CancelUserJoinRequestResponse_OperationIdentityReusedError, u| x._unrecognized = u,
+                )
+            });
+        &*ADAPTER
+    }
+    pub fn serializer() -> crate::skir_client::Serializer<CancelUserJoinRequestResponse_OperationIdentityReusedError> {
+        initialize_module_serializers();
+        crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_OperationIdentityReusedError::_adapter())
+    }
+}
+
+// ==============================================================================
 // struct CancelUserJoinRequestResponse.Success
 // ==============================================================================
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct CancelUserJoinRequestResponse_Success {
+    pub event: crate::skirout::base::organization::v1::join_request::UserJoinRequestsChanged,
     /// Set this to None when you're creating a struct.
     pub _unrecognized: Option<crate::skir_client::UnrecognizedFields<CancelUserJoinRequestResponse_Success>>,
 }
@@ -579,6 +808,8 @@ impl CancelUserJoinRequestResponse_RequestNotFoundError {
 #[derive(Debug, Clone, PartialEq)]
 pub enum CancelUserJoinRequestResponse {
     Unknown(Option<crate::skir_client::UnrecognizedVariant<CancelUserJoinRequestResponse>>),
+    InvalidOperationIdError(Box<CancelUserJoinRequestResponse_InvalidOperationIdError>),
+    OperationIdentityReusedError(Box<CancelUserJoinRequestResponse_OperationIdentityReusedError>),
     InternalError(Box<crate::skirout::base::kernel::v1::errors::InternalError>),
     Success(Box<CancelUserJoinRequestResponse_Success>),
     RequestNotFoundError(Box<CancelUserJoinRequestResponse_RequestNotFoundError>),
@@ -598,10 +829,12 @@ impl CancelUserJoinRequestResponse {
                 crate::skir_client::internal::EnumAdapter::new(
                     |x: &CancelUserJoinRequestResponse| match x {
                         CancelUserJoinRequestResponse::Unknown(_) => 0,
-                        CancelUserJoinRequestResponse::InternalError(_) => 1,
-                        CancelUserJoinRequestResponse::Success(_) => 2,
-                        CancelUserJoinRequestResponse::RequestNotFoundError(_) => 3,
-                        CancelUserJoinRequestResponse::InvalidRecordIdError(_) => 4,
+                        CancelUserJoinRequestResponse::InvalidOperationIdError(_) => 1,
+                        CancelUserJoinRequestResponse::OperationIdentityReusedError(_) => 2,
+                        CancelUserJoinRequestResponse::InternalError(_) => 3,
+                        CancelUserJoinRequestResponse::Success(_) => 4,
+                        CancelUserJoinRequestResponse::RequestNotFoundError(_) => 5,
+                        CancelUserJoinRequestResponse::InvalidRecordIdError(_) => 6,
                     },
                     |u| CancelUserJoinRequestResponse::Unknown(Some(u)),
                     |x: &CancelUserJoinRequestResponse| match x { CancelUserJoinRequestResponse::Unknown(Some(u)) => Some(u.as_ref()), _ => None },
@@ -632,9 +865,8 @@ fn initialize_module_serializers() {
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<WatchUserOrganizationsResponse> = WatchUserOrganizationsResponse::_adapter() as *const _ as *mut _;
                 (*a).add_wrapper_variant("internal_error", 1, 1, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| WatchUserOrganizationsResponse::InternalError(Box::new(v)), |x| match x { WatchUserOrganizationsResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("list", 2, 2, crate::skir_client::Serializer::array(crate::skirout::base::organization::v1::organization::Organization::serializer()), "", |v| WatchUserOrganizationsResponse::List(v), |x| match x { WatchUserOrganizationsResponse::List(v) => v, _ => unreachable!() });
-                (*a).add_wrapper_variant("add", 3, 3, crate::skirout::base::organization::v1::organization::Organization::serializer(), "", |v| WatchUserOrganizationsResponse::Add(Box::new(v)), |x| match x { WatchUserOrganizationsResponse::Add(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("remove", 4, 4, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |v| WatchUserOrganizationsResponse::Remove(Box::new(v)), |x| match x { WatchUserOrganizationsResponse::Remove(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("snapshot", 2, 2, crate::skirout::base::organization::v1::organization::UserOrganizationsSnapshot::serializer(), "", |v| WatchUserOrganizationsResponse::Snapshot(Box::new(v)), |x| match x { WatchUserOrganizationsResponse::Snapshot(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("changed", 3, 3, crate::skirout::base::organization::v1::organization::UserOrganizationsChanged::serializer(), "", |v| WatchUserOrganizationsResponse::Changed(Box::new(v)), |x| match x { WatchUserOrganizationsResponse::Changed(b) => b.as_ref(), _ => unreachable!() });
                 (*a).finalize();
             }
             unsafe {
@@ -644,14 +876,34 @@ fn initialize_module_serializers() {
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<WatchUserJoinRequestsResponse> = WatchUserJoinRequestsResponse::_adapter() as *const _ as *mut _;
                 (*a).add_wrapper_variant("internal_error", 1, 1, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| WatchUserJoinRequestsResponse::InternalError(Box::new(v)), |x| match x { WatchUserJoinRequestsResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("list", 2, 2, crate::skir_client::Serializer::array(crate::skirout::base::organization::v1::join_request::UserJoinRequest::serializer()), "", |v| WatchUserJoinRequestsResponse::List(v), |x| match x { WatchUserJoinRequestsResponse::List(v) => v, _ => unreachable!() });
-                (*a).add_wrapper_variant("add", 3, 3, crate::skirout::base::organization::v1::join_request::UserJoinRequest::serializer(), "", |v| WatchUserJoinRequestsResponse::Add(Box::new(v)), |x| match x { WatchUserJoinRequestsResponse::Add(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("remove", 4, 4, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |v| WatchUserJoinRequestsResponse::Remove(Box::new(v)), |x| match x { WatchUserJoinRequestsResponse::Remove(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("snapshot", 2, 2, crate::skirout::base::organization::v1::join_request::UserJoinRequestsSnapshot::serializer(), "", |v| WatchUserJoinRequestsResponse::Snapshot(Box::new(v)), |x| match x { WatchUserJoinRequestsResponse::Snapshot(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("changed", 3, 3, crate::skirout::base::organization::v1::join_request::UserJoinRequestsChanged::serializer(), "", |v| WatchUserJoinRequestsResponse::Changed(Box::new(v)), |x| match x { WatchUserJoinRequestsResponse::Changed(b) => b.as_ref(), _ => unreachable!() });
                 (*a).finalize();
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestRequest> = SubmitUserJoinRequestRequest::_adapter() as *const _ as *mut _;
-                (*a).add_field("code", 0, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |x: &SubmitUserJoinRequestRequest| &x.code, |x: &mut SubmitUserJoinRequestRequest, v| x.code = v);
+                (*a).add_field("operation_id", 0, crate::skir_client::Serializer::string(), "", |x: &SubmitUserJoinRequestRequest| &x.operation_id, |x: &mut SubmitUserJoinRequestRequest, v| x.operation_id = v);
+                (*a).add_field("code", 1, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |x: &SubmitUserJoinRequestRequest| &x.code, |x: &mut SubmitUserJoinRequestRequest, v| x.code = v);
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_InvalidOperationIdError> = SubmitUserJoinRequestResponse_InvalidOperationIdError::_adapter() as *const _ as *mut _;
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_OperationIdentityReusedError> = SubmitUserJoinRequestResponse_OperationIdentityReusedError::_adapter() as *const _ as *mut _;
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_RequestMade> = SubmitUserJoinRequestResponse_RequestMade::_adapter() as *const _ as *mut _;
+                (*a).add_field("request", 0, crate::skirout::base::organization::v1::join_request::UserJoinRequest::serializer(), "", |x: &SubmitUserJoinRequestResponse_RequestMade| &x.request, |x: &mut SubmitUserJoinRequestResponse_RequestMade, v| x.request = v);
+                (*a).add_field("event", 1, crate::skirout::base::organization::v1::join_request::UserJoinRequestsChanged::serializer(), "", |x: &SubmitUserJoinRequestResponse_RequestMade| &x.event, |x: &mut SubmitUserJoinRequestResponse_RequestMade, v| x.event = v);
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<SubmitUserJoinRequestResponse_AutoAccepted> = SubmitUserJoinRequestResponse_AutoAccepted::_adapter() as *const _ as *mut _;
+                (*a).add_field("member", 0, crate::skirout::base::organization::v1::join_request::AutoAcceptedMember::serializer(), "", |x: &SubmitUserJoinRequestResponse_AutoAccepted| &x.member, |x: &mut SubmitUserJoinRequestResponse_AutoAccepted, v| x.member = v);
+                (*a).add_field("event", 1, crate::skirout::base::organization::v1::organization::UserOrganizationsChanged::serializer(), "", |x: &SubmitUserJoinRequestResponse_AutoAccepted| &x.event, |x: &mut SubmitUserJoinRequestResponse_AutoAccepted, v| x.event = v);
                 (*a).finalize();
             }
             unsafe {
@@ -677,24 +929,36 @@ fn initialize_module_serializers() {
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<SubmitUserJoinRequestResponse> = SubmitUserJoinRequestResponse::_adapter() as *const _ as *mut _;
-                (*a).add_wrapper_variant("internal_error", 1, 1, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| SubmitUserJoinRequestResponse::InternalError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("request_made", 2, 2, crate::skirout::base::organization::v1::join_request::UserJoinRequest::serializer(), "", |v| SubmitUserJoinRequestResponse::RequestMade(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::RequestMade(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("auto_accepted", 3, 3, crate::skirout::base::organization::v1::join_request::AutoAcceptedMember::serializer(), "", |v| SubmitUserJoinRequestResponse::AutoAccepted(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::AutoAccepted(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("code_not_found_error", 4, 4, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_CodeNotFoundError::_adapter()), "", |v| SubmitUserJoinRequestResponse::CodeNotFoundError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::CodeNotFoundError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("already_member_error", 5, 5, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_AlreadyMemberError::_adapter()), "", |v| SubmitUserJoinRequestResponse::AlreadyMemberError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::AlreadyMemberError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("no_assignable_roles_error", 6, 6, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_NoAssignableRolesError::_adapter()), "", |v| SubmitUserJoinRequestResponse::NoAssignableRolesError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::NoAssignableRolesError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("max_pending_requests_error", 7, 7, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_MaxPendingRequestsError::_adapter()), "", |v| SubmitUserJoinRequestResponse::MaxPendingRequestsError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::MaxPendingRequestsError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("pending_request_exists_error", 8, 8, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_PendingRequestExistsError::_adapter()), "", |v| SubmitUserJoinRequestResponse::PendingRequestExistsError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::PendingRequestExistsError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("invalid_record_id_error", 9, 9, crate::skirout::base::kernel::v1::errors::InvalidRecordIdError::serializer(), "", |v| SubmitUserJoinRequestResponse::InvalidRecordIdError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::InvalidRecordIdError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("invalid_operation_id_error", 1, 1, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_InvalidOperationIdError::_adapter()), "", |v| SubmitUserJoinRequestResponse::InvalidOperationIdError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::InvalidOperationIdError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("operation_identity_reused_error", 2, 2, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_OperationIdentityReusedError::_adapter()), "", |v| SubmitUserJoinRequestResponse::OperationIdentityReusedError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::OperationIdentityReusedError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("internal_error", 3, 3, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| SubmitUserJoinRequestResponse::InternalError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("request_made", 4, 4, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_RequestMade::_adapter()), "", |v| SubmitUserJoinRequestResponse::RequestMade(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::RequestMade(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("auto_accepted", 5, 5, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_AutoAccepted::_adapter()), "", |v| SubmitUserJoinRequestResponse::AutoAccepted(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::AutoAccepted(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("code_not_found_error", 6, 6, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_CodeNotFoundError::_adapter()), "", |v| SubmitUserJoinRequestResponse::CodeNotFoundError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::CodeNotFoundError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("already_member_error", 7, 7, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_AlreadyMemberError::_adapter()), "", |v| SubmitUserJoinRequestResponse::AlreadyMemberError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::AlreadyMemberError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("no_assignable_roles_error", 8, 8, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_NoAssignableRolesError::_adapter()), "", |v| SubmitUserJoinRequestResponse::NoAssignableRolesError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::NoAssignableRolesError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("max_pending_requests_error", 9, 9, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_MaxPendingRequestsError::_adapter()), "", |v| SubmitUserJoinRequestResponse::MaxPendingRequestsError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::MaxPendingRequestsError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("pending_request_exists_error", 10, 10, crate::skir_client::internal::struct_serializer_from_static(SubmitUserJoinRequestResponse_PendingRequestExistsError::_adapter()), "", |v| SubmitUserJoinRequestResponse::PendingRequestExistsError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::PendingRequestExistsError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("invalid_record_id_error", 11, 11, crate::skirout::base::kernel::v1::errors::InvalidRecordIdError::serializer(), "", |v| SubmitUserJoinRequestResponse::InvalidRecordIdError(Box::new(v)), |x| match x { SubmitUserJoinRequestResponse::InvalidRecordIdError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).finalize();
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<CancelUserJoinRequestRequest> = CancelUserJoinRequestRequest::_adapter() as *const _ as *mut _;
-                (*a).add_field("request_id", 0, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |x: &CancelUserJoinRequestRequest| &x.request_id, |x: &mut CancelUserJoinRequestRequest, v| x.request_id = v);
+                (*a).add_field("operation_id", 0, crate::skir_client::Serializer::string(), "", |x: &CancelUserJoinRequestRequest| &x.operation_id, |x: &mut CancelUserJoinRequestRequest, v| x.operation_id = v);
+                (*a).add_field("request_id", 1, crate::skirout::base::kernel::v1::record_id::RecordId::serializer(), "", |x: &CancelUserJoinRequestRequest| &x.request_id, |x: &mut CancelUserJoinRequestRequest, v| x.request_id = v);
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<CancelUserJoinRequestResponse_InvalidOperationIdError> = CancelUserJoinRequestResponse_InvalidOperationIdError::_adapter() as *const _ as *mut _;
+                (*a).finalize();
+            }
+            unsafe {
+                let a: *mut crate::skir_client::internal::StructAdapter<CancelUserJoinRequestResponse_OperationIdentityReusedError> = CancelUserJoinRequestResponse_OperationIdentityReusedError::_adapter() as *const _ as *mut _;
                 (*a).finalize();
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::StructAdapter<CancelUserJoinRequestResponse_Success> = CancelUserJoinRequestResponse_Success::_adapter() as *const _ as *mut _;
+                (*a).add_field("event", 0, crate::skirout::base::organization::v1::join_request::UserJoinRequestsChanged::serializer(), "", |x: &CancelUserJoinRequestResponse_Success| &x.event, |x: &mut CancelUserJoinRequestResponse_Success, v| x.event = v);
                 (*a).finalize();
             }
             unsafe {
@@ -704,10 +968,12 @@ fn initialize_module_serializers() {
             }
             unsafe {
                 let a: *mut crate::skir_client::internal::EnumAdapter<CancelUserJoinRequestResponse> = CancelUserJoinRequestResponse::_adapter() as *const _ as *mut _;
-                (*a).add_wrapper_variant("internal_error", 1, 1, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| CancelUserJoinRequestResponse::InternalError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("success", 2, 2, crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_Success::_adapter()), "", |v| CancelUserJoinRequestResponse::Success(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::Success(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("request_not_found_error", 3, 3, crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_RequestNotFoundError::_adapter()), "", |v| CancelUserJoinRequestResponse::RequestNotFoundError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::RequestNotFoundError(b) => b.as_ref(), _ => unreachable!() });
-                (*a).add_wrapper_variant("invalid_record_id_error", 4, 4, crate::skirout::base::kernel::v1::errors::InvalidRecordIdError::serializer(), "", |v| CancelUserJoinRequestResponse::InvalidRecordIdError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::InvalidRecordIdError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("invalid_operation_id_error", 1, 1, crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_InvalidOperationIdError::_adapter()), "", |v| CancelUserJoinRequestResponse::InvalidOperationIdError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::InvalidOperationIdError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("operation_identity_reused_error", 2, 2, crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_OperationIdentityReusedError::_adapter()), "", |v| CancelUserJoinRequestResponse::OperationIdentityReusedError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::OperationIdentityReusedError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("internal_error", 3, 3, crate::skirout::base::kernel::v1::errors::InternalError::serializer(), "", |v| CancelUserJoinRequestResponse::InternalError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::InternalError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("success", 4, 4, crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_Success::_adapter()), "", |v| CancelUserJoinRequestResponse::Success(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::Success(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("request_not_found_error", 5, 5, crate::skir_client::internal::struct_serializer_from_static(CancelUserJoinRequestResponse_RequestNotFoundError::_adapter()), "", |v| CancelUserJoinRequestResponse::RequestNotFoundError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::RequestNotFoundError(b) => b.as_ref(), _ => unreachable!() });
+                (*a).add_wrapper_variant("invalid_record_id_error", 6, 6, crate::skirout::base::kernel::v1::errors::InvalidRecordIdError::serializer(), "", |v| CancelUserJoinRequestResponse::InvalidRecordIdError(Box::new(v)), |x| match x { CancelUserJoinRequestResponse::InvalidRecordIdError(b) => b.as_ref(), _ => unreachable!() });
                 (*a).finalize();
             }
         });

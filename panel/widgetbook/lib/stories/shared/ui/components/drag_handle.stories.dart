@@ -40,6 +40,7 @@ Widget _dragHandleUseCase(BuildContext context, Axis axis) {
           min: 0.2,
           max: 1.0,
         );
+
         final maxHandleExtent = context.knobs.double.slider(
           label: "Max handle extent",
           initialValue: 100,

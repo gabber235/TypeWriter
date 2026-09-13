@@ -21,6 +21,7 @@ void main() {
     expect(stroke.color, _firstColor);
     expect(stroke.style.startMarker.extent, 6);
     expect(stroke.path.getBounds().width, 0);
+
     expect(stroke.path.getBounds().height, 12);
   });
 
@@ -54,6 +55,7 @@ void main() {
     ]);
     final firstBranch = strokes[1].path.computeMetrics().single;
     final secondBranch = strokes[2].path.computeMetrics().single;
+
     final firstEnd = firstBranch
         .getTangentForOffset(firstBranch.length)!
         .position;
@@ -105,6 +107,7 @@ void main() {
     final Offset firstOffset = firstChild.parentData.offset;
     final Offset secondOffset = secondChild.parentData.offset;
     final gap = secondOffset.dy - firstOffset.dy - firstChild.size.height;
+
     final List<dynamic> strokes = surface.debugStrokes;
     final secondBranch = strokes[2].path.computeMetrics().single;
     final junction = secondBranch.getTangentForOffset(0.0)!.position;

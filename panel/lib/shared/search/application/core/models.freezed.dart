@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'models.dart';
@@ -9,6 +9,7 @@ part of 'models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -24,23 +25,29 @@ $SearchParsedSelectorCopyWith<SearchParsedSelector> get copyWith => _$SearchPars
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchParsedSelector;
   properties
     ..add(DiagnosticsProperty('type', 'SearchParsedSelector'))
-    ..add(DiagnosticsProperty('selectorId', selectorId))..add(DiagnosticsProperty('key', key))..add(DiagnosticsProperty('value', value));
+    ..add(DiagnosticsProperty('selectorId', _this.selectorId))..add(DiagnosticsProperty('key', _this.key))..add(DiagnosticsProperty('value', _this.value));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchParsedSelector&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+  final _this = this as SearchParsedSelector;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchParsedSelector&&(identical(other.selectorId, _this.selectorId) || other.selectorId == _this.selectorId)&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectorId,key,value);
+int get hashCode {
+  final _this = this as SearchParsedSelector;
+  return Object.hash(runtimeType,_this.selectorId,_this.key,_this.value);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchParsedSelector(selectorId: $selectorId, key: $key, value: $value)';
+  final _this = this as SearchParsedSelector;
+  return 'SearchParsedSelector(selectorId: ${_this.selectorId}, key: ${_this.key}, value: ${_this.value})';
 }
 
 
@@ -69,7 +76,7 @@ class _$SearchParsedSelectorCopyWithImpl<$Res>
 /// Create a copy of SearchParsedSelector
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? selectorId = null,Object? key = null,Object? value = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchParsedSelector(
 selectorId: null == selectorId ? _self.selectorId : selectorId // ignore: cast_nullable_to_non_nullable
 as String,key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -230,23 +237,25 @@ _$SearchParsedSelectorCopyWith<_SearchParsedSelector> get copyWith => __$SearchP
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchParsedSelector'))
     ..add(DiagnosticsProperty('selectorId', selectorId))..add(DiagnosticsProperty('key', key))..add(DiagnosticsProperty('value', value));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchParsedSelector&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchParsedSelector&&(identical(other.selectorId, selectorId) || other.selectorId == selectorId)&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectorId,key,value);
+int get hashCode {
+    return Object.hash(runtimeType,selectorId,key,value);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchParsedSelector(selectorId: $selectorId, key: $key, value: $value)';
+    return 'SearchParsedSelector(selectorId: $selectorId, key: $key, value: $value)';
 }
 
 
@@ -294,14 +303,14 @@ mixin _$SearchSelectorExpression implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchSelectorExpression'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorExpression);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorExpression);
 }
 
 
@@ -310,7 +319,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchSelectorExpression()';
+    return 'SearchSelectorExpression()';
 }
 
 
@@ -476,23 +485,25 @@ $SearchSelectorLeafExpressionCopyWith<SearchSelectorLeafExpression> get copyWith
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchSelectorExpression.leaf'))
     ..add(DiagnosticsProperty('selector', selector));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorLeafExpression&&(identical(other.selector, selector) || other.selector == selector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorLeafExpression&&(identical(other.selector, selector) || other.selector == selector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selector);
+int get hashCode {
+    return Object.hash(runtimeType,selector);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchSelectorExpression.leaf(selector: $selector)';
+    return 'SearchSelectorExpression.leaf(selector: $selector)';
 }
 
 
@@ -559,23 +570,25 @@ $SearchSelectorBinaryExpressionCopyWith<SearchSelectorBinaryExpression> get copy
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchSelectorExpression.binary'))
     ..add(DiagnosticsProperty('operator', operator))..add(DiagnosticsProperty('left', left))..add(DiagnosticsProperty('right', right));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorBinaryExpression&&(identical(other.operator, operator) || other.operator == operator)&&(identical(other.left, left) || other.left == left)&&(identical(other.right, right) || other.right == right));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorBinaryExpression&&(identical(other.operator, operator) || other.operator == operator)&&(identical(other.left, left) || other.left == left)&&(identical(other.right, right) || other.right == right));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,operator,left,right);
+int get hashCode {
+    return Object.hash(runtimeType,operator,left,right);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchSelectorExpression.binary(operator: $operator, left: $left, right: $right)';
+    return 'SearchSelectorExpression.binary(operator: $operator, left: $left, right: $right)';
 }
 
 
@@ -651,23 +664,25 @@ $SearchSelectorNotExpressionCopyWith<SearchSelectorNotExpression> get copyWith =
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchSelectorExpression.not'))
     ..add(DiagnosticsProperty('expression', expression));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorNotExpression&&(identical(other.expression, expression) || other.expression == expression));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorNotExpression&&(identical(other.expression, expression) || other.expression == expression));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,expression);
+int get hashCode {
+    return Object.hash(runtimeType,expression);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchSelectorExpression.not(expression: $expression)';
+    return 'SearchSelectorExpression.not(expression: $expression)';
 }
 
 
@@ -727,23 +742,29 @@ $SearchQueryContextCopyWith<SearchQueryContext> get copyWith => _$SearchQueryCon
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchQueryContext;
   properties
     ..add(DiagnosticsProperty('type', 'SearchQueryContext'))
-    ..add(DiagnosticsProperty('normalizedQuery', normalizedQuery))..add(DiagnosticsProperty('selectors', selectors))..add(DiagnosticsProperty('selectorExpression', selectorExpression));
+    ..add(DiagnosticsProperty('normalizedQuery', _this.normalizedQuery))..add(DiagnosticsProperty('selectors', _this.selectors))..add(DiagnosticsProperty('selectorExpression', _this.selectorExpression));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchQueryContext&&(identical(other.normalizedQuery, normalizedQuery) || other.normalizedQuery == normalizedQuery)&&const DeepCollectionEquality().equals(other.selectors, selectors)&&(identical(other.selectorExpression, selectorExpression) || other.selectorExpression == selectorExpression));
+  final _this = this as SearchQueryContext;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchQueryContext&&(identical(other.normalizedQuery, _this.normalizedQuery) || other.normalizedQuery == _this.normalizedQuery)&&const DeepCollectionEquality().equals(other.selectors, _this.selectors)&&(identical(other.selectorExpression, _this.selectorExpression) || other.selectorExpression == _this.selectorExpression));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,normalizedQuery,const DeepCollectionEquality().hash(selectors),selectorExpression);
+int get hashCode {
+  final _this = this as SearchQueryContext;
+  return Object.hash(runtimeType,_this.normalizedQuery,const DeepCollectionEquality().hash(_this.selectors),_this.selectorExpression);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchQueryContext(normalizedQuery: $normalizedQuery, selectors: $selectors, selectorExpression: $selectorExpression)';
+  final _this = this as SearchQueryContext;
+  return 'SearchQueryContext(normalizedQuery: ${_this.normalizedQuery}, selectors: ${_this.selectors}, selectorExpression: ${_this.selectorExpression})';
 }
 
 
@@ -772,7 +793,7 @@ class _$SearchQueryContextCopyWithImpl<$Res>
 /// Create a copy of SearchQueryContext
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? normalizedQuery = null,Object? selectors = null,Object? selectorExpression = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchQueryContext(
 normalizedQuery: null == normalizedQuery ? _self.normalizedQuery : normalizedQuery // ignore: cast_nullable_to_non_nullable
 as String,selectors: null == selectors ? _self.selectors : selectors // ignore: cast_nullable_to_non_nullable
 as List<SearchParsedSelector>,selectorExpression: freezed == selectorExpression ? _self.selectorExpression : selectorExpression // ignore: cast_nullable_to_non_nullable
@@ -929,7 +950,7 @@ return $default(_that.normalizedQuery,_that.selectors,_that.selectorExpression);
 
 
 class _SearchQueryContext with DiagnosticableTreeMixin implements SearchQueryContext {
-  const _SearchQueryContext({required this.normalizedQuery, required final  List<SearchParsedSelector> selectors, this.selectorExpression}): _selectors = selectors;
+  const _SearchQueryContext({required this.normalizedQuery, required  List<SearchParsedSelector> selectors, this.selectorExpression}): _selectors = selectors;
 
 
 @override final  String normalizedQuery;
@@ -951,23 +972,25 @@ _$SearchQueryContextCopyWith<_SearchQueryContext> get copyWith => __$SearchQuery
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchQueryContext'))
     ..add(DiagnosticsProperty('normalizedQuery', normalizedQuery))..add(DiagnosticsProperty('selectors', selectors))..add(DiagnosticsProperty('selectorExpression', selectorExpression));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchQueryContext&&(identical(other.normalizedQuery, normalizedQuery) || other.normalizedQuery == normalizedQuery)&&const DeepCollectionEquality().equals(other._selectors, _selectors)&&(identical(other.selectorExpression, selectorExpression) || other.selectorExpression == selectorExpression));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchQueryContext&&(identical(other.normalizedQuery, normalizedQuery) || other.normalizedQuery == normalizedQuery)&&const DeepCollectionEquality().equals(other.selectors, _selectors)&&(identical(other.selectorExpression, selectorExpression) || other.selectorExpression == selectorExpression));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,normalizedQuery,const DeepCollectionEquality().hash(_selectors),selectorExpression);
+int get hashCode {
+    return Object.hash(runtimeType,normalizedQuery,const DeepCollectionEquality().hash(_selectors),selectorExpression);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchQueryContext(normalizedQuery: $normalizedQuery, selectors: $selectors, selectorExpression: $selectorExpression)';
+    return 'SearchQueryContext(normalizedQuery: $normalizedQuery, selectors: $selectors, selectorExpression: $selectorExpression)';
 }
 
 
@@ -1032,23 +1055,29 @@ $SearchGuidanceCopyWith<SearchGuidance> get copyWith => _$SearchGuidanceCopyWith
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchGuidance;
   properties
     ..add(DiagnosticsProperty('type', 'SearchGuidance'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('visibility', visibility))..add(DiagnosticsProperty('priority', priority));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('title', _this.title))..add(DiagnosticsProperty('description', _this.description))..add(DiagnosticsProperty('visibility', _this.visibility))..add(DiagnosticsProperty('priority', _this.priority));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchGuidance&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.visibility, visibility) || other.visibility == visibility)&&(identical(other.priority, priority) || other.priority == priority));
+  final _this = this as SearchGuidance;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchGuidance&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.visibility, _this.visibility) || other.visibility == _this.visibility)&&(identical(other.priority, _this.priority) || other.priority == _this.priority));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,visibility,priority);
+int get hashCode {
+  final _this = this as SearchGuidance;
+  return Object.hash(runtimeType,_this.id,_this.title,_this.description,_this.visibility,_this.priority);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchGuidance(id: $id, title: $title, description: $description, visibility: $visibility, priority: $priority)';
+  final _this = this as SearchGuidance;
+  return 'SearchGuidance(id: ${_this.id}, title: ${_this.title}, description: ${_this.description}, visibility: ${_this.visibility}, priority: ${_this.priority})';
 }
 
 
@@ -1077,7 +1106,7 @@ class _$SearchGuidanceCopyWithImpl<$Res>
 /// Create a copy of SearchGuidance
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = freezed,Object? visibility = null,Object? priority = null,}) {
-  return _then(_self.copyWith(
+  return _then(SearchGuidance(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -1242,23 +1271,25 @@ _$SearchGuidanceCopyWith<_SearchGuidance> get copyWith => __$SearchGuidanceCopyW
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchGuidance'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('visibility', visibility))..add(DiagnosticsProperty('priority', priority));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchGuidance&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.visibility, visibility) || other.visibility == visibility)&&(identical(other.priority, priority) || other.priority == priority));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchGuidance&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.visibility, visibility) || other.visibility == visibility)&&(identical(other.priority, priority) || other.priority == priority));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,visibility,priority);
+int get hashCode {
+    return Object.hash(runtimeType,id,title,description,visibility,priority);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchGuidance(id: $id, title: $title, description: $description, visibility: $visibility, priority: $priority)';
+    return 'SearchGuidance(id: $id, title: $title, description: $description, visibility: $visibility, priority: $priority)';
 }
 
 
@@ -1313,23 +1344,29 @@ $SearchErrorSummaryCopyWith<SearchErrorSummary> get copyWith => _$SearchErrorSum
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchErrorSummary;
   properties
     ..add(DiagnosticsProperty('type', 'SearchErrorSummary'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('message', message))..add(DiagnosticsProperty('severity', severity))..add(DiagnosticsProperty('sourceLabel', sourceLabel));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('message', _this.message))..add(DiagnosticsProperty('severity', _this.severity))..add(DiagnosticsProperty('sourceLabel', _this.sourceLabel));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchErrorSummary&&(identical(other.id, id) || other.id == id)&&(identical(other.message, message) || other.message == message)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.sourceLabel, sourceLabel) || other.sourceLabel == sourceLabel));
+  final _this = this as SearchErrorSummary;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchErrorSummary&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.severity, _this.severity) || other.severity == _this.severity)&&(identical(other.sourceLabel, _this.sourceLabel) || other.sourceLabel == _this.sourceLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,message,severity,sourceLabel);
+int get hashCode {
+  final _this = this as SearchErrorSummary;
+  return Object.hash(runtimeType,_this.id,_this.message,_this.severity,_this.sourceLabel);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchErrorSummary(id: $id, message: $message, severity: $severity, sourceLabel: $sourceLabel)';
+  final _this = this as SearchErrorSummary;
+  return 'SearchErrorSummary(id: ${_this.id}, message: ${_this.message}, severity: ${_this.severity}, sourceLabel: ${_this.sourceLabel})';
 }
 
 
@@ -1358,7 +1395,7 @@ class _$SearchErrorSummaryCopyWithImpl<$Res>
 /// Create a copy of SearchErrorSummary
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? message = null,Object? severity = null,Object? sourceLabel = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchErrorSummary(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,severity: null == severity ? _self.severity : severity // ignore: cast_nullable_to_non_nullable
@@ -1521,23 +1558,25 @@ _$SearchErrorSummaryCopyWith<_SearchErrorSummary> get copyWith => __$SearchError
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchErrorSummary'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('message', message))..add(DiagnosticsProperty('severity', severity))..add(DiagnosticsProperty('sourceLabel', sourceLabel));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchErrorSummary&&(identical(other.id, id) || other.id == id)&&(identical(other.message, message) || other.message == message)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.sourceLabel, sourceLabel) || other.sourceLabel == sourceLabel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchErrorSummary&&(identical(other.id, id) || other.id == id)&&(identical(other.message, message) || other.message == message)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.sourceLabel, sourceLabel) || other.sourceLabel == sourceLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,message,severity,sourceLabel);
+int get hashCode {
+    return Object.hash(runtimeType,id,message,severity,sourceLabel);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchErrorSummary(id: $id, message: $message, severity: $severity, sourceLabel: $sourceLabel)';
+    return 'SearchErrorSummary(id: $id, message: $message, severity: $severity, sourceLabel: $sourceLabel)';
 }
 
 
@@ -1591,23 +1630,29 @@ $SearchSourceSnapshotCopyWith<SearchSourceSnapshot> get copyWith => _$SearchSour
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchSourceSnapshot;
   properties
     ..add(DiagnosticsProperty('type', 'SearchSourceSnapshot'))
-    ..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('nodes', nodes))..add(DiagnosticsProperty('actions', actions))..add(DiagnosticsProperty('guidance', guidance))..add(DiagnosticsProperty('errorSummaries', errorSummaries));
+    ..add(DiagnosticsProperty('status', _this.status))..add(DiagnosticsProperty('nodes', _this.nodes))..add(DiagnosticsProperty('actions', _this.actions))..add(DiagnosticsProperty('guidance', _this.guidance))..add(DiagnosticsProperty('errorSummaries', _this.errorSummaries));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSourceSnapshot&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.nodes, nodes)&&const DeepCollectionEquality().equals(other.actions, actions)&&const DeepCollectionEquality().equals(other.guidance, guidance)&&const DeepCollectionEquality().equals(other.errorSummaries, errorSummaries));
+  final _this = this as SearchSourceSnapshot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSourceSnapshot&&(identical(other.status, _this.status) || other.status == _this.status)&&const DeepCollectionEquality().equals(other.nodes, _this.nodes)&&const DeepCollectionEquality().equals(other.actions, _this.actions)&&const DeepCollectionEquality().equals(other.guidance, _this.guidance)&&const DeepCollectionEquality().equals(other.errorSummaries, _this.errorSummaries));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(nodes),const DeepCollectionEquality().hash(actions),const DeepCollectionEquality().hash(guidance),const DeepCollectionEquality().hash(errorSummaries));
+int get hashCode {
+  final _this = this as SearchSourceSnapshot;
+  return Object.hash(runtimeType,_this.status,const DeepCollectionEquality().hash(_this.nodes),const DeepCollectionEquality().hash(_this.actions),const DeepCollectionEquality().hash(_this.guidance),const DeepCollectionEquality().hash(_this.errorSummaries));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchSourceSnapshot(status: $status, nodes: $nodes, actions: $actions, guidance: $guidance, errorSummaries: $errorSummaries)';
+  final _this = this as SearchSourceSnapshot;
+  return 'SearchSourceSnapshot(status: ${_this.status}, nodes: ${_this.nodes}, actions: ${_this.actions}, guidance: ${_this.guidance}, errorSummaries: ${_this.errorSummaries})';
 }
 
 
@@ -1636,7 +1681,7 @@ class _$SearchSourceSnapshotCopyWithImpl<$Res>
 /// Create a copy of SearchSourceSnapshot
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? nodes = null,Object? actions = null,Object? guidance = null,Object? errorSummaries = null,}) {
-  return _then(_self.copyWith(
+  return _then(SearchSourceSnapshot(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as SearchSourceStatus,nodes: null == nodes ? _self.nodes : nodes // ignore: cast_nullable_to_non_nullable
 as List<SearchNode>,actions: null == actions ? _self.actions : actions // ignore: cast_nullable_to_non_nullable
@@ -1783,7 +1828,7 @@ return $default(_that.status,_that.nodes,_that.actions,_that.guidance,_that.erro
 
 
 class _SearchSourceSnapshot with DiagnosticableTreeMixin implements SearchSourceSnapshot {
-  const _SearchSourceSnapshot({required this.status, required final  List<SearchNode> nodes, final  Map<Type, SearchAction> actions = const {}, final  List<SearchGuidance> guidance = const <SearchGuidance>[], final  List<SearchErrorSummary> errorSummaries = const <SearchErrorSummary>[]}): _nodes = nodes,_actions = actions,_guidance = guidance,_errorSummaries = errorSummaries;
+  const _SearchSourceSnapshot({required this.status, required  List<SearchNode> nodes,  Map<Type, SearchAction> actions = const {},  List<SearchGuidance> guidance = const <SearchGuidance>[],  List<SearchErrorSummary> errorSummaries = const <SearchErrorSummary>[]}): _nodes = nodes,_actions = actions,_guidance = guidance,_errorSummaries = errorSummaries;
 
 
 @override final  SearchSourceStatus status;
@@ -1825,23 +1870,25 @@ _$SearchSourceSnapshotCopyWith<_SearchSourceSnapshot> get copyWith => __$SearchS
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchSourceSnapshot'))
     ..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('nodes', nodes))..add(DiagnosticsProperty('actions', actions))..add(DiagnosticsProperty('guidance', guidance))..add(DiagnosticsProperty('errorSummaries', errorSummaries));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchSourceSnapshot&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._nodes, _nodes)&&const DeepCollectionEquality().equals(other._actions, _actions)&&const DeepCollectionEquality().equals(other._guidance, _guidance)&&const DeepCollectionEquality().equals(other._errorSummaries, _errorSummaries));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchSourceSnapshot&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.nodes, _nodes)&&const DeepCollectionEquality().equals(other.actions, _actions)&&const DeepCollectionEquality().equals(other.guidance, _guidance)&&const DeepCollectionEquality().equals(other.errorSummaries, _errorSummaries));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_nodes),const DeepCollectionEquality().hash(_actions),const DeepCollectionEquality().hash(_guidance),const DeepCollectionEquality().hash(_errorSummaries));
+int get hashCode {
+    return Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_nodes),const DeepCollectionEquality().hash(_actions),const DeepCollectionEquality().hash(_guidance),const DeepCollectionEquality().hash(_errorSummaries));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchSourceSnapshot(status: $status, nodes: $nodes, actions: $actions, guidance: $guidance, errorSummaries: $errorSummaries)';
+    return 'SearchSourceSnapshot(status: $status, nodes: $nodes, actions: $actions, guidance: $guidance, errorSummaries: $errorSummaries)';
 }
 
 
@@ -1891,14 +1938,14 @@ mixin _$SearchNode implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchNode'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchNode);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchNode);
 }
 
 
@@ -1907,7 +1954,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchNode()';
+    return 'SearchNode()';
 }
 
 
@@ -2053,7 +2100,7 @@ return result(_that.result);case _:
 
 
 class SearchSectionNode with DiagnosticableTreeMixin implements SearchNode {
-  const SearchSectionNode({required this.id, required this.title, this.subtitle, final  List<SearchNode> children = const <SearchNode>[]}): assert(id != "", 'ID must not be empty.'),assert(title != "", 'Title must not be empty.'),_children = children;
+  const SearchSectionNode({required this.id, required this.title, this.subtitle,  List<SearchNode> children = const <SearchNode>[]}): assert(id != "", 'ID must not be empty.'),assert(title != "", 'Title must not be empty.'),_children = children;
 
 
  final  String id;
@@ -2076,23 +2123,25 @@ $SearchSectionNodeCopyWith<SearchSectionNode> get copyWith => _$SearchSectionNod
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchNode.section'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('subtitle', subtitle))..add(DiagnosticsProperty('children', children));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSectionNode&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&const DeepCollectionEquality().equals(other._children, _children));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSectionNode&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&const DeepCollectionEquality().equals(other.children, _children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,subtitle,const DeepCollectionEquality().hash(_children));
+int get hashCode {
+    return Object.hash(runtimeType,id,title,subtitle,const DeepCollectionEquality().hash(_children));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchNode.section(id: $id, title: $title, subtitle: $subtitle, children: $children)';
+    return 'SearchNode.section(id: $id, title: $title, subtitle: $subtitle, children: $children)';
 }
 
 
@@ -2151,23 +2200,25 @@ $SearchResultNodeCopyWith<SearchResultNode> get copyWith => _$SearchResultNodeCo
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchNode.result'))
     ..add(DiagnosticsProperty('result', result));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultNode&&(identical(other.result, result) || other.result == result));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultNode&&(identical(other.result, result) || other.result == result));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result);
+int get hashCode {
+    return Object.hash(runtimeType,result);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchNode.result(result: $result)';
+    return 'SearchNode.result(result: $result)';
 }
 
 
@@ -2227,23 +2278,29 @@ $SearchResultTypeCopyWith<SearchResultType> get copyWith => _$SearchResultTypeCo
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchResultType;
   properties
     ..add(DiagnosticsProperty('type', 'SearchResultType'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('rowRendererId', rowRendererId))..add(DiagnosticsProperty('previewRendererId', previewRendererId))..add(DiagnosticsProperty('label', label));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('rowRendererId', _this.rowRendererId))..add(DiagnosticsProperty('previewRendererId', _this.previewRendererId))..add(DiagnosticsProperty('label', _this.label));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultType&&(identical(other.id, id) || other.id == id)&&(identical(other.rowRendererId, rowRendererId) || other.rowRendererId == rowRendererId)&&(identical(other.previewRendererId, previewRendererId) || other.previewRendererId == previewRendererId)&&(identical(other.label, label) || other.label == label));
+  final _this = this as SearchResultType;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultType&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.rowRendererId, _this.rowRendererId) || other.rowRendererId == _this.rowRendererId)&&(identical(other.previewRendererId, _this.previewRendererId) || other.previewRendererId == _this.previewRendererId)&&(identical(other.label, _this.label) || other.label == _this.label));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,rowRendererId,previewRendererId,label);
+int get hashCode {
+  final _this = this as SearchResultType;
+  return Object.hash(runtimeType,_this.id,_this.rowRendererId,_this.previewRendererId,_this.label);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchResultType(id: $id, rowRendererId: $rowRendererId, previewRendererId: $previewRendererId, label: $label)';
+  final _this = this as SearchResultType;
+  return 'SearchResultType(id: ${_this.id}, rowRendererId: ${_this.rowRendererId}, previewRendererId: ${_this.previewRendererId}, label: ${_this.label})';
 }
 
 
@@ -2272,7 +2329,7 @@ class _$SearchResultTypeCopyWithImpl<$Res>
 /// Create a copy of SearchResultType
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? rowRendererId = null,Object? previewRendererId = freezed,Object? label = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchResultType(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,rowRendererId: null == rowRendererId ? _self.rowRendererId : rowRendererId // ignore: cast_nullable_to_non_nullable
 as String,previewRendererId: freezed == previewRendererId ? _self.previewRendererId : previewRendererId // ignore: cast_nullable_to_non_nullable
@@ -2435,23 +2492,25 @@ _$SearchResultTypeCopyWith<_SearchResultType> get copyWith => __$SearchResultTyp
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchResultType'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('rowRendererId', rowRendererId))..add(DiagnosticsProperty('previewRendererId', previewRendererId))..add(DiagnosticsProperty('label', label));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResultType&&(identical(other.id, id) || other.id == id)&&(identical(other.rowRendererId, rowRendererId) || other.rowRendererId == rowRendererId)&&(identical(other.previewRendererId, previewRendererId) || other.previewRendererId == previewRendererId)&&(identical(other.label, label) || other.label == label));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResultType&&(identical(other.id, id) || other.id == id)&&(identical(other.rowRendererId, rowRendererId) || other.rowRendererId == rowRendererId)&&(identical(other.previewRendererId, previewRendererId) || other.previewRendererId == previewRendererId)&&(identical(other.label, label) || other.label == label));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,rowRendererId,previewRendererId,label);
+int get hashCode {
+    return Object.hash(runtimeType,id,rowRendererId,previewRendererId,label);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchResultType(id: $id, rowRendererId: $rowRendererId, previewRendererId: $previewRendererId, label: $label)';
+    return 'SearchResultType(id: $id, rowRendererId: $rowRendererId, previewRendererId: $previewRendererId, label: $label)';
 }
 
 
@@ -2505,23 +2564,29 @@ $SearchResultCopyWith<SearchResult> get copyWith => _$SearchResultCopyWithImpl<S
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchResult;
   properties
     ..add(DiagnosticsProperty('type', 'SearchResult'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('type', type))..add(DiagnosticsProperty('payload', payload))..add(DiagnosticsProperty('actions', actions))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('subtitle', subtitle))..add(DiagnosticsProperty('isStale', isStale));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('type', _this.type))..add(DiagnosticsProperty('payload', _this.payload))..add(DiagnosticsProperty('actions', _this.actions))..add(DiagnosticsProperty('title', _this.title))..add(DiagnosticsProperty('subtitle', _this.subtitle))..add(DiagnosticsProperty('isStale', _this.isStale));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResult&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.payload, payload)&&const DeepCollectionEquality().equals(other.actions, actions)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&(identical(other.isStale, isStale) || other.isStale == isStale));
+  final _this = this as SearchResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResult&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.type, _this.type) || other.type == _this.type)&&const DeepCollectionEquality().equals(other.payload, _this.payload)&&const DeepCollectionEquality().equals(other.actions, _this.actions)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.subtitle, _this.subtitle) || other.subtitle == _this.subtitle)&&(identical(other.isStale, _this.isStale) || other.isStale == _this.isStale));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,type,const DeepCollectionEquality().hash(payload),const DeepCollectionEquality().hash(actions),title,subtitle,isStale);
+int get hashCode {
+  final _this = this as SearchResult;
+  return Object.hash(runtimeType,_this.id,_this.type,const DeepCollectionEquality().hash(_this.payload),const DeepCollectionEquality().hash(_this.actions),_this.title,_this.subtitle,_this.isStale);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchResult(id: $id, type: $type, payload: $payload, actions: $actions, title: $title, subtitle: $subtitle, isStale: $isStale)';
+  final _this = this as SearchResult;
+  return 'SearchResult(id: ${_this.id}, type: ${_this.type}, payload: ${_this.payload}, actions: ${_this.actions}, title: ${_this.title}, subtitle: ${_this.subtitle}, isStale: ${_this.isStale})';
 }
 
 
@@ -2550,7 +2615,7 @@ class _$SearchResultCopyWithImpl<$Res>
 /// Create a copy of SearchResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? type = null,Object? payload = null,Object? actions = null,Object? title = freezed,Object? subtitle = freezed,Object? isStale = null,}) {
-  return _then(_self.copyWith(
+  return _then(SearchResult(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as SearchResultType,payload: null == payload ? _self.payload : payload ,actions: null == actions ? _self.actions : actions // ignore: cast_nullable_to_non_nullable
@@ -2707,7 +2772,7 @@ return $default(_that.id,_that.type,_that.payload,_that.actions,_that.title,_tha
 
 
 class _SearchResult with DiagnosticableTreeMixin implements SearchResult {
-  const _SearchResult({required this.id, required this.type, required this.payload, final  List<Type> actions = const [], this.title, this.subtitle, this.isStale = false}): assert(id != "", 'ID must not be empty.'),_actions = actions;
+  const _SearchResult({required this.id, required this.type, required this.payload,  List<Type> actions = const [], this.title, this.subtitle, this.isStale = false}): assert(id != "", 'ID must not be empty.'),_actions = actions;
 
 
 @override final  String id;
@@ -2733,23 +2798,25 @@ _$SearchResultCopyWith<_SearchResult> get copyWith => __$SearchResultCopyWithImp
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchResult'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('type', type))..add(DiagnosticsProperty('payload', payload))..add(DiagnosticsProperty('actions', actions))..add(DiagnosticsProperty('title', title))..add(DiagnosticsProperty('subtitle', subtitle))..add(DiagnosticsProperty('isStale', isStale));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResult&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.payload, payload)&&const DeepCollectionEquality().equals(other._actions, _actions)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&(identical(other.isStale, isStale) || other.isStale == isStale));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResult&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.payload, payload)&&const DeepCollectionEquality().equals(other.actions, _actions)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&(identical(other.isStale, isStale) || other.isStale == isStale));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,type,const DeepCollectionEquality().hash(payload),const DeepCollectionEquality().hash(_actions),title,subtitle,isStale);
+int get hashCode {
+    return Object.hash(runtimeType,id,type,const DeepCollectionEquality().hash(payload),const DeepCollectionEquality().hash(_actions),title,subtitle,isStale);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchResult(id: $id, type: $type, payload: $payload, actions: $actions, title: $title, subtitle: $subtitle, isStale: $isStale)';
+    return 'SearchResult(id: $id, type: $type, payload: $payload, actions: $actions, title: $title, subtitle: $subtitle, isStale: $isStale)';
 }
 
 
@@ -2814,23 +2881,29 @@ $SearchActionResultCopyWith<SearchActionResult> get copyWith => _$SearchActionRe
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchActionResult;
   properties
     ..add(DiagnosticsProperty('type', 'SearchActionResult'))
-    ..add(DiagnosticsProperty('effect', effect));
+    ..add(DiagnosticsProperty('effect', _this.effect));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionResult&&(identical(other.effect, effect) || other.effect == effect));
+  final _this = this as SearchActionResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionResult&&(identical(other.effect, _this.effect) || other.effect == _this.effect));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,effect);
+int get hashCode {
+  final _this = this as SearchActionResult;
+  return Object.hash(runtimeType,_this.effect);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionResult(effect: $effect)';
+  final _this = this as SearchActionResult;
+  return 'SearchActionResult(effect: ${_this.effect})';
 }
 
 
@@ -3031,23 +3104,25 @@ $SearchActionResultCompletedCopyWith<SearchActionResultCompleted> get copyWith =
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionResult.completed'))
     ..add(DiagnosticsProperty('effect', effect));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionResultCompleted&&(identical(other.effect, effect) || other.effect == effect));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionResultCompleted&&(identical(other.effect, effect) || other.effect == effect));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,effect);
+int get hashCode {
+    return Object.hash(runtimeType,effect);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionResult.completed(effect: $effect)';
+    return 'SearchActionResult.completed(effect: $effect)';
 }
 
 
@@ -3113,23 +3188,25 @@ $SearchActionResultFailedCopyWith<SearchActionResultFailed> get copyWith => _$Se
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionResult.failed'))
     ..add(DiagnosticsProperty('message', message))..add(DiagnosticsProperty('effect', effect));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionResultFailed&&(identical(other.message, message) || other.message == message)&&(identical(other.effect, effect) || other.effect == effect));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionResultFailed&&(identical(other.message, message) || other.message == message)&&(identical(other.effect, effect) || other.effect == effect));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,effect);
+int get hashCode {
+    return Object.hash(runtimeType,message,effect);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionResult.failed(message: $message, effect: $effect)';
+    return 'SearchActionResult.failed(message: $message, effect: $effect)';
 }
 
 
@@ -3185,14 +3262,14 @@ mixin _$SearchActionEffect implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionEffect'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionEffect);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionEffect);
 }
 
 
@@ -3201,7 +3278,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionEffect()';
+    return 'SearchActionEffect()';
 }
 
 
@@ -3373,23 +3450,25 @@ $SearchActionUpdateQueryCopyWith<SearchActionUpdateQuery> get copyWith => _$Sear
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionEffect.updateQuery'))
     ..add(DiagnosticsProperty('updateQuery', updateQuery));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionUpdateQuery&&(identical(other.updateQuery, updateQuery) || other.updateQuery == updateQuery));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionUpdateQuery&&(identical(other.updateQuery, updateQuery) || other.updateQuery == updateQuery));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,updateQuery);
+int get hashCode {
+    return Object.hash(runtimeType,updateQuery);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionEffect.updateQuery(updateQuery: $updateQuery)';
+    return 'SearchActionEffect.updateQuery(updateQuery: $updateQuery)';
 }
 
 
@@ -3440,14 +3519,14 @@ class SearchActionRefresh with DiagnosticableTreeMixin implements SearchActionEf
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionEffect.refresh'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionRefresh);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionRefresh);
 }
 
 
@@ -3456,7 +3535,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionEffect.refresh()';
+    return 'SearchActionEffect.refresh()';
 }
 
 
@@ -3478,14 +3557,14 @@ class SearchActionClose with DiagnosticableTreeMixin implements SearchActionEffe
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionEffect.close'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionClose);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionClose);
 }
 
 
@@ -3494,7 +3573,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionEffect.close()';
+    return 'SearchActionEffect.close()';
 }
 
 
@@ -3511,14 +3590,14 @@ mixin _$SearchActionState implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionState'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionState);
 }
 
 
@@ -3527,7 +3606,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionState()';
+    return 'SearchActionState()';
 }
 
 
@@ -3694,14 +3773,14 @@ class SearchActionIdle with DiagnosticableTreeMixin implements SearchActionState
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionState.idle'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionIdle);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionIdle);
 }
 
 
@@ -3710,7 +3789,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionState.idle()';
+    return 'SearchActionState.idle()';
 }
 
 
@@ -3723,7 +3802,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 
 class SearchActionRunning with DiagnosticableTreeMixin implements SearchActionState {
-  const SearchActionRunning({required this.action, required final  Set<String> resultIds}): assert(resultIds.length > 0, 'Result IDs must not be empty.'),_resultIds = resultIds;
+  const SearchActionRunning({required this.action, required  Set<String> resultIds}): assert(resultIds.length > 0, 'Result IDs must not be empty.'),_resultIds = resultIds;
 
 
  final  Type action;
@@ -3744,23 +3823,25 @@ $SearchActionRunningCopyWith<SearchActionRunning> get copyWith => _$SearchAction
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionState.running'))
     ..add(DiagnosticsProperty('action', action))..add(DiagnosticsProperty('resultIds', resultIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionRunning&&(identical(other.action, action) || other.action == action)&&const DeepCollectionEquality().equals(other._resultIds, _resultIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionRunning&&(identical(other.action, action) || other.action == action)&&const DeepCollectionEquality().equals(other.resultIds, _resultIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,action,const DeepCollectionEquality().hash(_resultIds));
+int get hashCode {
+    return Object.hash(runtimeType,action,const DeepCollectionEquality().hash(_resultIds));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionState.running(action: $action, resultIds: $resultIds)';
+    return 'SearchActionState.running(action: $action, resultIds: $resultIds)';
 }
 
 
@@ -3803,7 +3884,7 @@ as Set<String>,
 
 
 class SearchActionCompleted with DiagnosticableTreeMixin implements SearchActionState {
-  const SearchActionCompleted({required this.action, required final  Set<String> resultIds}): assert(resultIds.length > 0, 'Result IDs must not be empty.'),_resultIds = resultIds;
+  const SearchActionCompleted({required this.action, required  Set<String> resultIds}): assert(resultIds.length > 0, 'Result IDs must not be empty.'),_resultIds = resultIds;
 
 
  final  Type action;
@@ -3824,23 +3905,25 @@ $SearchActionCompletedCopyWith<SearchActionCompleted> get copyWith => _$SearchAc
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionState.completed'))
     ..add(DiagnosticsProperty('action', action))..add(DiagnosticsProperty('resultIds', resultIds));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionCompleted&&(identical(other.action, action) || other.action == action)&&const DeepCollectionEquality().equals(other._resultIds, _resultIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionCompleted&&(identical(other.action, action) || other.action == action)&&const DeepCollectionEquality().equals(other.resultIds, _resultIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,action,const DeepCollectionEquality().hash(_resultIds));
+int get hashCode {
+    return Object.hash(runtimeType,action,const DeepCollectionEquality().hash(_resultIds));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionState.completed(action: $action, resultIds: $resultIds)';
+    return 'SearchActionState.completed(action: $action, resultIds: $resultIds)';
 }
 
 
@@ -3883,7 +3966,7 @@ as Set<String>,
 
 
 class SearchActionFailed with DiagnosticableTreeMixin implements SearchActionState {
-  const SearchActionFailed({required this.action, required final  Set<String> resultIds, required this.message}): assert(resultIds.length > 0, 'Result IDs must not be empty.'),assert(message != "", 'Message must not be empty.'),_resultIds = resultIds;
+  const SearchActionFailed({required this.action, required  Set<String> resultIds, required this.message}): assert(resultIds.length > 0, 'Result IDs must not be empty.'),assert(message != "", 'Message must not be empty.'),_resultIds = resultIds;
 
 
  final  Type action;
@@ -3905,23 +3988,25 @@ $SearchActionFailedCopyWith<SearchActionFailed> get copyWith => _$SearchActionFa
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchActionState.failed'))
     ..add(DiagnosticsProperty('action', action))..add(DiagnosticsProperty('resultIds', resultIds))..add(DiagnosticsProperty('message', message));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionFailed&&(identical(other.action, action) || other.action == action)&&const DeepCollectionEquality().equals(other._resultIds, _resultIds)&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchActionFailed&&(identical(other.action, action) || other.action == action)&&const DeepCollectionEquality().equals(other.resultIds, _resultIds)&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,action,const DeepCollectionEquality().hash(_resultIds),message);
+int get hashCode {
+    return Object.hash(runtimeType,action,const DeepCollectionEquality().hash(_resultIds),message);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchActionState.failed(action: $action, resultIds: $resultIds, message: $message)';
+    return 'SearchActionState.failed(action: $action, resultIds: $resultIds, message: $message)';
 }
 
 
@@ -3974,23 +4059,29 @@ $SearchPreviewRequestCopyWith<SearchPreviewRequest> get copyWith => _$SearchPrev
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchPreviewRequest;
   properties
     ..add(DiagnosticsProperty('type', 'SearchPreviewRequest'))
-    ..add(DiagnosticsProperty('resultId', resultId))..add(DiagnosticsProperty('queryContext', queryContext));
+    ..add(DiagnosticsProperty('resultId', _this.resultId))..add(DiagnosticsProperty('queryContext', _this.queryContext));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequest&&(identical(other.resultId, resultId) || other.resultId == resultId)&&(identical(other.queryContext, queryContext) || other.queryContext == queryContext));
+  final _this = this as SearchPreviewRequest;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequest&&(identical(other.resultId, _this.resultId) || other.resultId == _this.resultId)&&(identical(other.queryContext, _this.queryContext) || other.queryContext == _this.queryContext));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,resultId,queryContext);
+int get hashCode {
+  final _this = this as SearchPreviewRequest;
+  return Object.hash(runtimeType,_this.resultId,_this.queryContext);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchPreviewRequest(resultId: $resultId, queryContext: $queryContext)';
+  final _this = this as SearchPreviewRequest;
+  return 'SearchPreviewRequest(resultId: ${_this.resultId}, queryContext: ${_this.queryContext})';
 }
 
 
@@ -4019,7 +4110,7 @@ class _$SearchPreviewRequestCopyWithImpl<$Res>
 /// Create a copy of SearchPreviewRequest
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? resultId = null,Object? queryContext = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchPreviewRequest(
 resultId: null == resultId ? _self.resultId : resultId // ignore: cast_nullable_to_non_nullable
 as String,queryContext: freezed == queryContext ? _self.queryContext : queryContext // ignore: cast_nullable_to_non_nullable
 as SearchQueryContext?,
@@ -4190,23 +4281,25 @@ _$SearchPreviewRequestCopyWith<_SearchPreviewRequest> get copyWith => __$SearchP
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchPreviewRequest'))
     ..add(DiagnosticsProperty('resultId', resultId))..add(DiagnosticsProperty('queryContext', queryContext));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchPreviewRequest&&(identical(other.resultId, resultId) || other.resultId == resultId)&&(identical(other.queryContext, queryContext) || other.queryContext == queryContext));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchPreviewRequest&&(identical(other.resultId, resultId) || other.resultId == resultId)&&(identical(other.queryContext, queryContext) || other.queryContext == queryContext));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,resultId,queryContext);
+int get hashCode {
+    return Object.hash(runtimeType,resultId,queryContext);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchPreviewRequest(resultId: $resultId, queryContext: $queryContext)';
+    return 'SearchPreviewRequest(resultId: $resultId, queryContext: $queryContext)';
 }
 
 
@@ -4265,14 +4358,14 @@ mixin _$SearchPreviewRequestResult implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchPreviewRequestResult'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequestResult);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequestResult);
 }
 
 
@@ -4281,7 +4374,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchPreviewRequestResult()';
+    return 'SearchPreviewRequestResult()';
 }
 
 
@@ -4447,23 +4540,25 @@ $SearchPreviewRequestResultDataCopyWith<SearchPreviewRequestResultData> get copy
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchPreviewRequestResult.data'))
     ..add(DiagnosticsProperty('data', data));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequestResultData&&const DeepCollectionEquality().equals(other.data, data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequestResultData&&const DeepCollectionEquality().equals(other.data, data));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchPreviewRequestResult.data(data: $data)';
+    return 'SearchPreviewRequestResult.data(data: $data)';
 }
 
 
@@ -4518,23 +4613,25 @@ $SearchPreviewRequestResultErrorCopyWith<SearchPreviewRequestResultError> get co
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchPreviewRequestResult.error'))
     ..add(DiagnosticsProperty('message', message));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequestResultError&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPreviewRequestResultError&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchPreviewRequestResult.error(message: $message)';
+    return 'SearchPreviewRequestResult.error(message: $message)';
 }
 
 

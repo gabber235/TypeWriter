@@ -11,6 +11,28 @@ import "package:typewriter_testkit/src/features/organizations/features/realms/fe
 import "package:typewriter_testkit/src/features/organizations/features/realms/features/books/features/pages/features/editor/features/scene/scene.dart";
 import "package:typewriter_testkit/src/shared/testing/mock_utils.dart";
 
+enum PageType {
+  sequence("019d3a87001070008000000000000010"),
+  static("019d3a87001170008000000000000011"),
+  scene("019d3a87001270008000000000000012"),
+  manifest("019d3a87001370008000000000000013");
+
+  const PageType(this.id);
+
+  final String id;
+
+  PageKindRef get kind => PageKindRef(id: id, revision: 1);
+
+  String get displayName => name;
+
+  static PageType fromKind(PageKindRef kind) =>
+      values.firstWhere((value) => value.kind == kind);
+}
+
+extension PageFixtureType on Page {
+  PageType get type => PageType.fromKind(kind);
+}
+
 Page generateRandomPage([PageType? pageType]) {
   final pageTypes = PageType.values.toList();
   final type = pageType ?? pageTypes.randomOrNull()!;
@@ -31,60 +53,41 @@ Page generateRandomPage([PageType? pageType]) {
     pageId: recordId("page:${faker.guid.guid()}"),
     bookId: recordId("book:${faker.guid.guid()}"),
     name: pageName,
-    type: type,
+    kind: type.kind,
     chapter: chapters.randomOrNull() ?? "",
     priority: faker.randomGenerator.integer(100, min: -10),
   );
 }
 
-class BookPagesMock extends BookPages {
+class BookPagesMock extends CanonicalBookPages {
   BookPagesMock({required this.displayState});
 
   final DisplayState displayState;
 
   @override
-  Future<List<Page>> build(skir.RecordId bookId, String search) async {
+  Future<List<Page>> build(skir.RecordId bookId) async {
     await ref.debounce(300.ms);
     await Future<void>.delayed(100.ms);
     final pages = await displayState.generate(generateRandomPage);
 
-    if (search.isEmpty) return pages;
-
-    return pages
-        .where(
-          (page) =>
-              page.name.toLowerCase().contains(search.toLowerCase()) ||
-              page.chapter.toLowerCase().contains(search.toLowerCase()),
-        )
-        .toList();
+    return pages;
   }
 }
 
-class PagesMock extends Pages {
+class PagesMock extends CanonicalPage {
   PagesMock({this.page, this.pageType});
 
   final Page? page;
   final PageType? pageType;
 
   @override
-  Stream<Page> build(skir.RecordId pageId) async* {
+  Future<Page> build(skir.RecordId pageId) async {
     await Future<void>.delayed(50.ms);
     if (page != null) {
-      yield page!;
-      return;
+      return page!;
     }
     final randomPage = generateRandomPage(pageType);
-    yield randomPage.copyWith(pageId: pageId);
-  }
-
-  @override
-  Future<void> updatePage({
-    String? name,
-    PageType? type,
-    String? chapter,
-    int? priority,
-  }) async {
-    await Future<void>.delayed(200.ms);
+    return randomPage.copyWith(pageId: pageId);
   }
 }
 
@@ -102,7 +105,11 @@ class PageElementsMock extends PageElements {
   final List<PageElement>? overwriteElements;
 
   @override
-  Future<List<PageElement>> build(String pageId) async {
+  Future<List<PageElement>> build(
+    skir.RecordId organizationId,
+    skir.RecordId realmId,
+    String pageId,
+  ) async {
     await Future<void>.delayed(100.ms);
     if (overwriteElements != null) return overwriteElements!;
     if (pageType == PageType.scene) {
@@ -126,13 +133,27 @@ class PageElementsMock extends PageElements {
   @override
   Future<void> moveAll(List<(String, int, int)> changed) async {
     state.ensureReady();
-    optimisticMoveAll(changed);
+    final positions = {for (final item in changed) item.$1: (item.$2, item.$3)};
+    state = AsyncData([
+      for (final element in state.requireValue)
+        if (positions[element.id] case final position?)
+          element.moveTo(position.$1, position.$2)
+        else
+          element,
+    ]);
   }
 
   @override
   Future<void> resizeAll(List<(String, int, int)> changed) async {
     state.ensureReady();
-    optimisticResizeAll(changed);
+    final sizes = {for (final item in changed) item.$1: (item.$2, item.$3)};
+    state = AsyncData([
+      for (final element in state.requireValue)
+        if (sizes[element.id] case final size?)
+          element.resizeTo(size.$1, size.$2)
+        else
+          element,
+    ]);
   }
 }
 
@@ -146,10 +167,15 @@ class EntryMock extends Entry {
     await Future<void>.delayed(200.ms);
     if (definition != null) return definition;
 
+    final organizationId = ref.read(organizationIdProvider);
+    final realmId = ref.read(realmIdProvider);
     final currentPageId = ref.read(pageIdProvider);
+    if (organizationId == null || realmId == null || currentPageId == null) {
+      return null;
+    }
 
     final pageElements = await ref.read(
-      pageElementsProvider(currentPageId?.id ?? "").future,
+      pageElementsProvider(organizationId, realmId, currentPageId.id).future,
     );
 
     final pageElement = pageElements.firstWhereOrNull(
@@ -179,11 +205,15 @@ class EntryMock extends Entry {
 List<Override> bookPagesProviderOverrides({
   DisplayState state = DisplayState.loading,
 }) => [
-  bookPagesProvider.overrideWith2((_) => BookPagesMock(displayState: state)),
+  canonicalBookPagesProvider.overrideWith2(
+    (_) => BookPagesMock(displayState: state),
+  ),
 ];
 
 List<Override> pagesProviderOverrides({Page? page, PageType? pageType}) => [
-  pagesProvider.overrideWith2((_) => PagesMock(page: page, pageType: pageType)),
+  canonicalPageProvider.overrideWith2(
+    (_) => PagesMock(page: page, pageType: pageType),
+  ),
 ];
 
 List<Override> pageElementsProviderOverrides({

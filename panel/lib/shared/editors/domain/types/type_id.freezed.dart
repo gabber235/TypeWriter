@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'type_id.dart';
@@ -9,6 +9,7 @@ part of 'type_id.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeId);
 }
 
 
@@ -51,13 +52,14 @@ extension TypeIdPatterns on TypeId {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OptionTypeId value)?  option,TResult Function( SomeTypeId value)?  some,TResult Function( NoneTypeId value)?  none,TResult Function( QualifiedTypeId value)?  qualified,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OptionTypeId value)?  option,TResult Function( SomeTypeId value)?  some,TResult Function( NoneTypeId value)?  none,TResult Function( DeclaredTypeId value)?  declared,TResult Function( QualifiedTypeId value)?  qualified,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case OptionTypeId() when option != null:
 return option(_that);case SomeTypeId() when some != null:
 return some(_that);case NoneTypeId() when none != null:
-return none(_that);case QualifiedTypeId() when qualified != null:
+return none(_that);case DeclaredTypeId() when declared != null:
+return declared(_that);case QualifiedTypeId() when qualified != null:
 return qualified(_that);case _:
   return orElse();
 
@@ -76,13 +78,14 @@ return qualified(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OptionTypeId value)  option,required TResult Function( SomeTypeId value)  some,required TResult Function( NoneTypeId value)  none,required TResult Function( QualifiedTypeId value)  qualified,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OptionTypeId value)  option,required TResult Function( SomeTypeId value)  some,required TResult Function( NoneTypeId value)  none,required TResult Function( DeclaredTypeId value)  declared,required TResult Function( QualifiedTypeId value)  qualified,}){
 final _that = this;
 switch (_that) {
 case OptionTypeId():
 return option(_that);case SomeTypeId():
 return some(_that);case NoneTypeId():
-return none(_that);case QualifiedTypeId():
+return none(_that);case DeclaredTypeId():
+return declared(_that);case QualifiedTypeId():
 return qualified(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -97,13 +100,14 @@ return qualified(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OptionTypeId value)?  option,TResult? Function( SomeTypeId value)?  some,TResult? Function( NoneTypeId value)?  none,TResult? Function( QualifiedTypeId value)?  qualified,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OptionTypeId value)?  option,TResult? Function( SomeTypeId value)?  some,TResult? Function( NoneTypeId value)?  none,TResult? Function( DeclaredTypeId value)?  declared,TResult? Function( QualifiedTypeId value)?  qualified,}){
 final _that = this;
 switch (_that) {
 case OptionTypeId() when option != null:
 return option(_that);case SomeTypeId() when some != null:
 return some(_that);case NoneTypeId() when none != null:
-return none(_that);case QualifiedTypeId() when qualified != null:
+return none(_that);case DeclaredTypeId() when declared != null:
+return declared(_that);case QualifiedTypeId() when qualified != null:
 return qualified(_that);case _:
   return null;
 
@@ -121,12 +125,13 @@ return qualified(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  option,TResult Function()?  some,TResult Function()?  none,TResult Function( String namespace,  String name)?  qualified,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  option,TResult Function()?  some,TResult Function()?  none,TResult Function( String uuid)?  declared,TResult Function( String namespace,  String name)?  qualified,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OptionTypeId() when option != null:
 return option();case SomeTypeId() when some != null:
 return some();case NoneTypeId() when none != null:
-return none();case QualifiedTypeId() when qualified != null:
+return none();case DeclaredTypeId() when declared != null:
+return declared(_that.uuid);case QualifiedTypeId() when qualified != null:
 return qualified(_that.namespace,_that.name);case _:
   return orElse();
 
@@ -145,12 +150,13 @@ return qualified(_that.namespace,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  option,required TResult Function()  some,required TResult Function()  none,required TResult Function( String namespace,  String name)  qualified,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  option,required TResult Function()  some,required TResult Function()  none,required TResult Function( String uuid)  declared,required TResult Function( String namespace,  String name)  qualified,}) {final _that = this;
 switch (_that) {
 case OptionTypeId():
 return option();case SomeTypeId():
 return some();case NoneTypeId():
-return none();case QualifiedTypeId():
+return none();case DeclaredTypeId():
+return declared(_that.uuid);case QualifiedTypeId():
 return qualified(_that.namespace,_that.name);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -165,12 +171,13 @@ return qualified(_that.namespace,_that.name);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  option,TResult? Function()?  some,TResult? Function()?  none,TResult? Function( String namespace,  String name)?  qualified,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  option,TResult? Function()?  some,TResult? Function()?  none,TResult? Function( String uuid)?  declared,TResult? Function( String namespace,  String name)?  qualified,}) {final _that = this;
 switch (_that) {
 case OptionTypeId() when option != null:
 return option();case SomeTypeId() when some != null:
 return some();case NoneTypeId() when none != null:
-return none();case QualifiedTypeId() when qualified != null:
+return none();case DeclaredTypeId() when declared != null:
+return declared(_that.uuid);case QualifiedTypeId() when qualified != null:
 return qualified(_that.namespace,_that.name);case _:
   return null;
 
@@ -184,7 +191,7 @@ return qualified(_that.namespace,_that.name);case _:
 
 class OptionTypeId extends TypeId {
   const OptionTypeId(): super._();
-  
+
 
 
 
@@ -193,7 +200,7 @@ class OptionTypeId extends TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OptionTypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OptionTypeId);
 }
 
 
@@ -212,7 +219,7 @@ int get hashCode => runtimeType.hashCode;
 
 class SomeTypeId extends TypeId {
   const SomeTypeId(): super._();
-  
+
 
 
 
@@ -221,7 +228,7 @@ class SomeTypeId extends TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SomeTypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SomeTypeId);
 }
 
 
@@ -240,7 +247,7 @@ int get hashCode => runtimeType.hashCode;
 
 class NoneTypeId extends TypeId {
   const NoneTypeId(): super._();
-  
+
 
 
 
@@ -249,7 +256,7 @@ class NoneTypeId extends TypeId {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NoneTypeId);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NoneTypeId);
 }
 
 
@@ -266,9 +273,73 @@ int get hashCode => runtimeType.hashCode;
 /// @nodoc
 
 
+class DeclaredTypeId extends TypeId {
+   DeclaredTypeId(this.uuid): assert(RegExp(r"^[0-9a-fA-F]{32}$").hasMatch(uuid), 'Declared type UUIDs must contain 32 hexadecimal characters.'),super._();
+
+
+ final  String uuid;
+
+/// Create a copy of TypeId
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DeclaredTypeIdCopyWith<DeclaredTypeId> get copyWith => _$DeclaredTypeIdCopyWithImpl<DeclaredTypeId>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DeclaredTypeId&&(identical(other.uuid, uuid) || other.uuid == uuid));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,uuid);
+}
+
+
+
+}
+
+/// @nodoc
+abstract mixin class $DeclaredTypeIdCopyWith<$Res> implements $TypeIdCopyWith<$Res> {
+  factory $DeclaredTypeIdCopyWith(DeclaredTypeId value, $Res Function(DeclaredTypeId) _then) = _$DeclaredTypeIdCopyWithImpl;
+@useResult
+$Res call({
+ String uuid
+});
+
+
+
+
+}
+/// @nodoc
+class _$DeclaredTypeIdCopyWithImpl<$Res>
+    implements $DeclaredTypeIdCopyWith<$Res> {
+  _$DeclaredTypeIdCopyWithImpl(this._self, this._then);
+
+  final DeclaredTypeId _self;
+  final $Res Function(DeclaredTypeId) _then;
+
+/// Create a copy of TypeId
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? uuid = null,}) {
+  return _then(DeclaredTypeId(
+null == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class QualifiedTypeId extends TypeId {
   const QualifiedTypeId({required this.namespace, required this.name}): assert(namespace != "", 'Namespace must not be empty.'),assert(name != "", 'Name must not be empty.'),super._();
-  
+
 
  final  String namespace;
  final  String name;
@@ -283,12 +354,14 @@ $QualifiedTypeIdCopyWith<QualifiedTypeId> get copyWith => _$QualifiedTypeIdCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QualifiedTypeId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is QualifiedTypeId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+    return Object.hash(runtimeType,namespace,name);
+}
 
 
 
@@ -341,12 +414,16 @@ $ResolvedTypeRefCopyWith<ResolvedTypeRef> get copyWith => _$ResolvedTypeRefCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedTypeRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision)&&const DeepCollectionEquality().equals(other.arguments, arguments));
+  final _this = this as ResolvedTypeRef;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedTypeRef&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.revision, _this.revision) || other.revision == _this.revision)&&const DeepCollectionEquality().equals(other.arguments, _this.arguments));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,revision,const DeepCollectionEquality().hash(arguments));
+int get hashCode {
+  final _this = this as ResolvedTypeRef;
+  return Object.hash(runtimeType,_this.id,_this.revision,const DeepCollectionEquality().hash(_this.arguments));
+}
 
 
 
@@ -375,7 +452,7 @@ class _$ResolvedTypeRefCopyWithImpl<$Res>
 /// Create a copy of ResolvedTypeRef
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? revision = null,Object? arguments = null,}) {
-  return _then(_self.copyWith(
+  return _then(ResolvedTypeRef(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as TypeId,revision: null == revision ? _self.revision : revision // ignore: cast_nullable_to_non_nullable
 as int,arguments: null == arguments ? _self.arguments : arguments // ignore: cast_nullable_to_non_nullable
@@ -387,7 +464,7 @@ as List<TypeExpression>,
 @override
 @pragma('vm:prefer-inline')
 $TypeIdCopyWith<$Res> get id {
-  
+
   return $TypeIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -529,8 +606,8 @@ return $default(_that.id,_that.revision,_that.arguments);case _:
 
 
 class _ResolvedTypeRef extends ResolvedTypeRef {
-  const _ResolvedTypeRef({required this.id, required this.revision, final  List<TypeExpression> arguments = const []}): assert(revision > 0, 'Revision must be positive.'),_arguments = arguments,super._();
-  
+  const _ResolvedTypeRef({required this.id, required this.revision,  List<TypeExpression> arguments = const []}): assert(revision > 0, 'Revision must be positive.'),_arguments = arguments,super._();
+
 
 @override final  TypeId id;
 @override final  int revision;
@@ -552,12 +629,14 @@ _$ResolvedTypeRefCopyWith<_ResolvedTypeRef> get copyWith => __$ResolvedTypeRefCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedTypeRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision)&&const DeepCollectionEquality().equals(other._arguments, _arguments));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedTypeRef&&(identical(other.id, id) || other.id == id)&&(identical(other.revision, revision) || other.revision == revision)&&const DeepCollectionEquality().equals(other.arguments, _arguments));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,revision,const DeepCollectionEquality().hash(_arguments));
+int get hashCode {
+    return Object.hash(runtimeType,id,revision,const DeepCollectionEquality().hash(_arguments));
+}
 
 
 
@@ -599,7 +678,7 @@ as List<TypeExpression>,
 @override
 @pragma('vm:prefer-inline')
 $TypeIdCopyWith<$Res> get id {
-  
+
   return $TypeIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });

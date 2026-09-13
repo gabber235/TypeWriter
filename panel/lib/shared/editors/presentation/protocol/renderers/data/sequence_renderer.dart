@@ -36,6 +36,7 @@ Widget renderSequence({
     scope: scope,
     itemScopes: itemScopes,
   );
+
   if (!hierarchy || separator == null) return sequence;
   return Column(
     mainAxisSize: MainAxisSize.min,

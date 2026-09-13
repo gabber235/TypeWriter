@@ -9,9 +9,19 @@ Future<void> _changePagesChapter(
   if (bookId == null) {
     throw Exception("Book ID is null");
   }
-  await ref
-      .read(booksProvider.notifier)
-      .changePagesChapters(bookId, chapter, newChapter);
+  final pages = await ref.read(canonicalBookPagesProvider(bookId).future);
+  final changed = pages
+      .where(
+        (page) =>
+            page.chapter == chapter || page.chapter.startsWith("$chapter."),
+      )
+      .toList();
+  if (changed.isEmpty || !ref.context.mounted) return;
+  final result = await ref.editPagesChapter(changed, chapter, newChapter);
+
+  result.requireApplied(
+    conflictMessage: "A page changed while chapters were moving",
+  );
 }
 
 class _AddPageButton extends HookConsumerWidget {
@@ -28,9 +38,8 @@ class _AddPageButton extends HookConsumerWidget {
     final isFocused = useState(false);
     final isHovered = useState(false);
 
-    final color = Theme.of(context).colorScheme.onSurface.withValues(
-      alpha: isFocused.value || isHovered.value ? 1 : 0.6,
-    );
+    final color = Theme.of(context).colorScheme.onSurface
+        .withValues(alpha: isFocused.value || isHovered.value ? 1 : 0.6);
 
     final animation = useAnimationController(duration: 200.ms);
     useListenable(animation);
@@ -168,77 +177,6 @@ class ChangeChapterDialogue extends HookConsumerWidget {
   }
 }
 
-class ChangePagePriorityDialogue extends HookConsumerWidget {
-  const ChangePagePriorityDialogue({
-    required this.pageId,
-    required this.pageName,
-    required this.priority,
-    super.key,
-  });
-
-  final skir.RecordId pageId;
-  final String pageName;
-  final int priority;
-
-  Future<void> _changePriority(
-    WidgetRef ref,
-    int newPriority,
-    ValueNotifier<bool> changed,
-  ) async {
-    if (changed.value) return;
-    changed.value = true;
-
-    final navigator = Navigator.of(ref.context);
-    await ref
-        .read(pagesProvider(pageId).notifier)
-        .updatePage(priority: newPriority);
-    navigator.pop(true);
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useTextEditingController();
-    final focusNode = useFocusNode();
-    final changed = useState(false);
-    final buttonController = useLoadingButtonController();
-
-    return AlertDialog(
-      title: Text("Change priority of $pageName"),
-      content: EditorTextField(
-        controller: controller,
-        focusNode: focusNode,
-        autofocus: EditorTextFieldAutoFocus.textField,
-        text: priority.toString(),
-        hintText: "Priority",
-        prefix: Icones(MaterialSymbols.priority_high_rounded),
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"^-?\d*"))],
-        onSubmitted: (value) async => buttonController.trigger(),
-      ),
-      actions: [
-        TextButton.icon(
-          icon: const Icones(Fa6Solid.xmark),
-          label: const Text("Cancel"),
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).textTheme.bodySmall?.color,
-          ),
-          onPressed: () => Navigator.of(context).pop(false),
-        ),
-        LoadingButton.filledIcon(
-          controller: buttonController,
-          onPressed: () async =>
-              _changePriority(ref, int.parse(controller.text), changed),
-          label: const Text("Change"),
-          icon: const Icones(Mingcute.pencil_fill),
-          style: FilledButton.styleFrom(
-            foregroundColor: context.colors.onWarning,
-            backgroundColor: context.colors.warning,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 Future<bool> showPageDeletionDialogue(
   WidgetRef ref,
   skir.RecordId pageId,
@@ -247,25 +185,34 @@ Future<bool> showPageDeletionDialogue(
   return showConfirmationDialogue(
     context: ref.context,
     title: "Delete ${pageName.formatted}?",
-    content:
-        "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
+    content: "This will delete the page and all its content.\nTHIS CANNOT BE UNDONE.",
     delayConfirm: 3.seconds,
     confirmText: "Delete",
     confirmIcon: MaterialSymbols.delete_forever,
     onConfirm: () async {
       final router = ref.read(appRouterProvider);
-      await ref.read(booksProvider.notifier).deletePage(pageId);
+      final result = await ref.readAuthoringSession().notifier.deletePage(
+        pageId,
+      );
+      result.requireApplied(conflictMessage: "The page no longer exists");
       final context = ref.context;
       if (!context.mounted) return;
+      final organizationId = ref.read(organizationIdProvider);
+
       final bookId = ref.read(bookIdProvider);
       final realmId = ref.read(realmIdProvider);
-      if (bookId != null && realmId != null) {
+      if (organizationId != null && bookId != null && realmId != null) {
         unawaited(
-          router.push(BookRoute(realmId: realmId.id, bookId: bookId.id)),
+          router.push(
+            BookRoute(
+              organizationId: organizationId.id,
+              realmId: realmId.id,
+              bookId: bookId.id,
+            ),
+          ),
         );
       }
 
-      final organizationId = ref.read(organizationIdProvider);
       if (organizationId != null) {
         unawaited(
           router.push(OrganizationRoute(organizationId: organizationId.id)),

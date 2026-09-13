@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'type_definition.dart';
@@ -9,6 +9,7 @@ part of 'type_definition.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $TypeParameterCopyWith<TypeParameter> get copyWith => _$TypeParameterCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.bound, bound) || other.bound == bound)&&(identical(other.variance, variance) || other.variance == variance));
+  final _this = this as TypeParameter;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeParameter&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.bound, _this.bound) || other.bound == _this.bound)&&(identical(other.variance, _this.variance) || other.variance == _this.variance));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,bound,variance);
+int get hashCode {
+  final _this = this as TypeParameter;
+  return Object.hash(runtimeType,_this.name,_this.bound,_this.variance);
+}
 
 @override
 String toString() {
-  return 'TypeParameter(name: $name, bound: $bound, variance: $variance)';
+  final _this = this as TypeParameter;
+  return 'TypeParameter(name: ${_this.name}, bound: ${_this.bound}, variance: ${_this.variance})';
 }
 
 
@@ -63,7 +69,7 @@ class _$TypeParameterCopyWithImpl<$Res>
 /// Create a copy of TypeParameter
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? bound = null,Object? variance = null,}) {
-  return _then(_self.copyWith(
+  return _then(TypeParameter(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,bound: null == bound ? _self.bound : bound // ignore: cast_nullable_to_non_nullable
 as TypeExpression,variance: null == variance ? _self.variance : variance // ignore: cast_nullable_to_non_nullable
@@ -75,7 +81,7 @@ as TypeVariance,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get bound {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.bound, (value) {
     return _then(_self.copyWith(bound: value));
   });
@@ -218,7 +224,7 @@ return $default(_that.name,_that.bound,_that.variance);case _:
 
 class _TypeParameter implements TypeParameter {
   const _TypeParameter({required this.name, this.bound = const AnyType(), this.variance = TypeVariance.invariant}): assert(name != "", 'Parameter name must not be empty.');
-  
+
 
 @override final  String name;
 @override@JsonKey() final  TypeExpression bound;
@@ -234,16 +240,18 @@ _$TypeParameterCopyWith<_TypeParameter> get copyWith => __$TypeParameterCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.bound, bound) || other.bound == bound)&&(identical(other.variance, variance) || other.variance == variance));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.bound, bound) || other.bound == bound)&&(identical(other.variance, variance) || other.variance == variance));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,bound,variance);
+int get hashCode {
+    return Object.hash(runtimeType,name,bound,variance);
+}
 
 @override
 String toString() {
-  return 'TypeParameter(name: $name, bound: $bound, variance: $variance)';
+    return 'TypeParameter(name: $name, bound: $bound, variance: $variance)';
 }
 
 
@@ -285,7 +293,7 @@ as TypeVariance,
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get bound {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.bound, (value) {
     return _then(_self.copyWith(bound: value));
   });
@@ -306,16 +314,21 @@ $TypeDefinitionCopyWith<TypeDefinition> get copyWith => _$TypeDefinitionCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.representation, representation) || other.representation == representation)&&const DeepCollectionEquality().equals(other.parameters, parameters)&&const DeepCollectionEquality().equals(other.parents, parents)&&(identical(other.defaultPresentationId, defaultPresentationId) || other.defaultPresentationId == defaultPresentationId)&&const DeepCollectionEquality().equals(other.namedPresentations, namedPresentations));
+  final _this = this as TypeDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.representation, _this.representation) || other.representation == _this.representation)&&const DeepCollectionEquality().equals(other.parameters, _this.parameters)&&const DeepCollectionEquality().equals(other.parents, _this.parents)&&(identical(other.defaultPresentationId, _this.defaultPresentationId) || other.defaultPresentationId == _this.defaultPresentationId)&&const DeepCollectionEquality().equals(other.namedPresentations, _this.namedPresentations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,kind,representation,const DeepCollectionEquality().hash(parameters),const DeepCollectionEquality().hash(parents),defaultPresentationId,const DeepCollectionEquality().hash(namedPresentations));
+int get hashCode {
+  final _this = this as TypeDefinition;
+  return Object.hash(runtimeType,_this.id,_this.kind,_this.representation,const DeepCollectionEquality().hash(_this.parameters),const DeepCollectionEquality().hash(_this.parents),_this.defaultPresentationId,const DeepCollectionEquality().hash(_this.namedPresentations));
+}
 
 @override
 String toString() {
-  return 'TypeDefinition(id: $id, kind: $kind, representation: $representation, parameters: $parameters, parents: $parents, defaultPresentationId: $defaultPresentationId, namedPresentations: $namedPresentations)';
+  final _this = this as TypeDefinition;
+  return 'TypeDefinition(id: ${_this.id}, kind: ${_this.kind}, representation: ${_this.representation}, parameters: ${_this.parameters}, parents: ${_this.parents}, defaultPresentationId: ${_this.defaultPresentationId}, namedPresentations: ${_this.namedPresentations})';
 }
 
 
@@ -344,7 +357,7 @@ class _$TypeDefinitionCopyWithImpl<$Res>
 /// Create a copy of TypeDefinition
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? representation = null,Object? parameters = null,Object? parents = null,Object? defaultPresentationId = freezed,Object? namedPresentations = null,}) {
-  return _then(_self.copyWith(
+  return _then(TypeDefinition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as NominalTypeKind,representation: null == representation ? _self.representation : representation // ignore: cast_nullable_to_non_nullable
@@ -360,7 +373,7 @@ as Map<String, PresentationId>,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get id {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -369,7 +382,7 @@ $ResolvedTypeRefCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get representation {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.representation, (value) {
     return _then(_self.copyWith(representation: value));
   });
@@ -523,8 +536,8 @@ return $default(_that.id,_that.kind,_that.representation,_that.parameters,_that.
 
 
 class _TypeDefinition implements TypeDefinition {
-  const _TypeDefinition({required this.id, required this.kind, this.representation = const AnyType(), final  List<TypeParameter> parameters = const [], final  List<ResolvedTypeRef> parents = const [], this.defaultPresentationId, final  Map<String, PresentationId> namedPresentations = const {}}): _parameters = parameters,_parents = parents,_namedPresentations = namedPresentations;
-  
+  const _TypeDefinition({required this.id, required this.kind, this.representation = const AnyType(),  List<TypeParameter> parameters = const [],  List<ResolvedTypeRef> parents = const [], this.defaultPresentationId,  Map<String, PresentationId> namedPresentations = const {}}): _parameters = parameters,_parents = parents,_namedPresentations = namedPresentations;
+
 
 @override final  ResolvedTypeRef id;
 @override final  NominalTypeKind kind;
@@ -562,16 +575,18 @@ _$TypeDefinitionCopyWith<_TypeDefinition> get copyWith => __$TypeDefinitionCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.representation, representation) || other.representation == representation)&&const DeepCollectionEquality().equals(other._parameters, _parameters)&&const DeepCollectionEquality().equals(other._parents, _parents)&&(identical(other.defaultPresentationId, defaultPresentationId) || other.defaultPresentationId == defaultPresentationId)&&const DeepCollectionEquality().equals(other._namedPresentations, _namedPresentations));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.representation, representation) || other.representation == representation)&&const DeepCollectionEquality().equals(other.parameters, _parameters)&&const DeepCollectionEquality().equals(other.parents, _parents)&&(identical(other.defaultPresentationId, defaultPresentationId) || other.defaultPresentationId == defaultPresentationId)&&const DeepCollectionEquality().equals(other.namedPresentations, _namedPresentations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,kind,representation,const DeepCollectionEquality().hash(_parameters),const DeepCollectionEquality().hash(_parents),defaultPresentationId,const DeepCollectionEquality().hash(_namedPresentations));
+int get hashCode {
+    return Object.hash(runtimeType,id,kind,representation,const DeepCollectionEquality().hash(_parameters),const DeepCollectionEquality().hash(_parents),defaultPresentationId,const DeepCollectionEquality().hash(_namedPresentations));
+}
 
 @override
 String toString() {
-  return 'TypeDefinition(id: $id, kind: $kind, representation: $representation, parameters: $parameters, parents: $parents, defaultPresentationId: $defaultPresentationId, namedPresentations: $namedPresentations)';
+    return 'TypeDefinition(id: $id, kind: $kind, representation: $representation, parameters: $parameters, parents: $parents, defaultPresentationId: $defaultPresentationId, namedPresentations: $namedPresentations)';
 }
 
 
@@ -617,7 +632,7 @@ as Map<String, PresentationId>,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get id {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -626,7 +641,7 @@ $ResolvedTypeRefCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get representation {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.representation, (value) {
     return _then(_self.copyWith(representation: value));
   });
@@ -659,16 +674,21 @@ $TypeCatalogCopyWith<TypeCatalog> get copyWith => _$TypeCatalogCopyWithImpl<Type
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeCatalog&&const DeepCollectionEquality().equals(other.definitions, definitions));
+  final _this = this as TypeCatalog;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeCatalog&&const DeepCollectionEquality().equals(other.definitions, _this.definitions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(definitions));
+int get hashCode {
+  final _this = this as TypeCatalog;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.definitions));
+}
 
 @override
 String toString() {
-  return 'TypeCatalog(definitions: $definitions)';
+  final _this = this as TypeCatalog;
+  return 'TypeCatalog(definitions: ${_this.definitions})';
 }
 
 
@@ -697,8 +717,8 @@ class _$TypeCatalogCopyWithImpl<$Res>
 /// Create a copy of TypeCatalog
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definitions = null,}) {
-  return _then(_self.copyWith(
-definitions: null == definitions ? _self.definitions : definitions // ignore: cast_nullable_to_non_nullable
+  return _then(TypeCatalog(
+null == definitions ? _self.definitions : definitions // ignore: cast_nullable_to_non_nullable
 as List<TypeDefinition>,
   ));
 }
@@ -840,8 +860,8 @@ return $default(_that.definitions);case _:
 
 
 class _TypeCatalog implements TypeCatalog {
-  const _TypeCatalog(final  List<TypeDefinition> definitions): _definitions = definitions;
-  
+  const _TypeCatalog( List<TypeDefinition> definitions): _definitions = definitions;
+
 
  final  List<TypeDefinition> _definitions;
 @override List<TypeDefinition> get definitions {
@@ -861,16 +881,18 @@ _$TypeCatalogCopyWith<_TypeCatalog> get copyWith => __$TypeCatalogCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeCatalog&&const DeepCollectionEquality().equals(other._definitions, _definitions));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeCatalog&&const DeepCollectionEquality().equals(other.definitions, _definitions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_definitions));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_definitions));
+}
 
 @override
 String toString() {
-  return 'TypeCatalog(definitions: $definitions)';
+    return 'TypeCatalog(definitions: $definitions)';
 }
 
 
@@ -922,16 +944,21 @@ $ResolvedTypeCopyWith<ResolvedType> get copyWith => _$ResolvedTypeCopyWithImpl<R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedType&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.representation, representation) || other.representation == representation)&&const DeepCollectionEquality().equals(other.ancestors, ancestors)&&const DeepCollectionEquality().equals(other.directParents, directParents));
+  final _this = this as ResolvedType;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolvedType&&(identical(other.reference, _this.reference) || other.reference == _this.reference)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.representation, _this.representation) || other.representation == _this.representation)&&const DeepCollectionEquality().equals(other.ancestors, _this.ancestors)&&const DeepCollectionEquality().equals(other.directParents, _this.directParents));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reference,kind,representation,const DeepCollectionEquality().hash(ancestors),const DeepCollectionEquality().hash(directParents));
+int get hashCode {
+  final _this = this as ResolvedType;
+  return Object.hash(runtimeType,_this.reference,_this.kind,_this.representation,const DeepCollectionEquality().hash(_this.ancestors),const DeepCollectionEquality().hash(_this.directParents));
+}
 
 @override
 String toString() {
-  return 'ResolvedType(reference: $reference, kind: $kind, representation: $representation, ancestors: $ancestors, directParents: $directParents)';
+  final _this = this as ResolvedType;
+  return 'ResolvedType(reference: ${_this.reference}, kind: ${_this.kind}, representation: ${_this.representation}, ancestors: ${_this.ancestors}, directParents: ${_this.directParents})';
 }
 
 
@@ -960,7 +987,7 @@ class _$ResolvedTypeCopyWithImpl<$Res>
 /// Create a copy of ResolvedType
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? reference = null,Object? kind = null,Object? representation = null,Object? ancestors = null,Object? directParents = null,}) {
-  return _then(_self.copyWith(
+  return _then(ResolvedType(
 reference: null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as NominalTypeKind,representation: null == representation ? _self.representation : representation // ignore: cast_nullable_to_non_nullable
@@ -974,7 +1001,7 @@ as Set<ResolvedTypeRef>,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get reference {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.reference, (value) {
     return _then(_self.copyWith(reference: value));
   });
@@ -983,7 +1010,7 @@ $ResolvedTypeRefCopyWith<$Res> get reference {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get representation {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.representation, (value) {
     return _then(_self.copyWith(representation: value));
   });
@@ -1125,8 +1152,8 @@ return $default(_that.reference,_that.kind,_that.representation,_that.ancestors,
 
 
 class _ResolvedType extends ResolvedType {
-  const _ResolvedType({required this.reference, required this.kind, required this.representation, required final  Set<ResolvedTypeRef> ancestors, final  Set<ResolvedTypeRef> directParents = const {}}): _ancestors = ancestors,_directParents = directParents,super._();
-  
+  const _ResolvedType({required this.reference, required this.kind, required this.representation, required  Set<ResolvedTypeRef> ancestors,  Set<ResolvedTypeRef> directParents = const {}}): _ancestors = ancestors,_directParents = directParents,super._();
+
 
 @override final  ResolvedTypeRef reference;
 @override final  NominalTypeKind kind;
@@ -1156,16 +1183,18 @@ _$ResolvedTypeCopyWith<_ResolvedType> get copyWith => __$ResolvedTypeCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedType&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.representation, representation) || other.representation == representation)&&const DeepCollectionEquality().equals(other._ancestors, _ancestors)&&const DeepCollectionEquality().equals(other._directParents, _directParents));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedType&&(identical(other.reference, reference) || other.reference == reference)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.representation, representation) || other.representation == representation)&&const DeepCollectionEquality().equals(other.ancestors, _ancestors)&&const DeepCollectionEquality().equals(other.directParents, _directParents));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reference,kind,representation,const DeepCollectionEquality().hash(_ancestors),const DeepCollectionEquality().hash(_directParents));
+int get hashCode {
+    return Object.hash(runtimeType,reference,kind,representation,const DeepCollectionEquality().hash(_ancestors),const DeepCollectionEquality().hash(_directParents));
+}
 
 @override
 String toString() {
-  return 'ResolvedType(reference: $reference, kind: $kind, representation: $representation, ancestors: $ancestors, directParents: $directParents)';
+    return 'ResolvedType(reference: $reference, kind: $kind, representation: $representation, ancestors: $ancestors, directParents: $directParents)';
 }
 
 
@@ -1209,7 +1238,7 @@ as Set<ResolvedTypeRef>,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get reference {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.reference, (value) {
     return _then(_self.copyWith(reference: value));
   });
@@ -1218,7 +1247,7 @@ $ResolvedTypeRefCopyWith<$Res> get reference {
 @override
 @pragma('vm:prefer-inline')
 $TypeExpressionCopyWith<$Res> get representation {
-  
+
   return $TypeExpressionCopyWith<$Res>(_self.representation, (value) {
     return _then(_self.copyWith(representation: value));
   });

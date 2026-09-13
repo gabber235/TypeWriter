@@ -131,6 +131,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 250));
       expect(find.text("Outgoing"), findsNothing);
       expect(find.text("Incoming"), findsOneWidget);
+
       expect(tester.takeException(), isNull);
     },
   );

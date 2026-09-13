@@ -1,3 +1,4 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -11,17 +12,18 @@ class BulkMemberActions extends HookConsumerWidget {
     required this.selectedCount,
     required this.selectedIds,
     required this.onRemove,
-    required this.onClearSelection,
+    required this.onUnselect,
     super.key,
   });
 
   final int selectedCount;
   final Set<skir.RecordId> selectedIds;
   final VoidCallback onRemove;
-  final VoidCallback onClearSelection;
+  final ValueChanged<Set<skir.RecordId>> onUnselect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    void onClearSelection() => onUnselect(selectedIds);
     final theme = Theme.of(context);
     final bulkRoles = useState<List<OrganizationRole>>([]);
     final isApplying = useState(false);
@@ -35,15 +37,19 @@ class BulkMemberActions extends HookConsumerWidget {
     Future<void> applyRoles() async {
       if (isApplying.value) return;
       isApplying.value = true;
+      final members = ref.read(organizationMembersProvider.notifier);
+      final roles = List<OrganizationRole>.unmodifiable(bulkRoles.value);
+      final ids = Set<skir.RecordId>.unmodifiable(selectedIds);
       try {
-        for (final id in selectedIds) {
-          await ref
-              .read(organizationMembersProvider.notifier)
-              .updateMemberRoles(id, bulkRoles.value)
-              .catchApiExceptionsAndDisplay(context);
+        await members.updateMemberRoles(ids, roles);
+        if (context.mounted) {
+          if (listEquals(bulkRoles.value, roles)) bulkRoles.value = [];
+          onUnselect(ids);
         }
-        bulkRoles.value = [];
-        onClearSelection();
+      } on ApiException catch (error) {
+        if (context.mounted) showErrorSnackBar(context, error.message);
+      } on SubmissionException {
+        // The shared activity retains unresolved delivery.
       } finally {
         if (context.mounted) isApplying.value = false;
       }

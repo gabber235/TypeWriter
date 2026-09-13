@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart" hide Title;
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -7,31 +9,66 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "entries.freezed.dart";
 part "entries.g.dart";
+part "entry_selection.dart";
 
 @riverpod
 class Entry extends _$Entry {
   @override
   Future<EntryDefinition?> build(String entryId) async {
-    // TODO: Fetch entry from the backend
-    throw UnimplementedError();
+    final organizationId = ref.watch(organizationIdProvider);
+    final realmId = ref.watch(realmIdProvider);
+    if (organizationId == null) throw ApiException.noOrganization();
+    if (realmId == null) throw ApiException.badRequest("No realm selected");
+    final index = ref.watch(realmEntryIndexProvider(organizationId, realmId));
+    return switch (index) {
+      AsyncData(:final value) => value[entryId]?.definition,
+      AsyncError(:final error, :final stackTrace) => Error.throwWithStackTrace(
+        error,
+        stackTrace,
+      ),
+      AsyncLoading() => Completer<EntryDefinition?>().future,
+    };
   }
 
   Future<void> updateFieldValue(DataPath path, DataValue value) async {
     state.ensureReady();
 
-    // TODO: Implement optimistic updates
-
-    // TODO: Make backend call to update field value for this entry
-    throw UnimplementedError();
+    final cached = _cachedEntry;
+    if (cached == null) throw ApiException.notFound("Entry");
+    await ref.withReadyPageElements(cached.pageId, (elements) {
+      _requireCurrentEntry(cached.pageId);
+      return elements.updateEntryFieldValue(entryId, path, value);
+    });
+    state = AsyncData(_cachedEntry?.definition);
   }
 
   Future<void> moveToPage(String pageId) async {
     state.ensureReady();
+    final cached = _cachedEntry;
+    if (cached == null) throw ApiException.notFound("Entry");
+    if (cached.pageId == pageId) return;
+    await ref.withReadyPageElements(cached.pageId, (elements) {
+      _requireCurrentEntry(cached.pageId);
+      return elements.moveEntriesToPage([entryId], pageId);
+    });
+  }
 
-    // TODO: Implement optimistic updates
+  CachedPageEntry? get _cachedEntry {
+    final organizationId = ref.read(organizationIdProvider);
+    final realmId = ref.read(realmIdProvider);
+    if (organizationId == null || realmId == null) return null;
+    return ref
+        .read(realmEntryIndexProvider(organizationId, realmId))
+        .value?[entryId];
+  }
 
-    // TODO: Make backend call to move this entry to a different page
-    throw UnimplementedError();
+  CachedPageEntry _requireCurrentEntry(String expectedPageId) {
+    final current = _cachedEntry;
+    if (current == null) throw ApiException.notFound("Entry");
+    if (current.pageId != expectedPageId) {
+      throw ApiException.conflict("The entry moved to another page");
+    }
+    return current;
   }
 }
 
@@ -93,11 +130,14 @@ abstract class EntryPlacement with _$EntryPlacement {
     required int y,
     required int width,
     required int height,
+    @Default(EntryPlacementKind.graph) EntryPlacementKind kind,
   }) = _EntryPlacement;
 
   factory EntryPlacement.fromJson(Map<String, dynamic> json) =>
       _$EntryPlacementFromJson(json);
 }
+
+enum EntryPlacementKind { graph, timelineEntry }
 
 @Freezed(unionKey: "_kind")
 abstract class EntryMetadata with _$EntryMetadata {
@@ -142,138 +182,5 @@ extension EntryPlacementExtension on EntryPlacement {
 
   double distanceSquaredTo(EntryPlacement other) {
     return (center - other.center).distanceSquared;
-  }
-}
-
-class EntryIdentifier extends SelectableIdentifier
-    implements GraphDragData, GraphIdentifier {
-  const EntryIdentifier(this.id);
-
-  @override
-  final String id;
-
-  @override
-  AsyncValue<Selectable<EntryIdentifier>> create(Ref ref) {
-    final asyncEntry = ref.watch(entryProvider(id));
-    return asyncEntry.when(
-      data: (value) {
-        if (value == null) {
-          throw SelectableNotFoundException(this);
-        }
-        final catalogState = ref.watch(
-          realmEditorCatalogForTypeProvider(value.elementDefinition.rootType),
-        );
-        return catalogState.resolveElement(
-          value.elementDefinition,
-          (catalog) => EntrySelection(
-            ref: ref,
-            id: this,
-            definition: value,
-            typeCatalog: catalog,
-          ),
-        );
-      },
-      error: AsyncValue.error,
-      loading: AsyncValue.loading,
-    );
-  }
-
-  @override
-  GraphIdentifier get graphId => this;
-
-  @override
-  int get hashCode => id.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || (other is EntryIdentifier && other.id == id);
-
-  @override
-  String toString() => "EntryIdentifier($id)";
-}
-
-class EntrySelection extends InspectableSelectable<EntryIdentifier> {
-  const EntrySelection({
-    required this.ref,
-    required this.id,
-    required this.definition,
-    required this.typeCatalog,
-  });
-
-  @override
-  final EntryIdentifier id;
-  final Ref ref;
-  final EntryDefinition definition;
-
-  @override
-  final TypeCatalog typeCatalog;
-
-  @override
-  String get name => definition.name;
-
-  @override
-  EditorDocument get document => EditorDocument(
-    rootType: NamedType(definition.elementDefinition.rootType),
-    typeCatalog: typeCatalog,
-    confirmedValue: definition.data,
-    revision: 0,
-  );
-
-  @override
-  List<SelectionCapability> get capabilities => [];
-
-  @override
-  Widget? buildInspectorHeader() {
-    return EntryHeader(
-      id: id.id,
-      name: name,
-      color: definition.elementDefinition.color,
-    );
-  }
-
-  @override
-  Future<TypedMutationResult> commit(EditorCommit commit) => Future.value(
-    TypedMutationResult.unavailable([
-      const TypeDiagnostic(
-        code: TypeDiagnosticCode.invalidValue,
-        message: "Entry persistence is not available yet",
-      ),
-    ]),
-  );
-
-  @override
-  int get hashCode => id.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || (other is EntrySelection && other.id == id);
-
-  @override
-  String toString() => "EntrySelection($id)";
-}
-
-/// Header for a entry displaying title and identifier.
-class EntryHeader extends HookWidget {
-  const EntryHeader({
-    required this.id,
-    required this.name,
-    required this.color,
-    super.key,
-  });
-
-  final String id;
-  final String name;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Title(title: name, color: color),
-        const SizedBox(height: 8),
-        Identifier(id: id),
-      ],
-    );
   }
 }

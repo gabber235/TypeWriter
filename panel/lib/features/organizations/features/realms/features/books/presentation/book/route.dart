@@ -21,6 +21,8 @@ import "package:typewriter_panel/typewriter_panel.dart";
 part "book_route_shell.dart";
 part "page_actions.dart";
 part "page_dialogs.dart";
+part "page_rename_dialog.dart";
+part "page_priority_dialog.dart";
 part "page_drag_data.dart";
 part "page_sidebar.dart";
 part "page_tile.dart";
@@ -30,11 +32,13 @@ part "route.g.dart";
 @RoutePage()
 class BookPage extends HookConsumerWidget {
   const BookPage({
+    @PathParam("organizationId") required this.organizationId,
     @PathParam("realmId") required this.realmId,
     @PathParam("bookId") required this.bookId,
     super.key,
   });
 
+  final String organizationId;
   final String realmId;
   final String bookId;
 

@@ -15,21 +15,24 @@ final class SkirRealmPresentationSearchCodec {
     final payload = editor.encodeValue(request.payload);
     final resultType = editor.typeCodec.encodeExpression(request.resultType);
     final diagnostics = [...payload.diagnostics, ...resultType.diagnostics];
+
     if (request.subscriptionId.isEmpty) {
       diagnostics.add(
         _realmSearchDiagnostic("Search subscription ID is empty"),
       );
     }
+
     if (diagnostics.isNotEmpty) {
       return TypeResult.failure(diagnostics);
     }
+
     return TypeResult.success(
       wire.RealmPresentationSearchRequest(
         subscriptionId: request.subscriptionId,
-        realmActionId: wire_type.RealmActionId(
-          namespace: request.actionId.namespace,
-          name: request.actionId.name,
+        generation: wire_type.CatalogGeneration(
+          value: request.generation.value,
         ),
+        capabilityId: wire_type.CapabilityId(value: request.capabilityId.value),
         payload: payload.valueOrNull!,
         resultType: resultType.valueOrNull!,
         query: _encodeQuery(request.query),

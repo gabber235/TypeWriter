@@ -1,3 +1,6 @@
+[schema.mutation]
+files = ["kernel/mutation.surql"]
+
 [schema.record_id]
 files = ["kernel/id.surql"]
 
@@ -12,11 +15,15 @@ depends_on = ["record_id"]
 files = ["user.surql"]
 
 [schema.service]
-depends_on = ["record_id"]
-files = ["service/functions.surql", "service/service.surql"]
+depends_on = ["record_id", "mutation"]
+files = [
+    "service/functions.surql",
+    "service/service.surql",
+    "service/topology.surql",
+]
 
 [schema.organization]
-depends_on = ["record_id", "color", "url", "user"]
+depends_on = ["record_id", "color", "url", "user", "mutation"]
 files = [
     "organization/functions.surql",
     "organization/organization.surql",

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'editor_catalog_codec.dart';
@@ -9,6 +9,7 @@ part of 'editor_catalog_codec.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $DecodedTypeCatalogCopyWith<DecodedTypeCatalog> get copyWith => _$DecodedTypeCat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DecodedTypeCatalog&&(identical(other.catalog, catalog) || other.catalog == catalog)&&(identical(other.registry, registry) || other.registry == registry));
+  final _this = this as DecodedTypeCatalog;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DecodedTypeCatalog&&(identical(other.catalog, _this.catalog) || other.catalog == _this.catalog)&&(identical(other.registry, _this.registry) || other.registry == _this.registry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,catalog,registry);
+int get hashCode {
+  final _this = this as DecodedTypeCatalog;
+  return Object.hash(runtimeType,_this.catalog,_this.registry);
+}
 
 @override
 String toString() {
-  return 'DecodedTypeCatalog(catalog: $catalog, registry: $registry)';
+  final _this = this as DecodedTypeCatalog;
+  return 'DecodedTypeCatalog(catalog: ${_this.catalog}, registry: ${_this.registry})';
 }
 
 
@@ -63,9 +69,9 @@ class _$DecodedTypeCatalogCopyWithImpl<$Res>
 /// Create a copy of DecodedTypeCatalog
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? catalog = null,Object? registry = null,}) {
-  return _then(_self.copyWith(
-catalog: null == catalog ? _self.catalog : catalog // ignore: cast_nullable_to_non_nullable
-as TypeCatalog,registry: null == registry ? _self.registry : registry // ignore: cast_nullable_to_non_nullable
+  return _then(DecodedTypeCatalog(
+null == catalog ? _self.catalog : catalog // ignore: cast_nullable_to_non_nullable
+as TypeCatalog,null == registry ? _self.registry : registry // ignore: cast_nullable_to_non_nullable
 as TypeRegistry,
   ));
 }
@@ -74,7 +80,7 @@ as TypeRegistry,
 @override
 @pragma('vm:prefer-inline')
 $TypeCatalogCopyWith<$Res> get catalog {
-  
+
   return $TypeCatalogCopyWith<$Res>(_self.catalog, (value) {
     return _then(_self.copyWith(catalog: value));
   });
@@ -217,7 +223,7 @@ return $default(_that.catalog,_that.registry);case _:
 
 class _DecodedTypeCatalog implements DecodedTypeCatalog {
   const _DecodedTypeCatalog(this.catalog, this.registry);
-  
+
 
 @override final  TypeCatalog catalog;
 @override final  TypeRegistry registry;
@@ -232,16 +238,18 @@ _$DecodedTypeCatalogCopyWith<_DecodedTypeCatalog> get copyWith => __$DecodedType
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DecodedTypeCatalog&&(identical(other.catalog, catalog) || other.catalog == catalog)&&(identical(other.registry, registry) || other.registry == registry));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DecodedTypeCatalog&&(identical(other.catalog, catalog) || other.catalog == catalog)&&(identical(other.registry, registry) || other.registry == registry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,catalog,registry);
+int get hashCode {
+    return Object.hash(runtimeType,catalog,registry);
+}
 
 @override
 String toString() {
-  return 'DecodedTypeCatalog(catalog: $catalog, registry: $registry)';
+    return 'DecodedTypeCatalog(catalog: $catalog, registry: $registry)';
 }
 
 
@@ -282,7 +290,7 @@ as TypeRegistry,
 @override
 @pragma('vm:prefer-inline')
 $TypeCatalogCopyWith<$Res> get catalog {
-  
+
   return $TypeCatalogCopyWith<$Res>(_self.catalog, (value) {
     return _then(_self.copyWith(catalog: value));
   });

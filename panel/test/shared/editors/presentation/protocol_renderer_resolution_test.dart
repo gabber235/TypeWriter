@@ -33,7 +33,7 @@ void main() {
           ),
         ]),
         presentations: [
-          PresentationDefinition(
+          PresentationDefinition.single(
             id: presentationId,
             target: NamedType(target),
             root: const PresentationNode(
@@ -103,7 +103,11 @@ void main() {
           ),
         ]),
         presentations: [
-          PresentationDefinition(id: id, target: NamedType(root), root: node),
+          PresentationDefinition.single(
+            id: id,
+            target: NamedType(root),
+            root: node,
+          ),
         ],
       ),
     );
@@ -174,6 +178,38 @@ void main() {
     );
     expect(find.text("rendered value"), findsOneWidget);
   });
+
+  testWidgets(
+    "uses the concrete default presentation inside a polymorphic input",
+    (tester) async {
+      await tester.pumpTestApp(
+        child: EditorProtocolRenderer(
+          envelope: TypedValueEnvelope(
+            rootType: standardTypeRefs.icon,
+            rootValue: PolymorphicValue(
+              concreteType: standardTypeRefs.iconifyIcon,
+              value: const StringValue("mdi:account"),
+            ),
+          ),
+          typeCatalog: const TypeCatalog([]),
+          presentation: PresentationNode(
+            id: "icon",
+            element: PolymorphicInputElement(
+              control: const BoundControl(binding: _rootBinding),
+              concreteTypes: [
+                ConcreteTypePresentation(
+                  type: standardTypeRefs.iconifyIcon,
+                  label: "Iconify".asStringLiteral,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(PresentationSearchInput), findsOneWidget);
+    },
+  );
 
   test("uses the standard icon search presentation", () {
     final definition = builtinPresentationDefinitions().singleWhere(

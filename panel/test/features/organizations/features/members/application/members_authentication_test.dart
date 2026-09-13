@@ -7,10 +7,10 @@ import "support/members_test_support.dart";
 
 void main() {
   group("OrganizationMembers authentication", () {
-    late MockNatsClient mockNats;
+    late FakeNatsClient mockNats;
 
     setUp(() {
-      mockNats = MockNatsClient();
+      mockNats = FakeNatsClient();
     });
 
     tearDown(() {
@@ -34,7 +34,7 @@ void main() {
       expect(
         () => container
             .read(organizationMembersProvider.notifier)
-            .updateMemberRoles(recordId("user:m1"), []),
+            .updateMemberRoles([recordId("user:m1")], []),
         throwsA(isA<ApiException>()),
       );
     });
@@ -56,7 +56,7 @@ void main() {
       expect(
         () => container
             .read(organizationMembersProvider.notifier)
-            .updateMemberRoles(recordId("user:m1"), []),
+            .updateMemberRoles([recordId("user:m1")], []),
         throwsA(isA<ApiException>()),
       );
     });

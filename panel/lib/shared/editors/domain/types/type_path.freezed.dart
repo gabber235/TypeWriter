@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'type_path.dart';
@@ -9,6 +9,7 @@ part of 'type_path.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$TypeQuerySegment {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeQuerySegment);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeQuerySegment);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeQuerySegment()';
+    return 'TypeQuerySegment()';
 }
 
 
@@ -182,7 +183,7 @@ return mapValue();case _:
 
 class TypeFieldQuerySegment implements TypeQuerySegment {
   const TypeFieldQuerySegment(this.name);
-  
+
 
  final  String name;
 
@@ -196,16 +197,18 @@ $TypeFieldQuerySegmentCopyWith<TypeFieldQuerySegment> get copyWith => _$TypeFiel
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeFieldQuerySegment&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeFieldQuerySegment&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name);
+int get hashCode {
+    return Object.hash(runtimeType,name);
+}
 
 @override
 String toString() {
-  return 'TypeQuerySegment.field(name: $name)';
+    return 'TypeQuerySegment.field(name: $name)';
 }
 
 
@@ -248,7 +251,7 @@ as String,
 
 class TypeListElementQuerySegment implements TypeQuerySegment {
   const TypeListElementQuerySegment();
-  
+
 
 
 
@@ -257,7 +260,7 @@ class TypeListElementQuerySegment implements TypeQuerySegment {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeListElementQuerySegment);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeListElementQuerySegment);
 }
 
 
@@ -266,7 +269,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeQuerySegment.listElement()';
+    return 'TypeQuerySegment.listElement()';
 }
 
 
@@ -280,7 +283,7 @@ String toString() {
 
 class TypeMapValueQuerySegment implements TypeQuerySegment {
   const TypeMapValueQuerySegment();
-  
+
 
 
 
@@ -289,7 +292,7 @@ class TypeMapValueQuerySegment implements TypeQuerySegment {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeMapValueQuerySegment);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeMapValueQuerySegment);
 }
 
 
@@ -298,7 +301,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeQuerySegment.mapValue()';
+    return 'TypeQuerySegment.mapValue()';
 }
 
 
@@ -321,16 +324,21 @@ $TypeReferenceLocationCopyWith<TypeReferenceLocation> get copyWith => _$TypeRefe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeReferenceLocation&&const DeepCollectionEquality().equals(other.path, path)&&const DeepCollectionEquality().equals(other.type, type));
+  final _this = this as TypeReferenceLocation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeReferenceLocation&&const DeepCollectionEquality().equals(other.path, _this.path)&&const DeepCollectionEquality().equals(other.type, _this.type));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(path),const DeepCollectionEquality().hash(type));
+int get hashCode {
+  final _this = this as TypeReferenceLocation;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.path),const DeepCollectionEquality().hash(_this.type));
+}
 
 @override
 String toString() {
-  return 'TypeReferenceLocation(path: $path, type: $type)';
+  final _this = this as TypeReferenceLocation;
+  return 'TypeReferenceLocation(path: ${_this.path}, type: ${_this.type})';
 }
 
 
@@ -359,7 +367,7 @@ class _$TypeReferenceLocationCopyWithImpl<$Res>
 /// Create a copy of TypeReferenceLocation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? type = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TypeReferenceLocation(
 path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as List<TypeQuerySegment>,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as NamedType,
@@ -503,8 +511,8 @@ return $default(_that.path,_that.type);case _:
 
 
 class _TypeReferenceLocation extends TypeReferenceLocation {
-  const _TypeReferenceLocation({required final  List<TypeQuerySegment> path, required this.type}): _path = path,super._();
-  
+  const _TypeReferenceLocation({required  List<TypeQuerySegment> path, required this.type}): _path = path,super._();
+
 
  final  List<TypeQuerySegment> _path;
 @override List<TypeQuerySegment> get path {
@@ -525,16 +533,18 @@ _$TypeReferenceLocationCopyWith<_TypeReferenceLocation> get copyWith => __$TypeR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeReferenceLocation&&const DeepCollectionEquality().equals(other._path, _path)&&const DeepCollectionEquality().equals(other.type, type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeReferenceLocation&&const DeepCollectionEquality().equals(other.path, _path)&&const DeepCollectionEquality().equals(other.type, type));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_path),const DeepCollectionEquality().hash(type));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_path),const DeepCollectionEquality().hash(type));
+}
 
 @override
 String toString() {
-  return 'TypeReferenceLocation(path: $path, type: $type)';
+    return 'TypeReferenceLocation(path: $path, type: $type)';
 }
 
 

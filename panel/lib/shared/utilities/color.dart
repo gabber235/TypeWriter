@@ -34,7 +34,9 @@ extension ColorsExtension on List<Color> {
       final hueRadians = hsv.hue * math.pi / 180;
       hueX += math.cos(hueRadians) * hsv.saturation;
       hueY += math.sin(hueRadians) * hsv.saturation;
+
       saturation += hsv.saturation;
+
       value += hsv.value;
       alpha += hsv.alpha;
     }
@@ -67,12 +69,14 @@ extension ColorExtension on Color {
   Color onBrightness(Brightness brightness) {
     final schemeVariant = DynamicSchemeVariant.tonalSpot;
     final contrastLevel = 0.0;
+
     final scheme = _buildDynamicScheme(
       brightness,
       this,
       schemeVariant,
       contrastLevel,
     );
+
     final foreground = Color(MaterialDynamicColors.onPrimary.getArgb(scheme));
     if (_contrastRatio(this, foreground) >= 4.5) return foreground;
     final blackContrast = _contrastRatio(this, Colors.black);
@@ -91,8 +95,10 @@ DynamicScheme _buildDynamicScheme(
     contrastLevel >= -1.0 && contrastLevel <= 1.0,
     "contrastLevel must be between -1.0 and 1.0 inclusive.",
   );
+
   final isDark = brightness == Brightness.dark;
   final sourceColor = Hct.fromInt(seedColor.toARGB32());
+
   return switch (schemeVariant) {
     DynamicSchemeVariant.tonalSpot => SchemeTonalSpot(
       sourceColorHct: sourceColor,

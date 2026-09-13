@@ -29,6 +29,12 @@ final class SkirActionEncoder {
   TypeResult<wire.TypedMutationResult> encodeMutation(
     TypedMutationResult value,
   ) => switch (value) {
+    MutationUncertain() => TypeResult.failure([
+      TypeDiagnostic(
+        code: TypeDiagnosticCode.invalidValue,
+        message: "Transport uncertainty cannot be encoded as a server response",
+      ),
+    ]),
     MutationSuccess() =>
       values
           .encode(value.value)
@@ -157,14 +163,13 @@ final class SkirActionEncoder {
         ReloadRealmAction() => TypeResult.success(
           wire.RealmEditorAction.createReload(),
         ),
-        InvokeRealmCallbackAction() =>
+        InvokeRealmCommandAction() =>
           expressions
               .encode(value.payload)
               .mapValue(
-                (payload) => wire.RealmEditorAction.createCallback(
-                  realmActionId: wire_type.RealmActionId(
-                    namespace: value.actionId.namespace,
-                    name: value.actionId.name,
+                (payload) => wire.RealmEditorAction.createCommand(
+                  capabilityId: wire_type.CapabilityId(
+                    value: value.capabilityId.value,
                   ),
                   payload: payload,
                 ),

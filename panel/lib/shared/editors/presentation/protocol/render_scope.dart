@@ -4,31 +4,30 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 part "render_scope.freezed.dart";
 
-typedef BindingSetter =
-    void Function(
-      BindingReference reference,
-      DataValue value,
-      ExpressionContext context,
-      Map<BindingId, BindingReference> aliases,
-    );
+typedef BindingSetter = void Function(
+  BindingReference reference,
+  DataValue value,
+  ExpressionContext context,
+  Map<BindingId, BindingReference> aliases,
+);
 
-typedef ActionExecutor =
-    void Function(
-      EditorAction action,
-      ExpressionContext context,
-      Map<BindingId, BindingReference> aliases,
-    );
+typedef ActionExecutor = void Function(
+  EditorAction action,
+  ExpressionContext context,
+  Map<BindingId, BindingReference> aliases,
+);
 
-typedef EditorInteractionStarter =
-    EditorInteractionSession? Function(BindingReference reference);
+typedef EditorInteractionStarter = EditorInteractionSession? Function(
+  BindingReference reference,
+);
 
 final class VirtualBindingHost {
   VirtualBindingHost({
     required this.id,
-    required BindingSnapshot snapshot,
+    required this._snapshot,
     required this.onChanged,
     this.interactionTarget,
-  }) : _snapshot = snapshot;
+  });
 
   final BindingId id;
   final ValueChanged<DataValue> onChanged;
@@ -56,19 +55,43 @@ final class VirtualBindingHost {
     return true;
   }
 
-  TypedMutationResult execute(
+  LocalMutationResult execute(
     LocalEditorAction action,
     ExpressionContext context, {
     required TypeRegistry registry,
     required ExpressionBudget budget,
+    required Map<BindingId, BindingReference> aliases,
   }) {
-    final result = action.execute(
-      bind(context),
-      registry: registry,
-      budget: budget,
-    );
-    if (result case MutationSuccess(:final value)) {
-      _replace(value);
+    var current = context;
+    for (final entry in context.bindings.bindings.entries) {
+      final address = BindingReference(bindingId: entry.key)
+          .canonicalizedWith(aliases);
+      if (address.bindingId != id) continue;
+      final value = address.path.read(_snapshot.value).valueOrNull;
+      if (value == null) continue;
+      final inspected = context.bindings.inspect(
+        BindingReference(bindingId: entry.key),
+        registry: registry,
+      );
+      if (inspected case TypeFailure(:final diagnostics)) {
+        return LocalMutationInvalid(diagnostics);
+      }
+      final binding = inspected.valueOrNull!;
+      current = current.withBinding(
+        entry.key,
+        BindingSnapshot(
+          type: binding.type,
+          value: value,
+          revision: _snapshot.revision,
+          writable: binding.writable,
+        ),
+      );
+    }
+    final result = action.execute(current, registry: registry, budget: budget);
+    if (result case LocalMutationApplied(:final value)) {
+      final reference = action.action.mutationReference;
+      final next = reference.path.read(value).valueOrNull;
+      if (next != null) update(reference.canonicalizedWith(aliases).path, next);
     }
     return result;
   }
@@ -85,6 +108,8 @@ abstract class ResolvedPresentationDefinition
   const factory ResolvedPresentationDefinition({
     required PresentationId id,
     required PresentationNode root,
+    @Default([]) List<PresentationInputParameter> inputs,
+    BindingId? primaryInput,
   }) = _ResolvedPresentationDefinition;
 }
 
@@ -119,11 +144,10 @@ final class HeaderExpansionStore {
   }
 }
 
-typedef PresentationResolver =
-    ResolvedPresentationDefinition? Function(
-      TypeExpression type,
-      PresentationId? requested,
-    );
+typedef PresentationResolver = ResolvedPresentationDefinition? Function(
+  TypeExpression? type,
+  PresentationId? requested,
+);
 
 @freezed
 abstract class PresentationRenderScope with _$PresentationRenderScope {
@@ -141,6 +165,8 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
     Map<PresentationCollectionSourceId, PresentationCollectionSource>
     collections,
     @Default({}) Map<BindingId, BindingReference> aliases,
+    @Default({}) Map<BindingId, PresentationInputAccess> inputAccess,
+    @Default({}) Map<BindingId, BindingReference?> ownerBindings,
     @Default({})
     Map<HeaderItemCommandId, List<ShortcutActivator>> headerShortcuts,
     @Default({}) Set<(String, BindingReference?)> suppressedHeaders,
@@ -160,8 +186,19 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
     return alias.at(reference.path);
   }
 
+  /// Returns lexical access without granting undeclared edit capability.
+  PresentationInputAccess accessOf(BindingReference reference) =>
+      inputAccess[reference.bindingId] ?? PresentationInputAccess.read;
+
+  /// Resolves the transaction origin, including inputs with a virtual representation.
+  BindingReference? ownerReference(BindingReference reference) =>
+      ownerBindings[reference.bindingId]?.at(reference.path);
+
   TypeResult<ResolvedBinding> resolve(BindingReference reference) =>
-      expressions.bindings.resolve(reference);
+      expressions.bindings.resolve(reference, registry: registry);
+
+  TypeResult<InspectedBinding> inspect(BindingReference reference) =>
+      expressions.bindings.inspect(reference, registry: registry);
 
   TypeResult<DataValue> evaluate(TypedExpression expression) =>
       expression.evaluate(expressions, registry: registry, budget: budget);
@@ -194,87 +231,61 @@ abstract class PresentationRenderScope with _$PresentationRenderScope {
 
   PresentationRenderScope withAlias(
     BindingId id,
-    BindingReference canonical,
-    BindingSnapshot snapshot,
+    BindingReference source,
+    BindingSource bindingSource,
   ) => copyWith(
-    expressions: expressions.withBinding(id, snapshot),
-    aliases: {...aliases, id: canonical},
+    expressions: expressions.withBinding(id, bindingSource),
+    aliases: {...aliases, id: canonical(source)},
+    inputAccess: {...inputAccess, id: accessOf(source)},
+    ownerBindings: {...ownerBindings, id: ownerReference(source)},
   );
 
-  PresentationRenderScope withVirtualBinding(VirtualBindingHost host) {
+  PresentationRenderScope withVirtualBinding(
+    VirtualBindingHost host, {
+    BindingReference? source,
+  }) {
     return copyWith(
       expressions: host.bind(expressions),
+      inputAccess: {
+        ...inputAccess,
+        host.id: source == null
+            ? (host._snapshot.writable
+                  ? PresentationInputAccess.edit
+                  : PresentationInputAccess.read)
+            : accessOf(source),
+      },
+      ownerBindings: {
+        ...ownerBindings,
+        host.id: source == null ? null : ownerReference(source),
+      },
       startInteraction: (reference) {
         return startInteraction?.call(host.interactionReference(reference));
       },
       setBinding: (reference, value, context, aliases) {
-        if (reference.bindingId != host.id) {
+        final destination = reference.canonicalizedWith(aliases);
+        if (destination.bindingId != host.id) {
           setBinding(reference, value, context, aliases);
           return;
         }
-        host.update(reference.path, value);
+        host.update(destination.path, value);
       },
       executeAction: (action, context, aliases) {
-        if (action case LocalEditorAction(
-          action: final local,
-        ) when local._bindingReference.bindingId == host.id) {
-          host.execute(action, context, registry: registry, budget: budget);
-          return;
+        if (action case LocalEditorAction(action: final local)) {
+          final reference = local.mutationReference;
+          final destination = reference.canonicalizedWith(aliases);
+          if (destination.bindingId == host.id) {
+            host.execute(
+              action,
+              context,
+              registry: registry,
+              budget: budget,
+              aliases: aliases,
+            );
+            return;
+          }
         }
         executeAction(action, context, aliases);
       },
     );
   }
-}
-
-extension on LocalAction {
-  BindingReference get _bindingReference => switch (this) {
-    SetValueAction(:final target) ||
-    InsertListItemAction(:final target) ||
-    RemoveListItemAction(:final target) ||
-    AppendListItemAction(:final target) ||
-    PutMapEntryAction(:final target) ||
-    RemoveMapEntryAction(:final target) ||
-    ReplaceConcreteTypeAction(:final target) => target,
-    DuplicateListItemAction(:final source) ||
-    ReorderListItemAction(:final source) => source,
-  };
-}
-
-Widget presentationDiagnostic(
-  BuildContext context,
-  Iterable<TypeDiagnostic> diagnostics,
-) {
-  final values = diagnostics.toList();
-  final colors = Theme.of(context).colorScheme;
-  return Material(
-    color: colors.errorContainer,
-    borderRadius: context.shapes.mediumBorderRadius,
-    child: Padding(
-      padding: EdgeInsets.all(context.spacing.space3),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 24),
-        child: Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 34),
-              child: Text(
-                values.map((item) => item.message).join("\n"),
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colors.onErrorContainer,
-                ),
-              ),
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Icon(Icons.error_outline, color: colors.onErrorContainer),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
 }

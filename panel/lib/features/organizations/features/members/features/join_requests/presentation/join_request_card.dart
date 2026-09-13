@@ -79,7 +79,7 @@ class JoinRequestCard extends HookConsumerWidget {
                   onSelectionChanged(false);
                   return ref
                       .read(organizationJoinRequestsProvider.notifier)
-                      .approveRequest(request.requestId, selectedRoles.value)
+                      .approveRequests([request.requestId], selectedRoles.value)
                       .catchApiExceptionsAndDisplay(context);
                 },
               ),

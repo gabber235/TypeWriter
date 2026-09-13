@@ -13,6 +13,9 @@ enum RendererStoryKind {
   badge,
   chip,
   progress,
+  status,
+  dateTime,
+  relativeTime,
   typedField,
   conditional,
   repeated,
@@ -147,7 +150,9 @@ final rendererStoryRoot = ResolvedTypeRef(
 extension RendererStoryElementKind on PresentationElement {
   RendererStoryKind get rendererStoryKind => switch (this) {
     DiagnosticElement() => RendererStoryKind.diagnostic,
-    DefaultPresentationElement() => RendererStoryKind.defaultPresentation,
+    DefaultPresentationElement() ||
+    PresentationInvocationElement() ||
+    CommitControlsElement() => RendererStoryKind.defaultPresentation,
     TextElement() => RendererStoryKind.text,
     MarkdownElement() => RendererStoryKind.markdown,
     IconElement() => RendererStoryKind.icon,
@@ -155,6 +160,9 @@ extension RendererStoryElementKind on PresentationElement {
     BadgeElement() => RendererStoryKind.badge,
     ChipElement() => RendererStoryKind.chip,
     ProgressElement() => RendererStoryKind.progress,
+    StatusElement() => RendererStoryKind.status,
+    DateTimeElement() => RendererStoryKind.dateTime,
+    RelativeTimeElement() => RendererStoryKind.relativeTime,
     TypedFieldElement() => RendererStoryKind.typedField,
     ConditionalElement() => RendererStoryKind.conditional,
     RepeatedElement() => RendererStoryKind.repeated,

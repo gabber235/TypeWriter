@@ -8,6 +8,7 @@ extension SkirPresentationSearchDecoder on SkirPresentationDecoder {
     final summaryBindingId = _searchBindingId(value.summaryBindingId.value);
     final maximumExtent = expressions.decode(value.maximumExtent);
     final provider = _searchProvider(value.provider);
+
     final placeholder = _optionalExpression(value.placeholder);
     final customValue = _optionalExpression(value.customValue);
     final initialQuery = _optionalExpression(value.initialQuery);
@@ -77,6 +78,7 @@ extension SkirPresentationSearchDecoder on SkirPresentationDecoder {
     if (value.key.isEmpty) {
       diagnostics.add(wireDiagnostic("Search selector key is empty"));
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             SearchSelectorDefinition.keyValue(

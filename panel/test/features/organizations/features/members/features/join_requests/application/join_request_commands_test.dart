@@ -10,9 +10,9 @@ import "support/join_requests_test_support.dart";
 
 void main() {
   group("Organization join request command errors", () {
-    late MockNatsClient mockNats;
+    late FakeNatsClient mockNats;
 
-    setUp(() => mockNats = MockNatsClient());
+    setUp(() => mockNats = FakeNatsClient());
     tearDown(() => mockNats.dispose());
 
     Matcher apiException(int code, String message) => isA<ApiException>()
@@ -23,7 +23,7 @@ void main() {
         <
           ({
             String name,
-            skir.ApproveOrganizationJoinRequestResponse response,
+            skir.ApproveOrganizationJoinRequestsResponse response,
             int code,
             String message,
           })
@@ -31,15 +31,15 @@ void main() {
           (
             name: "roles required",
             response: skir
-                .ApproveOrganizationJoinRequestResponse.createRolesRequiredError(),
+                .ApproveOrganizationJoinRequestsResponse.createRolesRequiredError(),
             code: 400,
             message: "At least one role is required",
           ),
           (
             name: "user already member",
             response:
-                skir.ApproveOrganizationJoinRequestResponse.createUserAlreadyMemberError(
-                  userId: testMemberId,
+                skir.ApproveOrganizationJoinRequestsResponse.createUserAlreadyMemberError(
+                  userIds: [testMemberId],
                 ),
             code: 409,
             message: "User is already an organization member",
@@ -77,14 +77,14 @@ void main() {
             "cloud.to.user.$testUserId.organization.${testOrganizationId.id}.members.join_requests.approve";
         mockNats.registerHandler(
           subject,
-          (data) => skir.ApproveOrganizationJoinRequestResponse.serializer
+          (data) => skir.ApproveOrganizationJoinRequestsResponse.serializer
               .toBytes(outcome.response),
         );
 
         await expectLater(
           container
               .read(organizationJoinRequestsProvider.notifier)
-              .approveRequest(request.requestId, []),
+              .approveRequests([request.requestId], []),
           throwsA(apiException(outcome.code, outcome.message)),
         );
       });

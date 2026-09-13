@@ -172,6 +172,7 @@ void main() {
       minimum: Duration(seconds: 2),
       maximum: Duration(seconds: 8),
     );
+
     const stringParent = StringType();
     const stringChild = StringType(patterns: [r"^[a-z]+$"]);
     final registry = TypeRegistry(TypeCatalog(const []));
@@ -206,6 +207,7 @@ void main() {
       ),
       isTrue,
     );
+
     expect(
       typeExpressionsEqual(
         intersectTypes(durationParent, durationChild).valueOrNull!,

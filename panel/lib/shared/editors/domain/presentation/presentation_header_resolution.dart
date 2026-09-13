@@ -28,7 +28,7 @@ extension PresentationElementHeaderContribution on PresentationElement {
   }) {
     final element = this;
     return switch (element) {
-      ToggleInputElement() => element._toggleHeader(context),
+      ToggleInputElement() => element._toggleHeader(context, registry),
       ListInputElement() => element._listHeader(context, registry),
       MapInputElement() => element._mapHeader(context, registry),
       _ => null,
@@ -37,10 +37,14 @@ extension PresentationElementHeaderContribution on PresentationElement {
 }
 
 extension on ToggleInputElement {
-  PresentationHeader? _toggleHeader(ExpressionContext context) {
-    final resolved = context.bindings.resolve(control.binding).valueOrNull;
+  PresentationHeader? _toggleHeader(
+    ExpressionContext context,
+    TypeRegistry registry,
+  ) {
+    final resolved = context.bindings
+        .resolve(control.binding, registry: registry)
+        .valueOrNull;
     if (resolved case ResolvedBinding(
-      type: BooleanType(),
       value: BooleanValue(:final value),
       :final writable,
     )) {
@@ -81,8 +85,12 @@ extension on ListInputElement {
     TypeRegistry registry,
   ) {
     if (!allowAdd) return null;
-    final resolved = context.bindings.resolve(control.binding).valueOrNull;
-    if (resolved?.type case ListType(:final element)) {
+    final resolved = context.bindings
+        .resolve(control.binding, registry: registry)
+        .valueOrNull;
+    if (resolved?.type.bindingRepresentation(registry) case ListType(
+      :final element,
+    )) {
       final initial = element
           .createInitialValue(registry: registry)
           .valueOrNull;
@@ -121,8 +129,13 @@ extension on MapInputElement {
     TypeRegistry registry,
   ) {
     if (!allowAdd) return null;
-    final resolved = context.bindings.resolve(control.binding).valueOrNull;
-    if (resolved?.type case MapType(:final key, :final value)) {
+    final resolved = context.bindings
+        .resolve(control.binding, registry: registry)
+        .valueOrNull;
+    if (resolved?.type.bindingRepresentation(registry) case MapType(
+      :final key,
+      :final value,
+    )) {
       final initialKey = key.createInitialValue(registry: registry).valueOrNull;
       final initialValue = value
           .createInitialValue(registry: registry)

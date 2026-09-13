@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'action.dart';
@@ -9,6 +9,7 @@ part of 'action.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,16 +21,21 @@ mixin _$EditorAction {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorAction&&const DeepCollectionEquality().equals(other.action, action));
+  final _this = this as EditorAction;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorAction&&const DeepCollectionEquality().equals(other.action, _this.action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(action));
+int get hashCode {
+  final _this = this as EditorAction;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.action));
+}
 
 @override
 String toString() {
-  return 'EditorAction(action: $action)';
+  final _this = this as EditorAction;
+  return 'EditorAction(action: ${_this.action})';
 }
 
 
@@ -176,7 +182,7 @@ return realm(_that.action);case _:
 
 class LocalEditorAction implements EditorAction {
   const LocalEditorAction(this.action);
-  
+
 
 @override final  LocalAction action;
 
@@ -190,16 +196,18 @@ $LocalEditorActionCopyWith<LocalEditorAction> get copyWith => _$LocalEditorActio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalEditorAction&&(identical(other.action, action) || other.action == action));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalEditorAction&&(identical(other.action, action) || other.action == action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,action);
+int get hashCode {
+    return Object.hash(runtimeType,action);
+}
 
 @override
 String toString() {
-  return 'EditorAction.local(action: $action)';
+    return 'EditorAction.local(action: $action)';
 }
 
 
@@ -239,7 +247,7 @@ as LocalAction,
 @override
 @pragma('vm:prefer-inline')
 $LocalActionCopyWith<$Res> get action {
-  
+
   return $LocalActionCopyWith<$Res>(_self.action, (value) {
     return _then(_self.copyWith(action: value));
   });
@@ -251,7 +259,7 @@ $LocalActionCopyWith<$Res> get action {
 
 class RealmEditorAction implements EditorAction {
   const RealmEditorAction(this.action);
-  
+
 
 @override final  RealmAction action;
 
@@ -265,16 +273,18 @@ $RealmEditorActionCopyWith<RealmEditorAction> get copyWith => _$RealmEditorActio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorAction&&(identical(other.action, action) || other.action == action));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmEditorAction&&(identical(other.action, action) || other.action == action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,action);
+int get hashCode {
+    return Object.hash(runtimeType,action);
+}
 
 @override
 String toString() {
-  return 'EditorAction.realm(action: $action)';
+    return 'EditorAction.realm(action: $action)';
 }
 
 
@@ -314,7 +324,7 @@ as RealmAction,
 @override
 @pragma('vm:prefer-inline')
 $RealmActionCopyWith<$Res> get action {
-  
+
   return $RealmActionCopyWith<$Res>(_self.action, (value) {
     return _then(_self.copyWith(action: value));
   });
@@ -330,7 +340,7 @@ mixin _$LocalAction {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalAction);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalAction);
 }
 
 
@@ -339,7 +349,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'LocalAction()';
+    return 'LocalAction()';
 }
 
 
@@ -528,7 +538,7 @@ return replaceConcreteType(_that.target,_that.concreteType,_that.initialValue);c
 
 class SetValueAction implements LocalAction {
   const SetValueAction({required this.target, required this.value});
-  
+
 
  final  BindingReference target;
  final  TypedExpression value;
@@ -543,16 +553,18 @@ $SetValueActionCopyWith<SetValueAction> get copyWith => _$SetValueActionCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetValueAction&&(identical(other.target, target) || other.target == target)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SetValueAction&&(identical(other.target, target) || other.target == target)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,value);
+int get hashCode {
+    return Object.hash(runtimeType,target,value);
+}
 
 @override
 String toString() {
-  return 'LocalAction.setValue(target: $target, value: $value)';
+    return 'LocalAction.setValue(target: $target, value: $value)';
 }
 
 
@@ -593,7 +605,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get target {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -602,7 +614,7 @@ $BindingReferenceCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get value {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -614,7 +626,7 @@ $TypedExpressionCopyWith<$Res> get value {
 
 class InsertListItemAction implements LocalAction {
   const InsertListItemAction({required this.target, required this.index, required this.value});
-  
+
 
  final  BindingReference target;
  final  TypedExpression index;
@@ -630,16 +642,18 @@ $InsertListItemActionCopyWith<InsertListItemAction> get copyWith => _$InsertList
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InsertListItemAction&&(identical(other.target, target) || other.target == target)&&(identical(other.index, index) || other.index == index)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InsertListItemAction&&(identical(other.target, target) || other.target == target)&&(identical(other.index, index) || other.index == index)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,index,value);
+int get hashCode {
+    return Object.hash(runtimeType,target,index,value);
+}
 
 @override
 String toString() {
-  return 'LocalAction.insertListItem(target: $target, index: $index, value: $value)';
+    return 'LocalAction.insertListItem(target: $target, index: $index, value: $value)';
 }
 
 
@@ -681,7 +695,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get target {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -690,7 +704,7 @@ $BindingReferenceCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get index {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.index, (value) {
     return _then(_self.copyWith(index: value));
   });
@@ -699,7 +713,7 @@ $TypedExpressionCopyWith<$Res> get index {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get value {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -711,7 +725,7 @@ $TypedExpressionCopyWith<$Res> get value {
 
 class RemoveListItemAction implements LocalAction {
   const RemoveListItemAction({required this.target, required this.index});
-  
+
 
  final  BindingReference target;
  final  TypedExpression index;
@@ -726,16 +740,18 @@ $RemoveListItemActionCopyWith<RemoveListItemAction> get copyWith => _$RemoveList
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveListItemAction&&(identical(other.target, target) || other.target == target)&&(identical(other.index, index) || other.index == index));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveListItemAction&&(identical(other.target, target) || other.target == target)&&(identical(other.index, index) || other.index == index));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,index);
+int get hashCode {
+    return Object.hash(runtimeType,target,index);
+}
 
 @override
 String toString() {
-  return 'LocalAction.removeListItem(target: $target, index: $index)';
+    return 'LocalAction.removeListItem(target: $target, index: $index)';
 }
 
 
@@ -776,7 +792,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get target {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -785,7 +801,7 @@ $BindingReferenceCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get index {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.index, (value) {
     return _then(_self.copyWith(index: value));
   });
@@ -797,7 +813,7 @@ $TypedExpressionCopyWith<$Res> get index {
 
 class AppendListItemAction implements LocalAction {
   const AppendListItemAction({required this.target, required this.value});
-  
+
 
  final  BindingReference target;
  final  TypedExpression value;
@@ -812,16 +828,18 @@ $AppendListItemActionCopyWith<AppendListItemAction> get copyWith => _$AppendList
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppendListItemAction&&(identical(other.target, target) || other.target == target)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppendListItemAction&&(identical(other.target, target) || other.target == target)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,value);
+int get hashCode {
+    return Object.hash(runtimeType,target,value);
+}
 
 @override
 String toString() {
-  return 'LocalAction.appendListItem(target: $target, value: $value)';
+    return 'LocalAction.appendListItem(target: $target, value: $value)';
 }
 
 
@@ -862,7 +880,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get target {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -871,7 +889,7 @@ $BindingReferenceCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get value {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -883,7 +901,7 @@ $TypedExpressionCopyWith<$Res> get value {
 
 class DuplicateListItemAction implements LocalAction {
   const DuplicateListItemAction({required this.source});
-  
+
 
  final  BindingReference source;
 
@@ -897,16 +915,18 @@ $DuplicateListItemActionCopyWith<DuplicateListItemAction> get copyWith => _$Dupl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateListItemAction&&(identical(other.source, source) || other.source == source));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateListItemAction&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source);
+int get hashCode {
+    return Object.hash(runtimeType,source);
+}
 
 @override
 String toString() {
-  return 'LocalAction.duplicateListItem(source: $source)';
+    return 'LocalAction.duplicateListItem(source: $source)';
 }
 
 
@@ -946,7 +966,7 @@ as BindingReference,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get source {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -958,7 +978,7 @@ $BindingReferenceCopyWith<$Res> get source {
 
 class ReorderListItemAction implements LocalAction {
   const ReorderListItemAction({required this.source, required this.newIndex});
-  
+
 
  final  BindingReference source;
  final  TypedExpression newIndex;
@@ -973,16 +993,18 @@ $ReorderListItemActionCopyWith<ReorderListItemAction> get copyWith => _$ReorderL
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReorderListItemAction&&(identical(other.source, source) || other.source == source)&&(identical(other.newIndex, newIndex) || other.newIndex == newIndex));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReorderListItemAction&&(identical(other.source, source) || other.source == source)&&(identical(other.newIndex, newIndex) || other.newIndex == newIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,newIndex);
+int get hashCode {
+    return Object.hash(runtimeType,source,newIndex);
+}
 
 @override
 String toString() {
-  return 'LocalAction.reorderListItem(source: $source, newIndex: $newIndex)';
+    return 'LocalAction.reorderListItem(source: $source, newIndex: $newIndex)';
 }
 
 
@@ -1023,7 +1045,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get source {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -1032,7 +1054,7 @@ $BindingReferenceCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get newIndex {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.newIndex, (value) {
     return _then(_self.copyWith(newIndex: value));
   });
@@ -1044,7 +1066,7 @@ $TypedExpressionCopyWith<$Res> get newIndex {
 
 class PutMapEntryAction implements LocalAction {
   const PutMapEntryAction({required this.target, required this.key, required this.value});
-  
+
 
  final  BindingReference target;
  final  TypedExpression key;
@@ -1060,16 +1082,18 @@ $PutMapEntryActionCopyWith<PutMapEntryAction> get copyWith => _$PutMapEntryActio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PutMapEntryAction&&(identical(other.target, target) || other.target == target)&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PutMapEntryAction&&(identical(other.target, target) || other.target == target)&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,key,value);
+int get hashCode {
+    return Object.hash(runtimeType,target,key,value);
+}
 
 @override
 String toString() {
-  return 'LocalAction.putMapEntry(target: $target, key: $key, value: $value)';
+    return 'LocalAction.putMapEntry(target: $target, key: $key, value: $value)';
 }
 
 
@@ -1111,7 +1135,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get target {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -1120,7 +1144,7 @@ $BindingReferenceCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get key {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });
@@ -1129,7 +1153,7 @@ $TypedExpressionCopyWith<$Res> get key {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get value {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -1141,7 +1165,7 @@ $TypedExpressionCopyWith<$Res> get value {
 
 class RemoveMapEntryAction implements LocalAction {
   const RemoveMapEntryAction({required this.target, required this.key});
-  
+
 
  final  BindingReference target;
  final  TypedExpression key;
@@ -1156,16 +1180,18 @@ $RemoveMapEntryActionCopyWith<RemoveMapEntryAction> get copyWith => _$RemoveMapE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveMapEntryAction&&(identical(other.target, target) || other.target == target)&&(identical(other.key, key) || other.key == key));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveMapEntryAction&&(identical(other.target, target) || other.target == target)&&(identical(other.key, key) || other.key == key));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,key);
+int get hashCode {
+    return Object.hash(runtimeType,target,key);
+}
 
 @override
 String toString() {
-  return 'LocalAction.removeMapEntry(target: $target, key: $key)';
+    return 'LocalAction.removeMapEntry(target: $target, key: $key)';
 }
 
 
@@ -1206,7 +1232,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get target {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -1215,7 +1241,7 @@ $BindingReferenceCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get key {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });
@@ -1227,7 +1253,7 @@ $TypedExpressionCopyWith<$Res> get key {
 
 class ReplaceConcreteTypeAction implements LocalAction {
   const ReplaceConcreteTypeAction({required this.target, required this.concreteType, required this.initialValue});
-  
+
 
  final  BindingReference target;
  final  ResolvedTypeRef concreteType;
@@ -1243,16 +1269,18 @@ $ReplaceConcreteTypeActionCopyWith<ReplaceConcreteTypeAction> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReplaceConcreteTypeAction&&(identical(other.target, target) || other.target == target)&&(identical(other.concreteType, concreteType) || other.concreteType == concreteType)&&(identical(other.initialValue, initialValue) || other.initialValue == initialValue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReplaceConcreteTypeAction&&(identical(other.target, target) || other.target == target)&&(identical(other.concreteType, concreteType) || other.concreteType == concreteType)&&(identical(other.initialValue, initialValue) || other.initialValue == initialValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,target,concreteType,initialValue);
+int get hashCode {
+    return Object.hash(runtimeType,target,concreteType,initialValue);
+}
 
 @override
 String toString() {
-  return 'LocalAction.replaceConcreteType(target: $target, concreteType: $concreteType, initialValue: $initialValue)';
+    return 'LocalAction.replaceConcreteType(target: $target, concreteType: $concreteType, initialValue: $initialValue)';
 }
 
 
@@ -1294,7 +1322,7 @@ as TypedExpression,
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get target {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -1303,7 +1331,7 @@ $BindingReferenceCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get concreteType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.concreteType, (value) {
     return _then(_self.copyWith(concreteType: value));
   });
@@ -1312,7 +1340,7 @@ $ResolvedTypeRefCopyWith<$Res> get concreteType {
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get initialValue {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.initialValue, (value) {
     return _then(_self.copyWith(initialValue: value));
   });
@@ -1328,7 +1356,7 @@ mixin _$RealmAction {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmAction);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmAction);
 }
 
 
@@ -1337,7 +1365,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'RealmAction()';
+    return 'RealmAction()';
 }
 
 
@@ -1363,12 +1391,12 @@ extension RealmActionPatterns on RealmAction {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ReloadRealmAction value)?  reload,TResult Function( InvokeRealmCallbackAction value)?  invokeCallback,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ReloadRealmAction value)?  reload,TResult Function( InvokeRealmCommandAction value)?  invokeCommand,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ReloadRealmAction() when reload != null:
-return reload(_that);case InvokeRealmCallbackAction() when invokeCallback != null:
-return invokeCallback(_that);case _:
+return reload(_that);case InvokeRealmCommandAction() when invokeCommand != null:
+return invokeCommand(_that);case _:
   return orElse();
 
 }
@@ -1386,12 +1414,12 @@ return invokeCallback(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ReloadRealmAction value)  reload,required TResult Function( InvokeRealmCallbackAction value)  invokeCallback,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ReloadRealmAction value)  reload,required TResult Function( InvokeRealmCommandAction value)  invokeCommand,}){
 final _that = this;
 switch (_that) {
 case ReloadRealmAction():
-return reload(_that);case InvokeRealmCallbackAction():
-return invokeCallback(_that);}
+return reload(_that);case InvokeRealmCommandAction():
+return invokeCommand(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1405,12 +1433,12 @@ return invokeCallback(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ReloadRealmAction value)?  reload,TResult? Function( InvokeRealmCallbackAction value)?  invokeCallback,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ReloadRealmAction value)?  reload,TResult? Function( InvokeRealmCommandAction value)?  invokeCommand,}){
 final _that = this;
 switch (_that) {
 case ReloadRealmAction() when reload != null:
-return reload(_that);case InvokeRealmCallbackAction() when invokeCallback != null:
-return invokeCallback(_that);case _:
+return reload(_that);case InvokeRealmCommandAction() when invokeCommand != null:
+return invokeCommand(_that);case _:
   return null;
 
 }
@@ -1427,11 +1455,11 @@ return invokeCallback(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  reload,TResult Function( RealmActionId actionId,  TypedExpression payload)?  invokeCallback,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  reload,TResult Function( CapabilityId capabilityId,  TypedExpression payload)?  invokeCommand,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ReloadRealmAction() when reload != null:
-return reload();case InvokeRealmCallbackAction() when invokeCallback != null:
-return invokeCallback(_that.actionId,_that.payload);case _:
+return reload();case InvokeRealmCommandAction() when invokeCommand != null:
+return invokeCommand(_that.capabilityId,_that.payload);case _:
   return orElse();
 
 }
@@ -1449,11 +1477,11 @@ return invokeCallback(_that.actionId,_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  reload,required TResult Function( RealmActionId actionId,  TypedExpression payload)  invokeCallback,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  reload,required TResult Function( CapabilityId capabilityId,  TypedExpression payload)  invokeCommand,}) {final _that = this;
 switch (_that) {
 case ReloadRealmAction():
-return reload();case InvokeRealmCallbackAction():
-return invokeCallback(_that.actionId,_that.payload);}
+return reload();case InvokeRealmCommandAction():
+return invokeCommand(_that.capabilityId,_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1467,11 +1495,11 @@ return invokeCallback(_that.actionId,_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  reload,TResult? Function( RealmActionId actionId,  TypedExpression payload)?  invokeCallback,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  reload,TResult? Function( CapabilityId capabilityId,  TypedExpression payload)?  invokeCommand,}) {final _that = this;
 switch (_that) {
 case ReloadRealmAction() when reload != null:
-return reload();case InvokeRealmCallbackAction() when invokeCallback != null:
-return invokeCallback(_that.actionId,_that.payload);case _:
+return reload();case InvokeRealmCommandAction() when invokeCommand != null:
+return invokeCommand(_that.capabilityId,_that.payload);case _:
   return null;
 
 }
@@ -1484,7 +1512,7 @@ return invokeCallback(_that.actionId,_that.payload);case _:
 
 class ReloadRealmAction implements RealmAction {
   const ReloadRealmAction();
-  
+
 
 
 
@@ -1493,7 +1521,7 @@ class ReloadRealmAction implements RealmAction {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReloadRealmAction);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReloadRealmAction);
 }
 
 
@@ -1502,7 +1530,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'RealmAction.reload()';
+    return 'RealmAction.reload()';
 }
 
 
@@ -1514,64 +1542,66 @@ String toString() {
 /// @nodoc
 
 
-class InvokeRealmCallbackAction implements RealmAction {
-  const InvokeRealmCallbackAction({required this.actionId, required this.payload});
-  
+class InvokeRealmCommandAction implements RealmAction {
+  const InvokeRealmCommandAction({required this.capabilityId, required this.payload});
 
- final  RealmActionId actionId;
+
+ final  CapabilityId capabilityId;
  final  TypedExpression payload;
 
 /// Create a copy of RealmAction
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$InvokeRealmCallbackActionCopyWith<InvokeRealmCallbackAction> get copyWith => _$InvokeRealmCallbackActionCopyWithImpl<InvokeRealmCallbackAction>(this, _$identity);
+$InvokeRealmCommandActionCopyWith<InvokeRealmCommandAction> get copyWith => _$InvokeRealmCommandActionCopyWithImpl<InvokeRealmCommandAction>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvokeRealmCallbackAction&&(identical(other.actionId, actionId) || other.actionId == actionId)&&(identical(other.payload, payload) || other.payload == payload));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InvokeRealmCommandAction&&(identical(other.capabilityId, capabilityId) || other.capabilityId == capabilityId)&&(identical(other.payload, payload) || other.payload == payload));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,actionId,payload);
+int get hashCode {
+    return Object.hash(runtimeType,capabilityId,payload);
+}
 
 @override
 String toString() {
-  return 'RealmAction.invokeCallback(actionId: $actionId, payload: $payload)';
+    return 'RealmAction.invokeCommand(capabilityId: $capabilityId, payload: $payload)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $InvokeRealmCallbackActionCopyWith<$Res> implements $RealmActionCopyWith<$Res> {
-  factory $InvokeRealmCallbackActionCopyWith(InvokeRealmCallbackAction value, $Res Function(InvokeRealmCallbackAction) _then) = _$InvokeRealmCallbackActionCopyWithImpl;
+abstract mixin class $InvokeRealmCommandActionCopyWith<$Res> implements $RealmActionCopyWith<$Res> {
+  factory $InvokeRealmCommandActionCopyWith(InvokeRealmCommandAction value, $Res Function(InvokeRealmCommandAction) _then) = _$InvokeRealmCommandActionCopyWithImpl;
 @useResult
 $Res call({
- RealmActionId actionId, TypedExpression payload
+ CapabilityId capabilityId, TypedExpression payload
 });
 
 
-$RealmActionIdCopyWith<$Res> get actionId;$TypedExpressionCopyWith<$Res> get payload;
+$CapabilityIdCopyWith<$Res> get capabilityId;$TypedExpressionCopyWith<$Res> get payload;
 
 }
 /// @nodoc
-class _$InvokeRealmCallbackActionCopyWithImpl<$Res>
-    implements $InvokeRealmCallbackActionCopyWith<$Res> {
-  _$InvokeRealmCallbackActionCopyWithImpl(this._self, this._then);
+class _$InvokeRealmCommandActionCopyWithImpl<$Res>
+    implements $InvokeRealmCommandActionCopyWith<$Res> {
+  _$InvokeRealmCommandActionCopyWithImpl(this._self, this._then);
 
-  final InvokeRealmCallbackAction _self;
-  final $Res Function(InvokeRealmCallbackAction) _then;
+  final InvokeRealmCommandAction _self;
+  final $Res Function(InvokeRealmCommandAction) _then;
 
 /// Create a copy of RealmAction
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? actionId = null,Object? payload = null,}) {
-  return _then(InvokeRealmCallbackAction(
-actionId: null == actionId ? _self.actionId : actionId // ignore: cast_nullable_to_non_nullable
-as RealmActionId,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? capabilityId = null,Object? payload = null,}) {
+  return _then(InvokeRealmCommandAction(
+capabilityId: null == capabilityId ? _self.capabilityId : capabilityId // ignore: cast_nullable_to_non_nullable
+as CapabilityId,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
 as TypedExpression,
   ));
 }
@@ -1580,17 +1610,17 @@ as TypedExpression,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RealmActionIdCopyWith<$Res> get actionId {
-  
-  return $RealmActionIdCopyWith<$Res>(_self.actionId, (value) {
-    return _then(_self.copyWith(actionId: value));
+$CapabilityIdCopyWith<$Res> get capabilityId {
+
+  return $CapabilityIdCopyWith<$Res>(_self.capabilityId, (value) {
+    return _then(_self.copyWith(capabilityId: value));
   });
 }/// Create a copy of RealmAction
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
 $TypedExpressionCopyWith<$Res> get payload {
-  
+
   return $TypedExpressionCopyWith<$Res>(_self.payload, (value) {
     return _then(_self.copyWith(payload: value));
   });
@@ -1606,7 +1636,7 @@ mixin _$TypedMutationResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedMutationResult);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedMutationResult);
 }
 
 
@@ -1615,7 +1645,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypedMutationResult()';
+    return 'TypedMutationResult()';
 }
 
 
@@ -1641,14 +1671,15 @@ extension TypedMutationResultPatterns on TypedMutationResult {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MutationSuccess value)?  success,TResult Function( MutationConflict value)?  conflict,TResult Function( MutationInvalid value)?  invalid,TResult Function( MutationPermissionDenied value)?  permissionDenied,TResult Function( MutationUnavailable value)?  unavailable,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MutationSuccess value)?  success,TResult Function( MutationConflict value)?  conflict,TResult Function( MutationInvalid value)?  invalid,TResult Function( MutationPermissionDenied value)?  permissionDenied,TResult Function( MutationUncertain value)?  uncertain,TResult Function( MutationUnavailable value)?  unavailable,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that);case MutationConflict() when conflict != null:
 return conflict(_that);case MutationInvalid() when invalid != null:
 return invalid(_that);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that);case MutationUncertain() when uncertain != null:
+return uncertain(_that);case MutationUnavailable() when unavailable != null:
 return unavailable(_that);case _:
   return orElse();
 
@@ -1667,14 +1698,15 @@ return unavailable(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MutationSuccess value)  success,required TResult Function( MutationConflict value)  conflict,required TResult Function( MutationInvalid value)  invalid,required TResult Function( MutationPermissionDenied value)  permissionDenied,required TResult Function( MutationUnavailable value)  unavailable,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MutationSuccess value)  success,required TResult Function( MutationConflict value)  conflict,required TResult Function( MutationInvalid value)  invalid,required TResult Function( MutationPermissionDenied value)  permissionDenied,required TResult Function( MutationUncertain value)  uncertain,required TResult Function( MutationUnavailable value)  unavailable,}){
 final _that = this;
 switch (_that) {
 case MutationSuccess():
 return success(_that);case MutationConflict():
 return conflict(_that);case MutationInvalid():
 return invalid(_that);case MutationPermissionDenied():
-return permissionDenied(_that);case MutationUnavailable():
+return permissionDenied(_that);case MutationUncertain():
+return uncertain(_that);case MutationUnavailable():
 return unavailable(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -1689,14 +1721,15 @@ return unavailable(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MutationSuccess value)?  success,TResult? Function( MutationConflict value)?  conflict,TResult? Function( MutationInvalid value)?  invalid,TResult? Function( MutationPermissionDenied value)?  permissionDenied,TResult? Function( MutationUnavailable value)?  unavailable,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MutationSuccess value)?  success,TResult? Function( MutationConflict value)?  conflict,TResult? Function( MutationInvalid value)?  invalid,TResult? Function( MutationPermissionDenied value)?  permissionDenied,TResult? Function( MutationUncertain value)?  uncertain,TResult? Function( MutationUnavailable value)?  unavailable,}){
 final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that);case MutationConflict() when conflict != null:
 return conflict(_that);case MutationInvalid() when invalid != null:
 return invalid(_that);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that);case MutationUncertain() when uncertain != null:
+return uncertain(_that);case MutationUnavailable() when unavailable != null:
 return unavailable(_that);case _:
   return null;
 
@@ -1714,13 +1747,14 @@ return unavailable(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int revision,  DataValue value)?  success,TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult Function( String message)?  permissionDenied,TResult Function( List<TypeDiagnostic> diagnostics)?  unavailable,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int revision,  DataValue value)?  success,TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult Function( String message)?  permissionDenied,TResult Function( String message,  Object cause,  StackTrace stackTrace,  Future<TypedMutationResult> Function()? replay,  Object? submissionId)?  uncertain,TResult Function( List<TypeDiagnostic> diagnostics)?  unavailable,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that.revision,_that.value);case MutationConflict() when conflict != null:
 return conflict(_that.expectedRevision,_that.actualRevision,_that.actualValue);case MutationInvalid() when invalid != null:
 return invalid(_that.diagnostics);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that.message);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that.message);case MutationUncertain() when uncertain != null:
+return uncertain(_that.message,_that.cause,_that.stackTrace,_that.replay,_that.submissionId);case MutationUnavailable() when unavailable != null:
 return unavailable(_that.diagnostics);case _:
   return orElse();
 
@@ -1739,13 +1773,14 @@ return unavailable(_that.diagnostics);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int revision,  DataValue value)  success,required TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)  conflict,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,required TResult Function( String message)  permissionDenied,required TResult Function( List<TypeDiagnostic> diagnostics)  unavailable,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int revision,  DataValue value)  success,required TResult Function( int expectedRevision,  int actualRevision,  DataValue actualValue)  conflict,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,required TResult Function( String message)  permissionDenied,required TResult Function( String message,  Object cause,  StackTrace stackTrace,  Future<TypedMutationResult> Function()? replay,  Object? submissionId)  uncertain,required TResult Function( List<TypeDiagnostic> diagnostics)  unavailable,}) {final _that = this;
 switch (_that) {
 case MutationSuccess():
 return success(_that.revision,_that.value);case MutationConflict():
 return conflict(_that.expectedRevision,_that.actualRevision,_that.actualValue);case MutationInvalid():
 return invalid(_that.diagnostics);case MutationPermissionDenied():
-return permissionDenied(_that.message);case MutationUnavailable():
+return permissionDenied(_that.message);case MutationUncertain():
+return uncertain(_that.message,_that.cause,_that.stackTrace,_that.replay,_that.submissionId);case MutationUnavailable():
 return unavailable(_that.diagnostics);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -1760,13 +1795,14 @@ return unavailable(_that.diagnostics);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int revision,  DataValue value)?  success,TResult? Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult? Function( String message)?  permissionDenied,TResult? Function( List<TypeDiagnostic> diagnostics)?  unavailable,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int revision,  DataValue value)?  success,TResult? Function( int expectedRevision,  int actualRevision,  DataValue actualValue)?  conflict,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult? Function( String message)?  permissionDenied,TResult? Function( String message,  Object cause,  StackTrace stackTrace,  Future<TypedMutationResult> Function()? replay,  Object? submissionId)?  uncertain,TResult? Function( List<TypeDiagnostic> diagnostics)?  unavailable,}) {final _that = this;
 switch (_that) {
 case MutationSuccess() when success != null:
 return success(_that.revision,_that.value);case MutationConflict() when conflict != null:
 return conflict(_that.expectedRevision,_that.actualRevision,_that.actualValue);case MutationInvalid() when invalid != null:
 return invalid(_that.diagnostics);case MutationPermissionDenied() when permissionDenied != null:
-return permissionDenied(_that.message);case MutationUnavailable() when unavailable != null:
+return permissionDenied(_that.message);case MutationUncertain() when uncertain != null:
+return uncertain(_that.message,_that.cause,_that.stackTrace,_that.replay,_that.submissionId);case MutationUnavailable() when unavailable != null:
 return unavailable(_that.diagnostics);case _:
   return null;
 
@@ -1780,7 +1816,7 @@ return unavailable(_that.diagnostics);case _:
 
 class MutationSuccess implements TypedMutationResult {
   const MutationSuccess({required this.revision, required this.value}): assert(revision >= 0, 'Revision must not be negative.');
-  
+
 
  final  int revision;
  final  DataValue value;
@@ -1795,16 +1831,18 @@ $MutationSuccessCopyWith<MutationSuccess> get copyWith => _$MutationSuccessCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationSuccess&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationSuccess&&(identical(other.revision, revision) || other.revision == revision)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,revision,value);
+int get hashCode {
+    return Object.hash(runtimeType,revision,value);
+}
 
 @override
 String toString() {
-  return 'TypedMutationResult.success(revision: $revision, value: $value)';
+    return 'TypedMutationResult.success(revision: $revision, value: $value)';
 }
 
 
@@ -1845,7 +1883,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -1857,7 +1895,7 @@ $DataValueCopyWith<$Res> get value {
 
 class MutationConflict implements TypedMutationResult {
   const MutationConflict({required this.expectedRevision, required this.actualRevision, required this.actualValue});
-  
+
 
  final  int expectedRevision;
  final  int actualRevision;
@@ -1873,16 +1911,18 @@ $MutationConflictCopyWith<MutationConflict> get copyWith => _$MutationConflictCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationConflict&&(identical(other.expectedRevision, expectedRevision) || other.expectedRevision == expectedRevision)&&(identical(other.actualRevision, actualRevision) || other.actualRevision == actualRevision)&&(identical(other.actualValue, actualValue) || other.actualValue == actualValue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationConflict&&(identical(other.expectedRevision, expectedRevision) || other.expectedRevision == expectedRevision)&&(identical(other.actualRevision, actualRevision) || other.actualRevision == actualRevision)&&(identical(other.actualValue, actualValue) || other.actualValue == actualValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,expectedRevision,actualRevision,actualValue);
+int get hashCode {
+    return Object.hash(runtimeType,expectedRevision,actualRevision,actualValue);
+}
 
 @override
 String toString() {
-  return 'TypedMutationResult.conflict(expectedRevision: $expectedRevision, actualRevision: $actualRevision, actualValue: $actualValue)';
+    return 'TypedMutationResult.conflict(expectedRevision: $expectedRevision, actualRevision: $actualRevision, actualValue: $actualValue)';
 }
 
 
@@ -1924,7 +1964,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get actualValue {
-  
+
   return $DataValueCopyWith<$Res>(_self.actualValue, (value) {
     return _then(_self.copyWith(actualValue: value));
   });
@@ -1935,8 +1975,8 @@ $DataValueCopyWith<$Res> get actualValue {
 
 
 class MutationInvalid implements TypedMutationResult {
-   MutationInvalid(final  List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
-  
+   MutationInvalid( List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -1956,16 +1996,18 @@ $MutationInvalidCopyWith<MutationInvalid> get copyWith => _$MutationInvalidCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationInvalid&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationInvalid&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'TypedMutationResult.invalid(diagnostics: $diagnostics)';
+    return 'TypedMutationResult.invalid(diagnostics: $diagnostics)';
 }
 
 
@@ -2008,7 +2050,7 @@ as List<TypeDiagnostic>,
 
 class MutationPermissionDenied implements TypedMutationResult {
   const MutationPermissionDenied(this.message);
-  
+
 
  final  String message;
 
@@ -2022,16 +2064,18 @@ $MutationPermissionDeniedCopyWith<MutationPermissionDenied> get copyWith => _$Mu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationPermissionDenied&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationPermissionDenied&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'TypedMutationResult.permissionDenied(message: $message)';
+    return 'TypedMutationResult.permissionDenied(message: $message)';
 }
 
 
@@ -2072,9 +2116,83 @@ as String,
 /// @nodoc
 
 
+class MutationUncertain implements TypedMutationResult {
+  const MutationUncertain({required this.message, required this.cause, required this.stackTrace, this.replay, this.submissionId});
+
+
+ final  String message;
+ final  Object cause;
+ final  StackTrace stackTrace;
+ final  Future<TypedMutationResult> Function()? replay;
+ final  Object? submissionId;
+
+/// Create a copy of TypedMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MutationUncertainCopyWith<MutationUncertain> get copyWith => _$MutationUncertainCopyWithImpl<MutationUncertain>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationUncertain&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.cause, cause)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace)&&(identical(other.replay, replay) || other.replay == replay)&&const DeepCollectionEquality().equals(other.submissionId, submissionId));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,message,const DeepCollectionEquality().hash(cause),stackTrace,replay,const DeepCollectionEquality().hash(submissionId));
+}
+
+@override
+String toString() {
+    return 'TypedMutationResult.uncertain(message: $message, cause: $cause, stackTrace: $stackTrace, replay: $replay, submissionId: $submissionId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MutationUncertainCopyWith<$Res> implements $TypedMutationResultCopyWith<$Res> {
+  factory $MutationUncertainCopyWith(MutationUncertain value, $Res Function(MutationUncertain) _then) = _$MutationUncertainCopyWithImpl;
+@useResult
+$Res call({
+ String message, Object cause, StackTrace stackTrace, Future<TypedMutationResult> Function()? replay, Object? submissionId
+});
+
+
+
+
+}
+/// @nodoc
+class _$MutationUncertainCopyWithImpl<$Res>
+    implements $MutationUncertainCopyWith<$Res> {
+  _$MutationUncertainCopyWithImpl(this._self, this._then);
+
+  final MutationUncertain _self;
+  final $Res Function(MutationUncertain) _then;
+
+/// Create a copy of TypedMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? cause = null,Object? stackTrace = null,Object? replay = freezed,Object? submissionId = freezed,}) {
+  return _then(MutationUncertain(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,cause: null == cause ? _self.cause : cause ,stackTrace: null == stackTrace ? _self.stackTrace : stackTrace // ignore: cast_nullable_to_non_nullable
+as StackTrace,replay: freezed == replay ? _self.replay : replay // ignore: cast_nullable_to_non_nullable
+as Future<TypedMutationResult> Function()?,submissionId: freezed == submissionId ? _self.submissionId : submissionId ,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class MutationUnavailable implements TypedMutationResult {
-   MutationUnavailable(final  List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
-  
+   MutationUnavailable( List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -2094,16 +2212,18 @@ $MutationUnavailableCopyWith<MutationUnavailable> get copyWith => _$MutationUnav
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationUnavailable&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MutationUnavailable&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'TypedMutationResult.unavailable(diagnostics: $diagnostics)';
+    return 'TypedMutationResult.unavailable(diagnostics: $diagnostics)';
 }
 
 
@@ -2133,6 +2253,328 @@ class _$MutationUnavailableCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? diagnostics = null,}) {
   return _then(MutationUnavailable(
+null == diagnostics ? _self._diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
+as List<TypeDiagnostic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$LocalMutationResult {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalMutationResult);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'LocalMutationResult()';
+}
+
+
+}
+
+/// @nodoc
+class $LocalMutationResultCopyWith<$Res>  {
+$LocalMutationResultCopyWith(LocalMutationResult _, $Res Function(LocalMutationResult) __);
+}
+
+
+/// Adds pattern-matching-related methods to [LocalMutationResult].
+extension LocalMutationResultPatterns on LocalMutationResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LocalMutationApplied value)?  applied,TResult Function( LocalMutationInvalid value)?  invalid,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that);case LocalMutationInvalid() when invalid != null:
+return invalid(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LocalMutationApplied value)  applied,required TResult Function( LocalMutationInvalid value)  invalid,}){
+final _that = this;
+switch (_that) {
+case LocalMutationApplied():
+return applied(_that);case LocalMutationInvalid():
+return invalid(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LocalMutationApplied value)?  applied,TResult? Function( LocalMutationInvalid value)?  invalid,}){
+final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that);case LocalMutationInvalid() when invalid != null:
+return invalid(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( BindingId bindingId,  DataValue value)?  applied,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that.bindingId,_that.value);case LocalMutationInvalid() when invalid != null:
+return invalid(_that.diagnostics);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( BindingId bindingId,  DataValue value)  applied,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,}) {final _that = this;
+switch (_that) {
+case LocalMutationApplied():
+return applied(_that.bindingId,_that.value);case LocalMutationInvalid():
+return invalid(_that.diagnostics);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( BindingId bindingId,  DataValue value)?  applied,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,}) {final _that = this;
+switch (_that) {
+case LocalMutationApplied() when applied != null:
+return applied(_that.bindingId,_that.value);case LocalMutationInvalid() when invalid != null:
+return invalid(_that.diagnostics);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class LocalMutationApplied implements LocalMutationResult {
+  const LocalMutationApplied({required this.bindingId, required this.value});
+
+
+ final  BindingId bindingId;
+ final  DataValue value;
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LocalMutationAppliedCopyWith<LocalMutationApplied> get copyWith => _$LocalMutationAppliedCopyWithImpl<LocalMutationApplied>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalMutationApplied&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.value, value) || other.value == value));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,bindingId,value);
+}
+
+@override
+String toString() {
+    return 'LocalMutationResult.applied(bindingId: $bindingId, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LocalMutationAppliedCopyWith<$Res> implements $LocalMutationResultCopyWith<$Res> {
+  factory $LocalMutationAppliedCopyWith(LocalMutationApplied value, $Res Function(LocalMutationApplied) _then) = _$LocalMutationAppliedCopyWithImpl;
+@useResult
+$Res call({
+ BindingId bindingId, DataValue value
+});
+
+
+$BindingIdCopyWith<$Res> get bindingId;$DataValueCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class _$LocalMutationAppliedCopyWithImpl<$Res>
+    implements $LocalMutationAppliedCopyWith<$Res> {
+  _$LocalMutationAppliedCopyWithImpl(this._self, this._then);
+
+  final LocalMutationApplied _self;
+  final $Res Function(LocalMutationApplied) _then;
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? bindingId = null,Object? value = null,}) {
+  return _then(LocalMutationApplied(
+bindingId: null == bindingId ? _self.bindingId : bindingId // ignore: cast_nullable_to_non_nullable
+as BindingId,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as DataValue,
+  ));
+}
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BindingIdCopyWith<$Res> get bindingId {
+
+  return $BindingIdCopyWith<$Res>(_self.bindingId, (value) {
+    return _then(_self.copyWith(bindingId: value));
+  });
+}/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DataValueCopyWith<$Res> get value {
+
+  return $DataValueCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class LocalMutationInvalid implements LocalMutationResult {
+  const LocalMutationInvalid( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics;
+
+
+ final  List<TypeDiagnostic> _diagnostics;
+ List<TypeDiagnostic> get diagnostics {
+  if (_diagnostics is EqualUnmodifiableListView) return _diagnostics;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_diagnostics);
+}
+
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LocalMutationInvalidCopyWith<LocalMutationInvalid> get copyWith => _$LocalMutationInvalidCopyWithImpl<LocalMutationInvalid>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalMutationInvalid&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
+
+@override
+String toString() {
+    return 'LocalMutationResult.invalid(diagnostics: $diagnostics)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LocalMutationInvalidCopyWith<$Res> implements $LocalMutationResultCopyWith<$Res> {
+  factory $LocalMutationInvalidCopyWith(LocalMutationInvalid value, $Res Function(LocalMutationInvalid) _then) = _$LocalMutationInvalidCopyWithImpl;
+@useResult
+$Res call({
+ List<TypeDiagnostic> diagnostics
+});
+
+
+
+
+}
+/// @nodoc
+class _$LocalMutationInvalidCopyWithImpl<$Res>
+    implements $LocalMutationInvalidCopyWith<$Res> {
+  _$LocalMutationInvalidCopyWithImpl(this._self, this._then);
+
+  final LocalMutationInvalid _self;
+  final $Res Function(LocalMutationInvalid) _then;
+
+/// Create a copy of LocalMutationResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? diagnostics = null,}) {
+  return _then(LocalMutationInvalid(
 null == diagnostics ? _self._diagnostics : diagnostics // ignore: cast_nullable_to_non_nullable
 as List<TypeDiagnostic>,
   ));

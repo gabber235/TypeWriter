@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 part "renderers/data/default_presentation_renderer.dart";
+part "renderers/data/presentation_invocation_renderer.dart";
 
 class ProtocolBoundValueEditor extends StatelessWidget {
   const ProtocolBoundValueEditor({
@@ -15,7 +16,7 @@ class ProtocolBoundValueEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final result = scope.resolve(control.binding);
+    final result = scope.inspect(control.binding);
     if (result case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
     }
@@ -29,6 +30,23 @@ class ProtocolBoundValueEditor extends StatelessWidget {
       ),
     );
   }
+}
+
+extension InspectedBindingDefaultPresentationRendering on InspectedBinding {
+  Widget renderDefaultPresentation(
+    PresentationRenderScope scope, {
+    required String nodeId,
+    bool root = false,
+    String? label,
+  }) => PresentationNodeRenderer(
+    node: type.generateDefaultPresentation(
+      binding: reference,
+      nodeId: nodeId,
+      root: root,
+      label: label,
+    ),
+    scope: scope,
+  );
 }
 
 extension ResolvedBindingDefaultPresentationRendering on ResolvedBinding {
@@ -116,9 +134,8 @@ Widget? renderControlPrefix(
   return Padding(
     padding: EdgeInsets.all(context.spacing.space2),
     child: DefaultTextStyle.merge(
-      style: Theme.of(
-        context,
-      ).textTheme.labelLarge?.copyWith(color: context.colors.contentSecondary),
+      style: Theme.of(context).textTheme.labelLarge
+          ?.copyWith(color: context.colors.contentSecondary),
       child: IconTheme.merge(
         data: IconThemeData(color: context.colors.contentSecondary, size: 18),
         child: child,

@@ -33,6 +33,7 @@ void main() {
     final snapshots = <SearchSourceSnapshot>[];
     final subscription = source.snapshots.listen(snapshots.add);
     addTearDown(subscription.cancel);
+
     final query = _query("speed");
 
     source.search(query);
@@ -47,6 +48,7 @@ void main() {
       ),
     );
     await Future<void>.delayed(Duration.zero);
+
     expect(_resultIds(snapshots.last), ["speed", "haste"]);
 
     transport.controllers.single.add(
@@ -137,7 +139,7 @@ RealmPresentationSearchSource _source(
   TypeExpression payloadType = const StringType(),
 }) => RealmPresentationSearchSource(
   provider: RealmCallbackSearchProvider(
-    actionId: const RealmActionId(namespace: "minecraft", name: "effects"),
+    capabilityId: const CapabilityId("capability"),
     payload: payload ?? "server".asStringLiteral,
     result: SearchResultMapping(
       bindingId: _candidateBindingId,
@@ -149,6 +151,7 @@ RealmPresentationSearchSource _source(
       ),
     ),
   ),
+  generation: const CatalogGeneration("generation"),
   payloadType: payloadType,
   resultType: const StringType(),
   transport: transport,

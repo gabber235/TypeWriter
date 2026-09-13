@@ -51,9 +51,11 @@ extension DataValueValidation on DataValue {
     if (value is DecimalValue && type is DecimalType) {
       return value.validateDecimalAgainst(type, path);
     }
+
     if (value is TimestampValue && type is TimestampType) {
       return _validateComparable(value.value, type.minimum, type.maximum, path);
     }
+
     if (value is DurationValue && type is DurationType) {
       if (value.value.inMicroseconds.remainder(1000) != 0) {
         return [
@@ -62,15 +64,19 @@ extension DataValueValidation on DataValue {
       }
       return _validateComparable(value.value, type.minimum, type.maximum, path);
     }
+
     if (value is ListValue && type is ListType) {
       return value._validateAgainst(type, path, registry);
     }
+
     if (value is MapValue && type is MapType) {
       return value._validateAgainst(type, path, registry);
     }
+
     if (value is RecordValue && type is RecordType) {
       return value._validateAgainst(type, path, registry);
     }
+
     return [
       _invalid(
         path,

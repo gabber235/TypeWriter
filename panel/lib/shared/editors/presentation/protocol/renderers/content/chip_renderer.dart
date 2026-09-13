@@ -15,10 +15,12 @@ extension ChipElementRendering on ChipElement {
         ),
       ]);
     }
+
     final resolvedColor = color == null ? null : scope.evaluate(color!);
     if (resolvedColor case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
     }
+
     final colorValue = resolvedColor?.valueOrNull;
     if (colorValue != null && colorValue is! IntegerValue) {
       return presentationDiagnostic(context, [
@@ -30,7 +32,7 @@ extension ChipElementRendering on ChipElement {
     }
     final entityColor = colorValue == null
         ? Theme.of(context).colorScheme.primary
-        : (colorValue as IntegerValue).colorOrNull;
+        : colorValue.asColorOrNull;
     if (entityColor == null) {
       return presentationDiagnostic(context, [
         const TypeDiagnostic(
@@ -39,6 +41,7 @@ extension ChipElementRendering on ChipElement {
         ),
       ]);
     }
+
     final foreground = entityColor._readableEntityColor(context);
     return Chip(
       label: Text(labelValue.value, style: TextStyle(color: foreground)),

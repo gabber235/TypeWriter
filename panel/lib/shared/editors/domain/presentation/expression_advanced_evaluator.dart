@@ -72,12 +72,14 @@ extension on _ExpressionEvaluator {
     if (expression.pattern.length > _maximumRegexPatternLength) {
       return _failure("Regular expression pattern is too long");
     }
+
     final group = expression.group ?? 0;
     if (group < 0 || group > _maximumRegexCaptureGroup) {
       return _failure("Regular expression capture group is out of range");
     }
     final source = evaluate(expression.source, depth + 1);
     if (source case TypeFailure()) return source;
+
     final sourceValue = source.valueOrNull!;
     if (sourceValue is! StringValue) {
       return _failure("Regular expression source must be a string");
@@ -85,6 +87,7 @@ extension on _ExpressionEvaluator {
     if (sourceValue.value.length > _maximumRegexInputLength) {
       return _failure("Regular expression input is too long");
     }
+
     final regularExpression = _compileRegex(expression.pattern);
     if (regularExpression == null) {
       return _failure("Regular expression pattern is invalid");

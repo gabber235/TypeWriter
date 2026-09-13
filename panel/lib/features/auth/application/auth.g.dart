@@ -39,7 +39,7 @@ abstract class _$Auth extends $AsyncNotifier<OidcUserManager?> {
   FutureOr<OidcUserManager?> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<OidcUserManager?>, OidcUserManager?>;
     final element =
@@ -50,7 +50,7 @@ abstract class _$Auth extends $AsyncNotifier<OidcUserManager?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

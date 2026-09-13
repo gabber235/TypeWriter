@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'presentation_search_models.dart';
@@ -9,6 +9,7 @@ part of 'presentation_search_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PresentationSearchResultPayloadCopyWith<PresentationSearchResultPayload> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSearchResultPayload&&(identical(other.selectedValue, selectedValue) || other.selectedValue == selectedValue)&&(identical(other.presentation, presentation) || other.presentation == presentation)&&(identical(other.expressions, expressions) || other.expressions == expressions)&&(identical(other.providerKey, providerKey) || other.providerKey == providerKey));
+  final _this = this as PresentationSearchResultPayload;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSearchResultPayload&&(identical(other.selectedValue, _this.selectedValue) || other.selectedValue == _this.selectedValue)&&(identical(other.presentation, _this.presentation) || other.presentation == _this.presentation)&&(identical(other.expressions, _this.expressions) || other.expressions == _this.expressions)&&(identical(other.providerKey, _this.providerKey) || other.providerKey == _this.providerKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedValue,presentation,expressions,providerKey);
+int get hashCode {
+  final _this = this as PresentationSearchResultPayload;
+  return Object.hash(runtimeType,_this.selectedValue,_this.presentation,_this.expressions,_this.providerKey);
+}
 
 @override
 String toString() {
-  return 'PresentationSearchResultPayload(selectedValue: $selectedValue, presentation: $presentation, expressions: $expressions, providerKey: $providerKey)';
+  final _this = this as PresentationSearchResultPayload;
+  return 'PresentationSearchResultPayload(selectedValue: ${_this.selectedValue}, presentation: ${_this.presentation}, expressions: ${_this.expressions}, providerKey: ${_this.providerKey})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PresentationSearchResultPayloadCopyWithImpl<$Res>
 /// Create a copy of PresentationSearchResultPayload
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? selectedValue = null,Object? presentation = null,Object? expressions = null,Object? providerKey = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationSearchResultPayload(
 selectedValue: null == selectedValue ? _self.selectedValue : selectedValue // ignore: cast_nullable_to_non_nullable
 as DataValue,presentation: null == presentation ? _self.presentation : presentation // ignore: cast_nullable_to_non_nullable
 as PresentationNode,expressions: null == expressions ? _self.expressions : expressions // ignore: cast_nullable_to_non_nullable
@@ -76,7 +82,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get selectedValue {
-  
+
   return $DataValueCopyWith<$Res>(_self.selectedValue, (value) {
     return _then(_self.copyWith(selectedValue: value));
   });
@@ -85,7 +91,7 @@ $DataValueCopyWith<$Res> get selectedValue {
 @override
 @pragma('vm:prefer-inline')
 $PresentationNodeCopyWith<$Res> get presentation {
-  
+
   return $PresentationNodeCopyWith<$Res>(_self.presentation, (value) {
     return _then(_self.copyWith(presentation: value));
   });
@@ -94,7 +100,7 @@ $PresentationNodeCopyWith<$Res> get presentation {
 @override
 @pragma('vm:prefer-inline')
 $ExpressionContextCopyWith<$Res> get expressions {
-  
+
   return $ExpressionContextCopyWith<$Res>(_self.expressions, (value) {
     return _then(_self.copyWith(expressions: value));
   });
@@ -237,7 +243,7 @@ return $default(_that.selectedValue,_that.presentation,_that.expressions,_that.p
 
 class _PresentationSearchResultPayload implements PresentationSearchResultPayload {
   const _PresentationSearchResultPayload({required this.selectedValue, required this.presentation, required this.expressions, required this.providerKey});
-  
+
 
 @override final  DataValue selectedValue;
 @override final  PresentationNode presentation;
@@ -254,16 +260,18 @@ _$PresentationSearchResultPayloadCopyWith<_PresentationSearchResultPayload> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationSearchResultPayload&&(identical(other.selectedValue, selectedValue) || other.selectedValue == selectedValue)&&(identical(other.presentation, presentation) || other.presentation == presentation)&&(identical(other.expressions, expressions) || other.expressions == expressions)&&(identical(other.providerKey, providerKey) || other.providerKey == providerKey));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationSearchResultPayload&&(identical(other.selectedValue, selectedValue) || other.selectedValue == selectedValue)&&(identical(other.presentation, presentation) || other.presentation == presentation)&&(identical(other.expressions, expressions) || other.expressions == expressions)&&(identical(other.providerKey, providerKey) || other.providerKey == providerKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedValue,presentation,expressions,providerKey);
+int get hashCode {
+    return Object.hash(runtimeType,selectedValue,presentation,expressions,providerKey);
+}
 
 @override
 String toString() {
-  return 'PresentationSearchResultPayload(selectedValue: $selectedValue, presentation: $presentation, expressions: $expressions, providerKey: $providerKey)';
+    return 'PresentationSearchResultPayload(selectedValue: $selectedValue, presentation: $presentation, expressions: $expressions, providerKey: $providerKey)';
 }
 
 
@@ -306,7 +314,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get selectedValue {
-  
+
   return $DataValueCopyWith<$Res>(_self.selectedValue, (value) {
     return _then(_self.copyWith(selectedValue: value));
   });
@@ -315,7 +323,7 @@ $DataValueCopyWith<$Res> get selectedValue {
 @override
 @pragma('vm:prefer-inline')
 $PresentationNodeCopyWith<$Res> get presentation {
-  
+
   return $PresentationNodeCopyWith<$Res>(_self.presentation, (value) {
     return _then(_self.copyWith(presentation: value));
   });
@@ -324,7 +332,7 @@ $PresentationNodeCopyWith<$Res> get presentation {
 @override
 @pragma('vm:prefer-inline')
 $ExpressionContextCopyWith<$Res> get expressions {
-  
+
   return $ExpressionContextCopyWith<$Res>(_self.expressions, (value) {
     return _then(_self.copyWith(expressions: value));
   });
@@ -345,16 +353,21 @@ $PresentationSearchSelectionEventCopyWith<PresentationSearchSelectionEvent> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSearchSelectionEvent&&(identical(other.result, result) || other.result == result)&&(identical(other.historyNamespace, historyNamespace) || other.historyNamespace == historyNamespace));
+  final _this = this as PresentationSearchSelectionEvent;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSearchSelectionEvent&&(identical(other.result, _this.result) || other.result == _this.result)&&(identical(other.historyNamespace, _this.historyNamespace) || other.historyNamespace == _this.historyNamespace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,historyNamespace);
+int get hashCode {
+  final _this = this as PresentationSearchSelectionEvent;
+  return Object.hash(runtimeType,_this.result,_this.historyNamespace);
+}
 
 @override
 String toString() {
-  return 'PresentationSearchSelectionEvent(result: $result, historyNamespace: $historyNamespace)';
+  final _this = this as PresentationSearchSelectionEvent;
+  return 'PresentationSearchSelectionEvent(result: ${_this.result}, historyNamespace: ${_this.historyNamespace})';
 }
 
 
@@ -383,7 +396,7 @@ class _$PresentationSearchSelectionEventCopyWithImpl<$Res>
 /// Create a copy of PresentationSearchSelectionEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? result = null,Object? historyNamespace = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationSearchSelectionEvent(
 result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
 as SearchResult,historyNamespace: null == historyNamespace ? _self.historyNamespace : historyNamespace // ignore: cast_nullable_to_non_nullable
 as String,
@@ -394,7 +407,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });
@@ -537,7 +550,7 @@ return $default(_that.result,_that.historyNamespace);case _:
 
 class _PresentationSearchSelectionEvent implements PresentationSearchSelectionEvent {
   const _PresentationSearchSelectionEvent({required this.result, required this.historyNamespace});
-  
+
 
 @override final  SearchResult result;
 @override final  String historyNamespace;
@@ -552,16 +565,18 @@ _$PresentationSearchSelectionEventCopyWith<_PresentationSearchSelectionEvent> ge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationSearchSelectionEvent&&(identical(other.result, result) || other.result == result)&&(identical(other.historyNamespace, historyNamespace) || other.historyNamespace == historyNamespace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationSearchSelectionEvent&&(identical(other.result, result) || other.result == result)&&(identical(other.historyNamespace, historyNamespace) || other.historyNamespace == historyNamespace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,result,historyNamespace);
+int get hashCode {
+    return Object.hash(runtimeType,result,historyNamespace);
+}
 
 @override
 String toString() {
-  return 'PresentationSearchSelectionEvent(result: $result, historyNamespace: $historyNamespace)';
+    return 'PresentationSearchSelectionEvent(result: $result, historyNamespace: $historyNamespace)';
 }
 
 
@@ -602,7 +617,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $SearchResultCopyWith<$Res> get result {
-  
+
   return $SearchResultCopyWith<$Res>(_self.result, (value) {
     return _then(_self.copyWith(result: value));
   });

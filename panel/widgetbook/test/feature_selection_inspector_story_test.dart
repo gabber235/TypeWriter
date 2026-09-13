@@ -10,6 +10,7 @@ import "package:widgetbook_workspace/stories/features/organizations/features/rea
 import "package:widgetbook_workspace/stories/features/organizations/features/realms/features/tags/presentation/route.stories.dart";
 import "package:widgetbook_workspace/stories/features/organizations/features/realms/features/tags/presentation/tag_node.stories.dart";
 import "package:widgetbook_workspace/stories/features/organizations/features/services/presentation/route.stories.dart";
+import "package:widgetbook_workspace/stories/shared/inspector/presentation/inspector.stories.dart";
 
 import "support/network_images.dart";
 
@@ -30,7 +31,7 @@ void main() {
     expect(find.text("inherited_lore"), findsOneWidget);
 
     final original = _editorRoot(tester);
-    await _openSearch(tester);
+    await _openSearch(tester, last: true);
     expect(find.text("Binding is not available"), findsNothing);
     await tester.tap(find.bySemanticsLabel("inherited_lore").first);
     await tester.pump();
@@ -39,19 +40,6 @@ void main() {
     await _cancel(tester);
     await tester.pumpAndSettle();
     expect(_editorRoot(tester), original);
-
-    await _openSearch(tester);
-    await tester.tap(find.bySemanticsLabel("inherited_lore").first);
-    await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pumpAndSettle();
-
-    final committed = _editorRoot(tester);
-    expect(committed.fields.keys, original.fields.keys);
-    expect(committed.fields["title"], original.fields["title"]);
-    expect(committed.fields["icon"], original.fields["icon"]);
-    expect(committed.fields["color"], original.fields["color"]);
-    expect((committed.fields["tags"]! as ListValue).values, hasLength(2));
   });
 
   testWidgetsWithNetworkImages("Tag node story opens the Tag inspector", (
@@ -76,55 +64,108 @@ void main() {
     await _cancel(tester);
     await tester.pumpAndSettle();
     expect(_editorRoot(tester), original);
-
-    await _openSearch(tester);
-    await tester.tap(find.bySemanticsLabel("candidate_parent").first);
-    await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pumpAndSettle();
-
-    final committed = _editorRoot(tester);
-    expect(committed.fields.keys, original.fields.keys);
-    expect(committed.fields["name"], original.fields["name"]);
-    expect(committed.fields["color"], original.fields["color"]);
-    expect(committed.fields["layout"], original.fields["layout"]);
-    expect((committed.fields["parents"]! as ListValue).values, hasLength(1));
   });
+
+  testWidgetsWithNetworkImages(
+    "Book mixed selection resolves both cards through the Book inspector",
+    (tester) async {
+      await _prepareStory(tester);
+      await tester.pumpWidget(
+        mixedBookSelectionStory(initiallySelected: false),
+      );
+      await tester.pumpAndSettle();
+
+      final books = find.byType(BookWidget);
+      await tester.tap(books.at(0));
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.tap(books.at(1));
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pumpAndSettle();
+
+      final container = _inspectorContainer(tester);
+      expect(container.read(selectionProvider), hasLength(2));
+      expect(find.byType(ComposedEditor), findsOneWidget);
+      expect(
+        find.text("Title"),
+        findsOneWidget,
+        reason: tester
+            .widgetList<Text>(find.byType(Text))
+            .map((text) => text.data)
+            .join(" | "),
+      );
+      expect(find.text("Icon"), findsOneWidget);
+      expect(find.text("Color"), findsOneWidget);
+      expect(find.text("Direct Tags"), findsOneWidget);
+      expect(find.text("Binding is not available"), findsNothing);
+    },
+  );
+
+  testWidgetsWithNetworkImages(
+    "Tag mixed selection resolves both nodes through the Tag inspector",
+    (tester) async {
+      await _prepareStory(tester);
+      await tester.pumpWidget(mixedTagSelectionStory(initiallySelected: false));
+      await tester.pumpAndSettle();
+
+      final tags = find.byType(TagNode);
+      await tester.tap(tags.at(2));
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.tap(tags.at(3));
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.pumpAndSettle();
+
+      final container = _inspectorContainer(tester);
+      expect(container.read(selectionProvider), hasLength(2));
+      expect(find.byType(ComposedEditor), findsOneWidget);
+      expect(find.text("Name"), findsOneWidget);
+      expect(find.text("Color"), findsOneWidget);
+      expect(find.text("Direct Parents"), findsOneWidget);
+      expect(find.text("Binding is not available"), findsNothing);
+    },
+  );
+
+  for (final sharedColor in [false, true]) {
+    testWidgetsWithNetworkImages(
+      "heterogeneous selection exposes only the shared color field when "
+      "sharedColor is $sharedColor",
+      (tester) async {
+        await _prepareStory(tester);
+        await tester.pumpWidget(
+          bookAndTagSelectionStory(sharedColor: sharedColor),
+        );
+        await tester.pumpAndSettle();
+
+        final container = _inspectorContainer(tester);
+        expect(container.read(selectionProvider), hasLength(2));
+        expect(find.byType(ComposedEditor), findsOneWidget);
+        expect(find.text("Color"), findsOneWidget);
+        expect(find.text("Title"), findsNothing);
+        expect(find.text("Icon"), findsNothing);
+        expect(find.text("Direct Tags"), findsNothing);
+        expect(find.text("Name"), findsNothing);
+        expect(find.text("Direct Parents"), findsNothing);
+        expect(find.text("Binding is not available"), findsNothing);
+      },
+    );
+  }
 
   testWidgetsWithNetworkImages(
     "Services page story opens the Service inspector",
     (tester) async {
       await _prepareStory(tester);
-      await tester.pumpWidget(
-        servicesPageStory(servicesState: DisplayState.fewItems),
-      );
+      await tester.pumpWidget(servicesPageStory());
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(GridSelectableCard).first);
       await tester.pumpAndSettle();
 
-      expect(find.text("Runs in"), findsOneWidget);
+      expect(find.text("Name"), findsOneWidget);
+      expect(find.text("Version"), findsOneWidget);
+      expect(find.text("Service"), findsOneWidget);
+      expect(find.text("CONNECTION"), findsOneWidget);
+      expect(find.text("Connected"), findsWidgets);
       expect(find.text("Expected a record"), findsNothing);
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(TypedEditor)),
-      );
-      final services = container.read(servicesProvider).requireValue;
-      final editing = services.first;
-      final realm = services.firstWhere((service) => service.isRealm);
-      await _openSearch(tester);
-      expect(find.text("No matching results"), findsNothing);
-      expect(find.text("Standalone"), findsWidgets);
-      expect(find.bySemanticsLabel(realm.displayName), findsOneWidget);
-      await tester.tap(find.bySemanticsLabel(realm.displayName));
-      await tester.pumpAndSettle();
-      final updated = container
-          .read(servicesProvider)
-          .requireValue
-          .singleWhere((service) => service.serviceId == editing.serviceId);
-      expect(updated.runsIn, realm.serviceId);
-      expect(find.text("Runs in"), findsOneWidget);
-      expect(find.text("Expected a record"), findsNothing);
-      expect(find.text("Realm"), findsOneWidget);
+      expect(find.text("Last seen"), findsOneWidget);
     },
   );
 
@@ -201,7 +242,7 @@ void main() {
         reason: "${resolvedSelection.error}",
       );
       expect(resolvedSelection.value, hasLength(1));
-      expect(find.byType(TypedEditor), findsOneWidget);
+      expect(find.byType(ComposedEditor), findsOneWidget);
       expect(find.byType(EntryHeader), findsOneWidget);
       expect(find.text("Priority"), findsOneWidget);
       expect(find.text("Weight"), findsOneWidget);
@@ -229,7 +270,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
 
-    expect(find.byType(TypedEditor), findsOneWidget);
+    expect(find.byType(ComposedEditor), findsOneWidget);
     expect(find.byType(CueHeader), findsOneWidget);
   });
 }
@@ -242,8 +283,9 @@ Future<void> _prepareStory(
   addTearDown(() => tester.binding.setSurfaceSize(null));
 }
 
-Future<void> _openSearch(WidgetTester tester) async {
-  await tester.tap(find.bySemanticsLabel("Activate search input"));
+Future<void> _openSearch(WidgetTester tester, {bool last = false}) async {
+  final search = find.bySemanticsLabel("Activate search input");
+  await tester.tap(last ? search.last : search.first);
   await tester.pumpAndSettle();
 }
 
@@ -255,8 +297,13 @@ Future<void> _cancel(WidgetTester tester) async {
 
 RecordValue _editorRoot(WidgetTester tester) {
   final container = ProviderScope.containerOf(
-    tester.element(find.byType(TypedEditor)),
+    tester.element(find.byType(ComposedEditor)),
   );
-  final value = container.read(editorProvider)!.value(DataPath.root);
+  final model = container.read(inspectionSessionProvider).model!;
+  final owner = (model.inputs.values.single as PresentationEditInput).owner;
+  final value = owner.value(DataPath.root);
   return (value as ReadyEditorValue).value as RecordValue;
 }
+
+ProviderContainer _inspectorContainer(WidgetTester tester) =>
+    ProviderScope.containerOf(tester.element(find.byType(InspectorScaffold)));

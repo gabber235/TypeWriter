@@ -168,6 +168,7 @@ void main() {
     final staleSurrounding = FocusNode();
     final currentInput = FocusNode();
     final currentSurrounding = FocusNode();
+
     addTearDown(staleInput.dispose);
     addTearDown(staleSurrounding.dispose);
     addTearDown(currentInput.dispose);
@@ -211,6 +212,7 @@ void main() {
     final surrounding = FocusNode();
     addTearDown(input.dispose);
     addTearDown(surrounding.dispose);
+
     final unregister = coordinator.register(
       id: "disposed",
       inputFocusNode: input,

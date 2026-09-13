@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'text_input_format.dart';
@@ -9,6 +9,7 @@ part of 'text_input_format.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$TextInputFormat {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TextInputFormat);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TextInputFormat);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TextInputFormat()';
+    return 'TextInputFormat()';
 }
 
 
@@ -194,7 +195,7 @@ return deny(_that.pattern);case _:
 
 class LowercaseTextInputFormat implements TextInputFormat {
   const LowercaseTextInputFormat();
-  
+
 
 
 
@@ -203,7 +204,7 @@ class LowercaseTextInputFormat implements TextInputFormat {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LowercaseTextInputFormat);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LowercaseTextInputFormat);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TextInputFormat.lowercase()';
+    return 'TextInputFormat.lowercase()';
 }
 
 
@@ -226,7 +227,7 @@ String toString() {
 
 class UppercaseTextInputFormat implements TextInputFormat {
   const UppercaseTextInputFormat();
-  
+
 
 
 
@@ -235,7 +236,7 @@ class UppercaseTextInputFormat implements TextInputFormat {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UppercaseTextInputFormat);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UppercaseTextInputFormat);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TextInputFormat.uppercase()';
+    return 'TextInputFormat.uppercase()';
 }
 
 
@@ -258,7 +259,7 @@ String toString() {
 
 class ReplaceTextInputFormat implements TextInputFormat {
   const ReplaceTextInputFormat({required this.pattern, required this.replacement});
-  
+
 
  final  String pattern;
  final  String replacement;
@@ -273,16 +274,18 @@ $ReplaceTextInputFormatCopyWith<ReplaceTextInputFormat> get copyWith => _$Replac
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReplaceTextInputFormat&&(identical(other.pattern, pattern) || other.pattern == pattern)&&(identical(other.replacement, replacement) || other.replacement == replacement));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReplaceTextInputFormat&&(identical(other.pattern, pattern) || other.pattern == pattern)&&(identical(other.replacement, replacement) || other.replacement == replacement));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pattern,replacement);
+int get hashCode {
+    return Object.hash(runtimeType,pattern,replacement);
+}
 
 @override
 String toString() {
-  return 'TextInputFormat.replace(pattern: $pattern, replacement: $replacement)';
+    return 'TextInputFormat.replace(pattern: $pattern, replacement: $replacement)';
 }
 
 
@@ -326,7 +329,7 @@ as String,
 
 class AllowTextInputFormat implements TextInputFormat {
   const AllowTextInputFormat(this.pattern);
-  
+
 
  final  String pattern;
 
@@ -340,16 +343,18 @@ $AllowTextInputFormatCopyWith<AllowTextInputFormat> get copyWith => _$AllowTextI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AllowTextInputFormat&&(identical(other.pattern, pattern) || other.pattern == pattern));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AllowTextInputFormat&&(identical(other.pattern, pattern) || other.pattern == pattern));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pattern);
+int get hashCode {
+    return Object.hash(runtimeType,pattern);
+}
 
 @override
 String toString() {
-  return 'TextInputFormat.allow(pattern: $pattern)';
+    return 'TextInputFormat.allow(pattern: $pattern)';
 }
 
 
@@ -392,7 +397,7 @@ as String,
 
 class DenyTextInputFormat implements TextInputFormat {
   const DenyTextInputFormat(this.pattern);
-  
+
 
  final  String pattern;
 
@@ -406,16 +411,18 @@ $DenyTextInputFormatCopyWith<DenyTextInputFormat> get copyWith => _$DenyTextInpu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DenyTextInputFormat&&(identical(other.pattern, pattern) || other.pattern == pattern));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DenyTextInputFormat&&(identical(other.pattern, pattern) || other.pattern == pattern));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pattern);
+int get hashCode {
+    return Object.hash(runtimeType,pattern);
+}
 
 @override
 String toString() {
-  return 'TextInputFormat.deny(pattern: $pattern)';
+    return 'TextInputFormat.deny(pattern: $pattern)';
 }
 
 

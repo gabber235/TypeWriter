@@ -1,29 +1,51 @@
 import "package:flutter/material.dart";
+import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
+    as skir;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
-import "package:widgetbook/widgetbook.dart";
 import "package:widgetbook_annotation/widgetbook_annotation.dart" as widgetbook;
-import "package:widgetbook_workspace/support/widgetbook_utils.dart";
+import "package:widgetbook_workspace/stories/features/organizations/features/services/presentation/topology_scenarios.dart";
 
 @widgetbook.UseCase(name: "Default", type: ServicesPage)
 Widget servicesPageUseCase(BuildContext context) {
-  final servicesState = context.knobs.displayState(
-    label: "Services State",
-    initialOption: DisplayState.fewItems,
-  );
-
-  return servicesPageStory(servicesState: servicesState);
+  return servicesPageStory();
 }
 
-Widget servicesPageStory({DisplayState servicesState = DisplayState.fewItems}) {
+Widget servicesPageStory() {
+  final scenario = completeTopologyScenario();
   return FakeApp(
     overrides: [
+      organizationTopologyControllerProvider.overrideWith2(
+        (_) => _StoryTopology(scenario.topology),
+      ),
+      canonicalOrganizationServicesProvider.overrideWith2(
+        (_) => _StoryServices(scenario.services),
+      ),
       ...organizationProviderOverrides(),
       ...organizationsProviderOverrides(state: DisplayState.fewItems),
-      ...servicesProviderOverrides(state: servicesState),
       ...authProviderOverrides(),
       ...appearanceProviderOverrides(),
     ],
     child: OrganizationScaffold(child: ServicesPage()),
   );
+}
+
+class _StoryServices extends CanonicalOrganizationServices {
+  _StoryServices(this.services);
+
+  final List<Service> services;
+
+  @override
+  Stream<List<Service>> build(skir.RecordId organizationId) =>
+      Stream.value(services);
+}
+
+class _StoryTopology extends OrganizationTopologyController {
+  _StoryTopology(this.topology);
+
+  final OrganizationTopology topology;
+
+  @override
+  Stream<OrganizationTopology> build(skir.RecordId organizationId) =>
+      Stream.value(topology);
 }

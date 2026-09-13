@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'join_codes.dart';
@@ -9,6 +9,7 @@ part of 'join_codes.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OrganizationJoinCodeCopyWith<OrganizationJoinCode> get copyWith => _$Organizati
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationJoinCode&&(identical(other.code, code) || other.code == code)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.singleUse, singleUse) || other.singleUse == singleUse)&&(identical(other.autoAccept, autoAccept) || other.autoAccept == autoAccept));
+  final _this = this as OrganizationJoinCode;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationJoinCode&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.expiresAt, _this.expiresAt) || other.expiresAt == _this.expiresAt)&&(identical(other.singleUse, _this.singleUse) || other.singleUse == _this.singleUse)&&(identical(other.autoAccept, _this.autoAccept) || other.autoAccept == _this.autoAccept));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,code,createdAt,expiresAt,singleUse,autoAccept);
+int get hashCode {
+  final _this = this as OrganizationJoinCode;
+  return Object.hash(runtimeType,_this.code,_this.createdAt,_this.expiresAt,_this.singleUse,_this.autoAccept);
+}
 
 @override
 String toString() {
-  return 'OrganizationJoinCode(code: $code, createdAt: $createdAt, expiresAt: $expiresAt, singleUse: $singleUse, autoAccept: $autoAccept)';
+  final _this = this as OrganizationJoinCode;
+  return 'OrganizationJoinCode(code: ${_this.code}, createdAt: ${_this.createdAt}, expiresAt: ${_this.expiresAt}, singleUse: ${_this.singleUse}, autoAccept: ${_this.autoAccept})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OrganizationJoinCodeCopyWithImpl<$Res>
 /// Create a copy of OrganizationJoinCode
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? createdAt = null,Object? expiresAt = freezed,Object? singleUse = null,Object? autoAccept = null,}) {
-  return _then(_self.copyWith(
+  return _then(OrganizationJoinCode(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,expiresAt: freezed == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
@@ -77,7 +83,7 @@ as JoinCodeAutoAccept,
 @override
 @pragma('vm:prefer-inline')
 $JoinCodeAutoAcceptCopyWith<$Res> get autoAccept {
-  
+
   return $JoinCodeAutoAcceptCopyWith<$Res>(_self.autoAccept, (value) {
     return _then(_self.copyWith(autoAccept: value));
   });
@@ -220,7 +226,7 @@ return $default(_that.code,_that.createdAt,_that.expiresAt,_that.singleUse,_that
 
 class _OrganizationJoinCode extends OrganizationJoinCode {
   const _OrganizationJoinCode({required this.code, required this.createdAt, this.expiresAt, this.singleUse = true, this.autoAccept = const JoinCodeAutoAccept()}): super._();
-  
+
 
 @override final  skir.RecordId code;
 @override final  DateTime createdAt;
@@ -238,16 +244,18 @@ _$OrganizationJoinCodeCopyWith<_OrganizationJoinCode> get copyWith => __$Organiz
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationJoinCode&&(identical(other.code, code) || other.code == code)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.singleUse, singleUse) || other.singleUse == singleUse)&&(identical(other.autoAccept, autoAccept) || other.autoAccept == autoAccept));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationJoinCode&&(identical(other.code, code) || other.code == code)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.singleUse, singleUse) || other.singleUse == singleUse)&&(identical(other.autoAccept, autoAccept) || other.autoAccept == autoAccept));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,code,createdAt,expiresAt,singleUse,autoAccept);
+int get hashCode {
+    return Object.hash(runtimeType,code,createdAt,expiresAt,singleUse,autoAccept);
+}
 
 @override
 String toString() {
-  return 'OrganizationJoinCode(code: $code, createdAt: $createdAt, expiresAt: $expiresAt, singleUse: $singleUse, autoAccept: $autoAccept)';
+    return 'OrganizationJoinCode(code: $code, createdAt: $createdAt, expiresAt: $expiresAt, singleUse: $singleUse, autoAccept: $autoAccept)';
 }
 
 
@@ -291,7 +299,7 @@ as JoinCodeAutoAccept,
 @override
 @pragma('vm:prefer-inline')
 $JoinCodeAutoAcceptCopyWith<$Res> get autoAccept {
-  
+
   return $JoinCodeAutoAcceptCopyWith<$Res>(_self.autoAccept, (value) {
     return _then(_self.copyWith(autoAccept: value));
   });
@@ -312,16 +320,21 @@ $JoinCodeAutoAcceptCopyWith<JoinCodeAutoAccept> get copyWith => _$JoinCodeAutoAc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeAutoAccept&&const DeepCollectionEquality().equals(other.roleIds, roleIds));
+  final _this = this as JoinCodeAutoAccept;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeAutoAccept&&const DeepCollectionEquality().equals(other.roleIds, _this.roleIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(roleIds));
+int get hashCode {
+  final _this = this as JoinCodeAutoAccept;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.roleIds));
+}
 
 @override
 String toString() {
-  return 'JoinCodeAutoAccept(roleIds: $roleIds)';
+  final _this = this as JoinCodeAutoAccept;
+  return 'JoinCodeAutoAccept(roleIds: ${_this.roleIds})';
 }
 
 
@@ -350,7 +363,7 @@ class _$JoinCodeAutoAcceptCopyWithImpl<$Res>
 /// Create a copy of JoinCodeAutoAccept
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? roleIds = null,}) {
-  return _then(_self.copyWith(
+  return _then(JoinCodeAutoAccept(
 roleIds: null == roleIds ? _self.roleIds : roleIds // ignore: cast_nullable_to_non_nullable
 as List<skir.RecordId>,
   ));
@@ -493,8 +506,8 @@ return $default(_that.roleIds);case _:
 
 
 class _JoinCodeAutoAccept extends JoinCodeAutoAccept {
-  const _JoinCodeAutoAccept({final  List<skir.RecordId> roleIds = const []}): _roleIds = roleIds,super._();
-  
+  const _JoinCodeAutoAccept({ List<skir.RecordId> roleIds = const []}): _roleIds = roleIds,super._();
+
 
  final  List<skir.RecordId> _roleIds;
 @override@JsonKey() List<skir.RecordId> get roleIds {
@@ -514,16 +527,18 @@ _$JoinCodeAutoAcceptCopyWith<_JoinCodeAutoAccept> get copyWith => __$JoinCodeAut
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JoinCodeAutoAccept&&const DeepCollectionEquality().equals(other._roleIds, _roleIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _JoinCodeAutoAccept&&const DeepCollectionEquality().equals(other.roleIds, _roleIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_roleIds));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_roleIds));
+}
 
 @override
 String toString() {
-  return 'JoinCodeAutoAccept(roleIds: $roleIds)';
+    return 'JoinCodeAutoAccept(roleIds: $roleIds)';
 }
 
 
@@ -570,7 +585,7 @@ mixin _$JoinCodeExpiration {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeExpiration);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeExpiration);
 }
 
 
@@ -579,7 +594,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'JoinCodeExpiration()';
+    return 'JoinCodeExpiration()';
 }
 
 
@@ -726,7 +741,7 @@ return duration(_that.duration);case _:
 
 class JoinCodeExpirationNever implements JoinCodeExpiration {
   const JoinCodeExpirationNever();
-  
+
 
 
 
@@ -735,7 +750,7 @@ class JoinCodeExpirationNever implements JoinCodeExpiration {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeExpirationNever);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeExpirationNever);
 }
 
 
@@ -744,7 +759,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'JoinCodeExpiration.never()';
+    return 'JoinCodeExpiration.never()';
 }
 
 
@@ -758,7 +773,7 @@ String toString() {
 
 class JoinCodeExpirationDuration implements JoinCodeExpiration {
   const JoinCodeExpirationDuration(this.duration);
-  
+
 
  final  Duration duration;
 
@@ -772,16 +787,18 @@ $JoinCodeExpirationDurationCopyWith<JoinCodeExpirationDuration> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeExpirationDuration&&(identical(other.duration, duration) || other.duration == duration));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeExpirationDuration&&(identical(other.duration, duration) || other.duration == duration));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,duration);
+int get hashCode {
+    return Object.hash(runtimeType,duration);
+}
 
 @override
 String toString() {
-  return 'JoinCodeExpiration.duration(duration: $duration)';
+    return 'JoinCodeExpiration.duration(duration: $duration)';
 }
 
 
@@ -833,16 +850,21 @@ $JoinCodeOptionsCopyWith<JoinCodeOptions> get copyWith => _$JoinCodeOptionsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeOptions&&(identical(other.singleUse, singleUse) || other.singleUse == singleUse)&&(identical(other.expiration, expiration) || other.expiration == expiration)&&const DeepCollectionEquality().equals(other.autoAcceptRoleIds, autoAcceptRoleIds));
+  final _this = this as JoinCodeOptions;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JoinCodeOptions&&(identical(other.singleUse, _this.singleUse) || other.singleUse == _this.singleUse)&&(identical(other.expiration, _this.expiration) || other.expiration == _this.expiration)&&const DeepCollectionEquality().equals(other.autoAcceptRoleIds, _this.autoAcceptRoleIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,singleUse,expiration,const DeepCollectionEquality().hash(autoAcceptRoleIds));
+int get hashCode {
+  final _this = this as JoinCodeOptions;
+  return Object.hash(runtimeType,_this.singleUse,_this.expiration,const DeepCollectionEquality().hash(_this.autoAcceptRoleIds));
+}
 
 @override
 String toString() {
-  return 'JoinCodeOptions(singleUse: $singleUse, expiration: $expiration, autoAcceptRoleIds: $autoAcceptRoleIds)';
+  final _this = this as JoinCodeOptions;
+  return 'JoinCodeOptions(singleUse: ${_this.singleUse}, expiration: ${_this.expiration}, autoAcceptRoleIds: ${_this.autoAcceptRoleIds})';
 }
 
 
@@ -871,7 +893,7 @@ class _$JoinCodeOptionsCopyWithImpl<$Res>
 /// Create a copy of JoinCodeOptions
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? singleUse = null,Object? expiration = null,Object? autoAcceptRoleIds = null,}) {
-  return _then(_self.copyWith(
+  return _then(JoinCodeOptions(
 singleUse: null == singleUse ? _self.singleUse : singleUse // ignore: cast_nullable_to_non_nullable
 as bool,expiration: null == expiration ? _self.expiration : expiration // ignore: cast_nullable_to_non_nullable
 as JoinCodeExpiration,autoAcceptRoleIds: null == autoAcceptRoleIds ? _self.autoAcceptRoleIds : autoAcceptRoleIds // ignore: cast_nullable_to_non_nullable
@@ -883,7 +905,7 @@ as List<skir.RecordId>,
 @override
 @pragma('vm:prefer-inline')
 $JoinCodeExpirationCopyWith<$Res> get expiration {
-  
+
   return $JoinCodeExpirationCopyWith<$Res>(_self.expiration, (value) {
     return _then(_self.copyWith(expiration: value));
   });
@@ -1025,8 +1047,8 @@ return $default(_that.singleUse,_that.expiration,_that.autoAcceptRoleIds);case _
 
 
 class _JoinCodeOptions implements JoinCodeOptions {
-  const _JoinCodeOptions({this.singleUse = true, this.expiration = const JoinCodeExpiration.duration(Duration(days: 7)), final  List<skir.RecordId> autoAcceptRoleIds = const []}): _autoAcceptRoleIds = autoAcceptRoleIds;
-  
+  const _JoinCodeOptions({this.singleUse = true, this.expiration = const JoinCodeExpiration.duration(Duration(days: 7)),  List<skir.RecordId> autoAcceptRoleIds = const []}): _autoAcceptRoleIds = autoAcceptRoleIds;
+
 
 @override@JsonKey() final  bool singleUse;
 @override@JsonKey() final  JoinCodeExpiration expiration;
@@ -1048,16 +1070,18 @@ _$JoinCodeOptionsCopyWith<_JoinCodeOptions> get copyWith => __$JoinCodeOptionsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JoinCodeOptions&&(identical(other.singleUse, singleUse) || other.singleUse == singleUse)&&(identical(other.expiration, expiration) || other.expiration == expiration)&&const DeepCollectionEquality().equals(other._autoAcceptRoleIds, _autoAcceptRoleIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _JoinCodeOptions&&(identical(other.singleUse, singleUse) || other.singleUse == singleUse)&&(identical(other.expiration, expiration) || other.expiration == expiration)&&const DeepCollectionEquality().equals(other.autoAcceptRoleIds, _autoAcceptRoleIds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,singleUse,expiration,const DeepCollectionEquality().hash(_autoAcceptRoleIds));
+int get hashCode {
+    return Object.hash(runtimeType,singleUse,expiration,const DeepCollectionEquality().hash(_autoAcceptRoleIds));
+}
 
 @override
 String toString() {
-  return 'JoinCodeOptions(singleUse: $singleUse, expiration: $expiration, autoAcceptRoleIds: $autoAcceptRoleIds)';
+    return 'JoinCodeOptions(singleUse: $singleUse, expiration: $expiration, autoAcceptRoleIds: $autoAcceptRoleIds)';
 }
 
 
@@ -1099,7 +1123,7 @@ as List<skir.RecordId>,
 @override
 @pragma('vm:prefer-inline')
 $JoinCodeExpirationCopyWith<$Res> get expiration {
-  
+
   return $JoinCodeExpirationCopyWith<$Res>(_self.expiration, (value) {
     return _then(_self.copyWith(expiration: value));
   });

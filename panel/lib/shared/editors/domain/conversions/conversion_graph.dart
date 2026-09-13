@@ -17,13 +17,16 @@ final class ConversionGraph {
     final diagnostics = <TypeDiagnostic>[];
     final pending = applications.toList();
     final resolvedApplications = <ResolvedTypeRef>{};
+
     final inheritanceEdges = <(ResolvedTypeRef, ResolvedTypeRef)>{};
     while (pending.isNotEmpty) {
       final source = pending.removeLast();
       if (!resolvedApplications.add(source)) continue;
       final resolved = registry.resolveExact(source);
       diagnostics.addAll(resolved.diagnostics);
+
       final value = resolved.valueOrNull;
+
       if (value == null) continue;
       for (final target in value.directParents) {
         pending.add(target);
@@ -100,7 +103,9 @@ final class ConversionGraph {
         }
         final nextCost = path.cost + edge.cost;
         final previousCost = bestCosts[edge.target];
+
         if (previousCost != null && nextCost > previousCost) continue;
+
         bestCosts[edge.target] = nextCost;
         queue.add(
           _ConversionPath(

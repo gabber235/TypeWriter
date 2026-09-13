@@ -103,8 +103,12 @@ extension SkirPresentationInputDecoder on SkirPresentationDecoder {
 
   TypeResult<PresentationElement> _select(wire.SelectControl value) {
     final control = _bound(value.control);
+    final defaultValue = _optionalExpression(value.defaultValue);
     final options = <SelectOption>[];
-    final diagnostics = <TypeDiagnostic>[...control.diagnostics];
+    final diagnostics = <TypeDiagnostic>[
+      ...control.diagnostics,
+      ...defaultValue.diagnostics,
+    ];
     for (final option in value.options) {
       final label = expressions.decode(option.label);
       final item = expressions.decode(option.value);
@@ -131,6 +135,7 @@ extension SkirPresentationInputDecoder on SkirPresentationDecoder {
               control: control.valueOrNull!,
               options: options,
               allowCustomValue: value.allowCustomValue,
+              defaultValue: defaultValue.valueOrNull,
             ),
           )
         : TypeResult.failure(diagnostics);

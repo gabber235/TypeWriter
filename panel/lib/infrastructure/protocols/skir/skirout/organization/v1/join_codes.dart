@@ -360,6 +360,476 @@ final class JoinCode_mutable implements JoinCode_orMutable {
 }
 
 // -----------------------------------------------------------------------------
+// struct OrganizationJoinCodesSnapshot
+// -----------------------------------------------------------------------------
+
+sealed class OrganizationJoinCodesSnapshot_orMutable {
+  _core.int get sequence;
+  _core.Iterable<JoinCode_orMutable> get values;
+
+  OrganizationJoinCodesSnapshot toFrozen();
+}
+
+/// Deeply immutable.
+final class OrganizationJoinCodesSnapshot implements OrganizationJoinCodesSnapshot_orMutable {
+  @_core.override
+  final _core.int sequence;
+  @_core.override
+  final _core.Iterable<JoinCode> values;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory OrganizationJoinCodesSnapshot({
+    required _core.int sequence,
+    required _core.Iterable<JoinCode_orMutable> values,
+  }) => OrganizationJoinCodesSnapshot._(
+    sequence,
+    _skir.internal__frozenMappedCopy(values, (it) => it.toFrozen()),
+  );
+
+  OrganizationJoinCodesSnapshot._(
+    this.sequence,
+    this.values,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = OrganizationJoinCodesSnapshot._(
+    0,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static OrganizationJoinCodesSnapshot_mutable mutable() => OrganizationJoinCodesSnapshot_mutable._(
+    0,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  OrganizationJoinCodesSnapshot toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  OrganizationJoinCodesSnapshot_mutable toMutable() => OrganizationJoinCodesSnapshot_mutable._(
+    this.sequence,
+    this.values,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! OrganizationJoinCodesSnapshot) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.sequence,
+    this.values,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `OrganizationJoinCodesSnapshot` instances.
+  static _skir.StructSerializer<OrganizationJoinCodesSnapshot, OrganizationJoinCodesSnapshot_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "sequence",
+        "sequence",
+        0,
+        _skir.Serializers.int64,
+        "",
+        (it) => it.sequence,
+        (it, v) => it.sequence = v,
+      );
+      _serializerBuilder.addField(
+        "values",
+        "values",
+        1,
+        _skir.Serializers.iterable(
+          JoinCode.serializer,
+        ),
+        "",
+        (it) => it.values,
+        (it, v) => it.values = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/join_codes.skir:OrganizationJoinCodesSnapshot",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (OrganizationJoinCodesSnapshot_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [OrganizationJoinCodesSnapshot].
+final class OrganizationJoinCodesSnapshot_mutable implements OrganizationJoinCodesSnapshot_orMutable {
+  _core.int sequence;
+  _core.Iterable<JoinCode_orMutable> values;
+  _skir.internal__UnrecognizedFields? _u;
+
+  OrganizationJoinCodesSnapshot_mutable._(
+    this.sequence,
+    this.values,
+  );
+
+  /// If the value of [values] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [values] and returns it.
+  _core.List<JoinCode_orMutable> get mutableValues {
+    final value = this.values;
+    if (value is _skir.internal__MutableList<JoinCode_orMutable>) {
+      return value;
+    } else {
+      return this.values = _skir.internal__MutableList([...value]);
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  OrganizationJoinCodesSnapshot toFrozen() => OrganizationJoinCodesSnapshot(
+    sequence: this.sequence,
+    values: this.values,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// enum OrganizationJoinCodesChange
+// -----------------------------------------------------------------------------
+
+/// To switch on the variants:
+///   ```
+///   switch (e) {
+///     case OrganizationJoinCodesChange_unknown(): { ... }
+///     case OrganizationJoinCodesChange_add(:var value): { ... }
+///     case OrganizationJoinCodesChange_remove(:var value): { ... }
+///   }
+///   ```
+///
+/// Deeply immutable.
+sealed class OrganizationJoinCodesChange {
+  /// Constant indicating an unknown `OrganizationJoinCodesChange`.
+  /// Default value for fields of type `OrganizationJoinCodesChange`.
+  static const OrganizationJoinCodesChange unknown = OrganizationJoinCodesChange_unknown._instance;
+
+  /// Create a 'add' variant wrapping around the given value.
+  factory OrganizationJoinCodesChange.wrapAdd(
+    JoinCode value
+  ) => OrganizationJoinCodesChange_addWrapper._(value);
+
+  /// Same as `wrapAdd(JoinCode(...))`.
+  factory OrganizationJoinCodesChange.createAdd({
+    required _lib_kernel_v1_record_id.RecordId_orMutable code,
+    required _core.DateTime createdAt,
+    required _core.DateTime? expiresAt,
+    required _core.bool singleUse,
+    required JoinCode_AutoAccept_orMutable autoAccept,
+  }) => OrganizationJoinCodesChange.wrapAdd(
+    JoinCode(
+      code: code,
+      createdAt: createdAt,
+      expiresAt: expiresAt,
+      singleUse: singleUse,
+      autoAccept: autoAccept,
+    )
+  );
+
+  /// Create a 'remove' variant wrapping around the given value.
+  factory OrganizationJoinCodesChange.wrapRemove(
+    _lib_kernel_v1_record_id.RecordId value
+  ) => OrganizationJoinCodesChange_removeWrapper._(value);
+
+  /// Same as `wrapRemove(_lib_kernel_v1_record_id.RecordId(...))`.
+  factory OrganizationJoinCodesChange.createRemove({
+    required _core.String table,
+    required _lib_kernel_v1_record_id.RecordIdKey key,
+  }) => OrganizationJoinCodesChange.wrapRemove(
+    _lib_kernel_v1_record_id.RecordId(
+      table: table,
+      key: key,
+    )
+  );
+
+  /// Returns the kind of variant held by this OrganizationJoinCodesChange.
+  OrganizationJoinCodesChange_kind get kind;
+
+  /// Serializer for `OrganizationJoinCodesChange` instances.
+  static _skir.EnumSerializer<OrganizationJoinCodesChange> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addWrapperVariant(
+        1,
+        "add",
+        "wrapAdd",
+        JoinCode.serializer,
+        "",
+        OrganizationJoinCodesChange_addWrapper._,
+        (it) => it.value,
+        ordinal: OrganizationJoinCodesChange_kind.addWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        2,
+        "remove",
+        "wrapRemove",
+        _lib_kernel_v1_record_id.RecordId.serializer,
+        "",
+        OrganizationJoinCodesChange_removeWrapper._,
+        (it) => it.value,
+        ordinal: OrganizationJoinCodesChange_kind.removeWrapper._ordinal,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__EnumSerializerBuilder.create(
+    recordId: "organization/v1/join_codes.skir:OrganizationJoinCodesChange",
+    doc: "",
+    unknownInstance: OrganizationJoinCodesChange_unknown._instance,
+    enumInstance: OrganizationJoinCodesChange.unknown,
+    getOrdinal: (it) => it.kind._ordinal,
+    wrapUnrecognized: OrganizationJoinCodesChange_unknown._unrecognized,
+    getUnrecognized: (it) => it._u,
+  );
+}
+
+/// The kind of variant held by a `OrganizationJoinCodesChange`.
+enum OrganizationJoinCodesChange_kind {
+  unknown(0),
+  addWrapper(1),
+  removeWrapper(2);
+
+  final _core.int _ordinal;
+
+  const OrganizationJoinCodesChange_kind(this._ordinal);
+}
+
+final class OrganizationJoinCodesChange_unknown implements OrganizationJoinCodesChange {
+  static const _instance = OrganizationJoinCodesChange_unknown._();
+
+  final _skir.internal__UnrecognizedVariant? _u;
+
+  const OrganizationJoinCodesChange_unknown._() : _u = null;
+  OrganizationJoinCodesChange_unknown._unrecognized(this._u);
+
+  @_core.override
+  OrganizationJoinCodesChange_kind get kind => OrganizationJoinCodesChange_kind.unknown;
+  @_core.override
+  _core.bool operator ==(other) => other is OrganizationJoinCodesChange_unknown;
+  @_core.override
+  _core.int get hashCode => 8118964;
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, OrganizationJoinCodesChange.serializer);
+}
+
+sealed class _OrganizationJoinCodesChange_wrapper implements OrganizationJoinCodesChange {
+  _core.dynamic get value;
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (other is! _OrganizationJoinCodesChange_wrapper) return false;
+    return kind == other.kind && value == other.value;
+  }
+
+  @_core.override
+  _core.int get hashCode => (kind._ordinal * 31) ^ value.hashCode;
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, OrganizationJoinCodesChange.serializer);
+}
+
+final class OrganizationJoinCodesChange_addWrapper extends _OrganizationJoinCodesChange_wrapper {
+  final JoinCode value;
+
+  OrganizationJoinCodesChange_addWrapper._(this.value);
+
+  @_core.override
+  OrganizationJoinCodesChange_kind get kind => OrganizationJoinCodesChange_kind.addWrapper;
+}
+
+final class OrganizationJoinCodesChange_removeWrapper extends _OrganizationJoinCodesChange_wrapper {
+  final _lib_kernel_v1_record_id.RecordId value;
+
+  OrganizationJoinCodesChange_removeWrapper._(this.value);
+
+  @_core.override
+  OrganizationJoinCodesChange_kind get kind => OrganizationJoinCodesChange_kind.removeWrapper;
+}
+
+// -----------------------------------------------------------------------------
+// struct OrganizationJoinCodesChanged
+// -----------------------------------------------------------------------------
+
+sealed class OrganizationJoinCodesChanged_orMutable {
+  _core.int get sequence;
+  _core.String get operationId;
+  _core.Iterable<OrganizationJoinCodesChange> get changes;
+
+  OrganizationJoinCodesChanged toFrozen();
+}
+
+/// Deeply immutable.
+final class OrganizationJoinCodesChanged implements OrganizationJoinCodesChanged_orMutable {
+  @_core.override
+  final _core.int sequence;
+  @_core.override
+  final _core.String operationId;
+  @_core.override
+  final _core.Iterable<OrganizationJoinCodesChange> changes;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory OrganizationJoinCodesChanged({
+    required _core.int sequence,
+    required _core.String operationId,
+    required _core.Iterable<OrganizationJoinCodesChange> changes,
+  }) => OrganizationJoinCodesChanged._(
+    sequence,
+    operationId,
+    _skir.internal__frozenCopy(changes),
+  );
+
+  OrganizationJoinCodesChanged._(
+    this.sequence,
+    this.operationId,
+    this.changes,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = OrganizationJoinCodesChanged._(
+    0,
+    "",
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static OrganizationJoinCodesChanged_mutable mutable() => OrganizationJoinCodesChanged_mutable._(
+    0,
+    "",
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  OrganizationJoinCodesChanged toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  OrganizationJoinCodesChanged_mutable toMutable() => OrganizationJoinCodesChanged_mutable._(
+    this.sequence,
+    this.operationId,
+    this.changes,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! OrganizationJoinCodesChanged) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.sequence,
+    this.operationId,
+    this.changes,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `OrganizationJoinCodesChanged` instances.
+  static _skir.StructSerializer<OrganizationJoinCodesChanged, OrganizationJoinCodesChanged_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "sequence",
+        "sequence",
+        0,
+        _skir.Serializers.int64,
+        "",
+        (it) => it.sequence,
+        (it, v) => it.sequence = v,
+      );
+      _serializerBuilder.addField(
+        "operation_id",
+        "operationId",
+        1,
+        _skir.Serializers.string,
+        "",
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
+      _serializerBuilder.addField(
+        "changes",
+        "changes",
+        2,
+        _skir.Serializers.iterable(
+          OrganizationJoinCodesChange.serializer,
+        ),
+        "",
+        (it) => it.changes,
+        (it, v) => it.changes = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/join_codes.skir:OrganizationJoinCodesChanged",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (OrganizationJoinCodesChanged_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [OrganizationJoinCodesChanged].
+final class OrganizationJoinCodesChanged_mutable implements OrganizationJoinCodesChanged_orMutable {
+  _core.int sequence;
+  _core.String operationId;
+  _core.Iterable<OrganizationJoinCodesChange> changes;
+  _skir.internal__UnrecognizedFields? _u;
+
+  OrganizationJoinCodesChanged_mutable._(
+    this.sequence,
+    this.operationId,
+    this.changes,
+  );
+
+  /// If the value of [changes] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [changes] and returns it.
+  _core.List<OrganizationJoinCodesChange> get mutableChanges {
+    final value = this.changes;
+    if (value is _skir.internal__MutableList<OrganizationJoinCodesChange>) {
+      return value;
+    } else {
+      return this.changes = _skir.internal__MutableList([...value]);
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  OrganizationJoinCodesChanged toFrozen() => OrganizationJoinCodesChanged(
+    sequence: this.sequence,
+    operationId: this.operationId,
+    changes: this.changes,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
 // struct WatchOrganizationJoinCodesRequest
 // -----------------------------------------------------------------------------
 
@@ -444,9 +914,8 @@ final class WatchOrganizationJoinCodesRequest_mutable implements WatchOrganizati
 ///   switch (e) {
 ///     case WatchOrganizationJoinCodesResponse_unknown(): { ... }
 ///     case WatchOrganizationJoinCodesResponse_internalError(:var value): { ... }
-///     case WatchOrganizationJoinCodesResponse_list(:var value): { ... }
-///     case WatchOrganizationJoinCodesResponse_add(:var value): { ... }
-///     case WatchOrganizationJoinCodesResponse_remove(:var value): { ... }
+///     case WatchOrganizationJoinCodesResponse_snapshot(:var value): { ... }
+///     case WatchOrganizationJoinCodesResponse_changed(:var value): { ... }
 ///   }
 ///   ```
 ///
@@ -466,46 +935,37 @@ sealed class WatchOrganizationJoinCodesResponse {
     _lib_kernel_v1_errors.InternalError()
   );
 
-  /// Create a 'list' variant wrapping around the given value.
-  factory WatchOrganizationJoinCodesResponse.wrapList(
-    _core.Iterable<JoinCode> value
-  ) => WatchOrganizationJoinCodesResponse_listWrapper._(value);
+  /// Create a 'snapshot' variant wrapping around the given value.
+  factory WatchOrganizationJoinCodesResponse.wrapSnapshot(
+    OrganizationJoinCodesSnapshot value
+  ) => WatchOrganizationJoinCodesResponse_snapshotWrapper._(value);
 
-  /// Create a 'add' variant wrapping around the given value.
-  factory WatchOrganizationJoinCodesResponse.wrapAdd(
-    JoinCode value
-  ) => WatchOrganizationJoinCodesResponse_addWrapper._(value);
-
-  /// Same as `wrapAdd(JoinCode(...))`.
-  factory WatchOrganizationJoinCodesResponse.createAdd({
-    required _lib_kernel_v1_record_id.RecordId_orMutable code,
-    required _core.DateTime createdAt,
-    required _core.DateTime? expiresAt,
-    required _core.bool singleUse,
-    required JoinCode_AutoAccept_orMutable autoAccept,
-  }) => WatchOrganizationJoinCodesResponse.wrapAdd(
-    JoinCode(
-      code: code,
-      createdAt: createdAt,
-      expiresAt: expiresAt,
-      singleUse: singleUse,
-      autoAccept: autoAccept,
+  /// Same as `wrapSnapshot(OrganizationJoinCodesSnapshot(...))`.
+  factory WatchOrganizationJoinCodesResponse.createSnapshot({
+    required _core.int sequence,
+    required _core.Iterable<JoinCode_orMutable> values,
+  }) => WatchOrganizationJoinCodesResponse.wrapSnapshot(
+    OrganizationJoinCodesSnapshot(
+      sequence: sequence,
+      values: values,
     )
   );
 
-  /// Create a 'remove' variant wrapping around the given value.
-  factory WatchOrganizationJoinCodesResponse.wrapRemove(
-    _lib_kernel_v1_record_id.RecordId value
-  ) => WatchOrganizationJoinCodesResponse_removeWrapper._(value);
+  /// Create a 'changed' variant wrapping around the given value.
+  factory WatchOrganizationJoinCodesResponse.wrapChanged(
+    OrganizationJoinCodesChanged value
+  ) => WatchOrganizationJoinCodesResponse_changedWrapper._(value);
 
-  /// Same as `wrapRemove(_lib_kernel_v1_record_id.RecordId(...))`.
-  factory WatchOrganizationJoinCodesResponse.createRemove({
-    required _core.String table,
-    required _lib_kernel_v1_record_id.RecordIdKey key,
-  }) => WatchOrganizationJoinCodesResponse.wrapRemove(
-    _lib_kernel_v1_record_id.RecordId(
-      table: table,
-      key: key,
+  /// Same as `wrapChanged(OrganizationJoinCodesChanged(...))`.
+  factory WatchOrganizationJoinCodesResponse.createChanged({
+    required _core.int sequence,
+    required _core.String operationId,
+    required _core.Iterable<OrganizationJoinCodesChange> changes,
+  }) => WatchOrganizationJoinCodesResponse.wrapChanged(
+    OrganizationJoinCodesChanged(
+      sequence: sequence,
+      operationId: operationId,
+      changes: changes,
     )
   );
 
@@ -527,35 +987,23 @@ sealed class WatchOrganizationJoinCodesResponse {
       );
       _serializerBuilder.addWrapperVariant(
         2,
-        "list",
-        "wrapList",
-        _skir.Serializers.iterable(
-          JoinCode.serializer,
-        ),
+        "snapshot",
+        "wrapSnapshot",
+        OrganizationJoinCodesSnapshot.serializer,
         "",
-        WatchOrganizationJoinCodesResponse_listWrapper._,
+        WatchOrganizationJoinCodesResponse_snapshotWrapper._,
         (it) => it.value,
-        ordinal: WatchOrganizationJoinCodesResponse_kind.listWrapper._ordinal,
+        ordinal: WatchOrganizationJoinCodesResponse_kind.snapshotWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         3,
-        "add",
-        "wrapAdd",
-        JoinCode.serializer,
+        "changed",
+        "wrapChanged",
+        OrganizationJoinCodesChanged.serializer,
         "",
-        WatchOrganizationJoinCodesResponse_addWrapper._,
+        WatchOrganizationJoinCodesResponse_changedWrapper._,
         (it) => it.value,
-        ordinal: WatchOrganizationJoinCodesResponse_kind.addWrapper._ordinal,
-      );
-      _serializerBuilder.addWrapperVariant(
-        4,
-        "remove",
-        "wrapRemove",
-        _lib_kernel_v1_record_id.RecordId.serializer,
-        "",
-        WatchOrganizationJoinCodesResponse_removeWrapper._,
-        (it) => it.value,
-        ordinal: WatchOrganizationJoinCodesResponse_kind.removeWrapper._ordinal,
+        ordinal: WatchOrganizationJoinCodesResponse_kind.changedWrapper._ordinal,
       );
       _serializerBuilder.finalize();
     }
@@ -577,9 +1025,8 @@ sealed class WatchOrganizationJoinCodesResponse {
 enum WatchOrganizationJoinCodesResponse_kind {
   unknown(0),
   internalErrorWrapper(1),
-  listWrapper(2),
-  addWrapper(3),
-  removeWrapper(4);
+  snapshotWrapper(2),
+  changedWrapper(3);
 
   final _core.int _ordinal;
 
@@ -629,31 +1076,22 @@ final class WatchOrganizationJoinCodesResponse_internalErrorWrapper extends _Wat
   WatchOrganizationJoinCodesResponse_kind get kind => WatchOrganizationJoinCodesResponse_kind.internalErrorWrapper;
 }
 
-final class WatchOrganizationJoinCodesResponse_listWrapper extends _WatchOrganizationJoinCodesResponse_wrapper {
-  final _core.Iterable<JoinCode> value;
+final class WatchOrganizationJoinCodesResponse_snapshotWrapper extends _WatchOrganizationJoinCodesResponse_wrapper {
+  final OrganizationJoinCodesSnapshot value;
 
-  WatchOrganizationJoinCodesResponse_listWrapper._(this.value);
+  WatchOrganizationJoinCodesResponse_snapshotWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationJoinCodesResponse_kind get kind => WatchOrganizationJoinCodesResponse_kind.listWrapper;
+  WatchOrganizationJoinCodesResponse_kind get kind => WatchOrganizationJoinCodesResponse_kind.snapshotWrapper;
 }
 
-final class WatchOrganizationJoinCodesResponse_addWrapper extends _WatchOrganizationJoinCodesResponse_wrapper {
-  final JoinCode value;
+final class WatchOrganizationJoinCodesResponse_changedWrapper extends _WatchOrganizationJoinCodesResponse_wrapper {
+  final OrganizationJoinCodesChanged value;
 
-  WatchOrganizationJoinCodesResponse_addWrapper._(this.value);
-
-  @_core.override
-  WatchOrganizationJoinCodesResponse_kind get kind => WatchOrganizationJoinCodesResponse_kind.addWrapper;
-}
-
-final class WatchOrganizationJoinCodesResponse_removeWrapper extends _WatchOrganizationJoinCodesResponse_wrapper {
-  final _lib_kernel_v1_record_id.RecordId value;
-
-  WatchOrganizationJoinCodesResponse_removeWrapper._(this.value);
+  WatchOrganizationJoinCodesResponse_changedWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationJoinCodesResponse_kind get kind => WatchOrganizationJoinCodesResponse_kind.removeWrapper;
+  WatchOrganizationJoinCodesResponse_kind get kind => WatchOrganizationJoinCodesResponse_kind.changedWrapper;
 }
 
 // -----------------------------------------------------------------------------
@@ -922,6 +1360,7 @@ final class GenerateOrganizationJoinCodeRequest_AutoAccept_mutable implements Ge
 // -----------------------------------------------------------------------------
 
 sealed class GenerateOrganizationJoinCodeRequest_orMutable {
+  _core.String get operationId;
   _core.bool get singleUse;
   GenerateOrganizationJoinCodeRequest_Expiration get expiration;
   GenerateOrganizationJoinCodeRequest_AutoAccept_orMutable get autoAccept;
@@ -932,6 +1371,8 @@ sealed class GenerateOrganizationJoinCodeRequest_orMutable {
 /// Deeply immutable.
 final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJoinCodeRequest_orMutable {
   @_core.override
+  final _core.String operationId;
+  @_core.override
   final _core.bool singleUse;
   @_core.override
   final GenerateOrganizationJoinCodeRequest_Expiration expiration;
@@ -940,16 +1381,19 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
   _skir.internal__UnrecognizedFields? _u;
 
   factory GenerateOrganizationJoinCodeRequest({
+    required _core.String operationId,
     required _core.bool singleUse,
     required GenerateOrganizationJoinCodeRequest_Expiration expiration,
     required GenerateOrganizationJoinCodeRequest_AutoAccept_orMutable autoAccept,
   }) => GenerateOrganizationJoinCodeRequest._(
+    operationId,
     singleUse,
     expiration,
     autoAccept.toFrozen(),
   );
 
   GenerateOrganizationJoinCodeRequest._(
+    this.operationId,
     this.singleUse,
     this.expiration,
     this.autoAccept,
@@ -957,6 +1401,7 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = GenerateOrganizationJoinCodeRequest._(
+    "",
     false,
     GenerateOrganizationJoinCodeRequest_Expiration.unknown,
     GenerateOrganizationJoinCodeRequest_AutoAccept.defaultInstance,
@@ -965,6 +1410,7 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static GenerateOrganizationJoinCodeRequest_mutable mutable() => GenerateOrganizationJoinCodeRequest_mutable._(
+    "",
     false,
     GenerateOrganizationJoinCodeRequest_Expiration.unknown,
     GenerateOrganizationJoinCodeRequest_AutoAccept.defaultInstance,
@@ -977,6 +1423,7 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
 
   /// Returns a mutable shallow copy of this instance.
   GenerateOrganizationJoinCodeRequest_mutable toMutable() => GenerateOrganizationJoinCodeRequest_mutable._(
+    this.operationId,
     this.singleUse,
     this.expiration,
     this.autoAccept,
@@ -993,6 +1440,7 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
   _core.List get _equality_proxy => [
+    this.operationId,
     this.singleUse,
     this.expiration,
     this.autoAccept,
@@ -1005,9 +1453,18 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
   static _skir.StructSerializer<GenerateOrganizationJoinCodeRequest, GenerateOrganizationJoinCodeRequest_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
+        "operation_id",
+        "operationId",
+        0,
+        _skir.Serializers.string,
+        "",
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
+      _serializerBuilder.addField(
         "single_use",
         "singleUse",
-        0,
+        1,
         _skir.Serializers.bool,
         "",
         (it) => it.singleUse,
@@ -1016,7 +1473,7 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
       _serializerBuilder.addField(
         "expiration",
         "expiration",
-        1,
+        2,
         GenerateOrganizationJoinCodeRequest_Expiration.serializer,
         "",
         (it) => it.expiration,
@@ -1025,7 +1482,7 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
       _serializerBuilder.addField(
         "auto_accept",
         "autoAccept",
-        2,
+        3,
         GenerateOrganizationJoinCodeRequest_AutoAccept.serializer,
         "",
         (it) => it.autoAccept,
@@ -1049,12 +1506,14 @@ final class GenerateOrganizationJoinCodeRequest implements GenerateOrganizationJ
 
 /// Mutable version of [GenerateOrganizationJoinCodeRequest].
 final class GenerateOrganizationJoinCodeRequest_mutable implements GenerateOrganizationJoinCodeRequest_orMutable {
+  _core.String operationId;
   _core.bool singleUse;
   GenerateOrganizationJoinCodeRequest_Expiration expiration;
   GenerateOrganizationJoinCodeRequest_AutoAccept_orMutable autoAccept;
   _skir.internal__UnrecognizedFields? _u;
 
   GenerateOrganizationJoinCodeRequest_mutable._(
+    this.operationId,
     this.singleUse,
     this.expiration,
     this.autoAccept,
@@ -1074,9 +1533,314 @@ final class GenerateOrganizationJoinCodeRequest_mutable implements GenerateOrgan
   /// Returns a deeply immutable copy of this instance.
   @_core.override
   GenerateOrganizationJoinCodeRequest toFrozen() => GenerateOrganizationJoinCodeRequest(
+    operationId: this.operationId,
     singleUse: this.singleUse,
     expiration: this.expiration,
     autoAccept: this.autoAccept,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct GenerateOrganizationJoinCodeResponse.InvalidOperationIdError
+// -----------------------------------------------------------------------------
+
+sealed class GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_orMutable {
+  GenerateOrganizationJoinCodeResponse_InvalidOperationIdError toFrozen();
+}
+
+/// Deeply immutable.
+final class GenerateOrganizationJoinCodeResponse_InvalidOperationIdError implements GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory GenerateOrganizationJoinCodeResponse_InvalidOperationIdError() => GenerateOrganizationJoinCodeResponse_InvalidOperationIdError._();
+
+  GenerateOrganizationJoinCodeResponse_InvalidOperationIdError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = GenerateOrganizationJoinCodeResponse_InvalidOperationIdError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable mutable() => GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_InvalidOperationIdError toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable toMutable() => GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! GenerateOrganizationJoinCodeResponse_InvalidOperationIdError) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `GenerateOrganizationJoinCodeResponse_InvalidOperationIdError` instances.
+  static _skir.StructSerializer<GenerateOrganizationJoinCodeResponse_InvalidOperationIdError, GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/join_codes.skir:GenerateOrganizationJoinCodeResponse.InvalidOperationIdError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [GenerateOrganizationJoinCodeResponse_InvalidOperationIdError].
+final class GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable implements GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  GenerateOrganizationJoinCodeResponse_InvalidOperationIdError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_InvalidOperationIdError toFrozen() => GenerateOrganizationJoinCodeResponse_InvalidOperationIdError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct GenerateOrganizationJoinCodeResponse.OperationIdentityReusedError
+// -----------------------------------------------------------------------------
+
+sealed class GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_orMutable {
+  GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError toFrozen();
+}
+
+/// Deeply immutable.
+final class GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError implements GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError() => GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError._();
+
+  GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable mutable() => GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable toMutable() => GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError` instances.
+  static _skir.StructSerializer<GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError, GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/join_codes.skir:GenerateOrganizationJoinCodeResponse.OperationIdentityReusedError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError].
+final class GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable implements GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError toFrozen() => GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct GenerateOrganizationJoinCodeResponse.Success
+// -----------------------------------------------------------------------------
+
+sealed class GenerateOrganizationJoinCodeResponse_Success_orMutable {
+  JoinCode_orMutable get code;
+  OrganizationJoinCodesChanged_orMutable get event;
+
+  GenerateOrganizationJoinCodeResponse_Success toFrozen();
+}
+
+/// Deeply immutable.
+final class GenerateOrganizationJoinCodeResponse_Success implements GenerateOrganizationJoinCodeResponse_Success_orMutable {
+  @_core.override
+  final JoinCode code;
+  @_core.override
+  final OrganizationJoinCodesChanged event;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory GenerateOrganizationJoinCodeResponse_Success({
+    required JoinCode_orMutable code,
+    required OrganizationJoinCodesChanged_orMutable event,
+  }) => GenerateOrganizationJoinCodeResponse_Success._(
+    code.toFrozen(),
+    event.toFrozen(),
+  );
+
+  GenerateOrganizationJoinCodeResponse_Success._(
+    this.code,
+    this.event,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = GenerateOrganizationJoinCodeResponse_Success._(
+    JoinCode.defaultInstance,
+    OrganizationJoinCodesChanged.defaultInstance,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static GenerateOrganizationJoinCodeResponse_Success_mutable mutable() => GenerateOrganizationJoinCodeResponse_Success_mutable._(
+    JoinCode.defaultInstance,
+    OrganizationJoinCodesChanged.defaultInstance,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_Success toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  GenerateOrganizationJoinCodeResponse_Success_mutable toMutable() => GenerateOrganizationJoinCodeResponse_Success_mutable._(
+    this.code,
+    this.event,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! GenerateOrganizationJoinCodeResponse_Success) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.code,
+    this.event,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `GenerateOrganizationJoinCodeResponse_Success` instances.
+  static _skir.StructSerializer<GenerateOrganizationJoinCodeResponse_Success, GenerateOrganizationJoinCodeResponse_Success_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "code",
+        "code",
+        0,
+        JoinCode.serializer,
+        "",
+        (it) => it.code,
+        (it, v) => it.code = v,
+      );
+      _serializerBuilder.addField(
+        "event",
+        "event",
+        1,
+        OrganizationJoinCodesChanged.serializer,
+        "",
+        (it) => it.event,
+        (it, v) => it.event = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/join_codes.skir:GenerateOrganizationJoinCodeResponse.Success",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (GenerateOrganizationJoinCodeResponse_Success_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [GenerateOrganizationJoinCodeResponse_Success].
+final class GenerateOrganizationJoinCodeResponse_Success_mutable implements GenerateOrganizationJoinCodeResponse_Success_orMutable {
+  JoinCode_orMutable code;
+  OrganizationJoinCodesChanged_orMutable event;
+  _skir.internal__UnrecognizedFields? _u;
+
+  GenerateOrganizationJoinCodeResponse_Success_mutable._(
+    this.code,
+    this.event,
+  );
+
+  /// If the value of [code] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [code] and returns it.
+  JoinCode_mutable get mutableCode {
+    final value = this.code;
+    if (value is JoinCode_mutable) {
+      return value;
+    } else {
+      return this.code = (value as JoinCode).toMutable();
+    }
+  }
+
+  /// If the value of [event] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [event] and returns it.
+  OrganizationJoinCodesChanged_mutable get mutableEvent {
+    final value = this.event;
+    if (value is OrganizationJoinCodesChanged_mutable) {
+      return value;
+    } else {
+      return this.event = (value as OrganizationJoinCodesChanged).toMutable();
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_Success toFrozen() => GenerateOrganizationJoinCodeResponse_Success(
+    code: this.code,
+    event: this.event,
   ).._u = this._u;
 }
 
@@ -1449,6 +2213,8 @@ final class GenerateOrganizationJoinCodeResponse_InvalidExpirationError_mutable 
 ///   ```
 ///   switch (e) {
 ///     case GenerateOrganizationJoinCodeResponse_unknown(): { ... }
+///     case GenerateOrganizationJoinCodeResponse_invalidOperationIdError(:var value): { ... }
+///     case GenerateOrganizationJoinCodeResponse_operationIdentityReusedError(:var value): { ... }
 ///     case GenerateOrganizationJoinCodeResponse_internalError(:var value): { ... }
 ///     case GenerateOrganizationJoinCodeResponse_success(:var value): { ... }
 ///     case GenerateOrganizationJoinCodeResponse_rolesNotFoundError(:var value): { ... }
@@ -1464,6 +2230,26 @@ sealed class GenerateOrganizationJoinCodeResponse {
   /// Default value for fields of type `GenerateOrganizationJoinCodeResponse`.
   static const GenerateOrganizationJoinCodeResponse unknown = GenerateOrganizationJoinCodeResponse_unknown._instance;
 
+  /// Create a 'invalid_operation_id_error' variant wrapping around the given value.
+  factory GenerateOrganizationJoinCodeResponse.wrapInvalidOperationIdError(
+    GenerateOrganizationJoinCodeResponse_InvalidOperationIdError value
+  ) => GenerateOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper._(value);
+
+  /// Same as `wrapInvalidOperationIdError(GenerateOrganizationJoinCodeResponse_InvalidOperationIdError(...))`.
+  factory GenerateOrganizationJoinCodeResponse.createInvalidOperationIdError() => GenerateOrganizationJoinCodeResponse.wrapInvalidOperationIdError(
+    GenerateOrganizationJoinCodeResponse_InvalidOperationIdError()
+  );
+
+  /// Create a 'operation_identity_reused_error' variant wrapping around the given value.
+  factory GenerateOrganizationJoinCodeResponse.wrapOperationIdentityReusedError(
+    GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError value
+  ) => GenerateOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper._(value);
+
+  /// Same as `wrapOperationIdentityReusedError(GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError(...))`.
+  factory GenerateOrganizationJoinCodeResponse.createOperationIdentityReusedError() => GenerateOrganizationJoinCodeResponse.wrapOperationIdentityReusedError(
+    GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError()
+  );
+
   /// Create a 'internal_error' variant wrapping around the given value.
   factory GenerateOrganizationJoinCodeResponse.wrapInternalError(
     _lib_kernel_v1_errors.InternalError value
@@ -1476,23 +2262,17 @@ sealed class GenerateOrganizationJoinCodeResponse {
 
   /// Create a 'success' variant wrapping around the given value.
   factory GenerateOrganizationJoinCodeResponse.wrapSuccess(
-    JoinCode value
+    GenerateOrganizationJoinCodeResponse_Success value
   ) => GenerateOrganizationJoinCodeResponse_successWrapper._(value);
 
-  /// Same as `wrapSuccess(JoinCode(...))`.
+  /// Same as `wrapSuccess(GenerateOrganizationJoinCodeResponse_Success(...))`.
   factory GenerateOrganizationJoinCodeResponse.createSuccess({
-    required _lib_kernel_v1_record_id.RecordId_orMutable code,
-    required _core.DateTime createdAt,
-    required _core.DateTime? expiresAt,
-    required _core.bool singleUse,
-    required JoinCode_AutoAccept_orMutable autoAccept,
+    required JoinCode_orMutable code,
+    required OrganizationJoinCodesChanged_orMutable event,
   }) => GenerateOrganizationJoinCodeResponse.wrapSuccess(
-    JoinCode(
+    GenerateOrganizationJoinCodeResponse_Success(
       code: code,
-      createdAt: createdAt,
-      expiresAt: expiresAt,
-      singleUse: singleUse,
-      autoAccept: autoAccept,
+      event: event,
     )
   );
 
@@ -1562,6 +2342,26 @@ sealed class GenerateOrganizationJoinCodeResponse {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addWrapperVariant(
         1,
+        "invalid_operation_id_error",
+        "wrapInvalidOperationIdError",
+        GenerateOrganizationJoinCodeResponse_InvalidOperationIdError.serializer,
+        "",
+        GenerateOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper._,
+        (it) => it.value,
+        ordinal: GenerateOrganizationJoinCodeResponse_kind.invalidOperationIdErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        2,
+        "operation_identity_reused_error",
+        "wrapOperationIdentityReusedError",
+        GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError.serializer,
+        "",
+        GenerateOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper._,
+        (it) => it.value,
+        ordinal: GenerateOrganizationJoinCodeResponse_kind.operationIdentityReusedErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        3,
         "internal_error",
         "wrapInternalError",
         _lib_kernel_v1_errors.InternalError.serializer,
@@ -1571,17 +2371,17 @@ sealed class GenerateOrganizationJoinCodeResponse {
         ordinal: GenerateOrganizationJoinCodeResponse_kind.internalErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        2,
+        4,
         "success",
         "wrapSuccess",
-        JoinCode.serializer,
+        GenerateOrganizationJoinCodeResponse_Success.serializer,
         "",
         GenerateOrganizationJoinCodeResponse_successWrapper._,
         (it) => it.value,
         ordinal: GenerateOrganizationJoinCodeResponse_kind.successWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        3,
+        5,
         "roles_not_found_error",
         "wrapRolesNotFoundError",
         GenerateOrganizationJoinCodeResponse_RolesNotFoundError.serializer,
@@ -1591,7 +2391,7 @@ sealed class GenerateOrganizationJoinCodeResponse {
         ordinal: GenerateOrganizationJoinCodeResponse_kind.rolesNotFoundErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        4,
+        6,
         "roles_not_assignable_error",
         "wrapRolesNotAssignableError",
         GenerateOrganizationJoinCodeResponse_RolesNotAssignableError.serializer,
@@ -1601,7 +2401,7 @@ sealed class GenerateOrganizationJoinCodeResponse {
         ordinal: GenerateOrganizationJoinCodeResponse_kind.rolesNotAssignableErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        5,
+        7,
         "invalid_expiration_error",
         "wrapInvalidExpirationError",
         GenerateOrganizationJoinCodeResponse_InvalidExpirationError.serializer,
@@ -1611,7 +2411,7 @@ sealed class GenerateOrganizationJoinCodeResponse {
         ordinal: GenerateOrganizationJoinCodeResponse_kind.invalidExpirationErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        6,
+        8,
         "invalid_record_id_error",
         "wrapInvalidRecordIdError",
         _lib_kernel_v1_errors.InvalidRecordIdError.serializer,
@@ -1639,12 +2439,14 @@ sealed class GenerateOrganizationJoinCodeResponse {
 /// The kind of variant held by a `GenerateOrganizationJoinCodeResponse`.
 enum GenerateOrganizationJoinCodeResponse_kind {
   unknown(0),
-  internalErrorWrapper(1),
-  successWrapper(2),
-  rolesNotFoundErrorWrapper(3),
-  rolesNotAssignableErrorWrapper(4),
-  invalidExpirationErrorWrapper(5),
-  invalidRecordIdErrorWrapper(6);
+  invalidOperationIdErrorWrapper(1),
+  operationIdentityReusedErrorWrapper(2),
+  internalErrorWrapper(3),
+  successWrapper(4),
+  rolesNotFoundErrorWrapper(5),
+  rolesNotAssignableErrorWrapper(6),
+  invalidExpirationErrorWrapper(7),
+  invalidRecordIdErrorWrapper(8);
 
   final _core.int _ordinal;
 
@@ -1685,6 +2487,24 @@ sealed class _GenerateOrganizationJoinCodeResponse_wrapper implements GenerateOr
   _core.String toString() => _skir.internal__stringify(this, GenerateOrganizationJoinCodeResponse.serializer);
 }
 
+final class GenerateOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper extends _GenerateOrganizationJoinCodeResponse_wrapper {
+  final GenerateOrganizationJoinCodeResponse_InvalidOperationIdError value;
+
+  GenerateOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper._(this.value);
+
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_kind get kind => GenerateOrganizationJoinCodeResponse_kind.invalidOperationIdErrorWrapper;
+}
+
+final class GenerateOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper extends _GenerateOrganizationJoinCodeResponse_wrapper {
+  final GenerateOrganizationJoinCodeResponse_OperationIdentityReusedError value;
+
+  GenerateOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper._(this.value);
+
+  @_core.override
+  GenerateOrganizationJoinCodeResponse_kind get kind => GenerateOrganizationJoinCodeResponse_kind.operationIdentityReusedErrorWrapper;
+}
+
 final class GenerateOrganizationJoinCodeResponse_internalErrorWrapper extends _GenerateOrganizationJoinCodeResponse_wrapper {
   final _lib_kernel_v1_errors.InternalError value;
 
@@ -1695,7 +2515,7 @@ final class GenerateOrganizationJoinCodeResponse_internalErrorWrapper extends _G
 }
 
 final class GenerateOrganizationJoinCodeResponse_successWrapper extends _GenerateOrganizationJoinCodeResponse_wrapper {
-  final JoinCode value;
+  final GenerateOrganizationJoinCodeResponse_Success value;
 
   GenerateOrganizationJoinCodeResponse_successWrapper._(this.value);
 
@@ -1744,6 +2564,7 @@ final class GenerateOrganizationJoinCodeResponse_invalidRecordIdErrorWrapper ext
 // -----------------------------------------------------------------------------
 
 sealed class RevokeOrganizationJoinCodeRequest_orMutable {
+  _core.String get operationId;
   _lib_kernel_v1_record_id.RecordId_orMutable get codeId;
 
   RevokeOrganizationJoinCodeRequest toFrozen();
@@ -1752,27 +2573,34 @@ sealed class RevokeOrganizationJoinCodeRequest_orMutable {
 /// Deeply immutable.
 final class RevokeOrganizationJoinCodeRequest implements RevokeOrganizationJoinCodeRequest_orMutable {
   @_core.override
+  final _core.String operationId;
+  @_core.override
   final _lib_kernel_v1_record_id.RecordId codeId;
   _skir.internal__UnrecognizedFields? _u;
 
   factory RevokeOrganizationJoinCodeRequest({
+    required _core.String operationId,
     required _lib_kernel_v1_record_id.RecordId_orMutable codeId,
   }) => RevokeOrganizationJoinCodeRequest._(
+    operationId,
     codeId.toFrozen(),
   );
 
   RevokeOrganizationJoinCodeRequest._(
+    this.operationId,
     this.codeId,
   );
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = RevokeOrganizationJoinCodeRequest._(
+    "",
     _lib_kernel_v1_record_id.RecordId.defaultInstance,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static RevokeOrganizationJoinCodeRequest_mutable mutable() => RevokeOrganizationJoinCodeRequest_mutable._(
+    "",
     _lib_kernel_v1_record_id.RecordId.defaultInstance,
   );
 
@@ -1783,6 +2611,7 @@ final class RevokeOrganizationJoinCodeRequest implements RevokeOrganizationJoinC
 
   /// Returns a mutable shallow copy of this instance.
   RevokeOrganizationJoinCodeRequest_mutable toMutable() => RevokeOrganizationJoinCodeRequest_mutable._(
+    this.operationId,
     this.codeId,
   );
 
@@ -1797,6 +2626,7 @@ final class RevokeOrganizationJoinCodeRequest implements RevokeOrganizationJoinC
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
   _core.List get _equality_proxy => [
+    this.operationId,
     this.codeId,
   ];
 
@@ -1807,9 +2637,18 @@ final class RevokeOrganizationJoinCodeRequest implements RevokeOrganizationJoinC
   static _skir.StructSerializer<RevokeOrganizationJoinCodeRequest, RevokeOrganizationJoinCodeRequest_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
+        "operation_id",
+        "operationId",
+        0,
+        _skir.Serializers.string,
+        "",
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
+      _serializerBuilder.addField(
         "code_id",
         "codeId",
-        0,
+        1,
         _lib_kernel_v1_record_id.RecordId.serializer,
         "",
         (it) => it.codeId,
@@ -1833,10 +2672,12 @@ final class RevokeOrganizationJoinCodeRequest implements RevokeOrganizationJoinC
 
 /// Mutable version of [RevokeOrganizationJoinCodeRequest].
 final class RevokeOrganizationJoinCodeRequest_mutable implements RevokeOrganizationJoinCodeRequest_orMutable {
+  _core.String operationId;
   _lib_kernel_v1_record_id.RecordId_orMutable codeId;
   _skir.internal__UnrecognizedFields? _u;
 
   RevokeOrganizationJoinCodeRequest_mutable._(
+    this.operationId,
     this.codeId,
   );
 
@@ -1854,45 +2695,46 @@ final class RevokeOrganizationJoinCodeRequest_mutable implements RevokeOrganizat
   /// Returns a deeply immutable copy of this instance.
   @_core.override
   RevokeOrganizationJoinCodeRequest toFrozen() => RevokeOrganizationJoinCodeRequest(
+    operationId: this.operationId,
     codeId: this.codeId,
   ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// struct RevokeOrganizationJoinCodeResponse.Success
+// struct RevokeOrganizationJoinCodeResponse.InvalidOperationIdError
 // -----------------------------------------------------------------------------
 
-sealed class RevokeOrganizationJoinCodeResponse_Success_orMutable {
-  RevokeOrganizationJoinCodeResponse_Success toFrozen();
+sealed class RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_orMutable {
+  RevokeOrganizationJoinCodeResponse_InvalidOperationIdError toFrozen();
 }
 
 /// Deeply immutable.
-final class RevokeOrganizationJoinCodeResponse_Success implements RevokeOrganizationJoinCodeResponse_Success_orMutable {
+final class RevokeOrganizationJoinCodeResponse_InvalidOperationIdError implements RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
-  factory RevokeOrganizationJoinCodeResponse_Success() => RevokeOrganizationJoinCodeResponse_Success._();
+  factory RevokeOrganizationJoinCodeResponse_InvalidOperationIdError() => RevokeOrganizationJoinCodeResponse_InvalidOperationIdError._();
 
-  RevokeOrganizationJoinCodeResponse_Success._();
+  RevokeOrganizationJoinCodeResponse_InvalidOperationIdError._();
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = RevokeOrganizationJoinCodeResponse_Success._();
+  static final defaultInstance = RevokeOrganizationJoinCodeResponse_InvalidOperationIdError._();
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static RevokeOrganizationJoinCodeResponse_Success_mutable mutable() => RevokeOrganizationJoinCodeResponse_Success_mutable._();
+  static RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable mutable() => RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable._();
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  RevokeOrganizationJoinCodeResponse_Success toFrozen() => this;
+  RevokeOrganizationJoinCodeResponse_InvalidOperationIdError toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  RevokeOrganizationJoinCodeResponse_Success_mutable toMutable() => RevokeOrganizationJoinCodeResponse_Success_mutable._();
+  RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable toMutable() => RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable._();
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! RevokeOrganizationJoinCodeResponse_Success) return false;
+    if (other is! RevokeOrganizationJoinCodeResponse_InvalidOperationIdError) return false;
     return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
   }
 
@@ -1904,9 +2746,188 @@ final class RevokeOrganizationJoinCodeResponse_Success implements RevokeOrganiza
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
+  /// Serializer for `RevokeOrganizationJoinCodeResponse_InvalidOperationIdError` instances.
+  static _skir.StructSerializer<RevokeOrganizationJoinCodeResponse_InvalidOperationIdError, RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/join_codes.skir:RevokeOrganizationJoinCodeResponse.InvalidOperationIdError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [RevokeOrganizationJoinCodeResponse_InvalidOperationIdError].
+final class RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable implements RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  RevokeOrganizationJoinCodeResponse_InvalidOperationIdError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  RevokeOrganizationJoinCodeResponse_InvalidOperationIdError toFrozen() => RevokeOrganizationJoinCodeResponse_InvalidOperationIdError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct RevokeOrganizationJoinCodeResponse.OperationIdentityReusedError
+// -----------------------------------------------------------------------------
+
+sealed class RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_orMutable {
+  RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError toFrozen();
+}
+
+/// Deeply immutable.
+final class RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError implements RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError() => RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError._();
+
+  RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable mutable() => RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable toMutable() => RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError` instances.
+  static _skir.StructSerializer<RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError, RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/join_codes.skir:RevokeOrganizationJoinCodeResponse.OperationIdentityReusedError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError].
+final class RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable implements RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError toFrozen() => RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct RevokeOrganizationJoinCodeResponse.Success
+// -----------------------------------------------------------------------------
+
+sealed class RevokeOrganizationJoinCodeResponse_Success_orMutable {
+  OrganizationJoinCodesChanged_orMutable get event;
+
+  RevokeOrganizationJoinCodeResponse_Success toFrozen();
+}
+
+/// Deeply immutable.
+final class RevokeOrganizationJoinCodeResponse_Success implements RevokeOrganizationJoinCodeResponse_Success_orMutable {
+  @_core.override
+  final OrganizationJoinCodesChanged event;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory RevokeOrganizationJoinCodeResponse_Success({
+    required OrganizationJoinCodesChanged_orMutable event,
+  }) => RevokeOrganizationJoinCodeResponse_Success._(
+    event.toFrozen(),
+  );
+
+  RevokeOrganizationJoinCodeResponse_Success._(
+    this.event,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = RevokeOrganizationJoinCodeResponse_Success._(
+    OrganizationJoinCodesChanged.defaultInstance,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static RevokeOrganizationJoinCodeResponse_Success_mutable mutable() => RevokeOrganizationJoinCodeResponse_Success_mutable._(
+    OrganizationJoinCodesChanged.defaultInstance,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  RevokeOrganizationJoinCodeResponse_Success toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  RevokeOrganizationJoinCodeResponse_Success_mutable toMutable() => RevokeOrganizationJoinCodeResponse_Success_mutable._(
+    this.event,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! RevokeOrganizationJoinCodeResponse_Success) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.event,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
   /// Serializer for `RevokeOrganizationJoinCodeResponse_Success` instances.
   static _skir.StructSerializer<RevokeOrganizationJoinCodeResponse_Success, RevokeOrganizationJoinCodeResponse_Success_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "event",
+        "event",
+        0,
+        OrganizationJoinCodesChanged.serializer,
+        "",
+        (it) => it.event,
+        (it, v) => it.event = v,
+      );
       _serializerBuilder.finalize();
     }
     return _serializerBuilder.serializer;
@@ -1925,13 +2946,29 @@ final class RevokeOrganizationJoinCodeResponse_Success implements RevokeOrganiza
 
 /// Mutable version of [RevokeOrganizationJoinCodeResponse_Success].
 final class RevokeOrganizationJoinCodeResponse_Success_mutable implements RevokeOrganizationJoinCodeResponse_Success_orMutable {
+  OrganizationJoinCodesChanged_orMutable event;
   _skir.internal__UnrecognizedFields? _u;
 
-  RevokeOrganizationJoinCodeResponse_Success_mutable._();
+  RevokeOrganizationJoinCodeResponse_Success_mutable._(
+    this.event,
+  );
+
+  /// If the value of [event] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [event] and returns it.
+  OrganizationJoinCodesChanged_mutable get mutableEvent {
+    final value = this.event;
+    if (value is OrganizationJoinCodesChanged_mutable) {
+      return value;
+    } else {
+      return this.event = (value as OrganizationJoinCodesChanged).toMutable();
+    }
+  }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  RevokeOrganizationJoinCodeResponse_Success toFrozen() => RevokeOrganizationJoinCodeResponse_Success().._u = this._u;
+  RevokeOrganizationJoinCodeResponse_Success toFrozen() => RevokeOrganizationJoinCodeResponse_Success(
+    event: this.event,
+  ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
@@ -2061,6 +3098,8 @@ final class RevokeOrganizationJoinCodeResponse_CodeNotFoundError_mutable impleme
 ///   ```
 ///   switch (e) {
 ///     case RevokeOrganizationJoinCodeResponse_unknown(): { ... }
+///     case RevokeOrganizationJoinCodeResponse_invalidOperationIdError(:var value): { ... }
+///     case RevokeOrganizationJoinCodeResponse_operationIdentityReusedError(:var value): { ... }
 ///     case RevokeOrganizationJoinCodeResponse_internalError(:var value): { ... }
 ///     case RevokeOrganizationJoinCodeResponse_success(:var value): { ... }
 ///     case RevokeOrganizationJoinCodeResponse_codeNotFoundError(:var value): { ... }
@@ -2073,6 +3112,26 @@ sealed class RevokeOrganizationJoinCodeResponse {
   /// Constant indicating an unknown `RevokeOrganizationJoinCodeResponse`.
   /// Default value for fields of type `RevokeOrganizationJoinCodeResponse`.
   static const RevokeOrganizationJoinCodeResponse unknown = RevokeOrganizationJoinCodeResponse_unknown._instance;
+
+  /// Create a 'invalid_operation_id_error' variant wrapping around the given value.
+  factory RevokeOrganizationJoinCodeResponse.wrapInvalidOperationIdError(
+    RevokeOrganizationJoinCodeResponse_InvalidOperationIdError value
+  ) => RevokeOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper._(value);
+
+  /// Same as `wrapInvalidOperationIdError(RevokeOrganizationJoinCodeResponse_InvalidOperationIdError(...))`.
+  factory RevokeOrganizationJoinCodeResponse.createInvalidOperationIdError() => RevokeOrganizationJoinCodeResponse.wrapInvalidOperationIdError(
+    RevokeOrganizationJoinCodeResponse_InvalidOperationIdError()
+  );
+
+  /// Create a 'operation_identity_reused_error' variant wrapping around the given value.
+  factory RevokeOrganizationJoinCodeResponse.wrapOperationIdentityReusedError(
+    RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError value
+  ) => RevokeOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper._(value);
+
+  /// Same as `wrapOperationIdentityReusedError(RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError(...))`.
+  factory RevokeOrganizationJoinCodeResponse.createOperationIdentityReusedError() => RevokeOrganizationJoinCodeResponse.wrapOperationIdentityReusedError(
+    RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError()
+  );
 
   /// Create a 'internal_error' variant wrapping around the given value.
   factory RevokeOrganizationJoinCodeResponse.wrapInternalError(
@@ -2090,8 +3149,12 @@ sealed class RevokeOrganizationJoinCodeResponse {
   ) => RevokeOrganizationJoinCodeResponse_successWrapper._(value);
 
   /// Same as `wrapSuccess(RevokeOrganizationJoinCodeResponse_Success(...))`.
-  factory RevokeOrganizationJoinCodeResponse.createSuccess() => RevokeOrganizationJoinCodeResponse.wrapSuccess(
-    RevokeOrganizationJoinCodeResponse_Success()
+  factory RevokeOrganizationJoinCodeResponse.createSuccess({
+    required OrganizationJoinCodesChanged_orMutable event,
+  }) => RevokeOrganizationJoinCodeResponse.wrapSuccess(
+    RevokeOrganizationJoinCodeResponse_Success(
+      event: event,
+    )
   );
 
   /// Create a 'code_not_found_error' variant wrapping around the given value.
@@ -2132,6 +3195,26 @@ sealed class RevokeOrganizationJoinCodeResponse {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addWrapperVariant(
         1,
+        "invalid_operation_id_error",
+        "wrapInvalidOperationIdError",
+        RevokeOrganizationJoinCodeResponse_InvalidOperationIdError.serializer,
+        "",
+        RevokeOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper._,
+        (it) => it.value,
+        ordinal: RevokeOrganizationJoinCodeResponse_kind.invalidOperationIdErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        2,
+        "operation_identity_reused_error",
+        "wrapOperationIdentityReusedError",
+        RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError.serializer,
+        "",
+        RevokeOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper._,
+        (it) => it.value,
+        ordinal: RevokeOrganizationJoinCodeResponse_kind.operationIdentityReusedErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        3,
         "internal_error",
         "wrapInternalError",
         _lib_kernel_v1_errors.InternalError.serializer,
@@ -2141,7 +3224,7 @@ sealed class RevokeOrganizationJoinCodeResponse {
         ordinal: RevokeOrganizationJoinCodeResponse_kind.internalErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        2,
+        4,
         "success",
         "wrapSuccess",
         RevokeOrganizationJoinCodeResponse_Success.serializer,
@@ -2151,7 +3234,7 @@ sealed class RevokeOrganizationJoinCodeResponse {
         ordinal: RevokeOrganizationJoinCodeResponse_kind.successWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        3,
+        5,
         "code_not_found_error",
         "wrapCodeNotFoundError",
         RevokeOrganizationJoinCodeResponse_CodeNotFoundError.serializer,
@@ -2161,7 +3244,7 @@ sealed class RevokeOrganizationJoinCodeResponse {
         ordinal: RevokeOrganizationJoinCodeResponse_kind.codeNotFoundErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        4,
+        6,
         "invalid_record_id_error",
         "wrapInvalidRecordIdError",
         _lib_kernel_v1_errors.InvalidRecordIdError.serializer,
@@ -2189,10 +3272,12 @@ sealed class RevokeOrganizationJoinCodeResponse {
 /// The kind of variant held by a `RevokeOrganizationJoinCodeResponse`.
 enum RevokeOrganizationJoinCodeResponse_kind {
   unknown(0),
-  internalErrorWrapper(1),
-  successWrapper(2),
-  codeNotFoundErrorWrapper(3),
-  invalidRecordIdErrorWrapper(4);
+  invalidOperationIdErrorWrapper(1),
+  operationIdentityReusedErrorWrapper(2),
+  internalErrorWrapper(3),
+  successWrapper(4),
+  codeNotFoundErrorWrapper(5),
+  invalidRecordIdErrorWrapper(6);
 
   final _core.int _ordinal;
 
@@ -2231,6 +3316,24 @@ sealed class _RevokeOrganizationJoinCodeResponse_wrapper implements RevokeOrgani
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, RevokeOrganizationJoinCodeResponse.serializer);
+}
+
+final class RevokeOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper extends _RevokeOrganizationJoinCodeResponse_wrapper {
+  final RevokeOrganizationJoinCodeResponse_InvalidOperationIdError value;
+
+  RevokeOrganizationJoinCodeResponse_invalidOperationIdErrorWrapper._(this.value);
+
+  @_core.override
+  RevokeOrganizationJoinCodeResponse_kind get kind => RevokeOrganizationJoinCodeResponse_kind.invalidOperationIdErrorWrapper;
+}
+
+final class RevokeOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper extends _RevokeOrganizationJoinCodeResponse_wrapper {
+  final RevokeOrganizationJoinCodeResponse_OperationIdentityReusedError value;
+
+  RevokeOrganizationJoinCodeResponse_operationIdentityReusedErrorWrapper._(this.value);
+
+  @_core.override
+  RevokeOrganizationJoinCodeResponse_kind get kind => RevokeOrganizationJoinCodeResponse_kind.operationIdentityReusedErrorWrapper;
 }
 
 final class RevokeOrganizationJoinCodeResponse_internalErrorWrapper extends _RevokeOrganizationJoinCodeResponse_wrapper {

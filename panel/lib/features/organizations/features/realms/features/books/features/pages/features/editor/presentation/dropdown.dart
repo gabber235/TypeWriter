@@ -10,10 +10,12 @@ class Dropdown<T extends Object> extends HookWidget {
     required this.dropdownMenuEntries,
     this.focusNode,
     this.selected,
+    this.defaultValue,
     this.onSelected,
     this.controller,
     this.inputFieldController,
     this.enabled = true,
+    this.initialization = SelectionInitializationPolicy.automatic,
     this.actions,
     this.menuActions,
     this.surroundingActions,
@@ -33,6 +35,7 @@ class Dropdown<T extends Object> extends HookWidget {
 
   /// The selected value.
   final T? selected;
+  final T? defaultValue;
 
   /// Called when a new value is selected.
   final ValueChanged<T?>? onSelected;
@@ -42,6 +45,7 @@ class Dropdown<T extends Object> extends HookWidget {
 
   /// Whether the dropdown is interactive.
   final bool enabled;
+  final SelectionInitializationPolicy initialization;
 
   /// Actions available when either surrounding or input has focus.
   final List<ActionShortcut>? actions;
@@ -92,30 +96,40 @@ class Dropdown<T extends Object> extends HookWidget {
         controller.text = currentLabel ?? "";
       }
     }, [currentLabel]);
-    return InputFieldContainer(
-      controller: inputFieldController,
-      actions: actions,
-      inputActions: menuActions,
-      surroundingActions: surroundingActions,
-      child: DropdownMenu<T>(
-        focusNode: focusNode,
-        controller: controller,
-        enabled: enabled,
-        enableFilter: true,
-        initialSelection: selected,
-        onSelected: (value) {
-          onSelected?.call(value);
-          if (value != null) {
-            inputFieldController.endInteraction();
-          }
-          if (focusNode.hasFocus) {
-            inputFieldController.requestSurroundingFocus();
-          }
-        },
-        dropdownMenuEntries: dropdownMenuEntries,
-        inputDecorationTheme: inputDecorationTheme,
-        menuStyle: menuStyle,
-        expandedInsets: EdgeInsets.zero,
+    return SelectionInitialization<T>(
+      selected: selected,
+      defaultValue: defaultValue,
+      choices: dropdownMenuEntries
+          .where((entry) => entry.enabled)
+          .map((entry) => entry.value),
+      enabled: enabled,
+      policy: initialization,
+      onSelected: onSelected,
+      child: InputFieldContainer(
+        controller: inputFieldController,
+        actions: actions,
+        inputActions: menuActions,
+        surroundingActions: surroundingActions,
+        child: DropdownMenu<T>(
+          focusNode: focusNode,
+          controller: controller,
+          enabled: enabled,
+          enableFilter: true,
+          initialSelection: selected,
+          onSelected: (value) {
+            onSelected?.call(value);
+            if (value != null) {
+              inputFieldController.endInteraction();
+            }
+            if (focusNode.hasFocus) {
+              inputFieldController.requestSurroundingFocus();
+            }
+          },
+          dropdownMenuEntries: dropdownMenuEntries,
+          inputDecorationTheme: inputDecorationTheme,
+          menuStyle: menuStyle,
+          expandedInsets: EdgeInsets.zero,
+        ),
       ),
     );
   }

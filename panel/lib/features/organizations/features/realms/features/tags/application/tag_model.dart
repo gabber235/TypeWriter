@@ -11,15 +11,15 @@ abstract class Placement with _$Placement {
 
   const Placement._();
 
-  factory Placement.fromSkir(skir.Placement placement) => Placement(
+  factory Placement.fromWire(wire.GraphPlacement placement) => Placement(
     x: placement.x,
     y: placement.y,
     width: placement.width,
     height: placement.height,
   );
 
-  skir.Placement toSkir() =>
-      skir.Placement(x: x, y: y, width: width, height: height);
+  wire.GraphPlacement toWire() =>
+      wire.GraphPlacement(x: x, y: y, width: width, height: height);
 }
 
 @freezed
@@ -27,7 +27,6 @@ abstract class Tag with _$Tag {
   @Assert("name != \"\"", "Name must not be empty.")
   const factory Tag({
     required skir.RecordId tagId,
-    required int revision,
     required String name,
     required Color color,
     required List<skir.RecordId> parentIds,
@@ -36,39 +35,89 @@ abstract class Tag with _$Tag {
 
   const Tag._();
 
-  factory Tag.fromSkir(skir.Tag tag) => Tag(
-    tagId: tag.tagId,
-    revision: tag.revision,
+  factory Tag.fromWire(wire.Tag tag) => Tag(
+    tagId: tag.id,
     name: tag.name,
     color: tag.color.toFlutterColor(),
-    parentIds: tag.parentIds.toList(),
-    placement: Placement.fromSkir(tag.placement),
+    parentIds: tag.parents.toList(),
+    placement: Placement.fromWire(tag.placement),
   );
 
-  skir.Tag toSkir() => skir.Tag(
-    tagId: tagId,
-    revision: revision,
+  wire.Tag toWire() => wire.Tag(
+    id: tagId,
     name: name,
     color: color.toSkirColor(),
-    parentIds: parentIds,
-    placement: placement.toSkir(),
+    parents: parentIds,
+    placement: placement.toWire(),
   );
 }
 
 extension TagInspectorValue on Tag {
   RecordValue get inspectorValue => RecordValue({
-    "name": StringValue(name),
-    "color": color.integerValue,
+    "name": name.asValue,
+    "color": color.asValue,
     "parents": ListValue(
-      parentIds.map((parentId) => StringValue(parentId.id)).toList(),
+      parentIds.map((parentId) => parentId.id.asValue).toList(),
     ),
     "layout": RecordValue({
-      "x": IntegerValue(BigInt.from(placement.x)),
-      "y": IntegerValue(BigInt.from(placement.y)),
-      "width": IntegerValue(BigInt.from(placement.width)),
-      "height": IntegerValue(BigInt.from(placement.height)),
+      "x": placement.x.asValue,
+      "y": placement.y.asValue,
+      "width": placement.width.asValue,
+      "height": placement.height.asValue,
     }),
   });
+
+  Tag? withInspectorValue(DataValue value) {
+    if (value is! RecordValue) return null;
+    final name = value.fields["name"];
+    final color = value.fields["color"];
+    final parents = value.fields["parents"];
+    final layout = value.fields["layout"];
+    if (name is! StringValue ||
+        name.value.trim().isEmpty ||
+        color is! IntegerValue ||
+        parents is! ListValue ||
+        layout is! RecordValue) {
+      return null;
+    }
+
+    final decodedColor = color.asColorOrNull;
+    final parentIds = parents.values
+        .whereType<StringValue>()
+        .map((parent) => recordId("tag:${parent.value}"))
+        .toList();
+    final x = layout.fields["x"];
+    final y = layout.fields["y"];
+    final width = layout.fields["width"];
+    final height = layout.fields["height"];
+
+    if (decodedColor == null ||
+        parentIds.length != parents.values.length ||
+        x is! IntegerValue ||
+        y is! IntegerValue ||
+        width is! IntegerValue ||
+        height is! IntegerValue ||
+        width.value < BigInt.one ||
+        height.value < BigInt.one) {
+      return null;
+    }
+    return copyWith(
+      name: name.value,
+      color: decodedColor,
+      parentIds: parentIds,
+      placement: Placement(
+        x: x.value.toInt(),
+        y: y.value.toInt(),
+        width: width.value.toInt(),
+        height: height.value.toInt(),
+      ),
+    );
+  }
+
+  Tag projected(LocalEditorValue? local) {
+    if (local == null) return this;
+    return withInspectorValue(local.projectOnto(inspectorValue)) ?? this;
+  }
 }
 
 enum TagParentDropAction { link, unlink }
@@ -122,15 +171,3 @@ bool? _isAncestor(
 
   return false;
 }
-
-({List<Tag> values, Tag canonical}) _upsertCanonicalTag(
-  List<Tag>? values,
-  Tag incoming,
-) => reconcileCanonicalRevision(
-  values: values,
-  incoming: incoming,
-  keyOf: (tag) => tag.tagId,
-  revisionOf: (tag) => tag.revision,
-  identityOf: (tag) => "Tag ${tag.tagId.id}",
-  entityName: "Tag",
-);

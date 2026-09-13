@@ -39,10 +39,8 @@ extension SceneElementsDslBuilding on SceneElementsDsl {
       }
 
       final entryData = {
-        "entryType": StringValue(
-          outwardEdges.length.isEven ? "entity" : "title",
-        ),
-        "label": StringValue(entryName),
+        "entryType": (outwardEdges.length.isEven ? "entity" : "title").asValue,
+        "label": entryName.asValue,
       }.mergedWith(entryDsl.data);
 
       final entry = EntryDefinition(
@@ -91,7 +89,7 @@ extension on SceneCueDsl {
         data: {
           "channel": const StringValue("scene"),
           "event": const StringValue("trigger"),
-          "label": StringValue(keyframeName),
+          "label": keyframeName.asValue,
         }.mergedWith(keyframeDsl.data),
         inwardLinks: [
           ElementLink(linkId: parentLinkId, otherId: parentId, path: "parent"),
@@ -135,7 +133,7 @@ extension on SceneCueDsl {
       endFrame: segmentDsl.end,
       data: {
         "channel": const StringValue("scene"),
-        "label": StringValue(segmentName),
+        "label": segmentName.asValue,
         "mode": const StringValue("cinematic"),
       }.mergedWith(segmentDsl.data),
       inwardLinks: [

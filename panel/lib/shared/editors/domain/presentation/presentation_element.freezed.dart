@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'presentation_element.dart';
@@ -9,6 +9,7 @@ part of 'presentation_element.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$PresentationElement {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationElement);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationElement);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationElement()';
+    return 'PresentationElement()';
 }
 
 
@@ -55,19 +56,23 @@ extension PresentationElementPatterns on PresentationElement {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DiagnosticElement value)?  diagnostic,TResult Function( DefaultPresentationElement value)?  defaultPresentation,TResult Function( TextElement value)?  text,TResult Function( MarkdownElement value)?  markdown,TResult Function( IconElement value)?  icon,TResult Function( ImageElement value)?  image,TResult Function( BadgeElement value)?  badge,TResult Function( ChipElement value)?  chip,TResult Function( ProgressElement value)?  progress,TResult Function( TypedFieldElement value)?  typedField,TResult Function( ConditionalElement value)?  conditional,TResult Function( RepeatedElement value)?  repeated,TResult Function( ScopedBindingElement value)?  scopedBinding,TResult Function( CollectionLookupElement value)?  collectionLookup,TResult Function( CollectionGraphElement value)?  collectionGraph,TResult Function( TextInputElement value)?  textInput,TResult Function( NumericInputElement value)?  numericInput,TResult Function( ToggleInputElement value)?  toggleInput,TResult Function( SelectInputElement value)?  selectInput,TResult Function( SliderInputElement value)?  sliderInput,TResult Function( DateTimeInputElement value)?  dateTimeInput,TResult Function( DurationInputElement value)?  durationInput,TResult Function( ColorInputElement value)?  colorInput,TResult Function( SearchInputElement value)?  searchInput,TResult Function( BytesInputElement value)?  bytesInput,TResult Function( EnumInputElement value)?  enumInput,TResult Function( NamedInputElement value)?  namedInput,TResult Function( ListInputElement value)?  listInput,TResult Function( MapInputElement value)?  mapInput,TResult Function( RecordInputElement value)?  recordInput,TResult Function( PolymorphicInputElement value)?  polymorphicInput,TResult Function( PolymorphicMatchElement value)?  polymorphicMatch,TResult Function( ButtonElement value)?  button,TResult Function( IconButtonElement value)?  iconButton,TResult Function( MenuElement value)?  menu,TResult Function( TooltipElement value)?  tooltip,TResult Function( ColumnElement value)?  column,TResult Function( RowElement value)?  row,TResult Function( WrapElement value)?  wrap,TResult Function( StackElement value)?  stack,TResult Function( GridElement value)?  grid,TResult Function( SectionElement value)?  section,TResult Function( ContainerElement value)?  container,TResult Function( PresentationAnchorElement value)?  anchor,TResult Function( ConnectionLayerElement value)?  connectionLayer,TResult Function( PaddingElement value)?  padding,TResult Function( PresentationSlotElement value)?  slot,TResult Function( TabsElement value)?  tabs,TResult Function( DividerElement value)?  divider,TResult Function( SpacerElement value)?  spacer,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DiagnosticElement value)?  diagnostic,TResult Function( DefaultPresentationElement value)?  defaultPresentation,TResult Function( PresentationInvocationElement value)?  invocation,TResult Function( TextElement value)?  text,TResult Function( MarkdownElement value)?  markdown,TResult Function( IconElement value)?  icon,TResult Function( ImageElement value)?  image,TResult Function( BadgeElement value)?  badge,TResult Function( ChipElement value)?  chip,TResult Function( ProgressElement value)?  progress,TResult Function( StatusElement value)?  status,TResult Function( DateTimeElement value)?  dateTime,TResult Function( RelativeTimeElement value)?  relativeTime,TResult Function( TypedFieldElement value)?  typedField,TResult Function( ConditionalElement value)?  conditional,TResult Function( RepeatedElement value)?  repeated,TResult Function( ScopedBindingElement value)?  scopedBinding,TResult Function( CollectionLookupElement value)?  collectionLookup,TResult Function( CollectionGraphElement value)?  collectionGraph,TResult Function( TextInputElement value)?  textInput,TResult Function( NumericInputElement value)?  numericInput,TResult Function( ToggleInputElement value)?  toggleInput,TResult Function( SelectInputElement value)?  selectInput,TResult Function( SliderInputElement value)?  sliderInput,TResult Function( DateTimeInputElement value)?  dateTimeInput,TResult Function( DurationInputElement value)?  durationInput,TResult Function( ColorInputElement value)?  colorInput,TResult Function( SearchInputElement value)?  searchInput,TResult Function( BytesInputElement value)?  bytesInput,TResult Function( EnumInputElement value)?  enumInput,TResult Function( NamedInputElement value)?  namedInput,TResult Function( ListInputElement value)?  listInput,TResult Function( MapInputElement value)?  mapInput,TResult Function( RecordInputElement value)?  recordInput,TResult Function( PolymorphicInputElement value)?  polymorphicInput,TResult Function( PolymorphicMatchElement value)?  polymorphicMatch,TResult Function( CommitControlsElement value)?  commitControls,TResult Function( ButtonElement value)?  button,TResult Function( IconButtonElement value)?  iconButton,TResult Function( MenuElement value)?  menu,TResult Function( TooltipElement value)?  tooltip,TResult Function( ColumnElement value)?  column,TResult Function( RowElement value)?  row,TResult Function( WrapElement value)?  wrap,TResult Function( StackElement value)?  stack,TResult Function( GridElement value)?  grid,TResult Function( SectionElement value)?  section,TResult Function( ContainerElement value)?  container,TResult Function( PresentationAnchorElement value)?  anchor,TResult Function( ConnectionLayerElement value)?  connectionLayer,TResult Function( PaddingElement value)?  padding,TResult Function( PresentationSlotElement value)?  slot,TResult Function( TabsElement value)?  tabs,TResult Function( DividerElement value)?  divider,TResult Function( SpacerElement value)?  spacer,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case DiagnosticElement() when diagnostic != null:
 return diagnostic(_that);case DefaultPresentationElement() when defaultPresentation != null:
-return defaultPresentation(_that);case TextElement() when text != null:
+return defaultPresentation(_that);case PresentationInvocationElement() when invocation != null:
+return invocation(_that);case TextElement() when text != null:
 return text(_that);case MarkdownElement() when markdown != null:
 return markdown(_that);case IconElement() when icon != null:
 return icon(_that);case ImageElement() when image != null:
 return image(_that);case BadgeElement() when badge != null:
 return badge(_that);case ChipElement() when chip != null:
 return chip(_that);case ProgressElement() when progress != null:
-return progress(_that);case TypedFieldElement() when typedField != null:
+return progress(_that);case StatusElement() when status != null:
+return status(_that);case DateTimeElement() when dateTime != null:
+return dateTime(_that);case RelativeTimeElement() when relativeTime != null:
+return relativeTime(_that);case TypedFieldElement() when typedField != null:
 return typedField(_that);case ConditionalElement() when conditional != null:
 return conditional(_that);case RepeatedElement() when repeated != null:
 return repeated(_that);case ScopedBindingElement() when scopedBinding != null:
@@ -90,7 +95,8 @@ return listInput(_that);case MapInputElement() when mapInput != null:
 return mapInput(_that);case RecordInputElement() when recordInput != null:
 return recordInput(_that);case PolymorphicInputElement() when polymorphicInput != null:
 return polymorphicInput(_that);case PolymorphicMatchElement() when polymorphicMatch != null:
-return polymorphicMatch(_that);case ButtonElement() when button != null:
+return polymorphicMatch(_that);case CommitControlsElement() when commitControls != null:
+return commitControls(_that);case ButtonElement() when button != null:
 return button(_that);case IconButtonElement() when iconButton != null:
 return iconButton(_that);case MenuElement() when menu != null:
 return menu(_that);case TooltipElement() when tooltip != null:
@@ -126,19 +132,23 @@ return spacer(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DiagnosticElement value)  diagnostic,required TResult Function( DefaultPresentationElement value)  defaultPresentation,required TResult Function( TextElement value)  text,required TResult Function( MarkdownElement value)  markdown,required TResult Function( IconElement value)  icon,required TResult Function( ImageElement value)  image,required TResult Function( BadgeElement value)  badge,required TResult Function( ChipElement value)  chip,required TResult Function( ProgressElement value)  progress,required TResult Function( TypedFieldElement value)  typedField,required TResult Function( ConditionalElement value)  conditional,required TResult Function( RepeatedElement value)  repeated,required TResult Function( ScopedBindingElement value)  scopedBinding,required TResult Function( CollectionLookupElement value)  collectionLookup,required TResult Function( CollectionGraphElement value)  collectionGraph,required TResult Function( TextInputElement value)  textInput,required TResult Function( NumericInputElement value)  numericInput,required TResult Function( ToggleInputElement value)  toggleInput,required TResult Function( SelectInputElement value)  selectInput,required TResult Function( SliderInputElement value)  sliderInput,required TResult Function( DateTimeInputElement value)  dateTimeInput,required TResult Function( DurationInputElement value)  durationInput,required TResult Function( ColorInputElement value)  colorInput,required TResult Function( SearchInputElement value)  searchInput,required TResult Function( BytesInputElement value)  bytesInput,required TResult Function( EnumInputElement value)  enumInput,required TResult Function( NamedInputElement value)  namedInput,required TResult Function( ListInputElement value)  listInput,required TResult Function( MapInputElement value)  mapInput,required TResult Function( RecordInputElement value)  recordInput,required TResult Function( PolymorphicInputElement value)  polymorphicInput,required TResult Function( PolymorphicMatchElement value)  polymorphicMatch,required TResult Function( ButtonElement value)  button,required TResult Function( IconButtonElement value)  iconButton,required TResult Function( MenuElement value)  menu,required TResult Function( TooltipElement value)  tooltip,required TResult Function( ColumnElement value)  column,required TResult Function( RowElement value)  row,required TResult Function( WrapElement value)  wrap,required TResult Function( StackElement value)  stack,required TResult Function( GridElement value)  grid,required TResult Function( SectionElement value)  section,required TResult Function( ContainerElement value)  container,required TResult Function( PresentationAnchorElement value)  anchor,required TResult Function( ConnectionLayerElement value)  connectionLayer,required TResult Function( PaddingElement value)  padding,required TResult Function( PresentationSlotElement value)  slot,required TResult Function( TabsElement value)  tabs,required TResult Function( DividerElement value)  divider,required TResult Function( SpacerElement value)  spacer,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DiagnosticElement value)  diagnostic,required TResult Function( DefaultPresentationElement value)  defaultPresentation,required TResult Function( PresentationInvocationElement value)  invocation,required TResult Function( TextElement value)  text,required TResult Function( MarkdownElement value)  markdown,required TResult Function( IconElement value)  icon,required TResult Function( ImageElement value)  image,required TResult Function( BadgeElement value)  badge,required TResult Function( ChipElement value)  chip,required TResult Function( ProgressElement value)  progress,required TResult Function( StatusElement value)  status,required TResult Function( DateTimeElement value)  dateTime,required TResult Function( RelativeTimeElement value)  relativeTime,required TResult Function( TypedFieldElement value)  typedField,required TResult Function( ConditionalElement value)  conditional,required TResult Function( RepeatedElement value)  repeated,required TResult Function( ScopedBindingElement value)  scopedBinding,required TResult Function( CollectionLookupElement value)  collectionLookup,required TResult Function( CollectionGraphElement value)  collectionGraph,required TResult Function( TextInputElement value)  textInput,required TResult Function( NumericInputElement value)  numericInput,required TResult Function( ToggleInputElement value)  toggleInput,required TResult Function( SelectInputElement value)  selectInput,required TResult Function( SliderInputElement value)  sliderInput,required TResult Function( DateTimeInputElement value)  dateTimeInput,required TResult Function( DurationInputElement value)  durationInput,required TResult Function( ColorInputElement value)  colorInput,required TResult Function( SearchInputElement value)  searchInput,required TResult Function( BytesInputElement value)  bytesInput,required TResult Function( EnumInputElement value)  enumInput,required TResult Function( NamedInputElement value)  namedInput,required TResult Function( ListInputElement value)  listInput,required TResult Function( MapInputElement value)  mapInput,required TResult Function( RecordInputElement value)  recordInput,required TResult Function( PolymorphicInputElement value)  polymorphicInput,required TResult Function( PolymorphicMatchElement value)  polymorphicMatch,required TResult Function( CommitControlsElement value)  commitControls,required TResult Function( ButtonElement value)  button,required TResult Function( IconButtonElement value)  iconButton,required TResult Function( MenuElement value)  menu,required TResult Function( TooltipElement value)  tooltip,required TResult Function( ColumnElement value)  column,required TResult Function( RowElement value)  row,required TResult Function( WrapElement value)  wrap,required TResult Function( StackElement value)  stack,required TResult Function( GridElement value)  grid,required TResult Function( SectionElement value)  section,required TResult Function( ContainerElement value)  container,required TResult Function( PresentationAnchorElement value)  anchor,required TResult Function( ConnectionLayerElement value)  connectionLayer,required TResult Function( PaddingElement value)  padding,required TResult Function( PresentationSlotElement value)  slot,required TResult Function( TabsElement value)  tabs,required TResult Function( DividerElement value)  divider,required TResult Function( SpacerElement value)  spacer,}){
 final _that = this;
 switch (_that) {
 case DiagnosticElement():
 return diagnostic(_that);case DefaultPresentationElement():
-return defaultPresentation(_that);case TextElement():
+return defaultPresentation(_that);case PresentationInvocationElement():
+return invocation(_that);case TextElement():
 return text(_that);case MarkdownElement():
 return markdown(_that);case IconElement():
 return icon(_that);case ImageElement():
 return image(_that);case BadgeElement():
 return badge(_that);case ChipElement():
 return chip(_that);case ProgressElement():
-return progress(_that);case TypedFieldElement():
+return progress(_that);case StatusElement():
+return status(_that);case DateTimeElement():
+return dateTime(_that);case RelativeTimeElement():
+return relativeTime(_that);case TypedFieldElement():
 return typedField(_that);case ConditionalElement():
 return conditional(_that);case RepeatedElement():
 return repeated(_that);case ScopedBindingElement():
@@ -161,7 +171,8 @@ return listInput(_that);case MapInputElement():
 return mapInput(_that);case RecordInputElement():
 return recordInput(_that);case PolymorphicInputElement():
 return polymorphicInput(_that);case PolymorphicMatchElement():
-return polymorphicMatch(_that);case ButtonElement():
+return polymorphicMatch(_that);case CommitControlsElement():
+return commitControls(_that);case ButtonElement():
 return button(_that);case IconButtonElement():
 return iconButton(_that);case MenuElement():
 return menu(_that);case TooltipElement():
@@ -193,19 +204,23 @@ return spacer(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DiagnosticElement value)?  diagnostic,TResult? Function( DefaultPresentationElement value)?  defaultPresentation,TResult? Function( TextElement value)?  text,TResult? Function( MarkdownElement value)?  markdown,TResult? Function( IconElement value)?  icon,TResult? Function( ImageElement value)?  image,TResult? Function( BadgeElement value)?  badge,TResult? Function( ChipElement value)?  chip,TResult? Function( ProgressElement value)?  progress,TResult? Function( TypedFieldElement value)?  typedField,TResult? Function( ConditionalElement value)?  conditional,TResult? Function( RepeatedElement value)?  repeated,TResult? Function( ScopedBindingElement value)?  scopedBinding,TResult? Function( CollectionLookupElement value)?  collectionLookup,TResult? Function( CollectionGraphElement value)?  collectionGraph,TResult? Function( TextInputElement value)?  textInput,TResult? Function( NumericInputElement value)?  numericInput,TResult? Function( ToggleInputElement value)?  toggleInput,TResult? Function( SelectInputElement value)?  selectInput,TResult? Function( SliderInputElement value)?  sliderInput,TResult? Function( DateTimeInputElement value)?  dateTimeInput,TResult? Function( DurationInputElement value)?  durationInput,TResult? Function( ColorInputElement value)?  colorInput,TResult? Function( SearchInputElement value)?  searchInput,TResult? Function( BytesInputElement value)?  bytesInput,TResult? Function( EnumInputElement value)?  enumInput,TResult? Function( NamedInputElement value)?  namedInput,TResult? Function( ListInputElement value)?  listInput,TResult? Function( MapInputElement value)?  mapInput,TResult? Function( RecordInputElement value)?  recordInput,TResult? Function( PolymorphicInputElement value)?  polymorphicInput,TResult? Function( PolymorphicMatchElement value)?  polymorphicMatch,TResult? Function( ButtonElement value)?  button,TResult? Function( IconButtonElement value)?  iconButton,TResult? Function( MenuElement value)?  menu,TResult? Function( TooltipElement value)?  tooltip,TResult? Function( ColumnElement value)?  column,TResult? Function( RowElement value)?  row,TResult? Function( WrapElement value)?  wrap,TResult? Function( StackElement value)?  stack,TResult? Function( GridElement value)?  grid,TResult? Function( SectionElement value)?  section,TResult? Function( ContainerElement value)?  container,TResult? Function( PresentationAnchorElement value)?  anchor,TResult? Function( ConnectionLayerElement value)?  connectionLayer,TResult? Function( PaddingElement value)?  padding,TResult? Function( PresentationSlotElement value)?  slot,TResult? Function( TabsElement value)?  tabs,TResult? Function( DividerElement value)?  divider,TResult? Function( SpacerElement value)?  spacer,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DiagnosticElement value)?  diagnostic,TResult? Function( DefaultPresentationElement value)?  defaultPresentation,TResult? Function( PresentationInvocationElement value)?  invocation,TResult? Function( TextElement value)?  text,TResult? Function( MarkdownElement value)?  markdown,TResult? Function( IconElement value)?  icon,TResult? Function( ImageElement value)?  image,TResult? Function( BadgeElement value)?  badge,TResult? Function( ChipElement value)?  chip,TResult? Function( ProgressElement value)?  progress,TResult? Function( StatusElement value)?  status,TResult? Function( DateTimeElement value)?  dateTime,TResult? Function( RelativeTimeElement value)?  relativeTime,TResult? Function( TypedFieldElement value)?  typedField,TResult? Function( ConditionalElement value)?  conditional,TResult? Function( RepeatedElement value)?  repeated,TResult? Function( ScopedBindingElement value)?  scopedBinding,TResult? Function( CollectionLookupElement value)?  collectionLookup,TResult? Function( CollectionGraphElement value)?  collectionGraph,TResult? Function( TextInputElement value)?  textInput,TResult? Function( NumericInputElement value)?  numericInput,TResult? Function( ToggleInputElement value)?  toggleInput,TResult? Function( SelectInputElement value)?  selectInput,TResult? Function( SliderInputElement value)?  sliderInput,TResult? Function( DateTimeInputElement value)?  dateTimeInput,TResult? Function( DurationInputElement value)?  durationInput,TResult? Function( ColorInputElement value)?  colorInput,TResult? Function( SearchInputElement value)?  searchInput,TResult? Function( BytesInputElement value)?  bytesInput,TResult? Function( EnumInputElement value)?  enumInput,TResult? Function( NamedInputElement value)?  namedInput,TResult? Function( ListInputElement value)?  listInput,TResult? Function( MapInputElement value)?  mapInput,TResult? Function( RecordInputElement value)?  recordInput,TResult? Function( PolymorphicInputElement value)?  polymorphicInput,TResult? Function( PolymorphicMatchElement value)?  polymorphicMatch,TResult? Function( CommitControlsElement value)?  commitControls,TResult? Function( ButtonElement value)?  button,TResult? Function( IconButtonElement value)?  iconButton,TResult? Function( MenuElement value)?  menu,TResult? Function( TooltipElement value)?  tooltip,TResult? Function( ColumnElement value)?  column,TResult? Function( RowElement value)?  row,TResult? Function( WrapElement value)?  wrap,TResult? Function( StackElement value)?  stack,TResult? Function( GridElement value)?  grid,TResult? Function( SectionElement value)?  section,TResult? Function( ContainerElement value)?  container,TResult? Function( PresentationAnchorElement value)?  anchor,TResult? Function( ConnectionLayerElement value)?  connectionLayer,TResult? Function( PaddingElement value)?  padding,TResult? Function( PresentationSlotElement value)?  slot,TResult? Function( TabsElement value)?  tabs,TResult? Function( DividerElement value)?  divider,TResult? Function( SpacerElement value)?  spacer,}){
 final _that = this;
 switch (_that) {
 case DiagnosticElement() when diagnostic != null:
 return diagnostic(_that);case DefaultPresentationElement() when defaultPresentation != null:
-return defaultPresentation(_that);case TextElement() when text != null:
+return defaultPresentation(_that);case PresentationInvocationElement() when invocation != null:
+return invocation(_that);case TextElement() when text != null:
 return text(_that);case MarkdownElement() when markdown != null:
 return markdown(_that);case IconElement() when icon != null:
 return icon(_that);case ImageElement() when image != null:
 return image(_that);case BadgeElement() when badge != null:
 return badge(_that);case ChipElement() when chip != null:
 return chip(_that);case ProgressElement() when progress != null:
-return progress(_that);case TypedFieldElement() when typedField != null:
+return progress(_that);case StatusElement() when status != null:
+return status(_that);case DateTimeElement() when dateTime != null:
+return dateTime(_that);case RelativeTimeElement() when relativeTime != null:
+return relativeTime(_that);case TypedFieldElement() when typedField != null:
 return typedField(_that);case ConditionalElement() when conditional != null:
 return conditional(_that);case RepeatedElement() when repeated != null:
 return repeated(_that);case ScopedBindingElement() when scopedBinding != null:
@@ -228,7 +243,8 @@ return listInput(_that);case MapInputElement() when mapInput != null:
 return mapInput(_that);case RecordInputElement() when recordInput != null:
 return recordInput(_that);case PolymorphicInputElement() when polymorphicInput != null:
 return polymorphicInput(_that);case PolymorphicMatchElement() when polymorphicMatch != null:
-return polymorphicMatch(_that);case ButtonElement() when button != null:
+return polymorphicMatch(_that);case CommitControlsElement() when commitControls != null:
+return commitControls(_that);case ButtonElement() when button != null:
 return button(_that);case IconButtonElement() when iconButton != null:
 return iconButton(_that);case MenuElement() when menu != null:
 return menu(_that);case TooltipElement() when tooltip != null:
@@ -263,18 +279,22 @@ return spacer(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<TypeDiagnostic> diagnostics)?  diagnostic,TResult Function( BindingReference binding,  PresentationId? presentationId)?  defaultPresentation,TResult Function( TypedExpression value,  TypedExpression? color,  TypedExpression? fontSize,  TypedExpression? fontWeight,  TypedExpression? fontItalic,  TypedExpression? fontOpticalSize,  TypedExpression? fontSlant,  TypedExpression? fontWidth,  TypedExpression? textAlignment,  TypedExpression? lineHeight,  TypedExpression? letterSpacing,  TypedExpression? decoration,  TypedExpression? semanticLabel)?  text,TResult Function( TypedExpression value,  TypedExpression? color)?  markdown,TResult Function( TypedExpression name,  TypedExpression? semanticLabel,  TypedExpression? color,  TypedExpression? size)?  icon,TResult Function( TypedExpression source,  TypedExpression? semanticLabel)?  image,TResult Function( TypedExpression label,  String tone)?  badge,TResult Function( TypedExpression label,  TypedExpression? color)?  chip,TResult Function( TypedExpression value,  TypedExpression maximum,  TypedExpression? label)?  progress,TResult Function( BindingReference binding,  TypeExpression expectedType,  PresentationNode? presentation)?  typedField,TResult Function( TypedExpression condition,  PresentationNode whenTrue,  PresentationNode? whenFalse)?  conditional,TResult Function( TypedExpression source,  BindingId itemBindingId,  SequencePresentation presentation)?  repeated,TResult Function( BindingReference binding,  BindingId scopeBindingId,  PresentationNode child)?  scopedBinding,TResult Function( PresentationCollectionSourceId sourceId,  BindingReference key,  PresentationNode found,  PresentationNode missing,  PresentationNode? loading)?  collectionLookup,TResult Function( PresentationCollectionSourceId sourceId,  BindingReference roots,  SequencePresentation rootSequence,  PresentationCollectionRelationId relation,  CollectionGraphDirection direction,  PresentationNode node,  BindingId childrenBindingId,  BindingId childBindingId,  SequencePresentation children,  int? maximumDepth)?  collectionGraph,TResult Function( BoundControl control,  bool multiline,  TypedExpression? placeholder,  List<TextInputFormat> inputFormatters)?  textInput,TResult Function( BoundControl control)?  numericInput,TResult Function( BoundControl control)?  toggleInput,TResult Function( BoundControl control,  List<SelectOption> options,  bool allowCustomValue)?  selectInput,TResult Function( BoundControl control,  TypedExpression minimum,  TypedExpression maximum,  TypedExpression? divisions)?  sliderInput,TResult Function( BoundControl control,  bool includeDate,  bool includeTime)?  dateTimeInput,TResult Function( BoundControl control)?  durationInput,TResult Function( BoundControl control,  bool includeAlpha)?  colorInput,TResult Function( BoundControl control,  SearchSelectionMode selectionMode,  BindingId queryBindingId,  BindingId summaryBindingId,  TypedExpression maximumExtent,  SearchProvider provider,  PresentationNode? summary,  TypedExpression? placeholder,  TypedExpression? customValue,  TypedExpression? initialQuery)?  searchInput,TResult Function( BoundControl control)?  bytesInput,TResult Function( BoundControl control)?  enumInput,TResult Function( BoundControl control)?  namedInput,TResult Function( BoundControl control,  PresentationNode? itemPresentation,  bool allowAdd,  bool allowRemove,  bool allowReorder,  BindingId itemBindingId,  BindingId indexBindingId)?  listInput,TResult Function( BoundControl control,  PresentationNode? keyPresentation,  PresentationNode? valuePresentation,  bool allowAdd,  bool allowRemove,  BindingId keyBindingId,  BindingId valueBindingId)?  mapInput,TResult Function( BoundControl control,  PresentationNode? fieldPresentation)?  recordInput,TResult Function( BoundControl control,  List<ConcreteTypePresentation> concreteTypes)?  polymorphicInput,TResult Function( BindingReference binding,  BindingId scopeBindingId,  List<PolymorphicMatchCase> cases,  PresentationNode? fallback)?  polymorphicMatch,TResult Function( TypedExpression label,  EditorAction action)?  button,TResult Function( TypedExpression icon,  TypedExpression semanticLabel,  EditorAction action)?  iconButton,TResult Function( List<PresentationMenuItem> items,  TypedExpression? label)?  menu,TResult Function( TypedExpression message,  PresentationNode child)?  tooltip,TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  column,TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  row,TResult Function( List<PresentationNode> children,  double spacing,  double runSpacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  wrap,TResult Function( List<PresentationNode> children)?  stack,TResult Function( List<PresentationNode> children,  int columns,  double horizontalSpacing,  double verticalSpacing)?  grid,TResult Function( PresentationNode child,  PresentationBorder? border)?  section,TResult Function( PresentationNode child,  PresentationBorder? border,  TypedExpression? backgroundColor,  PresentationRadius radius)?  container,TResult Function( PresentationNode child,  List<PresentationAnchorPoint> anchors)?  anchor,TResult Function( PresentationNode child,  List<PresentationConnection> connections)?  connectionLayer,TResult Function( PresentationNode child,  double top,  double start,  double end,  double bottom)?  padding,TResult Function( String slotId)?  slot,TResult Function( List<TabItem> tabs,  String? initiallySelectedTabId)?  tabs,TResult Function()?  divider,TResult Function( TypedExpression? width,  TypedExpression? height)?  spacer,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<TypeDiagnostic> diagnostics)?  diagnostic,TResult Function( BindingReference binding,  PresentationId? presentationId)?  defaultPresentation,TResult Function( PresentationId presentationId,  Map<BindingId, BindingReference> arguments)?  invocation,TResult Function( TypedExpression value,  TypedExpression? color,  TypedExpression? fontSize,  TypedExpression? fontWeight,  TypedExpression? fontItalic,  TypedExpression? fontOpticalSize,  TypedExpression? fontSlant,  TypedExpression? fontWidth,  TypedExpression? textAlignment,  TypedExpression? lineHeight,  TypedExpression? letterSpacing,  TypedExpression? decoration,  TypedExpression? semanticLabel)?  text,TResult Function( TypedExpression value,  TypedExpression? color)?  markdown,TResult Function( TypedExpression name,  TypedExpression? semanticLabel,  TypedExpression? color,  TypedExpression? size)?  icon,TResult Function( TypedExpression source,  TypedExpression? semanticLabel)?  image,TResult Function( TypedExpression label,  String tone)?  badge,TResult Function( TypedExpression label,  TypedExpression? color)?  chip,TResult Function( TypedExpression value,  TypedExpression maximum,  TypedExpression? label)?  progress,TResult Function( TypedExpression value,  List<StatusCase> cases,  StatusAppearance? fallback)?  status,TResult Function( TypedExpression value,  TypedExpression format,  DateTimeZone timeZone)?  dateTime,TResult Function( TypedExpression value,  RelativeTimeStyle style,  DateTimeZone timeZone)?  relativeTime,TResult Function( BindingReference binding,  TypeExpression expectedType,  PresentationNode? presentation)?  typedField,TResult Function( TypedExpression condition,  PresentationNode whenTrue,  PresentationNode? whenFalse)?  conditional,TResult Function( TypedExpression source,  BindingId itemBindingId,  SequencePresentation presentation)?  repeated,TResult Function( BindingReference binding,  BindingId scopeBindingId,  PresentationNode child)?  scopedBinding,TResult Function( PresentationCollectionSourceId sourceId,  BindingReference key,  PresentationNode found,  PresentationNode missing,  PresentationNode? loading)?  collectionLookup,TResult Function( PresentationCollectionSourceId sourceId,  BindingReference roots,  SequencePresentation rootSequence,  PresentationCollectionRelationId relation,  CollectionGraphDirection direction,  PresentationNode node,  BindingId childrenBindingId,  BindingId childBindingId,  SequencePresentation children,  int? maximumDepth)?  collectionGraph,TResult Function( BoundControl control,  bool multiline,  TypedExpression? placeholder,  List<TextInputFormat> inputFormatters)?  textInput,TResult Function( BoundControl control)?  numericInput,TResult Function( BoundControl control)?  toggleInput,TResult Function( BoundControl control,  List<SelectOption> options,  bool allowCustomValue,  TypedExpression? defaultValue)?  selectInput,TResult Function( BoundControl control,  TypedExpression minimum,  TypedExpression maximum,  TypedExpression? divisions)?  sliderInput,TResult Function( BoundControl control,  bool includeDate,  bool includeTime)?  dateTimeInput,TResult Function( BoundControl control)?  durationInput,TResult Function( BoundControl control,  bool includeAlpha)?  colorInput,TResult Function( BoundControl control,  SearchSelectionMode selectionMode,  BindingId queryBindingId,  BindingId summaryBindingId,  TypedExpression maximumExtent,  SearchProvider provider,  PresentationNode? summary,  TypedExpression? placeholder,  TypedExpression? customValue,  TypedExpression? initialQuery)?  searchInput,TResult Function( BoundControl control)?  bytesInput,TResult Function( BoundControl control)?  enumInput,TResult Function( BoundControl control)?  namedInput,TResult Function( BoundControl control,  PresentationNode? itemPresentation,  bool allowAdd,  bool allowRemove,  bool allowReorder,  BindingId itemBindingId,  BindingId indexBindingId)?  listInput,TResult Function( BoundControl control,  PresentationNode? keyPresentation,  PresentationNode? valuePresentation,  bool allowAdd,  bool allowRemove,  BindingId keyBindingId,  BindingId valueBindingId)?  mapInput,TResult Function( BoundControl control,  PresentationNode? fieldPresentation)?  recordInput,TResult Function( BoundControl control,  List<ConcreteTypePresentation> concreteTypes)?  polymorphicInput,TResult Function( BindingReference binding,  BindingId scopeBindingId,  List<PolymorphicMatchCase> cases,  PresentationNode? fallback)?  polymorphicMatch,TResult Function( BindingReference binding)?  commitControls,TResult Function( TypedExpression label,  EditorAction action)?  button,TResult Function( TypedExpression icon,  TypedExpression semanticLabel,  EditorAction action)?  iconButton,TResult Function( List<PresentationMenuItem> items,  TypedExpression? label)?  menu,TResult Function( TypedExpression message,  PresentationNode child)?  tooltip,TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  column,TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  row,TResult Function( List<PresentationNode> children,  double spacing,  double runSpacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  wrap,TResult Function( List<PresentationNode> children)?  stack,TResult Function( List<PresentationNode> children,  int columns,  double horizontalSpacing,  double verticalSpacing)?  grid,TResult Function( PresentationNode child,  PresentationBorder? border)?  section,TResult Function( PresentationNode child,  PresentationBorder? border,  TypedExpression? backgroundColor,  PresentationRadius radius)?  container,TResult Function( PresentationNode child,  List<PresentationAnchorPoint> anchors)?  anchor,TResult Function( PresentationNode child,  List<PresentationConnection> connections)?  connectionLayer,TResult Function( PresentationNode child,  double top,  double start,  double end,  double bottom)?  padding,TResult Function( String slotId)?  slot,TResult Function( List<TabItem> tabs,  String? initiallySelectedTabId)?  tabs,TResult Function()?  divider,TResult Function( TypedExpression? width,  TypedExpression? height)?  spacer,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DiagnosticElement() when diagnostic != null:
 return diagnostic(_that.diagnostics);case DefaultPresentationElement() when defaultPresentation != null:
-return defaultPresentation(_that.binding,_that.presentationId);case TextElement() when text != null:
+return defaultPresentation(_that.binding,_that.presentationId);case PresentationInvocationElement() when invocation != null:
+return invocation(_that.presentationId,_that.arguments);case TextElement() when text != null:
 return text(_that.value,_that.color,_that.fontSize,_that.fontWeight,_that.fontItalic,_that.fontOpticalSize,_that.fontSlant,_that.fontWidth,_that.textAlignment,_that.lineHeight,_that.letterSpacing,_that.decoration,_that.semanticLabel);case MarkdownElement() when markdown != null:
 return markdown(_that.value,_that.color);case IconElement() when icon != null:
 return icon(_that.name,_that.semanticLabel,_that.color,_that.size);case ImageElement() when image != null:
 return image(_that.source,_that.semanticLabel);case BadgeElement() when badge != null:
 return badge(_that.label,_that.tone);case ChipElement() when chip != null:
 return chip(_that.label,_that.color);case ProgressElement() when progress != null:
-return progress(_that.value,_that.maximum,_that.label);case TypedFieldElement() when typedField != null:
+return progress(_that.value,_that.maximum,_that.label);case StatusElement() when status != null:
+return status(_that.value,_that.cases,_that.fallback);case DateTimeElement() when dateTime != null:
+return dateTime(_that.value,_that.format,_that.timeZone);case RelativeTimeElement() when relativeTime != null:
+return relativeTime(_that.value,_that.style,_that.timeZone);case TypedFieldElement() when typedField != null:
 return typedField(_that.binding,_that.expectedType,_that.presentation);case ConditionalElement() when conditional != null:
 return conditional(_that.condition,_that.whenTrue,_that.whenFalse);case RepeatedElement() when repeated != null:
 return repeated(_that.source,_that.itemBindingId,_that.presentation);case ScopedBindingElement() when scopedBinding != null:
@@ -284,7 +304,7 @@ return collectionGraph(_that.sourceId,_that.roots,_that.rootSequence,_that.relat
 return textInput(_that.control,_that.multiline,_that.placeholder,_that.inputFormatters);case NumericInputElement() when numericInput != null:
 return numericInput(_that.control);case ToggleInputElement() when toggleInput != null:
 return toggleInput(_that.control);case SelectInputElement() when selectInput != null:
-return selectInput(_that.control,_that.options,_that.allowCustomValue);case SliderInputElement() when sliderInput != null:
+return selectInput(_that.control,_that.options,_that.allowCustomValue,_that.defaultValue);case SliderInputElement() when sliderInput != null:
 return sliderInput(_that.control,_that.minimum,_that.maximum,_that.divisions);case DateTimeInputElement() when dateTimeInput != null:
 return dateTimeInput(_that.control,_that.includeDate,_that.includeTime);case DurationInputElement() when durationInput != null:
 return durationInput(_that.control);case ColorInputElement() when colorInput != null:
@@ -297,7 +317,8 @@ return listInput(_that.control,_that.itemPresentation,_that.allowAdd,_that.allow
 return mapInput(_that.control,_that.keyPresentation,_that.valuePresentation,_that.allowAdd,_that.allowRemove,_that.keyBindingId,_that.valueBindingId);case RecordInputElement() when recordInput != null:
 return recordInput(_that.control,_that.fieldPresentation);case PolymorphicInputElement() when polymorphicInput != null:
 return polymorphicInput(_that.control,_that.concreteTypes);case PolymorphicMatchElement() when polymorphicMatch != null:
-return polymorphicMatch(_that.binding,_that.scopeBindingId,_that.cases,_that.fallback);case ButtonElement() when button != null:
+return polymorphicMatch(_that.binding,_that.scopeBindingId,_that.cases,_that.fallback);case CommitControlsElement() when commitControls != null:
+return commitControls(_that.binding);case ButtonElement() when button != null:
 return button(_that.label,_that.action);case IconButtonElement() when iconButton != null:
 return iconButton(_that.icon,_that.semanticLabel,_that.action);case MenuElement() when menu != null:
 return menu(_that.items,_that.label);case TooltipElement() when tooltip != null:
@@ -333,18 +354,22 @@ return spacer(_that.width,_that.height);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<TypeDiagnostic> diagnostics)  diagnostic,required TResult Function( BindingReference binding,  PresentationId? presentationId)  defaultPresentation,required TResult Function( TypedExpression value,  TypedExpression? color,  TypedExpression? fontSize,  TypedExpression? fontWeight,  TypedExpression? fontItalic,  TypedExpression? fontOpticalSize,  TypedExpression? fontSlant,  TypedExpression? fontWidth,  TypedExpression? textAlignment,  TypedExpression? lineHeight,  TypedExpression? letterSpacing,  TypedExpression? decoration,  TypedExpression? semanticLabel)  text,required TResult Function( TypedExpression value,  TypedExpression? color)  markdown,required TResult Function( TypedExpression name,  TypedExpression? semanticLabel,  TypedExpression? color,  TypedExpression? size)  icon,required TResult Function( TypedExpression source,  TypedExpression? semanticLabel)  image,required TResult Function( TypedExpression label,  String tone)  badge,required TResult Function( TypedExpression label,  TypedExpression? color)  chip,required TResult Function( TypedExpression value,  TypedExpression maximum,  TypedExpression? label)  progress,required TResult Function( BindingReference binding,  TypeExpression expectedType,  PresentationNode? presentation)  typedField,required TResult Function( TypedExpression condition,  PresentationNode whenTrue,  PresentationNode? whenFalse)  conditional,required TResult Function( TypedExpression source,  BindingId itemBindingId,  SequencePresentation presentation)  repeated,required TResult Function( BindingReference binding,  BindingId scopeBindingId,  PresentationNode child)  scopedBinding,required TResult Function( PresentationCollectionSourceId sourceId,  BindingReference key,  PresentationNode found,  PresentationNode missing,  PresentationNode? loading)  collectionLookup,required TResult Function( PresentationCollectionSourceId sourceId,  BindingReference roots,  SequencePresentation rootSequence,  PresentationCollectionRelationId relation,  CollectionGraphDirection direction,  PresentationNode node,  BindingId childrenBindingId,  BindingId childBindingId,  SequencePresentation children,  int? maximumDepth)  collectionGraph,required TResult Function( BoundControl control,  bool multiline,  TypedExpression? placeholder,  List<TextInputFormat> inputFormatters)  textInput,required TResult Function( BoundControl control)  numericInput,required TResult Function( BoundControl control)  toggleInput,required TResult Function( BoundControl control,  List<SelectOption> options,  bool allowCustomValue)  selectInput,required TResult Function( BoundControl control,  TypedExpression minimum,  TypedExpression maximum,  TypedExpression? divisions)  sliderInput,required TResult Function( BoundControl control,  bool includeDate,  bool includeTime)  dateTimeInput,required TResult Function( BoundControl control)  durationInput,required TResult Function( BoundControl control,  bool includeAlpha)  colorInput,required TResult Function( BoundControl control,  SearchSelectionMode selectionMode,  BindingId queryBindingId,  BindingId summaryBindingId,  TypedExpression maximumExtent,  SearchProvider provider,  PresentationNode? summary,  TypedExpression? placeholder,  TypedExpression? customValue,  TypedExpression? initialQuery)  searchInput,required TResult Function( BoundControl control)  bytesInput,required TResult Function( BoundControl control)  enumInput,required TResult Function( BoundControl control)  namedInput,required TResult Function( BoundControl control,  PresentationNode? itemPresentation,  bool allowAdd,  bool allowRemove,  bool allowReorder,  BindingId itemBindingId,  BindingId indexBindingId)  listInput,required TResult Function( BoundControl control,  PresentationNode? keyPresentation,  PresentationNode? valuePresentation,  bool allowAdd,  bool allowRemove,  BindingId keyBindingId,  BindingId valueBindingId)  mapInput,required TResult Function( BoundControl control,  PresentationNode? fieldPresentation)  recordInput,required TResult Function( BoundControl control,  List<ConcreteTypePresentation> concreteTypes)  polymorphicInput,required TResult Function( BindingReference binding,  BindingId scopeBindingId,  List<PolymorphicMatchCase> cases,  PresentationNode? fallback)  polymorphicMatch,required TResult Function( TypedExpression label,  EditorAction action)  button,required TResult Function( TypedExpression icon,  TypedExpression semanticLabel,  EditorAction action)  iconButton,required TResult Function( List<PresentationMenuItem> items,  TypedExpression? label)  menu,required TResult Function( TypedExpression message,  PresentationNode child)  tooltip,required TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)  column,required TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)  row,required TResult Function( List<PresentationNode> children,  double spacing,  double runSpacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)  wrap,required TResult Function( List<PresentationNode> children)  stack,required TResult Function( List<PresentationNode> children,  int columns,  double horizontalSpacing,  double verticalSpacing)  grid,required TResult Function( PresentationNode child,  PresentationBorder? border)  section,required TResult Function( PresentationNode child,  PresentationBorder? border,  TypedExpression? backgroundColor,  PresentationRadius radius)  container,required TResult Function( PresentationNode child,  List<PresentationAnchorPoint> anchors)  anchor,required TResult Function( PresentationNode child,  List<PresentationConnection> connections)  connectionLayer,required TResult Function( PresentationNode child,  double top,  double start,  double end,  double bottom)  padding,required TResult Function( String slotId)  slot,required TResult Function( List<TabItem> tabs,  String? initiallySelectedTabId)  tabs,required TResult Function()  divider,required TResult Function( TypedExpression? width,  TypedExpression? height)  spacer,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<TypeDiagnostic> diagnostics)  diagnostic,required TResult Function( BindingReference binding,  PresentationId? presentationId)  defaultPresentation,required TResult Function( PresentationId presentationId,  Map<BindingId, BindingReference> arguments)  invocation,required TResult Function( TypedExpression value,  TypedExpression? color,  TypedExpression? fontSize,  TypedExpression? fontWeight,  TypedExpression? fontItalic,  TypedExpression? fontOpticalSize,  TypedExpression? fontSlant,  TypedExpression? fontWidth,  TypedExpression? textAlignment,  TypedExpression? lineHeight,  TypedExpression? letterSpacing,  TypedExpression? decoration,  TypedExpression? semanticLabel)  text,required TResult Function( TypedExpression value,  TypedExpression? color)  markdown,required TResult Function( TypedExpression name,  TypedExpression? semanticLabel,  TypedExpression? color,  TypedExpression? size)  icon,required TResult Function( TypedExpression source,  TypedExpression? semanticLabel)  image,required TResult Function( TypedExpression label,  String tone)  badge,required TResult Function( TypedExpression label,  TypedExpression? color)  chip,required TResult Function( TypedExpression value,  TypedExpression maximum,  TypedExpression? label)  progress,required TResult Function( TypedExpression value,  List<StatusCase> cases,  StatusAppearance? fallback)  status,required TResult Function( TypedExpression value,  TypedExpression format,  DateTimeZone timeZone)  dateTime,required TResult Function( TypedExpression value,  RelativeTimeStyle style,  DateTimeZone timeZone)  relativeTime,required TResult Function( BindingReference binding,  TypeExpression expectedType,  PresentationNode? presentation)  typedField,required TResult Function( TypedExpression condition,  PresentationNode whenTrue,  PresentationNode? whenFalse)  conditional,required TResult Function( TypedExpression source,  BindingId itemBindingId,  SequencePresentation presentation)  repeated,required TResult Function( BindingReference binding,  BindingId scopeBindingId,  PresentationNode child)  scopedBinding,required TResult Function( PresentationCollectionSourceId sourceId,  BindingReference key,  PresentationNode found,  PresentationNode missing,  PresentationNode? loading)  collectionLookup,required TResult Function( PresentationCollectionSourceId sourceId,  BindingReference roots,  SequencePresentation rootSequence,  PresentationCollectionRelationId relation,  CollectionGraphDirection direction,  PresentationNode node,  BindingId childrenBindingId,  BindingId childBindingId,  SequencePresentation children,  int? maximumDepth)  collectionGraph,required TResult Function( BoundControl control,  bool multiline,  TypedExpression? placeholder,  List<TextInputFormat> inputFormatters)  textInput,required TResult Function( BoundControl control)  numericInput,required TResult Function( BoundControl control)  toggleInput,required TResult Function( BoundControl control,  List<SelectOption> options,  bool allowCustomValue,  TypedExpression? defaultValue)  selectInput,required TResult Function( BoundControl control,  TypedExpression minimum,  TypedExpression maximum,  TypedExpression? divisions)  sliderInput,required TResult Function( BoundControl control,  bool includeDate,  bool includeTime)  dateTimeInput,required TResult Function( BoundControl control)  durationInput,required TResult Function( BoundControl control,  bool includeAlpha)  colorInput,required TResult Function( BoundControl control,  SearchSelectionMode selectionMode,  BindingId queryBindingId,  BindingId summaryBindingId,  TypedExpression maximumExtent,  SearchProvider provider,  PresentationNode? summary,  TypedExpression? placeholder,  TypedExpression? customValue,  TypedExpression? initialQuery)  searchInput,required TResult Function( BoundControl control)  bytesInput,required TResult Function( BoundControl control)  enumInput,required TResult Function( BoundControl control)  namedInput,required TResult Function( BoundControl control,  PresentationNode? itemPresentation,  bool allowAdd,  bool allowRemove,  bool allowReorder,  BindingId itemBindingId,  BindingId indexBindingId)  listInput,required TResult Function( BoundControl control,  PresentationNode? keyPresentation,  PresentationNode? valuePresentation,  bool allowAdd,  bool allowRemove,  BindingId keyBindingId,  BindingId valueBindingId)  mapInput,required TResult Function( BoundControl control,  PresentationNode? fieldPresentation)  recordInput,required TResult Function( BoundControl control,  List<ConcreteTypePresentation> concreteTypes)  polymorphicInput,required TResult Function( BindingReference binding,  BindingId scopeBindingId,  List<PolymorphicMatchCase> cases,  PresentationNode? fallback)  polymorphicMatch,required TResult Function( BindingReference binding)  commitControls,required TResult Function( TypedExpression label,  EditorAction action)  button,required TResult Function( TypedExpression icon,  TypedExpression semanticLabel,  EditorAction action)  iconButton,required TResult Function( List<PresentationMenuItem> items,  TypedExpression? label)  menu,required TResult Function( TypedExpression message,  PresentationNode child)  tooltip,required TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)  column,required TResult Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)  row,required TResult Function( List<PresentationNode> children,  double spacing,  double runSpacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)  wrap,required TResult Function( List<PresentationNode> children)  stack,required TResult Function( List<PresentationNode> children,  int columns,  double horizontalSpacing,  double verticalSpacing)  grid,required TResult Function( PresentationNode child,  PresentationBorder? border)  section,required TResult Function( PresentationNode child,  PresentationBorder? border,  TypedExpression? backgroundColor,  PresentationRadius radius)  container,required TResult Function( PresentationNode child,  List<PresentationAnchorPoint> anchors)  anchor,required TResult Function( PresentationNode child,  List<PresentationConnection> connections)  connectionLayer,required TResult Function( PresentationNode child,  double top,  double start,  double end,  double bottom)  padding,required TResult Function( String slotId)  slot,required TResult Function( List<TabItem> tabs,  String? initiallySelectedTabId)  tabs,required TResult Function()  divider,required TResult Function( TypedExpression? width,  TypedExpression? height)  spacer,}) {final _that = this;
 switch (_that) {
 case DiagnosticElement():
 return diagnostic(_that.diagnostics);case DefaultPresentationElement():
-return defaultPresentation(_that.binding,_that.presentationId);case TextElement():
+return defaultPresentation(_that.binding,_that.presentationId);case PresentationInvocationElement():
+return invocation(_that.presentationId,_that.arguments);case TextElement():
 return text(_that.value,_that.color,_that.fontSize,_that.fontWeight,_that.fontItalic,_that.fontOpticalSize,_that.fontSlant,_that.fontWidth,_that.textAlignment,_that.lineHeight,_that.letterSpacing,_that.decoration,_that.semanticLabel);case MarkdownElement():
 return markdown(_that.value,_that.color);case IconElement():
 return icon(_that.name,_that.semanticLabel,_that.color,_that.size);case ImageElement():
 return image(_that.source,_that.semanticLabel);case BadgeElement():
 return badge(_that.label,_that.tone);case ChipElement():
 return chip(_that.label,_that.color);case ProgressElement():
-return progress(_that.value,_that.maximum,_that.label);case TypedFieldElement():
+return progress(_that.value,_that.maximum,_that.label);case StatusElement():
+return status(_that.value,_that.cases,_that.fallback);case DateTimeElement():
+return dateTime(_that.value,_that.format,_that.timeZone);case RelativeTimeElement():
+return relativeTime(_that.value,_that.style,_that.timeZone);case TypedFieldElement():
 return typedField(_that.binding,_that.expectedType,_that.presentation);case ConditionalElement():
 return conditional(_that.condition,_that.whenTrue,_that.whenFalse);case RepeatedElement():
 return repeated(_that.source,_that.itemBindingId,_that.presentation);case ScopedBindingElement():
@@ -354,7 +379,7 @@ return collectionGraph(_that.sourceId,_that.roots,_that.rootSequence,_that.relat
 return textInput(_that.control,_that.multiline,_that.placeholder,_that.inputFormatters);case NumericInputElement():
 return numericInput(_that.control);case ToggleInputElement():
 return toggleInput(_that.control);case SelectInputElement():
-return selectInput(_that.control,_that.options,_that.allowCustomValue);case SliderInputElement():
+return selectInput(_that.control,_that.options,_that.allowCustomValue,_that.defaultValue);case SliderInputElement():
 return sliderInput(_that.control,_that.minimum,_that.maximum,_that.divisions);case DateTimeInputElement():
 return dateTimeInput(_that.control,_that.includeDate,_that.includeTime);case DurationInputElement():
 return durationInput(_that.control);case ColorInputElement():
@@ -367,7 +392,8 @@ return listInput(_that.control,_that.itemPresentation,_that.allowAdd,_that.allow
 return mapInput(_that.control,_that.keyPresentation,_that.valuePresentation,_that.allowAdd,_that.allowRemove,_that.keyBindingId,_that.valueBindingId);case RecordInputElement():
 return recordInput(_that.control,_that.fieldPresentation);case PolymorphicInputElement():
 return polymorphicInput(_that.control,_that.concreteTypes);case PolymorphicMatchElement():
-return polymorphicMatch(_that.binding,_that.scopeBindingId,_that.cases,_that.fallback);case ButtonElement():
+return polymorphicMatch(_that.binding,_that.scopeBindingId,_that.cases,_that.fallback);case CommitControlsElement():
+return commitControls(_that.binding);case ButtonElement():
 return button(_that.label,_that.action);case IconButtonElement():
 return iconButton(_that.icon,_that.semanticLabel,_that.action);case MenuElement():
 return menu(_that.items,_that.label);case TooltipElement():
@@ -399,18 +425,22 @@ return spacer(_that.width,_that.height);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<TypeDiagnostic> diagnostics)?  diagnostic,TResult? Function( BindingReference binding,  PresentationId? presentationId)?  defaultPresentation,TResult? Function( TypedExpression value,  TypedExpression? color,  TypedExpression? fontSize,  TypedExpression? fontWeight,  TypedExpression? fontItalic,  TypedExpression? fontOpticalSize,  TypedExpression? fontSlant,  TypedExpression? fontWidth,  TypedExpression? textAlignment,  TypedExpression? lineHeight,  TypedExpression? letterSpacing,  TypedExpression? decoration,  TypedExpression? semanticLabel)?  text,TResult? Function( TypedExpression value,  TypedExpression? color)?  markdown,TResult? Function( TypedExpression name,  TypedExpression? semanticLabel,  TypedExpression? color,  TypedExpression? size)?  icon,TResult? Function( TypedExpression source,  TypedExpression? semanticLabel)?  image,TResult? Function( TypedExpression label,  String tone)?  badge,TResult? Function( TypedExpression label,  TypedExpression? color)?  chip,TResult? Function( TypedExpression value,  TypedExpression maximum,  TypedExpression? label)?  progress,TResult? Function( BindingReference binding,  TypeExpression expectedType,  PresentationNode? presentation)?  typedField,TResult? Function( TypedExpression condition,  PresentationNode whenTrue,  PresentationNode? whenFalse)?  conditional,TResult? Function( TypedExpression source,  BindingId itemBindingId,  SequencePresentation presentation)?  repeated,TResult? Function( BindingReference binding,  BindingId scopeBindingId,  PresentationNode child)?  scopedBinding,TResult? Function( PresentationCollectionSourceId sourceId,  BindingReference key,  PresentationNode found,  PresentationNode missing,  PresentationNode? loading)?  collectionLookup,TResult? Function( PresentationCollectionSourceId sourceId,  BindingReference roots,  SequencePresentation rootSequence,  PresentationCollectionRelationId relation,  CollectionGraphDirection direction,  PresentationNode node,  BindingId childrenBindingId,  BindingId childBindingId,  SequencePresentation children,  int? maximumDepth)?  collectionGraph,TResult? Function( BoundControl control,  bool multiline,  TypedExpression? placeholder,  List<TextInputFormat> inputFormatters)?  textInput,TResult? Function( BoundControl control)?  numericInput,TResult? Function( BoundControl control)?  toggleInput,TResult? Function( BoundControl control,  List<SelectOption> options,  bool allowCustomValue)?  selectInput,TResult? Function( BoundControl control,  TypedExpression minimum,  TypedExpression maximum,  TypedExpression? divisions)?  sliderInput,TResult? Function( BoundControl control,  bool includeDate,  bool includeTime)?  dateTimeInput,TResult? Function( BoundControl control)?  durationInput,TResult? Function( BoundControl control,  bool includeAlpha)?  colorInput,TResult? Function( BoundControl control,  SearchSelectionMode selectionMode,  BindingId queryBindingId,  BindingId summaryBindingId,  TypedExpression maximumExtent,  SearchProvider provider,  PresentationNode? summary,  TypedExpression? placeholder,  TypedExpression? customValue,  TypedExpression? initialQuery)?  searchInput,TResult? Function( BoundControl control)?  bytesInput,TResult? Function( BoundControl control)?  enumInput,TResult? Function( BoundControl control)?  namedInput,TResult? Function( BoundControl control,  PresentationNode? itemPresentation,  bool allowAdd,  bool allowRemove,  bool allowReorder,  BindingId itemBindingId,  BindingId indexBindingId)?  listInput,TResult? Function( BoundControl control,  PresentationNode? keyPresentation,  PresentationNode? valuePresentation,  bool allowAdd,  bool allowRemove,  BindingId keyBindingId,  BindingId valueBindingId)?  mapInput,TResult? Function( BoundControl control,  PresentationNode? fieldPresentation)?  recordInput,TResult? Function( BoundControl control,  List<ConcreteTypePresentation> concreteTypes)?  polymorphicInput,TResult? Function( BindingReference binding,  BindingId scopeBindingId,  List<PolymorphicMatchCase> cases,  PresentationNode? fallback)?  polymorphicMatch,TResult? Function( TypedExpression label,  EditorAction action)?  button,TResult? Function( TypedExpression icon,  TypedExpression semanticLabel,  EditorAction action)?  iconButton,TResult? Function( List<PresentationMenuItem> items,  TypedExpression? label)?  menu,TResult? Function( TypedExpression message,  PresentationNode child)?  tooltip,TResult? Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  column,TResult? Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  row,TResult? Function( List<PresentationNode> children,  double spacing,  double runSpacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  wrap,TResult? Function( List<PresentationNode> children)?  stack,TResult? Function( List<PresentationNode> children,  int columns,  double horizontalSpacing,  double verticalSpacing)?  grid,TResult? Function( PresentationNode child,  PresentationBorder? border)?  section,TResult? Function( PresentationNode child,  PresentationBorder? border,  TypedExpression? backgroundColor,  PresentationRadius radius)?  container,TResult? Function( PresentationNode child,  List<PresentationAnchorPoint> anchors)?  anchor,TResult? Function( PresentationNode child,  List<PresentationConnection> connections)?  connectionLayer,TResult? Function( PresentationNode child,  double top,  double start,  double end,  double bottom)?  padding,TResult? Function( String slotId)?  slot,TResult? Function( List<TabItem> tabs,  String? initiallySelectedTabId)?  tabs,TResult? Function()?  divider,TResult? Function( TypedExpression? width,  TypedExpression? height)?  spacer,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<TypeDiagnostic> diagnostics)?  diagnostic,TResult? Function( BindingReference binding,  PresentationId? presentationId)?  defaultPresentation,TResult? Function( PresentationId presentationId,  Map<BindingId, BindingReference> arguments)?  invocation,TResult? Function( TypedExpression value,  TypedExpression? color,  TypedExpression? fontSize,  TypedExpression? fontWeight,  TypedExpression? fontItalic,  TypedExpression? fontOpticalSize,  TypedExpression? fontSlant,  TypedExpression? fontWidth,  TypedExpression? textAlignment,  TypedExpression? lineHeight,  TypedExpression? letterSpacing,  TypedExpression? decoration,  TypedExpression? semanticLabel)?  text,TResult? Function( TypedExpression value,  TypedExpression? color)?  markdown,TResult? Function( TypedExpression name,  TypedExpression? semanticLabel,  TypedExpression? color,  TypedExpression? size)?  icon,TResult? Function( TypedExpression source,  TypedExpression? semanticLabel)?  image,TResult? Function( TypedExpression label,  String tone)?  badge,TResult? Function( TypedExpression label,  TypedExpression? color)?  chip,TResult? Function( TypedExpression value,  TypedExpression maximum,  TypedExpression? label)?  progress,TResult? Function( TypedExpression value,  List<StatusCase> cases,  StatusAppearance? fallback)?  status,TResult? Function( TypedExpression value,  TypedExpression format,  DateTimeZone timeZone)?  dateTime,TResult? Function( TypedExpression value,  RelativeTimeStyle style,  DateTimeZone timeZone)?  relativeTime,TResult? Function( BindingReference binding,  TypeExpression expectedType,  PresentationNode? presentation)?  typedField,TResult? Function( TypedExpression condition,  PresentationNode whenTrue,  PresentationNode? whenFalse)?  conditional,TResult? Function( TypedExpression source,  BindingId itemBindingId,  SequencePresentation presentation)?  repeated,TResult? Function( BindingReference binding,  BindingId scopeBindingId,  PresentationNode child)?  scopedBinding,TResult? Function( PresentationCollectionSourceId sourceId,  BindingReference key,  PresentationNode found,  PresentationNode missing,  PresentationNode? loading)?  collectionLookup,TResult? Function( PresentationCollectionSourceId sourceId,  BindingReference roots,  SequencePresentation rootSequence,  PresentationCollectionRelationId relation,  CollectionGraphDirection direction,  PresentationNode node,  BindingId childrenBindingId,  BindingId childBindingId,  SequencePresentation children,  int? maximumDepth)?  collectionGraph,TResult? Function( BoundControl control,  bool multiline,  TypedExpression? placeholder,  List<TextInputFormat> inputFormatters)?  textInput,TResult? Function( BoundControl control)?  numericInput,TResult? Function( BoundControl control)?  toggleInput,TResult? Function( BoundControl control,  List<SelectOption> options,  bool allowCustomValue,  TypedExpression? defaultValue)?  selectInput,TResult? Function( BoundControl control,  TypedExpression minimum,  TypedExpression maximum,  TypedExpression? divisions)?  sliderInput,TResult? Function( BoundControl control,  bool includeDate,  bool includeTime)?  dateTimeInput,TResult? Function( BoundControl control)?  durationInput,TResult? Function( BoundControl control,  bool includeAlpha)?  colorInput,TResult? Function( BoundControl control,  SearchSelectionMode selectionMode,  BindingId queryBindingId,  BindingId summaryBindingId,  TypedExpression maximumExtent,  SearchProvider provider,  PresentationNode? summary,  TypedExpression? placeholder,  TypedExpression? customValue,  TypedExpression? initialQuery)?  searchInput,TResult? Function( BoundControl control)?  bytesInput,TResult? Function( BoundControl control)?  enumInput,TResult? Function( BoundControl control)?  namedInput,TResult? Function( BoundControl control,  PresentationNode? itemPresentation,  bool allowAdd,  bool allowRemove,  bool allowReorder,  BindingId itemBindingId,  BindingId indexBindingId)?  listInput,TResult? Function( BoundControl control,  PresentationNode? keyPresentation,  PresentationNode? valuePresentation,  bool allowAdd,  bool allowRemove,  BindingId keyBindingId,  BindingId valueBindingId)?  mapInput,TResult? Function( BoundControl control,  PresentationNode? fieldPresentation)?  recordInput,TResult? Function( BoundControl control,  List<ConcreteTypePresentation> concreteTypes)?  polymorphicInput,TResult? Function( BindingReference binding,  BindingId scopeBindingId,  List<PolymorphicMatchCase> cases,  PresentationNode? fallback)?  polymorphicMatch,TResult? Function( BindingReference binding)?  commitControls,TResult? Function( TypedExpression label,  EditorAction action)?  button,TResult? Function( TypedExpression icon,  TypedExpression semanticLabel,  EditorAction action)?  iconButton,TResult? Function( List<PresentationMenuItem> items,  TypedExpression? label)?  menu,TResult? Function( TypedExpression message,  PresentationNode child)?  tooltip,TResult? Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  column,TResult? Function( List<PresentationNode> children,  double spacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  row,TResult? Function( List<PresentationNode> children,  double spacing,  double runSpacing,  PresentationMainAxisAlignment mainAxisAlignment,  PresentationCrossAxisAlignment crossAxisAlignment)?  wrap,TResult? Function( List<PresentationNode> children)?  stack,TResult? Function( List<PresentationNode> children,  int columns,  double horizontalSpacing,  double verticalSpacing)?  grid,TResult? Function( PresentationNode child,  PresentationBorder? border)?  section,TResult? Function( PresentationNode child,  PresentationBorder? border,  TypedExpression? backgroundColor,  PresentationRadius radius)?  container,TResult? Function( PresentationNode child,  List<PresentationAnchorPoint> anchors)?  anchor,TResult? Function( PresentationNode child,  List<PresentationConnection> connections)?  connectionLayer,TResult? Function( PresentationNode child,  double top,  double start,  double end,  double bottom)?  padding,TResult? Function( String slotId)?  slot,TResult? Function( List<TabItem> tabs,  String? initiallySelectedTabId)?  tabs,TResult? Function()?  divider,TResult? Function( TypedExpression? width,  TypedExpression? height)?  spacer,}) {final _that = this;
 switch (_that) {
 case DiagnosticElement() when diagnostic != null:
 return diagnostic(_that.diagnostics);case DefaultPresentationElement() when defaultPresentation != null:
-return defaultPresentation(_that.binding,_that.presentationId);case TextElement() when text != null:
+return defaultPresentation(_that.binding,_that.presentationId);case PresentationInvocationElement() when invocation != null:
+return invocation(_that.presentationId,_that.arguments);case TextElement() when text != null:
 return text(_that.value,_that.color,_that.fontSize,_that.fontWeight,_that.fontItalic,_that.fontOpticalSize,_that.fontSlant,_that.fontWidth,_that.textAlignment,_that.lineHeight,_that.letterSpacing,_that.decoration,_that.semanticLabel);case MarkdownElement() when markdown != null:
 return markdown(_that.value,_that.color);case IconElement() when icon != null:
 return icon(_that.name,_that.semanticLabel,_that.color,_that.size);case ImageElement() when image != null:
 return image(_that.source,_that.semanticLabel);case BadgeElement() when badge != null:
 return badge(_that.label,_that.tone);case ChipElement() when chip != null:
 return chip(_that.label,_that.color);case ProgressElement() when progress != null:
-return progress(_that.value,_that.maximum,_that.label);case TypedFieldElement() when typedField != null:
+return progress(_that.value,_that.maximum,_that.label);case StatusElement() when status != null:
+return status(_that.value,_that.cases,_that.fallback);case DateTimeElement() when dateTime != null:
+return dateTime(_that.value,_that.format,_that.timeZone);case RelativeTimeElement() when relativeTime != null:
+return relativeTime(_that.value,_that.style,_that.timeZone);case TypedFieldElement() when typedField != null:
 return typedField(_that.binding,_that.expectedType,_that.presentation);case ConditionalElement() when conditional != null:
 return conditional(_that.condition,_that.whenTrue,_that.whenFalse);case RepeatedElement() when repeated != null:
 return repeated(_that.source,_that.itemBindingId,_that.presentation);case ScopedBindingElement() when scopedBinding != null:
@@ -420,7 +450,7 @@ return collectionGraph(_that.sourceId,_that.roots,_that.rootSequence,_that.relat
 return textInput(_that.control,_that.multiline,_that.placeholder,_that.inputFormatters);case NumericInputElement() when numericInput != null:
 return numericInput(_that.control);case ToggleInputElement() when toggleInput != null:
 return toggleInput(_that.control);case SelectInputElement() when selectInput != null:
-return selectInput(_that.control,_that.options,_that.allowCustomValue);case SliderInputElement() when sliderInput != null:
+return selectInput(_that.control,_that.options,_that.allowCustomValue,_that.defaultValue);case SliderInputElement() when sliderInput != null:
 return sliderInput(_that.control,_that.minimum,_that.maximum,_that.divisions);case DateTimeInputElement() when dateTimeInput != null:
 return dateTimeInput(_that.control,_that.includeDate,_that.includeTime);case DurationInputElement() when durationInput != null:
 return durationInput(_that.control);case ColorInputElement() when colorInput != null:
@@ -433,7 +463,8 @@ return listInput(_that.control,_that.itemPresentation,_that.allowAdd,_that.allow
 return mapInput(_that.control,_that.keyPresentation,_that.valuePresentation,_that.allowAdd,_that.allowRemove,_that.keyBindingId,_that.valueBindingId);case RecordInputElement() when recordInput != null:
 return recordInput(_that.control,_that.fieldPresentation);case PolymorphicInputElement() when polymorphicInput != null:
 return polymorphicInput(_that.control,_that.concreteTypes);case PolymorphicMatchElement() when polymorphicMatch != null:
-return polymorphicMatch(_that.binding,_that.scopeBindingId,_that.cases,_that.fallback);case ButtonElement() when button != null:
+return polymorphicMatch(_that.binding,_that.scopeBindingId,_that.cases,_that.fallback);case CommitControlsElement() when commitControls != null:
+return commitControls(_that.binding);case ButtonElement() when button != null:
 return button(_that.label,_that.action);case IconButtonElement() when iconButton != null:
 return iconButton(_that.icon,_that.semanticLabel,_that.action);case MenuElement() when menu != null:
 return menu(_that.items,_that.label);case TooltipElement() when tooltip != null:
@@ -463,7 +494,7 @@ return spacer(_that.width,_that.height);case _:
 
 
 class DiagnosticElement implements PresentationElement {
-   DiagnosticElement(final  List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
+   DiagnosticElement( List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
 
 
  final  List<TypeDiagnostic> _diagnostics;
@@ -484,16 +515,18 @@ $DiagnosticElementCopyWith<DiagnosticElement> get copyWith => _$DiagnosticElemen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DiagnosticElement&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DiagnosticElement&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'PresentationElement.diagnostic(diagnostics: $diagnostics)';
+    return 'PresentationElement.diagnostic(diagnostics: $diagnostics)';
 }
 
 
@@ -551,16 +584,18 @@ $DefaultPresentationElementCopyWith<DefaultPresentationElement> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DefaultPresentationElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.presentationId, presentationId) || other.presentationId == presentationId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DefaultPresentationElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.presentationId, presentationId) || other.presentationId == presentationId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,binding,presentationId);
+int get hashCode {
+    return Object.hash(runtimeType,binding,presentationId);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.defaultPresentation(binding: $binding, presentationId: $presentationId)';
+    return 'PresentationElement.defaultPresentation(binding: $binding, presentationId: $presentationId)';
 }
 
 
@@ -623,6 +658,91 @@ $PresentationIdCopyWith<$Res>? get presentationId {
 /// @nodoc
 
 
+class PresentationInvocationElement implements PresentationElement {
+  const PresentationInvocationElement({required this.presentationId, required  Map<BindingId, BindingReference> arguments}): _arguments = arguments;
+
+
+ final  PresentationId presentationId;
+ final  Map<BindingId, BindingReference> _arguments;
+ Map<BindingId, BindingReference> get arguments {
+  if (_arguments is EqualUnmodifiableMapView) return _arguments;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_arguments);
+}
+
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PresentationInvocationElementCopyWith<PresentationInvocationElement> get copyWith => _$PresentationInvocationElementCopyWithImpl<PresentationInvocationElement>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationInvocationElement&&(identical(other.presentationId, presentationId) || other.presentationId == presentationId)&&const DeepCollectionEquality().equals(other.arguments, _arguments));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,presentationId,const DeepCollectionEquality().hash(_arguments));
+}
+
+@override
+String toString() {
+    return 'PresentationElement.invocation(presentationId: $presentationId, arguments: $arguments)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PresentationInvocationElementCopyWith<$Res> implements $PresentationElementCopyWith<$Res> {
+  factory $PresentationInvocationElementCopyWith(PresentationInvocationElement value, $Res Function(PresentationInvocationElement) _then) = _$PresentationInvocationElementCopyWithImpl;
+@useResult
+$Res call({
+ PresentationId presentationId, Map<BindingId, BindingReference> arguments
+});
+
+
+$PresentationIdCopyWith<$Res> get presentationId;
+
+}
+/// @nodoc
+class _$PresentationInvocationElementCopyWithImpl<$Res>
+    implements $PresentationInvocationElementCopyWith<$Res> {
+  _$PresentationInvocationElementCopyWithImpl(this._self, this._then);
+
+  final PresentationInvocationElement _self;
+  final $Res Function(PresentationInvocationElement) _then;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? presentationId = null,Object? arguments = null,}) {
+  return _then(PresentationInvocationElement(
+presentationId: null == presentationId ? _self.presentationId : presentationId // ignore: cast_nullable_to_non_nullable
+as PresentationId,arguments: null == arguments ? _self._arguments : arguments // ignore: cast_nullable_to_non_nullable
+as Map<BindingId, BindingReference>,
+  ));
+}
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PresentationIdCopyWith<$Res> get presentationId {
+
+  return $PresentationIdCopyWith<$Res>(_self.presentationId, (value) {
+    return _then(_self.copyWith(presentationId: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class TextElement implements PresentationElement {
   const TextElement(this.value, {this.color, this.fontSize, this.fontWeight, this.fontItalic, this.fontOpticalSize, this.fontSlant, this.fontWidth, this.textAlignment, this.lineHeight, this.letterSpacing, this.decoration, this.semanticLabel});
 
@@ -651,16 +771,18 @@ $TextElementCopyWith<TextElement> get copyWith => _$TextElementCopyWithImpl<Text
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TextElement&&(identical(other.value, value) || other.value == value)&&(identical(other.color, color) || other.color == color)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.fontWeight, fontWeight) || other.fontWeight == fontWeight)&&(identical(other.fontItalic, fontItalic) || other.fontItalic == fontItalic)&&(identical(other.fontOpticalSize, fontOpticalSize) || other.fontOpticalSize == fontOpticalSize)&&(identical(other.fontSlant, fontSlant) || other.fontSlant == fontSlant)&&(identical(other.fontWidth, fontWidth) || other.fontWidth == fontWidth)&&(identical(other.textAlignment, textAlignment) || other.textAlignment == textAlignment)&&(identical(other.lineHeight, lineHeight) || other.lineHeight == lineHeight)&&(identical(other.letterSpacing, letterSpacing) || other.letterSpacing == letterSpacing)&&(identical(other.decoration, decoration) || other.decoration == decoration)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TextElement&&(identical(other.value, value) || other.value == value)&&(identical(other.color, color) || other.color == color)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.fontWeight, fontWeight) || other.fontWeight == fontWeight)&&(identical(other.fontItalic, fontItalic) || other.fontItalic == fontItalic)&&(identical(other.fontOpticalSize, fontOpticalSize) || other.fontOpticalSize == fontOpticalSize)&&(identical(other.fontSlant, fontSlant) || other.fontSlant == fontSlant)&&(identical(other.fontWidth, fontWidth) || other.fontWidth == fontWidth)&&(identical(other.textAlignment, textAlignment) || other.textAlignment == textAlignment)&&(identical(other.lineHeight, lineHeight) || other.lineHeight == lineHeight)&&(identical(other.letterSpacing, letterSpacing) || other.letterSpacing == letterSpacing)&&(identical(other.decoration, decoration) || other.decoration == decoration)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value,color,fontSize,fontWeight,fontItalic,fontOpticalSize,fontSlant,fontWidth,textAlignment,lineHeight,letterSpacing,decoration,semanticLabel);
+int get hashCode {
+    return Object.hash(runtimeType,value,color,fontSize,fontWeight,fontItalic,fontOpticalSize,fontSlant,fontWidth,textAlignment,lineHeight,letterSpacing,decoration,semanticLabel);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.text(value: $value, color: $color, fontSize: $fontSize, fontWeight: $fontWeight, fontItalic: $fontItalic, fontOpticalSize: $fontOpticalSize, fontSlant: $fontSlant, fontWidth: $fontWidth, textAlignment: $textAlignment, lineHeight: $lineHeight, letterSpacing: $letterSpacing, decoration: $decoration, semanticLabel: $semanticLabel)';
+    return 'PresentationElement.text(value: $value, color: $color, fontSize: $fontSize, fontWeight: $fontWeight, fontItalic: $fontItalic, fontOpticalSize: $fontOpticalSize, fontSlant: $fontSlant, fontWidth: $fontWidth, textAlignment: $textAlignment, lineHeight: $lineHeight, letterSpacing: $letterSpacing, decoration: $decoration, semanticLabel: $semanticLabel)';
 }
 
 
@@ -883,16 +1005,18 @@ $MarkdownElementCopyWith<MarkdownElement> get copyWith => _$MarkdownElementCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarkdownElement&&(identical(other.value, value) || other.value == value)&&(identical(other.color, color) || other.color == color));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MarkdownElement&&(identical(other.value, value) || other.value == value)&&(identical(other.color, color) || other.color == color));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value,color);
+int get hashCode {
+    return Object.hash(runtimeType,value,color);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.markdown(value: $value, color: $color)';
+    return 'PresentationElement.markdown(value: $value, color: $color)';
 }
 
 
@@ -974,16 +1098,18 @@ $IconElementCopyWith<IconElement> get copyWith => _$IconElementCopyWithImpl<Icon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IconElement&&(identical(other.name, name) || other.name == name)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel)&&(identical(other.color, color) || other.color == color)&&(identical(other.size, size) || other.size == size));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IconElement&&(identical(other.name, name) || other.name == name)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel)&&(identical(other.color, color) || other.color == color)&&(identical(other.size, size) || other.size == size));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,semanticLabel,color,size);
+int get hashCode {
+    return Object.hash(runtimeType,name,semanticLabel,color,size);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.icon(name: $name, semanticLabel: $semanticLabel, color: $color, size: $size)';
+    return 'PresentationElement.icon(name: $name, semanticLabel: $semanticLabel, color: $color, size: $size)';
 }
 
 
@@ -1089,16 +1215,18 @@ $ImageElementCopyWith<ImageElement> get copyWith => _$ImageElementCopyWithImpl<I
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ImageElement&&(identical(other.source, source) || other.source == source)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ImageElement&&(identical(other.source, source) || other.source == source)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,semanticLabel);
+int get hashCode {
+    return Object.hash(runtimeType,source,semanticLabel);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.image(source: $source, semanticLabel: $semanticLabel)';
+    return 'PresentationElement.image(source: $source, semanticLabel: $semanticLabel)';
 }
 
 
@@ -1178,16 +1306,18 @@ $BadgeElementCopyWith<BadgeElement> get copyWith => _$BadgeElementCopyWithImpl<B
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BadgeElement&&(identical(other.label, label) || other.label == label)&&(identical(other.tone, tone) || other.tone == tone));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BadgeElement&&(identical(other.label, label) || other.label == label)&&(identical(other.tone, tone) || other.tone == tone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,tone);
+int get hashCode {
+    return Object.hash(runtimeType,label,tone);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.badge(label: $label, tone: $tone)';
+    return 'PresentationElement.badge(label: $label, tone: $tone)';
 }
 
 
@@ -1255,16 +1385,18 @@ $ChipElementCopyWith<ChipElement> get copyWith => _$ChipElementCopyWithImpl<Chip
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChipElement&&(identical(other.label, label) || other.label == label)&&(identical(other.color, color) || other.color == color));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ChipElement&&(identical(other.label, label) || other.label == label)&&(identical(other.color, color) || other.color == color));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,color);
+int get hashCode {
+    return Object.hash(runtimeType,label,color);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.chip(label: $label, color: $color)';
+    return 'PresentationElement.chip(label: $label, color: $color)';
 }
 
 
@@ -1345,16 +1477,18 @@ $ProgressElementCopyWith<ProgressElement> get copyWith => _$ProgressElementCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProgressElement&&(identical(other.value, value) || other.value == value)&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.label, label) || other.label == label));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProgressElement&&(identical(other.value, value) || other.value == value)&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.label, label) || other.label == label));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value,maximum,label);
+int get hashCode {
+    return Object.hash(runtimeType,value,maximum,label);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.progress(value: $value, maximum: $maximum, label: $label)';
+    return 'PresentationElement.progress(value: $value, maximum: $maximum, label: $label)';
 }
 
 
@@ -1427,6 +1561,276 @@ $TypedExpressionCopyWith<$Res>? get label {
 /// @nodoc
 
 
+class StatusElement implements PresentationElement {
+  const StatusElement({required this.value, required  List<StatusCase> cases, this.fallback}): _cases = cases;
+
+
+ final  TypedExpression value;
+ final  List<StatusCase> _cases;
+ List<StatusCase> get cases {
+  if (_cases is EqualUnmodifiableListView) return _cases;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_cases);
+}
+
+ final  StatusAppearance? fallback;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StatusElementCopyWith<StatusElement> get copyWith => _$StatusElementCopyWithImpl<StatusElement>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StatusElement&&(identical(other.value, value) || other.value == value)&&const DeepCollectionEquality().equals(other.cases, _cases)&&(identical(other.fallback, fallback) || other.fallback == fallback));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,value,const DeepCollectionEquality().hash(_cases),fallback);
+}
+
+@override
+String toString() {
+    return 'PresentationElement.status(value: $value, cases: $cases, fallback: $fallback)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StatusElementCopyWith<$Res> implements $PresentationElementCopyWith<$Res> {
+  factory $StatusElementCopyWith(StatusElement value, $Res Function(StatusElement) _then) = _$StatusElementCopyWithImpl;
+@useResult
+$Res call({
+ TypedExpression value, List<StatusCase> cases, StatusAppearance? fallback
+});
+
+
+$TypedExpressionCopyWith<$Res> get value;$StatusAppearanceCopyWith<$Res>? get fallback;
+
+}
+/// @nodoc
+class _$StatusElementCopyWithImpl<$Res>
+    implements $StatusElementCopyWith<$Res> {
+  _$StatusElementCopyWithImpl(this._self, this._then);
+
+  final StatusElement _self;
+  final $Res Function(StatusElement) _then;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? value = null,Object? cases = null,Object? fallback = freezed,}) {
+  return _then(StatusElement(
+value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as TypedExpression,cases: null == cases ? _self._cases : cases // ignore: cast_nullable_to_non_nullable
+as List<StatusCase>,fallback: freezed == fallback ? _self.fallback : fallback // ignore: cast_nullable_to_non_nullable
+as StatusAppearance?,
+  ));
+}
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypedExpressionCopyWith<$Res> get value {
+
+  return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$StatusAppearanceCopyWith<$Res>? get fallback {
+    if (_self.fallback == null) {
+    return null;
+  }
+
+  return $StatusAppearanceCopyWith<$Res>(_self.fallback!, (value) {
+    return _then(_self.copyWith(fallback: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class DateTimeElement implements PresentationElement {
+  const DateTimeElement({required this.value, required this.format, this.timeZone = DateTimeZone.local});
+
+
+ final  TypedExpression value;
+ final  TypedExpression format;
+@JsonKey() final  DateTimeZone timeZone;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DateTimeElementCopyWith<DateTimeElement> get copyWith => _$DateTimeElementCopyWithImpl<DateTimeElement>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DateTimeElement&&(identical(other.value, value) || other.value == value)&&(identical(other.format, format) || other.format == format)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,value,format,timeZone);
+}
+
+@override
+String toString() {
+    return 'PresentationElement.dateTime(value: $value, format: $format, timeZone: $timeZone)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DateTimeElementCopyWith<$Res> implements $PresentationElementCopyWith<$Res> {
+  factory $DateTimeElementCopyWith(DateTimeElement value, $Res Function(DateTimeElement) _then) = _$DateTimeElementCopyWithImpl;
+@useResult
+$Res call({
+ TypedExpression value, TypedExpression format, DateTimeZone timeZone
+});
+
+
+$TypedExpressionCopyWith<$Res> get value;$TypedExpressionCopyWith<$Res> get format;
+
+}
+/// @nodoc
+class _$DateTimeElementCopyWithImpl<$Res>
+    implements $DateTimeElementCopyWith<$Res> {
+  _$DateTimeElementCopyWithImpl(this._self, this._then);
+
+  final DateTimeElement _self;
+  final $Res Function(DateTimeElement) _then;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? value = null,Object? format = null,Object? timeZone = null,}) {
+  return _then(DateTimeElement(
+value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as TypedExpression,format: null == format ? _self.format : format // ignore: cast_nullable_to_non_nullable
+as TypedExpression,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as DateTimeZone,
+  ));
+}
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypedExpressionCopyWith<$Res> get value {
+
+  return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypedExpressionCopyWith<$Res> get format {
+
+  return $TypedExpressionCopyWith<$Res>(_self.format, (value) {
+    return _then(_self.copyWith(format: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class RelativeTimeElement implements PresentationElement {
+  const RelativeTimeElement({required this.value, this.style = RelativeTimeStyle.compact, this.timeZone = DateTimeZone.local});
+
+
+ final  TypedExpression value;
+@JsonKey() final  RelativeTimeStyle style;
+@JsonKey() final  DateTimeZone timeZone;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RelativeTimeElementCopyWith<RelativeTimeElement> get copyWith => _$RelativeTimeElementCopyWithImpl<RelativeTimeElement>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RelativeTimeElement&&(identical(other.value, value) || other.value == value)&&(identical(other.style, style) || other.style == style)&&(identical(other.timeZone, timeZone) || other.timeZone == timeZone));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,value,style,timeZone);
+}
+
+@override
+String toString() {
+    return 'PresentationElement.relativeTime(value: $value, style: $style, timeZone: $timeZone)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RelativeTimeElementCopyWith<$Res> implements $PresentationElementCopyWith<$Res> {
+  factory $RelativeTimeElementCopyWith(RelativeTimeElement value, $Res Function(RelativeTimeElement) _then) = _$RelativeTimeElementCopyWithImpl;
+@useResult
+$Res call({
+ TypedExpression value, RelativeTimeStyle style, DateTimeZone timeZone
+});
+
+
+$TypedExpressionCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class _$RelativeTimeElementCopyWithImpl<$Res>
+    implements $RelativeTimeElementCopyWith<$Res> {
+  _$RelativeTimeElementCopyWithImpl(this._self, this._then);
+
+  final RelativeTimeElement _self;
+  final $Res Function(RelativeTimeElement) _then;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? value = null,Object? style = null,Object? timeZone = null,}) {
+  return _then(RelativeTimeElement(
+value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as TypedExpression,style: null == style ? _self.style : style // ignore: cast_nullable_to_non_nullable
+as RelativeTimeStyle,timeZone: null == timeZone ? _self.timeZone : timeZone // ignore: cast_nullable_to_non_nullable
+as DateTimeZone,
+  ));
+}
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypedExpressionCopyWith<$Res> get value {
+
+  return $TypedExpressionCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class TypedFieldElement implements PresentationElement {
   const TypedFieldElement({required this.binding, required this.expectedType, this.presentation});
 
@@ -1445,16 +1849,18 @@ $TypedFieldElementCopyWith<TypedFieldElement> get copyWith => _$TypedFieldElemen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedFieldElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.expectedType, expectedType) || other.expectedType == expectedType)&&(identical(other.presentation, presentation) || other.presentation == presentation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypedFieldElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.expectedType, expectedType) || other.expectedType == expectedType)&&(identical(other.presentation, presentation) || other.presentation == presentation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,binding,expectedType,presentation);
+int get hashCode {
+    return Object.hash(runtimeType,binding,expectedType,presentation);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.typedField(binding: $binding, expectedType: $expectedType, presentation: $presentation)';
+    return 'PresentationElement.typedField(binding: $binding, expectedType: $expectedType, presentation: $presentation)';
 }
 
 
@@ -1545,16 +1951,18 @@ $ConditionalElementCopyWith<ConditionalElement> get copyWith => _$ConditionalEle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConditionalElement&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.whenTrue, whenTrue) || other.whenTrue == whenTrue)&&(identical(other.whenFalse, whenFalse) || other.whenFalse == whenFalse));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConditionalElement&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.whenTrue, whenTrue) || other.whenTrue == whenTrue)&&(identical(other.whenFalse, whenFalse) || other.whenFalse == whenFalse));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,condition,whenTrue,whenFalse);
+int get hashCode {
+    return Object.hash(runtimeType,condition,whenTrue,whenFalse);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.conditional(condition: $condition, whenTrue: $whenTrue, whenFalse: $whenFalse)';
+    return 'PresentationElement.conditional(condition: $condition, whenTrue: $whenTrue, whenFalse: $whenFalse)';
 }
 
 
@@ -1645,16 +2053,18 @@ $RepeatedElementCopyWith<RepeatedElement> get copyWith => _$RepeatedElementCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RepeatedElement&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.presentation, presentation) || other.presentation == presentation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RepeatedElement&&(identical(other.source, source) || other.source == source)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.presentation, presentation) || other.presentation == presentation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,itemBindingId,presentation);
+int get hashCode {
+    return Object.hash(runtimeType,source,itemBindingId,presentation);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.repeated(source: $source, itemBindingId: $itemBindingId, presentation: $presentation)';
+    return 'PresentationElement.repeated(source: $source, itemBindingId: $itemBindingId, presentation: $presentation)';
 }
 
 
@@ -1742,16 +2152,18 @@ $ScopedBindingElementCopyWith<ScopedBindingElement> get copyWith => _$ScopedBind
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScopedBindingElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.scopeBindingId, scopeBindingId) || other.scopeBindingId == scopeBindingId)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ScopedBindingElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.scopeBindingId, scopeBindingId) || other.scopeBindingId == scopeBindingId)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,binding,scopeBindingId,child);
+int get hashCode {
+    return Object.hash(runtimeType,binding,scopeBindingId,child);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.scopedBinding(binding: $binding, scopeBindingId: $scopeBindingId, child: $child)';
+    return 'PresentationElement.scopedBinding(binding: $binding, scopeBindingId: $scopeBindingId, child: $child)';
 }
 
 
@@ -1841,16 +2253,18 @@ $CollectionLookupElementCopyWith<CollectionLookupElement> get copyWith => _$Coll
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionLookupElement&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.key, key) || other.key == key)&&(identical(other.found, found) || other.found == found)&&(identical(other.missing, missing) || other.missing == missing)&&(identical(other.loading, loading) || other.loading == loading));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionLookupElement&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.key, key) || other.key == key)&&(identical(other.found, found) || other.found == found)&&(identical(other.missing, missing) || other.missing == missing)&&(identical(other.loading, loading) || other.loading == loading));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,key,found,missing,loading);
+int get hashCode {
+    return Object.hash(runtimeType,sourceId,key,found,missing,loading);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.collectionLookup(sourceId: $sourceId, key: $key, found: $found, missing: $missing, loading: $loading)';
+    return 'PresentationElement.collectionLookup(sourceId: $sourceId, key: $key, found: $found, missing: $missing, loading: $loading)';
 }
 
 
@@ -1968,16 +2382,18 @@ $CollectionGraphElementCopyWith<CollectionGraphElement> get copyWith => _$Collec
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionGraphElement&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.roots, roots) || other.roots == roots)&&(identical(other.rootSequence, rootSequence) || other.rootSequence == rootSequence)&&(identical(other.relation, relation) || other.relation == relation)&&(identical(other.direction, direction) || other.direction == direction)&&(identical(other.node, node) || other.node == node)&&(identical(other.childrenBindingId, childrenBindingId) || other.childrenBindingId == childrenBindingId)&&(identical(other.childBindingId, childBindingId) || other.childBindingId == childBindingId)&&(identical(other.children, children) || other.children == children)&&(identical(other.maximumDepth, maximumDepth) || other.maximumDepth == maximumDepth));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionGraphElement&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.roots, roots) || other.roots == roots)&&(identical(other.rootSequence, rootSequence) || other.rootSequence == rootSequence)&&(identical(other.relation, relation) || other.relation == relation)&&(identical(other.direction, direction) || other.direction == direction)&&(identical(other.node, node) || other.node == node)&&(identical(other.childrenBindingId, childrenBindingId) || other.childrenBindingId == childrenBindingId)&&(identical(other.childBindingId, childBindingId) || other.childBindingId == childBindingId)&&(identical(other.children, children) || other.children == children)&&(identical(other.maximumDepth, maximumDepth) || other.maximumDepth == maximumDepth));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,roots,rootSequence,relation,direction,node,childrenBindingId,childBindingId,children,maximumDepth);
+int get hashCode {
+    return Object.hash(runtimeType,sourceId,roots,rootSequence,relation,direction,node,childrenBindingId,childBindingId,children,maximumDepth);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.collectionGraph(sourceId: $sourceId, roots: $roots, rootSequence: $rootSequence, relation: $relation, direction: $direction, node: $node, childrenBindingId: $childrenBindingId, childBindingId: $childBindingId, children: $children, maximumDepth: $maximumDepth)';
+    return 'PresentationElement.collectionGraph(sourceId: $sourceId, roots: $roots, rootSequence: $rootSequence, relation: $relation, direction: $direction, node: $node, childrenBindingId: $childrenBindingId, childBindingId: $childBindingId, children: $children, maximumDepth: $maximumDepth)';
 }
 
 
@@ -2100,7 +2516,7 @@ $SequencePresentationCopyWith<$Res> get children {
 
 
 class TextInputElement implements PresentationElement {
-  const TextInputElement({required this.control, this.multiline = true, this.placeholder, final  List<TextInputFormat> inputFormatters = const []}): _inputFormatters = inputFormatters;
+  const TextInputElement({required this.control, this.multiline = true, this.placeholder,  List<TextInputFormat> inputFormatters = const []}): _inputFormatters = inputFormatters;
 
 
  final  BoundControl control;
@@ -2124,16 +2540,18 @@ $TextInputElementCopyWith<TextInputElement> get copyWith => _$TextInputElementCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TextInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.multiline, multiline) || other.multiline == multiline)&&(identical(other.placeholder, placeholder) || other.placeholder == placeholder)&&const DeepCollectionEquality().equals(other._inputFormatters, _inputFormatters));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TextInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.multiline, multiline) || other.multiline == multiline)&&(identical(other.placeholder, placeholder) || other.placeholder == placeholder)&&const DeepCollectionEquality().equals(other.inputFormatters, _inputFormatters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,multiline,placeholder,const DeepCollectionEquality().hash(_inputFormatters));
+int get hashCode {
+    return Object.hash(runtimeType,control,multiline,placeholder,const DeepCollectionEquality().hash(_inputFormatters));
+}
 
 @override
 String toString() {
-  return 'PresentationElement.textInput(control: $control, multiline: $multiline, placeholder: $placeholder, inputFormatters: $inputFormatters)';
+    return 'PresentationElement.textInput(control: $control, multiline: $multiline, placeholder: $placeholder, inputFormatters: $inputFormatters)';
 }
 
 
@@ -2214,16 +2632,18 @@ $NumericInputElementCopyWith<NumericInputElement> get copyWith => _$NumericInput
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NumericInputElement&&(identical(other.control, control) || other.control == control));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NumericInputElement&&(identical(other.control, control) || other.control == control));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+    return Object.hash(runtimeType,control);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.numericInput(control: $control)';
+    return 'PresentationElement.numericInput(control: $control)';
 }
 
 
@@ -2289,16 +2709,18 @@ $ToggleInputElementCopyWith<ToggleInputElement> get copyWith => _$ToggleInputEle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleInputElement&&(identical(other.control, control) || other.control == control));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleInputElement&&(identical(other.control, control) || other.control == control));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+    return Object.hash(runtimeType,control);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.toggleInput(control: $control)';
+    return 'PresentationElement.toggleInput(control: $control)';
 }
 
 
@@ -2349,7 +2771,7 @@ $BoundControlCopyWith<$Res> get control {
 
 
 class SelectInputElement implements PresentationElement {
-  const SelectInputElement({required this.control, required final  List<SelectOption> options, this.allowCustomValue = false}): _options = options;
+  const SelectInputElement({required this.control, required  List<SelectOption> options, this.allowCustomValue = false, this.defaultValue}): _options = options;
 
 
  final  BoundControl control;
@@ -2361,6 +2783,7 @@ class SelectInputElement implements PresentationElement {
 }
 
 @JsonKey() final  bool allowCustomValue;
+ final  TypedExpression? defaultValue;
 
 /// Create a copy of PresentationElement
 /// with the given fields replaced by the non-null parameter values.
@@ -2372,16 +2795,18 @@ $SelectInputElementCopyWith<SelectInputElement> get copyWith => _$SelectInputEle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectInputElement&&(identical(other.control, control) || other.control == control)&&const DeepCollectionEquality().equals(other._options, _options)&&(identical(other.allowCustomValue, allowCustomValue) || other.allowCustomValue == allowCustomValue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectInputElement&&(identical(other.control, control) || other.control == control)&&const DeepCollectionEquality().equals(other.options, _options)&&(identical(other.allowCustomValue, allowCustomValue) || other.allowCustomValue == allowCustomValue)&&(identical(other.defaultValue, defaultValue) || other.defaultValue == defaultValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,const DeepCollectionEquality().hash(_options),allowCustomValue);
+int get hashCode {
+    return Object.hash(runtimeType,control,const DeepCollectionEquality().hash(_options),allowCustomValue,defaultValue);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.selectInput(control: $control, options: $options, allowCustomValue: $allowCustomValue)';
+    return 'PresentationElement.selectInput(control: $control, options: $options, allowCustomValue: $allowCustomValue, defaultValue: $defaultValue)';
 }
 
 
@@ -2392,11 +2817,11 @@ abstract mixin class $SelectInputElementCopyWith<$Res> implements $PresentationE
   factory $SelectInputElementCopyWith(SelectInputElement value, $Res Function(SelectInputElement) _then) = _$SelectInputElementCopyWithImpl;
 @useResult
 $Res call({
- BoundControl control, List<SelectOption> options, bool allowCustomValue
+ BoundControl control, List<SelectOption> options, bool allowCustomValue, TypedExpression? defaultValue
 });
 
 
-$BoundControlCopyWith<$Res> get control;
+$BoundControlCopyWith<$Res> get control;$TypedExpressionCopyWith<$Res>? get defaultValue;
 
 }
 /// @nodoc
@@ -2409,12 +2834,13 @@ class _$SelectInputElementCopyWithImpl<$Res>
 
 /// Create a copy of PresentationElement
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? control = null,Object? options = null,Object? allowCustomValue = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? control = null,Object? options = null,Object? allowCustomValue = null,Object? defaultValue = freezed,}) {
   return _then(SelectInputElement(
 control: null == control ? _self.control : control // ignore: cast_nullable_to_non_nullable
 as BoundControl,options: null == options ? _self._options : options // ignore: cast_nullable_to_non_nullable
 as List<SelectOption>,allowCustomValue: null == allowCustomValue ? _self.allowCustomValue : allowCustomValue // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,defaultValue: freezed == defaultValue ? _self.defaultValue : defaultValue // ignore: cast_nullable_to_non_nullable
+as TypedExpression?,
   ));
 }
 
@@ -2426,6 +2852,18 @@ $BoundControlCopyWith<$Res> get control {
 
   return $BoundControlCopyWith<$Res>(_self.control, (value) {
     return _then(_self.copyWith(control: value));
+  });
+}/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypedExpressionCopyWith<$Res>? get defaultValue {
+    if (_self.defaultValue == null) {
+    return null;
+  }
+
+  return $TypedExpressionCopyWith<$Res>(_self.defaultValue!, (value) {
+    return _then(_self.copyWith(defaultValue: value));
   });
 }
 }
@@ -2452,16 +2890,18 @@ $SliderInputElementCopyWith<SliderInputElement> get copyWith => _$SliderInputEle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SliderInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.divisions, divisions) || other.divisions == divisions));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SliderInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.minimum, minimum) || other.minimum == minimum)&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.divisions, divisions) || other.divisions == divisions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,minimum,maximum,divisions);
+int get hashCode {
+    return Object.hash(runtimeType,control,minimum,maximum,divisions);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.sliderInput(control: $control, minimum: $minimum, maximum: $maximum, divisions: $divisions)';
+    return 'PresentationElement.sliderInput(control: $control, minimum: $minimum, maximum: $maximum, divisions: $divisions)';
 }
 
 
@@ -2562,16 +3002,18 @@ $DateTimeInputElementCopyWith<DateTimeInputElement> get copyWith => _$DateTimeIn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DateTimeInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.includeDate, includeDate) || other.includeDate == includeDate)&&(identical(other.includeTime, includeTime) || other.includeTime == includeTime));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DateTimeInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.includeDate, includeDate) || other.includeDate == includeDate)&&(identical(other.includeTime, includeTime) || other.includeTime == includeTime));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,includeDate,includeTime);
+int get hashCode {
+    return Object.hash(runtimeType,control,includeDate,includeTime);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.dateTimeInput(control: $control, includeDate: $includeDate, includeTime: $includeTime)';
+    return 'PresentationElement.dateTimeInput(control: $control, includeDate: $includeDate, includeTime: $includeTime)';
 }
 
 
@@ -2639,16 +3081,18 @@ $DurationInputElementCopyWith<DurationInputElement> get copyWith => _$DurationIn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DurationInputElement&&(identical(other.control, control) || other.control == control));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DurationInputElement&&(identical(other.control, control) || other.control == control));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+    return Object.hash(runtimeType,control);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.durationInput(control: $control)';
+    return 'PresentationElement.durationInput(control: $control)';
 }
 
 
@@ -2715,16 +3159,18 @@ $ColorInputElementCopyWith<ColorInputElement> get copyWith => _$ColorInputElemen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ColorInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.includeAlpha, includeAlpha) || other.includeAlpha == includeAlpha));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ColorInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.includeAlpha, includeAlpha) || other.includeAlpha == includeAlpha));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,includeAlpha);
+int get hashCode {
+    return Object.hash(runtimeType,control,includeAlpha);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.colorInput(control: $control, includeAlpha: $includeAlpha)';
+    return 'PresentationElement.colorInput(control: $control, includeAlpha: $includeAlpha)';
 }
 
 
@@ -2800,16 +3246,18 @@ $SearchInputElementCopyWith<SearchInputElement> get copyWith => _$SearchInputEle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.selectionMode, selectionMode) || other.selectionMode == selectionMode)&&(identical(other.queryBindingId, queryBindingId) || other.queryBindingId == queryBindingId)&&(identical(other.summaryBindingId, summaryBindingId) || other.summaryBindingId == summaryBindingId)&&(identical(other.maximumExtent, maximumExtent) || other.maximumExtent == maximumExtent)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.placeholder, placeholder) || other.placeholder == placeholder)&&(identical(other.customValue, customValue) || other.customValue == customValue)&&(identical(other.initialQuery, initialQuery) || other.initialQuery == initialQuery));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.selectionMode, selectionMode) || other.selectionMode == selectionMode)&&(identical(other.queryBindingId, queryBindingId) || other.queryBindingId == queryBindingId)&&(identical(other.summaryBindingId, summaryBindingId) || other.summaryBindingId == summaryBindingId)&&(identical(other.maximumExtent, maximumExtent) || other.maximumExtent == maximumExtent)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.placeholder, placeholder) || other.placeholder == placeholder)&&(identical(other.customValue, customValue) || other.customValue == customValue)&&(identical(other.initialQuery, initialQuery) || other.initialQuery == initialQuery));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,selectionMode,queryBindingId,summaryBindingId,maximumExtent,provider,summary,placeholder,customValue,initialQuery);
+int get hashCode {
+    return Object.hash(runtimeType,control,selectionMode,queryBindingId,summaryBindingId,maximumExtent,provider,summary,placeholder,customValue,initialQuery);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.searchInput(control: $control, selectionMode: $selectionMode, queryBindingId: $queryBindingId, summaryBindingId: $summaryBindingId, maximumExtent: $maximumExtent, provider: $provider, summary: $summary, placeholder: $placeholder, customValue: $customValue, initialQuery: $initialQuery)';
+    return 'PresentationElement.searchInput(control: $control, selectionMode: $selectionMode, queryBindingId: $queryBindingId, summaryBindingId: $summaryBindingId, maximumExtent: $maximumExtent, provider: $provider, summary: $summary, placeholder: $placeholder, customValue: $customValue, initialQuery: $initialQuery)';
 }
 
 
@@ -2968,16 +3416,18 @@ $BytesInputElementCopyWith<BytesInputElement> get copyWith => _$BytesInputElemen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BytesInputElement&&(identical(other.control, control) || other.control == control));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BytesInputElement&&(identical(other.control, control) || other.control == control));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+    return Object.hash(runtimeType,control);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.bytesInput(control: $control)';
+    return 'PresentationElement.bytesInput(control: $control)';
 }
 
 
@@ -3043,16 +3493,18 @@ $EnumInputElementCopyWith<EnumInputElement> get copyWith => _$EnumInputElementCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumInputElement&&(identical(other.control, control) || other.control == control));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumInputElement&&(identical(other.control, control) || other.control == control));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+    return Object.hash(runtimeType,control);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.enumInput(control: $control)';
+    return 'PresentationElement.enumInput(control: $control)';
 }
 
 
@@ -3118,16 +3570,18 @@ $NamedInputElementCopyWith<NamedInputElement> get copyWith => _$NamedInputElemen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NamedInputElement&&(identical(other.control, control) || other.control == control));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NamedInputElement&&(identical(other.control, control) || other.control == control));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+    return Object.hash(runtimeType,control);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.namedInput(control: $control)';
+    return 'PresentationElement.namedInput(control: $control)';
 }
 
 
@@ -3199,16 +3653,18 @@ $ListInputElementCopyWith<ListInputElement> get copyWith => _$ListInputElementCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ListInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.itemPresentation, itemPresentation) || other.itemPresentation == itemPresentation)&&(identical(other.allowAdd, allowAdd) || other.allowAdd == allowAdd)&&(identical(other.allowRemove, allowRemove) || other.allowRemove == allowRemove)&&(identical(other.allowReorder, allowReorder) || other.allowReorder == allowReorder)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.indexBindingId, indexBindingId) || other.indexBindingId == indexBindingId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ListInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.itemPresentation, itemPresentation) || other.itemPresentation == itemPresentation)&&(identical(other.allowAdd, allowAdd) || other.allowAdd == allowAdd)&&(identical(other.allowRemove, allowRemove) || other.allowRemove == allowRemove)&&(identical(other.allowReorder, allowReorder) || other.allowReorder == allowReorder)&&(identical(other.itemBindingId, itemBindingId) || other.itemBindingId == itemBindingId)&&(identical(other.indexBindingId, indexBindingId) || other.indexBindingId == indexBindingId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,itemPresentation,allowAdd,allowRemove,allowReorder,itemBindingId,indexBindingId);
+int get hashCode {
+    return Object.hash(runtimeType,control,itemPresentation,allowAdd,allowRemove,allowReorder,itemBindingId,indexBindingId);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.listInput(control: $control, itemPresentation: $itemPresentation, allowAdd: $allowAdd, allowRemove: $allowRemove, allowReorder: $allowReorder, itemBindingId: $itemBindingId, indexBindingId: $indexBindingId)';
+    return 'PresentationElement.listInput(control: $control, itemPresentation: $itemPresentation, allowAdd: $allowAdd, allowRemove: $allowRemove, allowReorder: $allowReorder, itemBindingId: $itemBindingId, indexBindingId: $indexBindingId)';
 }
 
 
@@ -3316,16 +3772,18 @@ $MapInputElementCopyWith<MapInputElement> get copyWith => _$MapInputElementCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.keyPresentation, keyPresentation) || other.keyPresentation == keyPresentation)&&(identical(other.valuePresentation, valuePresentation) || other.valuePresentation == valuePresentation)&&(identical(other.allowAdd, allowAdd) || other.allowAdd == allowAdd)&&(identical(other.allowRemove, allowRemove) || other.allowRemove == allowRemove)&&(identical(other.keyBindingId, keyBindingId) || other.keyBindingId == keyBindingId)&&(identical(other.valueBindingId, valueBindingId) || other.valueBindingId == valueBindingId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MapInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.keyPresentation, keyPresentation) || other.keyPresentation == keyPresentation)&&(identical(other.valuePresentation, valuePresentation) || other.valuePresentation == valuePresentation)&&(identical(other.allowAdd, allowAdd) || other.allowAdd == allowAdd)&&(identical(other.allowRemove, allowRemove) || other.allowRemove == allowRemove)&&(identical(other.keyBindingId, keyBindingId) || other.keyBindingId == keyBindingId)&&(identical(other.valueBindingId, valueBindingId) || other.valueBindingId == valueBindingId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,keyPresentation,valuePresentation,allowAdd,allowRemove,keyBindingId,valueBindingId);
+int get hashCode {
+    return Object.hash(runtimeType,control,keyPresentation,valuePresentation,allowAdd,allowRemove,keyBindingId,valueBindingId);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.mapInput(control: $control, keyPresentation: $keyPresentation, valuePresentation: $valuePresentation, allowAdd: $allowAdd, allowRemove: $allowRemove, keyBindingId: $keyBindingId, valueBindingId: $valueBindingId)';
+    return 'PresentationElement.mapInput(control: $control, keyPresentation: $keyPresentation, valuePresentation: $valuePresentation, allowAdd: $allowAdd, allowRemove: $allowRemove, keyBindingId: $keyBindingId, valueBindingId: $valueBindingId)';
 }
 
 
@@ -3440,16 +3898,18 @@ $RecordInputElementCopyWith<RecordInputElement> get copyWith => _$RecordInputEle
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.fieldPresentation, fieldPresentation) || other.fieldPresentation == fieldPresentation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RecordInputElement&&(identical(other.control, control) || other.control == control)&&(identical(other.fieldPresentation, fieldPresentation) || other.fieldPresentation == fieldPresentation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,fieldPresentation);
+int get hashCode {
+    return Object.hash(runtimeType,control,fieldPresentation);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.recordInput(control: $control, fieldPresentation: $fieldPresentation)';
+    return 'PresentationElement.recordInput(control: $control, fieldPresentation: $fieldPresentation)';
 }
 
 
@@ -3513,7 +3973,7 @@ $PresentationNodeCopyWith<$Res>? get fieldPresentation {
 
 
 class PolymorphicInputElement implements PresentationElement {
-   PolymorphicInputElement({required this.control, required final  List<ConcreteTypePresentation> concreteTypes}): assert(concreteTypes.isNotEmpty, 'Concrete types must not be empty.'),_concreteTypes = concreteTypes;
+   PolymorphicInputElement({required this.control, required  List<ConcreteTypePresentation> concreteTypes}): assert(concreteTypes.isNotEmpty, 'Concrete types must not be empty.'),_concreteTypes = concreteTypes;
 
 
  final  BoundControl control;
@@ -3535,16 +3995,18 @@ $PolymorphicInputElementCopyWith<PolymorphicInputElement> get copyWith => _$Poly
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicInputElement&&(identical(other.control, control) || other.control == control)&&const DeepCollectionEquality().equals(other._concreteTypes, _concreteTypes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicInputElement&&(identical(other.control, control) || other.control == control)&&const DeepCollectionEquality().equals(other.concreteTypes, _concreteTypes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,control,const DeepCollectionEquality().hash(_concreteTypes));
+int get hashCode {
+    return Object.hash(runtimeType,control,const DeepCollectionEquality().hash(_concreteTypes));
+}
 
 @override
 String toString() {
-  return 'PresentationElement.polymorphicInput(control: $control, concreteTypes: $concreteTypes)';
+    return 'PresentationElement.polymorphicInput(control: $control, concreteTypes: $concreteTypes)';
 }
 
 
@@ -3596,7 +4058,7 @@ $BoundControlCopyWith<$Res> get control {
 
 
 class PolymorphicMatchElement implements PresentationElement {
-   PolymorphicMatchElement({required this.binding, required this.scopeBindingId, required final  List<PolymorphicMatchCase> cases, this.fallback}): assert(cases.isNotEmpty, 'Polymorphic match cases must not be empty.'),_cases = cases;
+   PolymorphicMatchElement({required this.binding, required this.scopeBindingId, required  List<PolymorphicMatchCase> cases, this.fallback}): assert(cases.isNotEmpty, 'Polymorphic match cases must not be empty.'),_cases = cases;
 
 
  final  BindingReference binding;
@@ -3620,16 +4082,18 @@ $PolymorphicMatchElementCopyWith<PolymorphicMatchElement> get copyWith => _$Poly
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicMatchElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.scopeBindingId, scopeBindingId) || other.scopeBindingId == scopeBindingId)&&const DeepCollectionEquality().equals(other._cases, _cases)&&(identical(other.fallback, fallback) || other.fallback == fallback));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicMatchElement&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.scopeBindingId, scopeBindingId) || other.scopeBindingId == scopeBindingId)&&const DeepCollectionEquality().equals(other.cases, _cases)&&(identical(other.fallback, fallback) || other.fallback == fallback));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,binding,scopeBindingId,const DeepCollectionEquality().hash(_cases),fallback);
+int get hashCode {
+    return Object.hash(runtimeType,binding,scopeBindingId,const DeepCollectionEquality().hash(_cases),fallback);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.polymorphicMatch(binding: $binding, scopeBindingId: $scopeBindingId, cases: $cases, fallback: $fallback)';
+    return 'PresentationElement.polymorphicMatch(binding: $binding, scopeBindingId: $scopeBindingId, cases: $cases, fallback: $fallback)';
 }
 
 
@@ -3703,6 +4167,83 @@ $PresentationNodeCopyWith<$Res>? get fallback {
 /// @nodoc
 
 
+class CommitControlsElement implements PresentationElement {
+  const CommitControlsElement({required this.binding});
+
+
+ final  BindingReference binding;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CommitControlsElementCopyWith<CommitControlsElement> get copyWith => _$CommitControlsElementCopyWithImpl<CommitControlsElement>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CommitControlsElement&&(identical(other.binding, binding) || other.binding == binding));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,binding);
+}
+
+@override
+String toString() {
+    return 'PresentationElement.commitControls(binding: $binding)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CommitControlsElementCopyWith<$Res> implements $PresentationElementCopyWith<$Res> {
+  factory $CommitControlsElementCopyWith(CommitControlsElement value, $Res Function(CommitControlsElement) _then) = _$CommitControlsElementCopyWithImpl;
+@useResult
+$Res call({
+ BindingReference binding
+});
+
+
+$BindingReferenceCopyWith<$Res> get binding;
+
+}
+/// @nodoc
+class _$CommitControlsElementCopyWithImpl<$Res>
+    implements $CommitControlsElementCopyWith<$Res> {
+  _$CommitControlsElementCopyWithImpl(this._self, this._then);
+
+  final CommitControlsElement _self;
+  final $Res Function(CommitControlsElement) _then;
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? binding = null,}) {
+  return _then(CommitControlsElement(
+binding: null == binding ? _self.binding : binding // ignore: cast_nullable_to_non_nullable
+as BindingReference,
+  ));
+}
+
+/// Create a copy of PresentationElement
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BindingReferenceCopyWith<$Res> get binding {
+
+  return $BindingReferenceCopyWith<$Res>(_self.binding, (value) {
+    return _then(_self.copyWith(binding: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class ButtonElement implements PresentationElement {
   const ButtonElement({required this.label, required this.action});
 
@@ -3720,16 +4261,18 @@ $ButtonElementCopyWith<ButtonElement> get copyWith => _$ButtonElementCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonElement&&(identical(other.label, label) || other.label == label)&&(identical(other.action, action) || other.action == action));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ButtonElement&&(identical(other.label, label) || other.label == label)&&(identical(other.action, action) || other.action == action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,action);
+int get hashCode {
+    return Object.hash(runtimeType,label,action);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.button(label: $label, action: $action)';
+    return 'PresentationElement.button(label: $label, action: $action)';
 }
 
 
@@ -3807,16 +4350,18 @@ $IconButtonElementCopyWith<IconButtonElement> get copyWith => _$IconButtonElemen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IconButtonElement&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel)&&(identical(other.action, action) || other.action == action));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IconButtonElement&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel)&&(identical(other.action, action) || other.action == action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,icon,semanticLabel,action);
+int get hashCode {
+    return Object.hash(runtimeType,icon,semanticLabel,action);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.iconButton(icon: $icon, semanticLabel: $semanticLabel, action: $action)';
+    return 'PresentationElement.iconButton(icon: $icon, semanticLabel: $semanticLabel, action: $action)';
 }
 
 
@@ -3887,7 +4432,7 @@ $EditorActionCopyWith<$Res> get action {
 
 
 class MenuElement implements PresentationElement {
-   MenuElement({required final  List<PresentationMenuItem> items, this.label}): assert(items.isNotEmpty, 'Menu items must not be empty.'),_items = items;
+   MenuElement({required  List<PresentationMenuItem> items, this.label}): assert(items.isNotEmpty, 'Menu items must not be empty.'),_items = items;
 
 
  final  List<PresentationMenuItem> _items;
@@ -3909,16 +4454,18 @@ $MenuElementCopyWith<MenuElement> get copyWith => _$MenuElementCopyWithImpl<Menu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuElement&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.label, label) || other.label == label));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuElement&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.label, label) || other.label == label));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),label);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),label);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.menu(items: $items, label: $label)';
+    return 'PresentationElement.menu(items: $items, label: $label)';
 }
 
 
@@ -3989,16 +4536,18 @@ $TooltipElementCopyWith<TooltipElement> get copyWith => _$TooltipElementCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TooltipElement&&(identical(other.message, message) || other.message == message)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TooltipElement&&(identical(other.message, message) || other.message == message)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,child);
+int get hashCode {
+    return Object.hash(runtimeType,message,child);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.tooltip(message: $message, child: $child)';
+    return 'PresentationElement.tooltip(message: $message, child: $child)';
 }
 
 
@@ -4059,7 +4608,7 @@ $PresentationNodeCopyWith<$Res> get child {
 
 
 class ColumnElement implements PresentationElement, ChildrenLayoutElement {
-  const ColumnElement({required final  List<PresentationNode> children, this.spacing = 0, this.mainAxisAlignment = PresentationMainAxisAlignment.start, this.crossAxisAlignment = PresentationCrossAxisAlignment.center}): assert(spacing >= 0, 'Spacing must not be negative.'),_children = children;
+  const ColumnElement({required  List<PresentationNode> children, this.spacing = 0, this.mainAxisAlignment = PresentationMainAxisAlignment.start, this.crossAxisAlignment = PresentationCrossAxisAlignment.center}): assert(spacing >= 0, 'Spacing must not be negative.'),_children = children;
 
 
  final  List<PresentationNode> _children;
@@ -4083,16 +4632,18 @@ $ColumnElementCopyWith<ColumnElement> get copyWith => _$ColumnElementCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ColumnElement&&const DeepCollectionEquality().equals(other._children, _children)&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ColumnElement&&const DeepCollectionEquality().equals(other.children, _children)&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),spacing,mainAxisAlignment,crossAxisAlignment);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),spacing,mainAxisAlignment,crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.column(children: $children, spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
+    return 'PresentationElement.column(children: $children, spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
 }
 
 
@@ -4137,7 +4688,7 @@ as PresentationCrossAxisAlignment,
 
 
 class RowElement implements PresentationElement, ChildrenLayoutElement {
-  const RowElement({required final  List<PresentationNode> children, this.spacing = 0, this.mainAxisAlignment = PresentationMainAxisAlignment.start, this.crossAxisAlignment = PresentationCrossAxisAlignment.center}): assert(spacing >= 0, 'Spacing must not be negative.'),_children = children;
+  const RowElement({required  List<PresentationNode> children, this.spacing = 0, this.mainAxisAlignment = PresentationMainAxisAlignment.start, this.crossAxisAlignment = PresentationCrossAxisAlignment.center}): assert(spacing >= 0, 'Spacing must not be negative.'),_children = children;
 
 
  final  List<PresentationNode> _children;
@@ -4161,16 +4712,18 @@ $RowElementCopyWith<RowElement> get copyWith => _$RowElementCopyWithImpl<RowElem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RowElement&&const DeepCollectionEquality().equals(other._children, _children)&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RowElement&&const DeepCollectionEquality().equals(other.children, _children)&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),spacing,mainAxisAlignment,crossAxisAlignment);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),spacing,mainAxisAlignment,crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.row(children: $children, spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
+    return 'PresentationElement.row(children: $children, spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
 }
 
 
@@ -4215,7 +4768,7 @@ as PresentationCrossAxisAlignment,
 
 
 class WrapElement implements PresentationElement, ChildrenLayoutElement {
-  const WrapElement({required final  List<PresentationNode> children, this.spacing = 0, this.runSpacing = 0, this.mainAxisAlignment = PresentationMainAxisAlignment.start, this.crossAxisAlignment = PresentationCrossAxisAlignment.start}): assert(spacing >= 0, 'Spacing must not be negative.'),_children = children;
+  const WrapElement({required  List<PresentationNode> children, this.spacing = 0, this.runSpacing = 0, this.mainAxisAlignment = PresentationMainAxisAlignment.start, this.crossAxisAlignment = PresentationCrossAxisAlignment.start}): assert(spacing >= 0, 'Spacing must not be negative.'),_children = children;
 
 
  final  List<PresentationNode> _children;
@@ -4240,16 +4793,18 @@ $WrapElementCopyWith<WrapElement> get copyWith => _$WrapElementCopyWithImpl<Wrap
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WrapElement&&const DeepCollectionEquality().equals(other._children, _children)&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.runSpacing, runSpacing) || other.runSpacing == runSpacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WrapElement&&const DeepCollectionEquality().equals(other.children, _children)&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.runSpacing, runSpacing) || other.runSpacing == runSpacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),spacing,runSpacing,mainAxisAlignment,crossAxisAlignment);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),spacing,runSpacing,mainAxisAlignment,crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.wrap(children: $children, spacing: $spacing, runSpacing: $runSpacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
+    return 'PresentationElement.wrap(children: $children, spacing: $spacing, runSpacing: $runSpacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
 }
 
 
@@ -4295,7 +4850,7 @@ as PresentationCrossAxisAlignment,
 
 
 class StackElement implements PresentationElement {
-  const StackElement({required final  List<PresentationNode> children}): _children = children;
+  const StackElement({required  List<PresentationNode> children}): _children = children;
 
 
  final  List<PresentationNode> _children;
@@ -4316,16 +4871,18 @@ $StackElementCopyWith<StackElement> get copyWith => _$StackElementCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StackElement&&const DeepCollectionEquality().equals(other._children, _children));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StackElement&&const DeepCollectionEquality().equals(other.children, _children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_children));
+}
 
 @override
 String toString() {
-  return 'PresentationElement.stack(children: $children)';
+    return 'PresentationElement.stack(children: $children)';
 }
 
 
@@ -4367,7 +4924,7 @@ as List<PresentationNode>,
 
 
 class GridElement implements PresentationElement {
-  const GridElement({required final  List<PresentationNode> children, required this.columns, this.horizontalSpacing = 0, this.verticalSpacing = 0}): assert(columns > 0, 'Column count must be positive.'),assert(horizontalSpacing >= 0, 'Horizontal spacing must not be negative.'),assert(verticalSpacing >= 0, 'Vertical spacing must not be negative.'),_children = children;
+  const GridElement({required  List<PresentationNode> children, required this.columns, this.horizontalSpacing = 0, this.verticalSpacing = 0}): assert(columns > 0, 'Column count must be positive.'),assert(horizontalSpacing >= 0, 'Horizontal spacing must not be negative.'),assert(verticalSpacing >= 0, 'Vertical spacing must not be negative.'),_children = children;
 
 
  final  List<PresentationNode> _children;
@@ -4391,16 +4948,18 @@ $GridElementCopyWith<GridElement> get copyWith => _$GridElementCopyWithImpl<Grid
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GridElement&&const DeepCollectionEquality().equals(other._children, _children)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.horizontalSpacing, horizontalSpacing) || other.horizontalSpacing == horizontalSpacing)&&(identical(other.verticalSpacing, verticalSpacing) || other.verticalSpacing == verticalSpacing));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is GridElement&&const DeepCollectionEquality().equals(other.children, _children)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.horizontalSpacing, horizontalSpacing) || other.horizontalSpacing == horizontalSpacing)&&(identical(other.verticalSpacing, verticalSpacing) || other.verticalSpacing == verticalSpacing));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),columns,horizontalSpacing,verticalSpacing);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),columns,horizontalSpacing,verticalSpacing);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.grid(children: $children, columns: $columns, horizontalSpacing: $horizontalSpacing, verticalSpacing: $verticalSpacing)';
+    return 'PresentationElement.grid(children: $children, columns: $columns, horizontalSpacing: $horizontalSpacing, verticalSpacing: $verticalSpacing)';
 }
 
 
@@ -4461,16 +5020,18 @@ $SectionElementCopyWith<SectionElement> get copyWith => _$SectionElementCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionElement&&(identical(other.child, child) || other.child == child)&&(identical(other.border, border) || other.border == border));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionElement&&(identical(other.child, child) || other.child == child)&&(identical(other.border, border) || other.border == border));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,child,border);
+int get hashCode {
+    return Object.hash(runtimeType,child,border);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.section(child: $child, border: $border)';
+    return 'PresentationElement.section(child: $child, border: $border)';
 }
 
 
@@ -4552,16 +5113,18 @@ $ContainerElementCopyWith<ContainerElement> get copyWith => _$ContainerElementCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ContainerElement&&(identical(other.child, child) || other.child == child)&&(identical(other.border, border) || other.border == border)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.radius, radius) || other.radius == radius));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ContainerElement&&(identical(other.child, child) || other.child == child)&&(identical(other.border, border) || other.border == border)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.radius, radius) || other.radius == radius));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,child,border,backgroundColor,radius);
+int get hashCode {
+    return Object.hash(runtimeType,child,border,backgroundColor,radius);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.container(child: $child, border: $border, backgroundColor: $backgroundColor, radius: $radius)';
+    return 'PresentationElement.container(child: $child, border: $border, backgroundColor: $backgroundColor, radius: $radius)';
 }
 
 
@@ -4648,7 +5211,7 @@ $PresentationRadiusCopyWith<$Res> get radius {
 
 
 class PresentationAnchorElement implements PresentationElement, SingleChildLayoutElement {
-   PresentationAnchorElement({required this.child, required final  List<PresentationAnchorPoint> anchors}): assert(anchors.isNotEmpty, 'At least one anchor must be provided.'),_anchors = anchors;
+   PresentationAnchorElement({required this.child, required  List<PresentationAnchorPoint> anchors}): assert(anchors.isNotEmpty, 'At least one anchor must be provided.'),_anchors = anchors;
 
 
  final  PresentationNode child;
@@ -4670,16 +5233,18 @@ $PresentationAnchorElementCopyWith<PresentationAnchorElement> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationAnchorElement&&(identical(other.child, child) || other.child == child)&&const DeepCollectionEquality().equals(other._anchors, _anchors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationAnchorElement&&(identical(other.child, child) || other.child == child)&&const DeepCollectionEquality().equals(other.anchors, _anchors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,child,const DeepCollectionEquality().hash(_anchors));
+int get hashCode {
+    return Object.hash(runtimeType,child,const DeepCollectionEquality().hash(_anchors));
+}
 
 @override
 String toString() {
-  return 'PresentationElement.anchor(child: $child, anchors: $anchors)';
+    return 'PresentationElement.anchor(child: $child, anchors: $anchors)';
 }
 
 
@@ -4731,7 +5296,7 @@ $PresentationNodeCopyWith<$Res> get child {
 
 
 class ConnectionLayerElement implements PresentationElement, SingleChildLayoutElement {
-   ConnectionLayerElement({required this.child, required final  List<PresentationConnection> connections}): assert(connections.isNotEmpty, 'At least one connection must be provided.'),_connections = connections;
+   ConnectionLayerElement({required this.child, required  List<PresentationConnection> connections}): assert(connections.isNotEmpty, 'At least one connection must be provided.'),_connections = connections;
 
 
  final  PresentationNode child;
@@ -4753,16 +5318,18 @@ $ConnectionLayerElementCopyWith<ConnectionLayerElement> get copyWith => _$Connec
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionLayerElement&&(identical(other.child, child) || other.child == child)&&const DeepCollectionEquality().equals(other._connections, _connections));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionLayerElement&&(identical(other.child, child) || other.child == child)&&const DeepCollectionEquality().equals(other.connections, _connections));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,child,const DeepCollectionEquality().hash(_connections));
+int get hashCode {
+    return Object.hash(runtimeType,child,const DeepCollectionEquality().hash(_connections));
+}
 
 @override
 String toString() {
-  return 'PresentationElement.connectionLayer(child: $child, connections: $connections)';
+    return 'PresentationElement.connectionLayer(child: $child, connections: $connections)';
 }
 
 
@@ -4833,16 +5400,18 @@ $PaddingElementCopyWith<PaddingElement> get copyWith => _$PaddingElementCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaddingElement&&(identical(other.child, child) || other.child == child)&&(identical(other.top, top) || other.top == top)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.bottom, bottom) || other.bottom == bottom));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PaddingElement&&(identical(other.child, child) || other.child == child)&&(identical(other.top, top) || other.top == top)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.bottom, bottom) || other.bottom == bottom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,child,top,start,end,bottom);
+int get hashCode {
+    return Object.hash(runtimeType,child,top,start,end,bottom);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.padding(child: $child, top: $top, start: $start, end: $end, bottom: $bottom)';
+    return 'PresentationElement.padding(child: $child, top: $top, start: $start, end: $end, bottom: $bottom)';
 }
 
 
@@ -4912,16 +5481,18 @@ $PresentationSlotElementCopyWith<PresentationSlotElement> get copyWith => _$Pres
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSlotElement&&(identical(other.slotId, slotId) || other.slotId == slotId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSlotElement&&(identical(other.slotId, slotId) || other.slotId == slotId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,slotId);
+int get hashCode {
+    return Object.hash(runtimeType,slotId);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.slot(slotId: $slotId)';
+    return 'PresentationElement.slot(slotId: $slotId)';
 }
 
 
@@ -4963,7 +5534,7 @@ as String,
 
 
 class TabsElement implements PresentationElement {
-   TabsElement({required final  List<TabItem> tabs, this.initiallySelectedTabId}): assert(tabs.isNotEmpty, 'Tabs must not be empty.'),_tabs = tabs;
+   TabsElement({required  List<TabItem> tabs, this.initiallySelectedTabId}): assert(tabs.isNotEmpty, 'Tabs must not be empty.'),_tabs = tabs;
 
 
  final  List<TabItem> _tabs;
@@ -4985,16 +5556,18 @@ $TabsElementCopyWith<TabsElement> get copyWith => _$TabsElementCopyWithImpl<Tabs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabsElement&&const DeepCollectionEquality().equals(other._tabs, _tabs)&&(identical(other.initiallySelectedTabId, initiallySelectedTabId) || other.initiallySelectedTabId == initiallySelectedTabId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabsElement&&const DeepCollectionEquality().equals(other.tabs, _tabs)&&(identical(other.initiallySelectedTabId, initiallySelectedTabId) || other.initiallySelectedTabId == initiallySelectedTabId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_tabs),initiallySelectedTabId);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_tabs),initiallySelectedTabId);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.tabs(tabs: $tabs, initiallySelectedTabId: $initiallySelectedTabId)';
+    return 'PresentationElement.tabs(tabs: $tabs, initiallySelectedTabId: $initiallySelectedTabId)';
 }
 
 
@@ -5047,7 +5620,7 @@ class DividerElement implements PresentationElement {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DividerElement);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DividerElement);
 }
 
 
@@ -5056,7 +5629,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationElement.divider()';
+    return 'PresentationElement.divider()';
 }
 
 
@@ -5085,16 +5658,18 @@ $SpacerElementCopyWith<SpacerElement> get copyWith => _$SpacerElementCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpacerElement&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SpacerElement&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,width,height);
+int get hashCode {
+    return Object.hash(runtimeType,width,height);
+}
 
 @override
 String toString() {
-  return 'PresentationElement.spacer(width: $width, height: $height)';
+    return 'PresentationElement.spacer(width: $width, height: $height)';
 }
 
 
@@ -5171,16 +5746,21 @@ $PresentationOffsetCopyWith<PresentationOffset> get copyWith => _$PresentationOf
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationOffset&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y));
+  final _this = this as PresentationOffset;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationOffset&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,x,y);
+int get hashCode {
+  final _this = this as PresentationOffset;
+  return Object.hash(runtimeType,_this.x,_this.y);
+}
 
 @override
 String toString() {
-  return 'PresentationOffset(x: $x, y: $y)';
+  final _this = this as PresentationOffset;
+  return 'PresentationOffset(x: ${_this.x}, y: ${_this.y})';
 }
 
 
@@ -5209,7 +5789,7 @@ class _$PresentationOffsetCopyWithImpl<$Res>
 /// Create a copy of PresentationOffset
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? x = null,Object? y = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationOffset(
 x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
 as TypedExpression,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
 as TypedExpression,
@@ -5387,16 +5967,18 @@ _$PresentationOffsetCopyWith<_PresentationOffset> get copyWith => __$Presentatio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationOffset&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationOffset&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,x,y);
+int get hashCode {
+    return Object.hash(runtimeType,x,y);
+}
 
 @override
 String toString() {
-  return 'PresentationOffset(x: $x, y: $y)';
+    return 'PresentationOffset(x: $x, y: $y)';
 }
 
 
@@ -5467,16 +6049,21 @@ $PresentationAnchorPointCopyWith<PresentationAnchorPoint> get copyWith => _$Pres
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationAnchorPoint&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.groupIds, groupIds)&&(identical(other.alignment, alignment) || other.alignment == alignment)&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf)&&(identical(other.exportToParent, exportToParent) || other.exportToParent == exportToParent));
+  final _this = this as PresentationAnchorPoint;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationAnchorPoint&&(identical(other.id, _this.id) || other.id == _this.id)&&const DeepCollectionEquality().equals(other.groupIds, _this.groupIds)&&(identical(other.alignment, _this.alignment) || other.alignment == _this.alignment)&&(identical(other.offset, _this.offset) || other.offset == _this.offset)&&(identical(other.visibleIf, _this.visibleIf) || other.visibleIf == _this.visibleIf)&&(identical(other.exportToParent, _this.exportToParent) || other.exportToParent == _this.exportToParent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(groupIds),alignment,offset,visibleIf,exportToParent);
+int get hashCode {
+  final _this = this as PresentationAnchorPoint;
+  return Object.hash(runtimeType,_this.id,const DeepCollectionEquality().hash(_this.groupIds),_this.alignment,_this.offset,_this.visibleIf,_this.exportToParent);
+}
 
 @override
 String toString() {
-  return 'PresentationAnchorPoint(id: $id, groupIds: $groupIds, alignment: $alignment, offset: $offset, visibleIf: $visibleIf, exportToParent: $exportToParent)';
+  final _this = this as PresentationAnchorPoint;
+  return 'PresentationAnchorPoint(id: ${_this.id}, groupIds: ${_this.groupIds}, alignment: ${_this.alignment}, offset: ${_this.offset}, visibleIf: ${_this.visibleIf}, exportToParent: ${_this.exportToParent})';
 }
 
 
@@ -5505,7 +6092,7 @@ class _$PresentationAnchorPointCopyWithImpl<$Res>
 /// Create a copy of PresentationAnchorPoint
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? groupIds = null,Object? alignment = null,Object? offset = freezed,Object? visibleIf = freezed,Object? exportToParent = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationAnchorPoint(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,groupIds: null == groupIds ? _self.groupIds : groupIds // ignore: cast_nullable_to_non_nullable
 as List<String>,alignment: null == alignment ? _self.alignment : alignment // ignore: cast_nullable_to_non_nullable
@@ -5677,7 +6264,7 @@ return $default(_that.id,_that.groupIds,_that.alignment,_that.offset,_that.visib
 
 
 class _PresentationAnchorPoint implements PresentationAnchorPoint {
-  const _PresentationAnchorPoint({required this.id, final  List<String> groupIds = const [], this.alignment = PresentationAnchorAlignment.center, this.offset, this.visibleIf, this.exportToParent = false}): assert(id != "", 'Anchor ID must not be empty.'),_groupIds = groupIds;
+  const _PresentationAnchorPoint({required this.id,  List<String> groupIds = const [], this.alignment = PresentationAnchorAlignment.center, this.offset, this.visibleIf, this.exportToParent = false}): assert(id != "", 'Anchor ID must not be empty.'),_groupIds = groupIds;
 
 
 @override final  String id;
@@ -5703,16 +6290,18 @@ _$PresentationAnchorPointCopyWith<_PresentationAnchorPoint> get copyWith => __$P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationAnchorPoint&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._groupIds, _groupIds)&&(identical(other.alignment, alignment) || other.alignment == alignment)&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf)&&(identical(other.exportToParent, exportToParent) || other.exportToParent == exportToParent));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationAnchorPoint&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.groupIds, _groupIds)&&(identical(other.alignment, alignment) || other.alignment == alignment)&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf)&&(identical(other.exportToParent, exportToParent) || other.exportToParent == exportToParent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_groupIds),alignment,offset,visibleIf,exportToParent);
+int get hashCode {
+    return Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_groupIds),alignment,offset,visibleIf,exportToParent);
+}
 
 @override
 String toString() {
-  return 'PresentationAnchorPoint(id: $id, groupIds: $groupIds, alignment: $alignment, offset: $offset, visibleIf: $visibleIf, exportToParent: $exportToParent)';
+    return 'PresentationAnchorPoint(id: $id, groupIds: $groupIds, alignment: $alignment, offset: $offset, visibleIf: $visibleIf, exportToParent: $exportToParent)';
 }
 
 
@@ -5788,7 +6377,7 @@ mixin _$PresentationAnchorSelector {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationAnchorSelector);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationAnchorSelector);
 }
 
 
@@ -5797,7 +6386,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationAnchorSelector()';
+    return 'PresentationAnchorSelector()';
 }
 
 
@@ -5958,16 +6547,18 @@ $LocalAnchorCopyWith<LocalAnchor> get copyWith => _$LocalAnchorCopyWithImpl<Loca
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalAnchor&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LocalAnchor&&(identical(other.id, id) || other.id == id));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+    return Object.hash(runtimeType,id);
+}
 
 @override
 String toString() {
-  return 'PresentationAnchorSelector.local(id: $id)';
+    return 'PresentationAnchorSelector.local(id: $id)';
 }
 
 
@@ -6024,16 +6615,18 @@ $ExportedAnchorGroupCopyWith<ExportedAnchorGroup> get copyWith => _$ExportedAnch
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExportedAnchorGroup&&(identical(other.groupId, groupId) || other.groupId == groupId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ExportedAnchorGroup&&(identical(other.groupId, groupId) || other.groupId == groupId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,groupId);
+int get hashCode {
+    return Object.hash(runtimeType,groupId);
+}
 
 @override
 String toString() {
-  return 'PresentationAnchorSelector.exportedGroup(groupId: $groupId)';
+    return 'PresentationAnchorSelector.exportedGroup(groupId: $groupId)';
 }
 
 
@@ -6085,16 +6678,21 @@ $ConnectorStrokeCopyWith<ConnectorStroke> get copyWith => _$ConnectorStrokeCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorStroke&&(identical(other.color, color) || other.color == color)&&(identical(other.width, width) || other.width == width));
+  final _this = this as ConnectorStroke;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorStroke&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.width, _this.width) || other.width == _this.width));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,color,width);
+int get hashCode {
+  final _this = this as ConnectorStroke;
+  return Object.hash(runtimeType,_this.color,_this.width);
+}
 
 @override
 String toString() {
-  return 'ConnectorStroke(color: $color, width: $width)';
+  final _this = this as ConnectorStroke;
+  return 'ConnectorStroke(color: ${_this.color}, width: ${_this.width})';
 }
 
 
@@ -6123,7 +6721,7 @@ class _$ConnectorStrokeCopyWithImpl<$Res>
 /// Create a copy of ConnectorStroke
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? color = null,Object? width = null,}) {
-  return _then(_self.copyWith(
+  return _then(ConnectorStroke(
 color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
 as TypedExpression,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as TypedExpression,
@@ -6301,16 +6899,18 @@ _$ConnectorStrokeCopyWith<_ConnectorStroke> get copyWith => __$ConnectorStrokeCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConnectorStroke&&(identical(other.color, color) || other.color == color)&&(identical(other.width, width) || other.width == width));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConnectorStroke&&(identical(other.color, color) || other.color == color)&&(identical(other.width, width) || other.width == width));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,color,width);
+int get hashCode {
+    return Object.hash(runtimeType,color,width);
+}
 
 @override
 String toString() {
-  return 'ConnectorStroke(color: $color, width: $width)';
+    return 'ConnectorStroke(color: $color, width: $width)';
 }
 
 
@@ -6376,7 +6976,7 @@ mixin _$ConnectorEndpointMarker {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorEndpointMarker);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorEndpointMarker);
 }
 
 
@@ -6385,7 +6985,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectorEndpointMarker()';
+    return 'ConnectorEndpointMarker()';
 }
 
 
@@ -6546,16 +7146,18 @@ $ArrowConnectorMarkerCopyWith<ArrowConnectorMarker> get copyWith => _$ArrowConne
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ArrowConnectorMarker&&(identical(other.size, size) || other.size == size));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ArrowConnectorMarker&&(identical(other.size, size) || other.size == size));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,size);
+int get hashCode {
+    return Object.hash(runtimeType,size);
+}
 
 @override
 String toString() {
-  return 'ConnectorEndpointMarker.arrow(size: $size)';
+    return 'ConnectorEndpointMarker.arrow(size: $size)';
 }
 
 
@@ -6621,16 +7223,18 @@ $CircleConnectorMarkerCopyWith<CircleConnectorMarker> get copyWith => _$CircleCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CircleConnectorMarker&&(identical(other.diameter, diameter) || other.diameter == diameter));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CircleConnectorMarker&&(identical(other.diameter, diameter) || other.diameter == diameter));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,diameter);
+int get hashCode {
+    return Object.hash(runtimeType,diameter);
+}
 
 @override
 String toString() {
-  return 'ConnectorEndpointMarker.circle(diameter: $diameter)';
+    return 'ConnectorEndpointMarker.circle(diameter: $diameter)';
 }
 
 
@@ -6691,16 +7295,21 @@ $ConnectorStyleCopyWith<ConnectorStyle> get copyWith => _$ConnectorStyleCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorStyle&&(identical(other.stroke, stroke) || other.stroke == stroke)&&(identical(other.cornerRadius, cornerRadius) || other.cornerRadius == cornerRadius)&&(identical(other.startMarker, startMarker) || other.startMarker == startMarker)&&(identical(other.endMarker, endMarker) || other.endMarker == endMarker));
+  final _this = this as ConnectorStyle;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorStyle&&(identical(other.stroke, _this.stroke) || other.stroke == _this.stroke)&&(identical(other.cornerRadius, _this.cornerRadius) || other.cornerRadius == _this.cornerRadius)&&(identical(other.startMarker, _this.startMarker) || other.startMarker == _this.startMarker)&&(identical(other.endMarker, _this.endMarker) || other.endMarker == _this.endMarker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,stroke,cornerRadius,startMarker,endMarker);
+int get hashCode {
+  final _this = this as ConnectorStyle;
+  return Object.hash(runtimeType,_this.stroke,_this.cornerRadius,_this.startMarker,_this.endMarker);
+}
 
 @override
 String toString() {
-  return 'ConnectorStyle(stroke: $stroke, cornerRadius: $cornerRadius, startMarker: $startMarker, endMarker: $endMarker)';
+  final _this = this as ConnectorStyle;
+  return 'ConnectorStyle(stroke: ${_this.stroke}, cornerRadius: ${_this.cornerRadius}, startMarker: ${_this.startMarker}, endMarker: ${_this.endMarker})';
 }
 
 
@@ -6729,7 +7338,7 @@ class _$ConnectorStyleCopyWithImpl<$Res>
 /// Create a copy of ConnectorStyle
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? stroke = null,Object? cornerRadius = null,Object? startMarker = freezed,Object? endMarker = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ConnectorStyle(
 stroke: null == stroke ? _self.stroke : stroke // ignore: cast_nullable_to_non_nullable
 as ConnectorStroke,cornerRadius: null == cornerRadius ? _self.cornerRadius : cornerRadius // ignore: cast_nullable_to_non_nullable
 as TypedExpression,startMarker: freezed == startMarker ? _self.startMarker : startMarker // ignore: cast_nullable_to_non_nullable
@@ -6935,16 +7544,18 @@ _$ConnectorStyleCopyWith<_ConnectorStyle> get copyWith => __$ConnectorStyleCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConnectorStyle&&(identical(other.stroke, stroke) || other.stroke == stroke)&&(identical(other.cornerRadius, cornerRadius) || other.cornerRadius == cornerRadius)&&(identical(other.startMarker, startMarker) || other.startMarker == startMarker)&&(identical(other.endMarker, endMarker) || other.endMarker == endMarker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConnectorStyle&&(identical(other.stroke, stroke) || other.stroke == stroke)&&(identical(other.cornerRadius, cornerRadius) || other.cornerRadius == cornerRadius)&&(identical(other.startMarker, startMarker) || other.startMarker == startMarker)&&(identical(other.endMarker, endMarker) || other.endMarker == endMarker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,stroke,cornerRadius,startMarker,endMarker);
+int get hashCode {
+    return Object.hash(runtimeType,stroke,cornerRadius,startMarker,endMarker);
+}
 
 @override
 String toString() {
-  return 'ConnectorStyle(stroke: $stroke, cornerRadius: $cornerRadius, startMarker: $startMarker, endMarker: $endMarker)';
+    return 'ConnectorStyle(stroke: $stroke, cornerRadius: $cornerRadius, startMarker: $startMarker, endMarker: $endMarker)';
 }
 
 
@@ -7041,16 +7652,21 @@ $ConnectionMarkerCopyWith<ConnectionMarker> get copyWith => _$ConnectionMarkerCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionMarker&&(identical(other.node, node) || other.node == node)&&(identical(other.position, position) || other.position == position)&&(identical(other.alignToPath, alignToPath) || other.alignToPath == alignToPath)&&(identical(other.scope, scope) || other.scope == scope));
+  final _this = this as ConnectionMarker;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionMarker&&(identical(other.node, _this.node) || other.node == _this.node)&&(identical(other.position, _this.position) || other.position == _this.position)&&(identical(other.alignToPath, _this.alignToPath) || other.alignToPath == _this.alignToPath)&&(identical(other.scope, _this.scope) || other.scope == _this.scope));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,node,position,alignToPath,scope);
+int get hashCode {
+  final _this = this as ConnectionMarker;
+  return Object.hash(runtimeType,_this.node,_this.position,_this.alignToPath,_this.scope);
+}
 
 @override
 String toString() {
-  return 'ConnectionMarker(node: $node, position: $position, alignToPath: $alignToPath, scope: $scope)';
+  final _this = this as ConnectionMarker;
+  return 'ConnectionMarker(node: ${_this.node}, position: ${_this.position}, alignToPath: ${_this.alignToPath}, scope: ${_this.scope})';
 }
 
 
@@ -7079,7 +7695,7 @@ class _$ConnectionMarkerCopyWithImpl<$Res>
 /// Create a copy of ConnectionMarker
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? node = null,Object? position = null,Object? alignToPath = null,Object? scope = null,}) {
-  return _then(_self.copyWith(
+  return _then(ConnectionMarker(
 node: null == node ? _self.node : node // ignore: cast_nullable_to_non_nullable
 as PresentationNode,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
 as TypedExpression,alignToPath: null == alignToPath ? _self.alignToPath : alignToPath // ignore: cast_nullable_to_non_nullable
@@ -7270,16 +7886,18 @@ _$ConnectionMarkerCopyWith<_ConnectionMarker> get copyWith => __$ConnectionMarke
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConnectionMarker&&(identical(other.node, node) || other.node == node)&&(identical(other.position, position) || other.position == position)&&(identical(other.alignToPath, alignToPath) || other.alignToPath == alignToPath)&&(identical(other.scope, scope) || other.scope == scope));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConnectionMarker&&(identical(other.node, node) || other.node == node)&&(identical(other.position, position) || other.position == position)&&(identical(other.alignToPath, alignToPath) || other.alignToPath == alignToPath)&&(identical(other.scope, scope) || other.scope == scope));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,node,position,alignToPath,scope);
+int get hashCode {
+    return Object.hash(runtimeType,node,position,alignToPath,scope);
+}
 
 @override
 String toString() {
-  return 'ConnectionMarker(node: $node, position: $position, alignToPath: $alignToPath, scope: $scope)';
+    return 'ConnectionMarker(node: $node, position: $position, alignToPath: $alignToPath, scope: $scope)';
 }
 
 
@@ -7361,16 +7979,21 @@ $OrthogonalConnectionPathCopyWith<OrthogonalConnectionPath> get copyWith => _$Or
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalConnectionPath&&(identical(other.bendPosition, bendPosition) || other.bendPosition == bendPosition));
+  final _this = this as OrthogonalConnectionPath;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalConnectionPath&&(identical(other.bendPosition, _this.bendPosition) || other.bendPosition == _this.bendPosition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bendPosition);
+int get hashCode {
+  final _this = this as OrthogonalConnectionPath;
+  return Object.hash(runtimeType,_this.bendPosition);
+}
 
 @override
 String toString() {
-  return 'OrthogonalConnectionPath(bendPosition: $bendPosition)';
+  final _this = this as OrthogonalConnectionPath;
+  return 'OrthogonalConnectionPath(bendPosition: ${_this.bendPosition})';
 }
 
 
@@ -7399,7 +8022,7 @@ class _$OrthogonalConnectionPathCopyWithImpl<$Res>
 /// Create a copy of OrthogonalConnectionPath
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bendPosition = null,}) {
-  return _then(_self.copyWith(
+  return _then(OrthogonalConnectionPath(
 bendPosition: null == bendPosition ? _self.bendPosition : bendPosition // ignore: cast_nullable_to_non_nullable
 as TypedExpression,
   ));
@@ -7566,16 +8189,18 @@ _$OrthogonalConnectionPathCopyWith<_OrthogonalConnectionPath> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrthogonalConnectionPath&&(identical(other.bendPosition, bendPosition) || other.bendPosition == bendPosition));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrthogonalConnectionPath&&(identical(other.bendPosition, bendPosition) || other.bendPosition == bendPosition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bendPosition);
+int get hashCode {
+    return Object.hash(runtimeType,bendPosition);
+}
 
 @override
 String toString() {
-  return 'OrthogonalConnectionPath(bendPosition: $bendPosition)';
+    return 'OrthogonalConnectionPath(bendPosition: $bendPosition)';
 }
 
 
@@ -7636,16 +8261,21 @@ $CurvedConnectionPathCopyWith<CurvedConnectionPath> get copyWith => _$CurvedConn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CurvedConnectionPath&&(identical(other.sourceControlOffset, sourceControlOffset) || other.sourceControlOffset == sourceControlOffset)&&(identical(other.targetControlOffset, targetControlOffset) || other.targetControlOffset == targetControlOffset));
+  final _this = this as CurvedConnectionPath;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CurvedConnectionPath&&(identical(other.sourceControlOffset, _this.sourceControlOffset) || other.sourceControlOffset == _this.sourceControlOffset)&&(identical(other.targetControlOffset, _this.targetControlOffset) || other.targetControlOffset == _this.targetControlOffset));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceControlOffset,targetControlOffset);
+int get hashCode {
+  final _this = this as CurvedConnectionPath;
+  return Object.hash(runtimeType,_this.sourceControlOffset,_this.targetControlOffset);
+}
 
 @override
 String toString() {
-  return 'CurvedConnectionPath(sourceControlOffset: $sourceControlOffset, targetControlOffset: $targetControlOffset)';
+  final _this = this as CurvedConnectionPath;
+  return 'CurvedConnectionPath(sourceControlOffset: ${_this.sourceControlOffset}, targetControlOffset: ${_this.targetControlOffset})';
 }
 
 
@@ -7674,7 +8304,7 @@ class _$CurvedConnectionPathCopyWithImpl<$Res>
 /// Create a copy of CurvedConnectionPath
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sourceControlOffset = null,Object? targetControlOffset = null,}) {
-  return _then(_self.copyWith(
+  return _then(CurvedConnectionPath(
 sourceControlOffset: null == sourceControlOffset ? _self.sourceControlOffset : sourceControlOffset // ignore: cast_nullable_to_non_nullable
 as PresentationOffset,targetControlOffset: null == targetControlOffset ? _self.targetControlOffset : targetControlOffset // ignore: cast_nullable_to_non_nullable
 as PresentationOffset,
@@ -7852,16 +8482,18 @@ _$CurvedConnectionPathCopyWith<_CurvedConnectionPath> get copyWith => __$CurvedC
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CurvedConnectionPath&&(identical(other.sourceControlOffset, sourceControlOffset) || other.sourceControlOffset == sourceControlOffset)&&(identical(other.targetControlOffset, targetControlOffset) || other.targetControlOffset == targetControlOffset));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CurvedConnectionPath&&(identical(other.sourceControlOffset, sourceControlOffset) || other.sourceControlOffset == sourceControlOffset)&&(identical(other.targetControlOffset, targetControlOffset) || other.targetControlOffset == targetControlOffset));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceControlOffset,targetControlOffset);
+int get hashCode {
+    return Object.hash(runtimeType,sourceControlOffset,targetControlOffset);
+}
 
 @override
 String toString() {
-  return 'CurvedConnectionPath(sourceControlOffset: $sourceControlOffset, targetControlOffset: $targetControlOffset)';
+    return 'CurvedConnectionPath(sourceControlOffset: $sourceControlOffset, targetControlOffset: $targetControlOffset)';
 }
 
 
@@ -7927,7 +8559,7 @@ mixin _$ConnectionPath {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionPath);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionPath);
 }
 
 
@@ -7936,7 +8568,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectionPath()';
+    return 'ConnectionPath()';
 }
 
 
@@ -8098,7 +8730,7 @@ class StraightConnectionPath implements ConnectionPath {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StraightConnectionPath);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StraightConnectionPath);
 }
 
 
@@ -8107,7 +8739,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectionPath.straight()';
+    return 'ConnectionPath.straight()';
 }
 
 
@@ -8135,16 +8767,18 @@ $OrthogonalPathCopyWith<OrthogonalPath> get copyWith => _$OrthogonalPathCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalPath&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalPath&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path);
+int get hashCode {
+    return Object.hash(runtimeType,path);
+}
 
 @override
 String toString() {
-  return 'ConnectionPath.orthogonal(path: $path)';
+    return 'ConnectionPath.orthogonal(path: $path)';
 }
 
 
@@ -8210,16 +8844,18 @@ $CurvedPathCopyWith<CurvedPath> get copyWith => _$CurvedPathCopyWithImpl<CurvedP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CurvedPath&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CurvedPath&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path);
+int get hashCode {
+    return Object.hash(runtimeType,path);
+}
 
 @override
 String toString() {
-  return 'ConnectionPath.curved(path: $path)';
+    return 'ConnectionPath.curved(path: $path)';
 }
 
 
@@ -8280,16 +8916,21 @@ $OrthogonalConnectionBundlePathCopyWith<OrthogonalConnectionBundlePath> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalConnectionBundlePath&&(identical(other.axis, axis) || other.axis == axis)&&(identical(other.bendPosition, bendPosition) || other.bendPosition == bendPosition));
+  final _this = this as OrthogonalConnectionBundlePath;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalConnectionBundlePath&&(identical(other.axis, _this.axis) || other.axis == _this.axis)&&(identical(other.bendPosition, _this.bendPosition) || other.bendPosition == _this.bendPosition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,axis,bendPosition);
+int get hashCode {
+  final _this = this as OrthogonalConnectionBundlePath;
+  return Object.hash(runtimeType,_this.axis,_this.bendPosition);
+}
 
 @override
 String toString() {
-  return 'OrthogonalConnectionBundlePath(axis: $axis, bendPosition: $bendPosition)';
+  final _this = this as OrthogonalConnectionBundlePath;
+  return 'OrthogonalConnectionBundlePath(axis: ${_this.axis}, bendPosition: ${_this.bendPosition})';
 }
 
 
@@ -8318,7 +8959,7 @@ class _$OrthogonalConnectionBundlePathCopyWithImpl<$Res>
 /// Create a copy of OrthogonalConnectionBundlePath
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? axis = null,Object? bendPosition = null,}) {
-  return _then(_self.copyWith(
+  return _then(OrthogonalConnectionBundlePath(
 axis: null == axis ? _self.axis : axis // ignore: cast_nullable_to_non_nullable
 as ConnectionAxis,bendPosition: null == bendPosition ? _self.bendPosition : bendPosition // ignore: cast_nullable_to_non_nullable
 as TypedExpression,
@@ -8487,16 +9128,18 @@ _$OrthogonalConnectionBundlePathCopyWith<_OrthogonalConnectionBundlePath> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrthogonalConnectionBundlePath&&(identical(other.axis, axis) || other.axis == axis)&&(identical(other.bendPosition, bendPosition) || other.bendPosition == bendPosition));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrthogonalConnectionBundlePath&&(identical(other.axis, axis) || other.axis == axis)&&(identical(other.bendPosition, bendPosition) || other.bendPosition == bendPosition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,axis,bendPosition);
+int get hashCode {
+    return Object.hash(runtimeType,axis,bendPosition);
+}
 
 @override
 String toString() {
-  return 'OrthogonalConnectionBundlePath(axis: $axis, bendPosition: $bendPosition)';
+    return 'OrthogonalConnectionBundlePath(axis: $axis, bendPosition: $bendPosition)';
 }
 
 
@@ -8553,7 +9196,7 @@ mixin _$ConnectionBundlePath {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionBundlePath);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionBundlePath);
 }
 
 
@@ -8562,7 +9205,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectionBundlePath()';
+    return 'ConnectionBundlePath()';
 }
 
 
@@ -8723,16 +9366,18 @@ $OrthogonalBundlePathCopyWith<OrthogonalBundlePath> get copyWith => _$Orthogonal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalBundlePath&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OrthogonalBundlePath&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path);
+int get hashCode {
+    return Object.hash(runtimeType,path);
+}
 
 @override
 String toString() {
-  return 'ConnectionBundlePath.orthogonal(path: $path)';
+    return 'ConnectionBundlePath.orthogonal(path: $path)';
 }
 
 
@@ -8793,7 +9438,7 @@ class FanBundlePath implements ConnectionBundlePath {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FanBundlePath);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FanBundlePath);
 }
 
 
@@ -8802,7 +9447,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectionBundlePath.fan()';
+    return 'ConnectionBundlePath.fan()';
 }
 
 
@@ -8825,16 +9470,21 @@ $PresentationConnectionCopyWith<PresentationConnection> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationConnection&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other.path, path)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf));
+  final _this = this as PresentationConnection;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationConnection&&(identical(other.source, _this.source) || other.source == _this.source)&&const DeepCollectionEquality().equals(other.path, _this.path)&&(identical(other.visibleIf, _this.visibleIf) || other.visibleIf == _this.visibleIf));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,const DeepCollectionEquality().hash(path),visibleIf);
+int get hashCode {
+  final _this = this as PresentationConnection;
+  return Object.hash(runtimeType,_this.source,const DeepCollectionEquality().hash(_this.path),_this.visibleIf);
+}
 
 @override
 String toString() {
-  return 'PresentationConnection(source: $source, path: $path, visibleIf: $visibleIf)';
+  final _this = this as PresentationConnection;
+  return 'PresentationConnection(source: ${_this.source}, path: ${_this.path}, visibleIf: ${_this.visibleIf})';
 }
 
 
@@ -9028,7 +9678,7 @@ return bundle(_that.source,_that.targets,_that.path,_that.trunkStyle,_that.branc
 
 
 class AnchoredConnection implements PresentationConnection {
-  const AnchoredConnection({required this.source, required this.target, required this.path, required this.style, final  List<ConnectionMarker> markers = const [], this.visibleIf}): _markers = markers;
+  const AnchoredConnection({required this.source, required this.target, required this.path, required this.style,  List<ConnectionMarker> markers = const [], this.visibleIf}): _markers = markers;
 
 
 @override final  PresentationAnchorSelector source;
@@ -9054,16 +9704,18 @@ $AnchoredConnectionCopyWith<AnchoredConnection> get copyWith => _$AnchoredConnec
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AnchoredConnection&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.path, path) || other.path == path)&&(identical(other.style, style) || other.style == style)&&const DeepCollectionEquality().equals(other._markers, _markers)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AnchoredConnection&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.path, path) || other.path == path)&&(identical(other.style, style) || other.style == style)&&const DeepCollectionEquality().equals(other.markers, _markers)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,target,path,style,const DeepCollectionEquality().hash(_markers),visibleIf);
+int get hashCode {
+    return Object.hash(runtimeType,source,target,path,style,const DeepCollectionEquality().hash(_markers),visibleIf);
+}
 
 @override
 String toString() {
-  return 'PresentationConnection.connection(source: $source, target: $target, path: $path, style: $style, markers: $markers, visibleIf: $visibleIf)';
+    return 'PresentationConnection.connection(source: $source, target: $target, path: $path, style: $style, markers: $markers, visibleIf: $visibleIf)';
 }
 
 
@@ -9158,7 +9810,7 @@ $TypedExpressionCopyWith<$Res>? get visibleIf {
 
 
 class AnchoredConnectionBundle implements PresentationConnection {
-  const AnchoredConnectionBundle({required this.source, required this.targets, required this.path, required this.trunkStyle, required this.branchStyle, final  List<ConnectionMarker> trunkMarkers = const [], final  List<ConnectionMarker> branchMarkers = const [], this.visibleIf}): _trunkMarkers = trunkMarkers,_branchMarkers = branchMarkers;
+  const AnchoredConnectionBundle({required this.source, required this.targets, required this.path, required this.trunkStyle, required this.branchStyle,  List<ConnectionMarker> trunkMarkers = const [],  List<ConnectionMarker> branchMarkers = const [], this.visibleIf}): _trunkMarkers = trunkMarkers,_branchMarkers = branchMarkers;
 
 
 @override final  PresentationAnchorSelector source;
@@ -9192,16 +9844,18 @@ $AnchoredConnectionBundleCopyWith<AnchoredConnectionBundle> get copyWith => _$An
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AnchoredConnectionBundle&&(identical(other.source, source) || other.source == source)&&(identical(other.targets, targets) || other.targets == targets)&&(identical(other.path, path) || other.path == path)&&(identical(other.trunkStyle, trunkStyle) || other.trunkStyle == trunkStyle)&&(identical(other.branchStyle, branchStyle) || other.branchStyle == branchStyle)&&const DeepCollectionEquality().equals(other._trunkMarkers, _trunkMarkers)&&const DeepCollectionEquality().equals(other._branchMarkers, _branchMarkers)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AnchoredConnectionBundle&&(identical(other.source, source) || other.source == source)&&(identical(other.targets, targets) || other.targets == targets)&&(identical(other.path, path) || other.path == path)&&(identical(other.trunkStyle, trunkStyle) || other.trunkStyle == trunkStyle)&&(identical(other.branchStyle, branchStyle) || other.branchStyle == branchStyle)&&const DeepCollectionEquality().equals(other.trunkMarkers, _trunkMarkers)&&const DeepCollectionEquality().equals(other.branchMarkers, _branchMarkers)&&(identical(other.visibleIf, visibleIf) || other.visibleIf == visibleIf));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,targets,path,trunkStyle,branchStyle,const DeepCollectionEquality().hash(_trunkMarkers),const DeepCollectionEquality().hash(_branchMarkers),visibleIf);
+int get hashCode {
+    return Object.hash(runtimeType,source,targets,path,trunkStyle,branchStyle,const DeepCollectionEquality().hash(_trunkMarkers),const DeepCollectionEquality().hash(_branchMarkers),visibleIf);
+}
 
 @override
 String toString() {
-  return 'PresentationConnection.bundle(source: $source, targets: $targets, path: $path, trunkStyle: $trunkStyle, branchStyle: $branchStyle, trunkMarkers: $trunkMarkers, branchMarkers: $branchMarkers, visibleIf: $visibleIf)';
+    return 'PresentationConnection.bundle(source: $source, targets: $targets, path: $path, trunkStyle: $trunkStyle, branchStyle: $branchStyle, trunkMarkers: $trunkMarkers, branchMarkers: $branchMarkers, visibleIf: $visibleIf)';
 }
 
 
@@ -9312,7 +9966,7 @@ mixin _$PresentationRadius {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationRadius);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationRadius);
 }
 
 
@@ -9321,7 +9975,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationRadius()';
+    return 'PresentationRadius()';
 }
 
 
@@ -9495,7 +10149,7 @@ class NoPresentationRadius implements PresentationRadius {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NoPresentationRadius);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NoPresentationRadius);
 }
 
 
@@ -9504,7 +10158,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationRadius.none()';
+    return 'PresentationRadius.none()';
 }
 
 
@@ -9527,7 +10181,7 @@ class SmallPresentationRadius implements PresentationRadius {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SmallPresentationRadius);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SmallPresentationRadius);
 }
 
 
@@ -9536,7 +10190,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationRadius.small()';
+    return 'PresentationRadius.small()';
 }
 
 
@@ -9559,7 +10213,7 @@ class MediumPresentationRadius implements PresentationRadius {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MediumPresentationRadius);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MediumPresentationRadius);
 }
 
 
@@ -9568,7 +10222,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationRadius.medium()';
+    return 'PresentationRadius.medium()';
 }
 
 
@@ -9591,7 +10245,7 @@ class LargePresentationRadius implements PresentationRadius {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LargePresentationRadius);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LargePresentationRadius);
 }
 
 
@@ -9600,7 +10254,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationRadius.large()';
+    return 'PresentationRadius.large()';
 }
 
 
@@ -9628,16 +10282,18 @@ $CustomPresentationRadiusCopyWith<CustomPresentationRadius> get copyWith => _$Cu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomPresentationRadius&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomPresentationRadius&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'PresentationRadius.custom(value: $value)';
+    return 'PresentationRadius.custom(value: $value)';
 }
 
 
@@ -9698,16 +10354,21 @@ $SequencePresentationCopyWith<SequencePresentation> get copyWith => _$SequencePr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SequencePresentation&&(identical(other.item, item) || other.item == item)&&(identical(other.empty, empty) || other.empty == empty)&&(identical(other.separator, separator) || other.separator == separator)&&(identical(other.layout, layout) || other.layout == layout));
+  final _this = this as SequencePresentation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SequencePresentation&&(identical(other.item, _this.item) || other.item == _this.item)&&(identical(other.empty, _this.empty) || other.empty == _this.empty)&&(identical(other.separator, _this.separator) || other.separator == _this.separator)&&(identical(other.layout, _this.layout) || other.layout == _this.layout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,item,empty,separator,layout);
+int get hashCode {
+  final _this = this as SequencePresentation;
+  return Object.hash(runtimeType,_this.item,_this.empty,_this.separator,_this.layout);
+}
 
 @override
 String toString() {
-  return 'SequencePresentation(item: $item, empty: $empty, separator: $separator, layout: $layout)';
+  final _this = this as SequencePresentation;
+  return 'SequencePresentation(item: ${_this.item}, empty: ${_this.empty}, separator: ${_this.separator}, layout: ${_this.layout})';
 }
 
 
@@ -9736,7 +10397,7 @@ class _$SequencePresentationCopyWithImpl<$Res>
 /// Create a copy of SequencePresentation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? item = null,Object? empty = freezed,Object? separator = freezed,Object? layout = null,}) {
-  return _then(_self.copyWith(
+  return _then(SequencePresentation(
 item: null == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
 as PresentationNode,empty: freezed == empty ? _self.empty : empty // ignore: cast_nullable_to_non_nullable
 as PresentationNode?,separator: freezed == separator ? _self.separator : separator // ignore: cast_nullable_to_non_nullable
@@ -9942,16 +10603,18 @@ _$SequencePresentationCopyWith<_SequencePresentation> get copyWith => __$Sequenc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SequencePresentation&&(identical(other.item, item) || other.item == item)&&(identical(other.empty, empty) || other.empty == empty)&&(identical(other.separator, separator) || other.separator == separator)&&(identical(other.layout, layout) || other.layout == layout));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SequencePresentation&&(identical(other.item, item) || other.item == item)&&(identical(other.empty, empty) || other.empty == empty)&&(identical(other.separator, separator) || other.separator == separator)&&(identical(other.layout, layout) || other.layout == layout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,item,empty,separator,layout);
+int get hashCode {
+    return Object.hash(runtimeType,item,empty,separator,layout);
+}
 
 @override
 String toString() {
-  return 'SequencePresentation(item: $item, empty: $empty, separator: $separator, layout: $layout)';
+    return 'SequencePresentation(item: $item, empty: $empty, separator: $separator, layout: $layout)';
 }
 
 
@@ -10048,16 +10711,21 @@ $BoundControlCopyWith<BoundControl> get copyWith => _$BoundControlCopyWithImpl<B
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BoundControl&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&(identical(other.prefix, prefix) || other.prefix == prefix)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel));
+  final _this = this as BoundControl;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BoundControl&&(identical(other.binding, _this.binding) || other.binding == _this.binding)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.prefix, _this.prefix) || other.prefix == _this.prefix)&&(identical(other.semanticLabel, _this.semanticLabel) || other.semanticLabel == _this.semanticLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,binding,label,description,prefix,semanticLabel);
+int get hashCode {
+  final _this = this as BoundControl;
+  return Object.hash(runtimeType,_this.binding,_this.label,_this.description,_this.prefix,_this.semanticLabel);
+}
 
 @override
 String toString() {
-  return 'BoundControl(binding: $binding, label: $label, description: $description, prefix: $prefix, semanticLabel: $semanticLabel)';
+  final _this = this as BoundControl;
+  return 'BoundControl(binding: ${_this.binding}, label: ${_this.label}, description: ${_this.description}, prefix: ${_this.prefix}, semanticLabel: ${_this.semanticLabel})';
 }
 
 
@@ -10086,7 +10754,7 @@ class _$BoundControlCopyWithImpl<$Res>
 /// Create a copy of BoundControl
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? binding = null,Object? label = freezed,Object? description = freezed,Object? prefix = freezed,Object? semanticLabel = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(BoundControl(
 binding: null == binding ? _self.binding : binding // ignore: cast_nullable_to_non_nullable
 as BindingReference,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as TypedExpression?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -10309,16 +10977,18 @@ _$BoundControlCopyWith<_BoundControl> get copyWith => __$BoundControlCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BoundControl&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&(identical(other.prefix, prefix) || other.prefix == prefix)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BoundControl&&(identical(other.binding, binding) || other.binding == binding)&&(identical(other.label, label) || other.label == label)&&(identical(other.description, description) || other.description == description)&&(identical(other.prefix, prefix) || other.prefix == prefix)&&(identical(other.semanticLabel, semanticLabel) || other.semanticLabel == semanticLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,binding,label,description,prefix,semanticLabel);
+int get hashCode {
+    return Object.hash(runtimeType,binding,label,description,prefix,semanticLabel);
+}
 
 @override
 String toString() {
-  return 'BoundControl(binding: $binding, label: $label, description: $description, prefix: $prefix, semanticLabel: $semanticLabel)';
+    return 'BoundControl(binding: $binding, label: $label, description: $description, prefix: $prefix, semanticLabel: $semanticLabel)';
 }
 
 
@@ -10431,16 +11101,21 @@ $SelectOptionCopyWith<SelectOption> get copyWith => _$SelectOptionCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectOption&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.value, value) || other.value == value));
+  final _this = this as SelectOption;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectOption&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,value);
+int get hashCode {
+  final _this = this as SelectOption;
+  return Object.hash(runtimeType,_this.id,_this.label,_this.value);
+}
 
 @override
 String toString() {
-  return 'SelectOption(id: $id, label: $label, value: $value)';
+  final _this = this as SelectOption;
+  return 'SelectOption(id: ${_this.id}, label: ${_this.label}, value: ${_this.value})';
 }
 
 
@@ -10469,7 +11144,7 @@ class _$SelectOptionCopyWithImpl<$Res>
 /// Create a copy of SelectOption
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(SelectOption(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as TypedExpression,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -10649,16 +11324,18 @@ _$SelectOptionCopyWith<_SelectOption> get copyWith => __$SelectOptionCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SelectOption&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SelectOption&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,value);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,value);
+}
 
 @override
 String toString() {
-  return 'SelectOption(id: $id, label: $label, value: $value)';
+    return 'SelectOption(id: $id, label: $label, value: $value)';
 }
 
 
@@ -10730,16 +11407,21 @@ $ConcreteTypePresentationCopyWith<ConcreteTypePresentation> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConcreteTypePresentation&&(identical(other.type, type) || other.type == type)&&(identical(other.label, label) || other.label == label)&&(identical(other.presentation, presentation) || other.presentation == presentation));
+  final _this = this as ConcreteTypePresentation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConcreteTypePresentation&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.presentation, _this.presentation) || other.presentation == _this.presentation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,label,presentation);
+int get hashCode {
+  final _this = this as ConcreteTypePresentation;
+  return Object.hash(runtimeType,_this.type,_this.label,_this.presentation);
+}
 
 @override
 String toString() {
-  return 'ConcreteTypePresentation(type: $type, label: $label, presentation: $presentation)';
+  final _this = this as ConcreteTypePresentation;
+  return 'ConcreteTypePresentation(type: ${_this.type}, label: ${_this.label}, presentation: ${_this.presentation})';
 }
 
 
@@ -10768,7 +11450,7 @@ class _$ConcreteTypePresentationCopyWithImpl<$Res>
 /// Create a copy of ConcreteTypePresentation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? label = null,Object? presentation = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ConcreteTypePresentation(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as TypedExpression,presentation: freezed == presentation ? _self.presentation : presentation // ignore: cast_nullable_to_non_nullable
@@ -10960,16 +11642,18 @@ _$ConcreteTypePresentationCopyWith<_ConcreteTypePresentation> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConcreteTypePresentation&&(identical(other.type, type) || other.type == type)&&(identical(other.label, label) || other.label == label)&&(identical(other.presentation, presentation) || other.presentation == presentation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConcreteTypePresentation&&(identical(other.type, type) || other.type == type)&&(identical(other.label, label) || other.label == label)&&(identical(other.presentation, presentation) || other.presentation == presentation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,label,presentation);
+int get hashCode {
+    return Object.hash(runtimeType,type,label,presentation);
+}
 
 @override
 String toString() {
-  return 'ConcreteTypePresentation(type: $type, label: $label, presentation: $presentation)';
+    return 'ConcreteTypePresentation(type: $type, label: $label, presentation: $presentation)';
 }
 
 
@@ -11053,16 +11737,21 @@ $PolymorphicMatchCaseCopyWith<PolymorphicMatchCase> get copyWith => _$Polymorphi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicMatchCase&&(identical(other.type, type) || other.type == type)&&(identical(other.child, child) || other.child == child));
+  final _this = this as PolymorphicMatchCase;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicMatchCase&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.child, _this.child) || other.child == _this.child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,child);
+int get hashCode {
+  final _this = this as PolymorphicMatchCase;
+  return Object.hash(runtimeType,_this.type,_this.child);
+}
 
 @override
 String toString() {
-  return 'PolymorphicMatchCase(type: $type, child: $child)';
+  final _this = this as PolymorphicMatchCase;
+  return 'PolymorphicMatchCase(type: ${_this.type}, child: ${_this.child})';
 }
 
 
@@ -11091,7 +11780,7 @@ class _$PolymorphicMatchCaseCopyWithImpl<$Res>
 /// Create a copy of PolymorphicMatchCase
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? child = null,}) {
-  return _then(_self.copyWith(
+  return _then(PolymorphicMatchCase(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,child: null == child ? _self.child : child // ignore: cast_nullable_to_non_nullable
 as PresentationNode,
@@ -11269,16 +11958,18 @@ _$PolymorphicMatchCaseCopyWith<_PolymorphicMatchCase> get copyWith => __$Polymor
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PolymorphicMatchCase&&(identical(other.type, type) || other.type == type)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PolymorphicMatchCase&&(identical(other.type, type) || other.type == type)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,child);
+int get hashCode {
+    return Object.hash(runtimeType,type,child);
+}
 
 @override
 String toString() {
-  return 'PolymorphicMatchCase(type: $type, child: $child)';
+    return 'PolymorphicMatchCase(type: $type, child: $child)';
 }
 
 
@@ -11349,16 +12040,21 @@ $PresentationMenuItemCopyWith<PresentationMenuItem> get copyWith => _$Presentati
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationMenuItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.action, action) || other.action == action));
+  final _this = this as PresentationMenuItem;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationMenuItem&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.action, _this.action) || other.action == _this.action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,action);
+int get hashCode {
+  final _this = this as PresentationMenuItem;
+  return Object.hash(runtimeType,_this.id,_this.label,_this.action);
+}
 
 @override
 String toString() {
-  return 'PresentationMenuItem(id: $id, label: $label, action: $action)';
+  final _this = this as PresentationMenuItem;
+  return 'PresentationMenuItem(id: ${_this.id}, label: ${_this.label}, action: ${_this.action})';
 }
 
 
@@ -11387,7 +12083,7 @@ class _$PresentationMenuItemCopyWithImpl<$Res>
 /// Create a copy of PresentationMenuItem
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? action = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationMenuItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as TypedExpression,action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
@@ -11567,16 +12263,18 @@ _$PresentationMenuItemCopyWith<_PresentationMenuItem> get copyWith => __$Present
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationMenuItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.action, action) || other.action == action));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationMenuItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.action, action) || other.action == action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,action);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,action);
+}
 
 @override
 String toString() {
-  return 'PresentationMenuItem(id: $id, label: $label, action: $action)';
+    return 'PresentationMenuItem(id: $id, label: $label, action: $action)';
 }
 
 
@@ -11648,16 +12346,21 @@ $PresentationBorderSideCopyWith<PresentationBorderSide> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorderSide&&(identical(other.color, color) || other.color == color)&&(identical(other.width, width) || other.width == width));
+  final _this = this as PresentationBorderSide;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorderSide&&(identical(other.color, _this.color) || other.color == _this.color)&&(identical(other.width, _this.width) || other.width == _this.width));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,color,width);
+int get hashCode {
+  final _this = this as PresentationBorderSide;
+  return Object.hash(runtimeType,_this.color,_this.width);
+}
 
 @override
 String toString() {
-  return 'PresentationBorderSide(color: $color, width: $width)';
+  final _this = this as PresentationBorderSide;
+  return 'PresentationBorderSide(color: ${_this.color}, width: ${_this.width})';
 }
 
 
@@ -11686,7 +12389,7 @@ class _$PresentationBorderSideCopyWithImpl<$Res>
 /// Create a copy of PresentationBorderSide
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? color = freezed,Object? width = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationBorderSide(
 color: freezed == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
 as TypedExpression?,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as double,
@@ -11858,16 +12561,18 @@ _$PresentationBorderSideCopyWith<_PresentationBorderSide> get copyWith => __$Pre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationBorderSide&&(identical(other.color, color) || other.color == color)&&(identical(other.width, width) || other.width == width));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationBorderSide&&(identical(other.color, color) || other.color == color)&&(identical(other.width, width) || other.width == width));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,color,width);
+int get hashCode {
+    return Object.hash(runtimeType,color,width);
+}
 
 @override
 String toString() {
-  return 'PresentationBorderSide(color: $color, width: $width)';
+    return 'PresentationBorderSide(color: $color, width: $width)';
 }
 
 
@@ -11932,16 +12637,21 @@ $DirectionalPresentationBorderCopyWith<DirectionalPresentationBorder> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectionalPresentationBorder&&(identical(other.top, top) || other.top == top)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.bottom, bottom) || other.bottom == bottom));
+  final _this = this as DirectionalPresentationBorder;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectionalPresentationBorder&&(identical(other.top, _this.top) || other.top == _this.top)&&(identical(other.start, _this.start) || other.start == _this.start)&&(identical(other.end, _this.end) || other.end == _this.end)&&(identical(other.bottom, _this.bottom) || other.bottom == _this.bottom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,top,start,end,bottom);
+int get hashCode {
+  final _this = this as DirectionalPresentationBorder;
+  return Object.hash(runtimeType,_this.top,_this.start,_this.end,_this.bottom);
+}
 
 @override
 String toString() {
-  return 'DirectionalPresentationBorder(top: $top, start: $start, end: $end, bottom: $bottom)';
+  final _this = this as DirectionalPresentationBorder;
+  return 'DirectionalPresentationBorder(top: ${_this.top}, start: ${_this.start}, end: ${_this.end}, bottom: ${_this.bottom})';
 }
 
 
@@ -11970,7 +12680,7 @@ class _$DirectionalPresentationBorderCopyWithImpl<$Res>
 /// Create a copy of DirectionalPresentationBorder
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? top = freezed,Object? start = freezed,Object? end = freezed,Object? bottom = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(DirectionalPresentationBorder(
 top: freezed == top ? _self.top : top // ignore: cast_nullable_to_non_nullable
 as PresentationBorderSide?,start: freezed == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
 as PresentationBorderSide?,end: freezed == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
@@ -12182,16 +12892,18 @@ _$DirectionalPresentationBorderCopyWith<_DirectionalPresentationBorder> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectionalPresentationBorder&&(identical(other.top, top) || other.top == top)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.bottom, bottom) || other.bottom == bottom));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectionalPresentationBorder&&(identical(other.top, top) || other.top == top)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.bottom, bottom) || other.bottom == bottom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,top,start,end,bottom);
+int get hashCode {
+    return Object.hash(runtimeType,top,start,end,bottom);
+}
 
 @override
 String toString() {
-  return 'DirectionalPresentationBorder(top: $top, start: $start, end: $end, bottom: $bottom)';
+    return 'DirectionalPresentationBorder(top: $top, start: $start, end: $end, bottom: $bottom)';
 }
 
 
@@ -12289,7 +13001,7 @@ mixin _$PresentationBorder {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorder);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorder);
 }
 
 
@@ -12298,7 +13010,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationBorder()';
+    return 'PresentationBorder()';
 }
 
 
@@ -12459,16 +13171,18 @@ $PresentationBorderAllCopyWith<PresentationBorderAll> get copyWith => _$Presenta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorderAll&&(identical(other.side, side) || other.side == side));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorderAll&&(identical(other.side, side) || other.side == side));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,side);
+int get hashCode {
+    return Object.hash(runtimeType,side);
+}
 
 @override
 String toString() {
-  return 'PresentationBorder.all(side: $side)';
+    return 'PresentationBorder.all(side: $side)';
 }
 
 
@@ -12537,16 +13251,18 @@ $PresentationBorderSidesCopyWith<PresentationBorderSides> get copyWith => _$Pres
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorderSides&&(identical(other.top, top) || other.top == top)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.bottom, bottom) || other.bottom == bottom));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationBorderSides&&(identical(other.top, top) || other.top == top)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.bottom, bottom) || other.bottom == bottom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,top,start,end,bottom);
+int get hashCode {
+    return Object.hash(runtimeType,top,start,end,bottom);
+}
 
 @override
 String toString() {
-  return 'PresentationBorder.sides(top: $top, start: $start, end: $end, bottom: $bottom)';
+    return 'PresentationBorder.sides(top: $top, start: $start, end: $end, bottom: $bottom)';
 }
 
 
@@ -12644,7 +13360,7 @@ mixin _$PresentationChildrenLayout {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationChildrenLayout);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationChildrenLayout);
 }
 
 
@@ -12653,7 +13369,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationChildrenLayout()';
+    return 'PresentationChildrenLayout()';
 }
 
 
@@ -12834,16 +13550,18 @@ $PresentationColumnLayoutCopyWith<PresentationColumnLayout> get copyWith => _$Pr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationColumnLayout&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationColumnLayout&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,spacing,mainAxisAlignment,crossAxisAlignment);
+int get hashCode {
+    return Object.hash(runtimeType,spacing,mainAxisAlignment,crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'PresentationChildrenLayout.column(spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
+    return 'PresentationChildrenLayout.column(spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
 }
 
 
@@ -12904,16 +13622,18 @@ $PresentationRowLayoutCopyWith<PresentationRowLayout> get copyWith => _$Presenta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationRowLayout&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationRowLayout&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,spacing,mainAxisAlignment,crossAxisAlignment);
+int get hashCode {
+    return Object.hash(runtimeType,spacing,mainAxisAlignment,crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'PresentationChildrenLayout.row(spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
+    return 'PresentationChildrenLayout.row(spacing: $spacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
 }
 
 
@@ -12975,16 +13695,18 @@ $PresentationWrapLayoutCopyWith<PresentationWrapLayout> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationWrapLayout&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.runSpacing, runSpacing) || other.runSpacing == runSpacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationWrapLayout&&(identical(other.spacing, spacing) || other.spacing == spacing)&&(identical(other.runSpacing, runSpacing) || other.runSpacing == runSpacing)&&(identical(other.mainAxisAlignment, mainAxisAlignment) || other.mainAxisAlignment == mainAxisAlignment)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,spacing,runSpacing,mainAxisAlignment,crossAxisAlignment);
+int get hashCode {
+    return Object.hash(runtimeType,spacing,runSpacing,mainAxisAlignment,crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'PresentationChildrenLayout.wrap(spacing: $spacing, runSpacing: $runSpacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
+    return 'PresentationChildrenLayout.wrap(spacing: $spacing, runSpacing: $runSpacing, mainAxisAlignment: $mainAxisAlignment, crossAxisAlignment: $crossAxisAlignment)';
 }
 
 
@@ -13046,16 +13768,18 @@ $PresentationGridLayoutCopyWith<PresentationGridLayout> get copyWith => _$Presen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationGridLayout&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.horizontalSpacing, horizontalSpacing) || other.horizontalSpacing == horizontalSpacing)&&(identical(other.verticalSpacing, verticalSpacing) || other.verticalSpacing == verticalSpacing));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationGridLayout&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.horizontalSpacing, horizontalSpacing) || other.horizontalSpacing == horizontalSpacing)&&(identical(other.verticalSpacing, verticalSpacing) || other.verticalSpacing == verticalSpacing));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,columns,horizontalSpacing,verticalSpacing);
+int get hashCode {
+    return Object.hash(runtimeType,columns,horizontalSpacing,verticalSpacing);
+}
 
 @override
 String toString() {
-  return 'PresentationChildrenLayout.grid(columns: $columns, horizontalSpacing: $horizontalSpacing, verticalSpacing: $verticalSpacing)';
+    return 'PresentationChildrenLayout.grid(columns: $columns, horizontalSpacing: $horizontalSpacing, verticalSpacing: $verticalSpacing)';
 }
 
 
@@ -13109,7 +13833,7 @@ class PresentationStackLayout implements PresentationChildrenLayout {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationStackLayout);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationStackLayout);
 }
 
 
@@ -13118,7 +13842,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationChildrenLayout.stack()';
+    return 'PresentationChildrenLayout.stack()';
 }
 
 
@@ -13136,7 +13860,7 @@ mixin _$ConnectorAnchor {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorAnchor);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectorAnchor);
 }
 
 
@@ -13145,7 +13869,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectorAnchor()';
+    return 'ConnectorAnchor()';
 }
 
 
@@ -13307,7 +14031,7 @@ class StartConnectorAnchor implements ConnectorAnchor {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StartConnectorAnchor);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StartConnectorAnchor);
 }
 
 
@@ -13316,7 +14040,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectorAnchor.start()';
+    return 'ConnectorAnchor.start()';
 }
 
 
@@ -13339,7 +14063,7 @@ class CenterConnectorAnchor implements ConnectorAnchor {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CenterConnectorAnchor);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CenterConnectorAnchor);
 }
 
 
@@ -13348,7 +14072,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConnectorAnchor.center()';
+    return 'ConnectorAnchor.center()';
 }
 
 
@@ -13376,16 +14100,18 @@ $OffsetConnectorAnchorCopyWith<OffsetConnectorAnchor> get copyWith => _$OffsetCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OffsetConnectorAnchor&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OffsetConnectorAnchor&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'ConnectorAnchor.offset(value: $value)';
+    return 'ConnectorAnchor.offset(value: $value)';
 }
 
 
@@ -13446,16 +14172,21 @@ $HierarchySequenceLayoutCopyWith<HierarchySequenceLayout> get copyWith => _$Hier
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HierarchySequenceLayout&&(identical(other.unaryConnector, unaryConnector) || other.unaryConnector == unaryConnector)&&(identical(other.trunkConnector, trunkConnector) || other.trunkConnector == trunkConnector)&&(identical(other.branchConnector, branchConnector) || other.branchConnector == branchConnector)&&(identical(other.itemSpacing, itemSpacing) || other.itemSpacing == itemSpacing)&&(identical(other.indentation, indentation) || other.indentation == indentation)&&(identical(other.leadingSpacing, leadingSpacing) || other.leadingSpacing == leadingSpacing)&&(identical(other.itemAnchor, itemAnchor) || other.itemAnchor == itemAnchor)&&(identical(other.flattenSingleItem, flattenSingleItem) || other.flattenSingleItem == flattenSingleItem)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+  final _this = this as HierarchySequenceLayout;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HierarchySequenceLayout&&(identical(other.unaryConnector, _this.unaryConnector) || other.unaryConnector == _this.unaryConnector)&&(identical(other.trunkConnector, _this.trunkConnector) || other.trunkConnector == _this.trunkConnector)&&(identical(other.branchConnector, _this.branchConnector) || other.branchConnector == _this.branchConnector)&&(identical(other.itemSpacing, _this.itemSpacing) || other.itemSpacing == _this.itemSpacing)&&(identical(other.indentation, _this.indentation) || other.indentation == _this.indentation)&&(identical(other.leadingSpacing, _this.leadingSpacing) || other.leadingSpacing == _this.leadingSpacing)&&(identical(other.itemAnchor, _this.itemAnchor) || other.itemAnchor == _this.itemAnchor)&&(identical(other.flattenSingleItem, _this.flattenSingleItem) || other.flattenSingleItem == _this.flattenSingleItem)&&(identical(other.crossAxisAlignment, _this.crossAxisAlignment) || other.crossAxisAlignment == _this.crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,unaryConnector,trunkConnector,branchConnector,itemSpacing,indentation,leadingSpacing,itemAnchor,flattenSingleItem,crossAxisAlignment);
+int get hashCode {
+  final _this = this as HierarchySequenceLayout;
+  return Object.hash(runtimeType,_this.unaryConnector,_this.trunkConnector,_this.branchConnector,_this.itemSpacing,_this.indentation,_this.leadingSpacing,_this.itemAnchor,_this.flattenSingleItem,_this.crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'HierarchySequenceLayout(unaryConnector: $unaryConnector, trunkConnector: $trunkConnector, branchConnector: $branchConnector, itemSpacing: $itemSpacing, indentation: $indentation, leadingSpacing: $leadingSpacing, itemAnchor: $itemAnchor, flattenSingleItem: $flattenSingleItem, crossAxisAlignment: $crossAxisAlignment)';
+  final _this = this as HierarchySequenceLayout;
+  return 'HierarchySequenceLayout(unaryConnector: ${_this.unaryConnector}, trunkConnector: ${_this.trunkConnector}, branchConnector: ${_this.branchConnector}, itemSpacing: ${_this.itemSpacing}, indentation: ${_this.indentation}, leadingSpacing: ${_this.leadingSpacing}, itemAnchor: ${_this.itemAnchor}, flattenSingleItem: ${_this.flattenSingleItem}, crossAxisAlignment: ${_this.crossAxisAlignment})';
 }
 
 
@@ -13484,7 +14215,7 @@ class _$HierarchySequenceLayoutCopyWithImpl<$Res>
 /// Create a copy of HierarchySequenceLayout
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? unaryConnector = null,Object? trunkConnector = null,Object? branchConnector = null,Object? itemSpacing = null,Object? indentation = null,Object? leadingSpacing = null,Object? itemAnchor = null,Object? flattenSingleItem = null,Object? crossAxisAlignment = null,}) {
-  return _then(_self.copyWith(
+  return _then(HierarchySequenceLayout(
 unaryConnector: null == unaryConnector ? _self.unaryConnector : unaryConnector // ignore: cast_nullable_to_non_nullable
 as ConnectorStyle,trunkConnector: null == trunkConnector ? _self.trunkConnector : trunkConnector // ignore: cast_nullable_to_non_nullable
 as ConnectorStyle,branchConnector: null == branchConnector ? _self.branchConnector : branchConnector // ignore: cast_nullable_to_non_nullable
@@ -13730,16 +14461,18 @@ _$HierarchySequenceLayoutCopyWith<_HierarchySequenceLayout> get copyWith => __$H
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HierarchySequenceLayout&&(identical(other.unaryConnector, unaryConnector) || other.unaryConnector == unaryConnector)&&(identical(other.trunkConnector, trunkConnector) || other.trunkConnector == trunkConnector)&&(identical(other.branchConnector, branchConnector) || other.branchConnector == branchConnector)&&(identical(other.itemSpacing, itemSpacing) || other.itemSpacing == itemSpacing)&&(identical(other.indentation, indentation) || other.indentation == indentation)&&(identical(other.leadingSpacing, leadingSpacing) || other.leadingSpacing == leadingSpacing)&&(identical(other.itemAnchor, itemAnchor) || other.itemAnchor == itemAnchor)&&(identical(other.flattenSingleItem, flattenSingleItem) || other.flattenSingleItem == flattenSingleItem)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _HierarchySequenceLayout&&(identical(other.unaryConnector, unaryConnector) || other.unaryConnector == unaryConnector)&&(identical(other.trunkConnector, trunkConnector) || other.trunkConnector == trunkConnector)&&(identical(other.branchConnector, branchConnector) || other.branchConnector == branchConnector)&&(identical(other.itemSpacing, itemSpacing) || other.itemSpacing == itemSpacing)&&(identical(other.indentation, indentation) || other.indentation == indentation)&&(identical(other.leadingSpacing, leadingSpacing) || other.leadingSpacing == leadingSpacing)&&(identical(other.itemAnchor, itemAnchor) || other.itemAnchor == itemAnchor)&&(identical(other.flattenSingleItem, flattenSingleItem) || other.flattenSingleItem == flattenSingleItem)&&(identical(other.crossAxisAlignment, crossAxisAlignment) || other.crossAxisAlignment == crossAxisAlignment));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,unaryConnector,trunkConnector,branchConnector,itemSpacing,indentation,leadingSpacing,itemAnchor,flattenSingleItem,crossAxisAlignment);
+int get hashCode {
+    return Object.hash(runtimeType,unaryConnector,trunkConnector,branchConnector,itemSpacing,indentation,leadingSpacing,itemAnchor,flattenSingleItem,crossAxisAlignment);
+}
 
 @override
 String toString() {
-  return 'HierarchySequenceLayout(unaryConnector: $unaryConnector, trunkConnector: $trunkConnector, branchConnector: $branchConnector, itemSpacing: $itemSpacing, indentation: $indentation, leadingSpacing: $leadingSpacing, itemAnchor: $itemAnchor, flattenSingleItem: $flattenSingleItem, crossAxisAlignment: $crossAxisAlignment)';
+    return 'HierarchySequenceLayout(unaryConnector: $unaryConnector, trunkConnector: $trunkConnector, branchConnector: $branchConnector, itemSpacing: $itemSpacing, indentation: $indentation, leadingSpacing: $leadingSpacing, itemAnchor: $itemAnchor, flattenSingleItem: $flattenSingleItem, crossAxisAlignment: $crossAxisAlignment)';
 }
 
 
@@ -13866,16 +14599,21 @@ mixin _$PresentationSequenceLayout {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSequenceLayout&&const DeepCollectionEquality().equals(other.layout, layout));
+  final _this = this as PresentationSequenceLayout;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationSequenceLayout&&const DeepCollectionEquality().equals(other.layout, _this.layout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(layout));
+int get hashCode {
+  final _this = this as PresentationSequenceLayout;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.layout));
+}
 
 @override
 String toString() {
-  return 'PresentationSequenceLayout(layout: $layout)';
+  final _this = this as PresentationSequenceLayout;
+  return 'PresentationSequenceLayout(layout: ${_this.layout})';
 }
 
 
@@ -14036,16 +14774,18 @@ $PresentationStandardSequenceLayoutCopyWith<PresentationStandardSequenceLayout> 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationStandardSequenceLayout&&(identical(other.layout, layout) || other.layout == layout));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationStandardSequenceLayout&&(identical(other.layout, layout) || other.layout == layout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,layout);
+int get hashCode {
+    return Object.hash(runtimeType,layout);
+}
 
 @override
 String toString() {
-  return 'PresentationSequenceLayout.children(layout: $layout)';
+    return 'PresentationSequenceLayout.children(layout: $layout)';
 }
 
 
@@ -14111,16 +14851,18 @@ $PresentationHierarchySequenceLayoutCopyWith<PresentationHierarchySequenceLayout
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationHierarchySequenceLayout&&(identical(other.layout, layout) || other.layout == layout));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationHierarchySequenceLayout&&(identical(other.layout, layout) || other.layout == layout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,layout);
+int get hashCode {
+    return Object.hash(runtimeType,layout);
+}
 
 @override
 String toString() {
-  return 'PresentationSequenceLayout.hierarchy(layout: $layout)';
+    return 'PresentationSequenceLayout.hierarchy(layout: $layout)';
 }
 
 
@@ -14181,16 +14923,21 @@ $TabItemCopyWith<TabItem> get copyWith => _$TabItemCopyWithImpl<TabItem>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.child, child) || other.child == child));
+  final _this = this as TabItem;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabItem&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.child, _this.child) || other.child == _this.child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,child);
+int get hashCode {
+  final _this = this as TabItem;
+  return Object.hash(runtimeType,_this.id,_this.label,_this.child);
+}
 
 @override
 String toString() {
-  return 'TabItem(id: $id, label: $label, child: $child)';
+  final _this = this as TabItem;
+  return 'TabItem(id: ${_this.id}, label: ${_this.label}, child: ${_this.child})';
 }
 
 
@@ -14219,7 +14966,7 @@ class _$TabItemCopyWithImpl<$Res>
 /// Create a copy of TabItem
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? child = null,}) {
-  return _then(_self.copyWith(
+  return _then(TabItem(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as TypedExpression,child: null == child ? _self.child : child // ignore: cast_nullable_to_non_nullable
@@ -14399,16 +15146,18 @@ _$TabItemCopyWith<_TabItem> get copyWith => __$TabItemCopyWithImpl<_TabItem>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,child);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,child);
+}
 
 @override
 String toString() {
-  return 'TabItem(id: $id, label: $label, child: $child)';
+    return 'TabItem(id: $id, label: $label, child: $child)';
 }
 
 
@@ -14475,7 +15224,7 @@ mixin _$SearchSelectorValues {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorValues);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorValues);
 }
 
 
@@ -14484,7 +15233,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchSelectorValues()';
+    return 'SearchSelectorValues()';
 }
 
 
@@ -14640,7 +15389,7 @@ class FreeTextSearchSelectorValues implements SearchSelectorValues {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeTextSearchSelectorValues);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeTextSearchSelectorValues);
 }
 
 
@@ -14649,7 +15398,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchSelectorValues.freeText()';
+    return 'SearchSelectorValues.freeText()';
 }
 
 
@@ -14662,7 +15411,7 @@ String toString() {
 
 
 class EnumeratedSearchSelectorValues implements SearchSelectorValues {
-   EnumeratedSearchSelectorValues(final  List<String> values): assert(values.isNotEmpty, 'Selector values must not be empty.'),_values = values;
+   EnumeratedSearchSelectorValues( List<String> values): assert(values.isNotEmpty, 'Selector values must not be empty.'),_values = values;
 
 
  final  List<String> _values;
@@ -14683,16 +15432,18 @@ $EnumeratedSearchSelectorValuesCopyWith<EnumeratedSearchSelectorValues> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumeratedSearchSelectorValues&&const DeepCollectionEquality().equals(other._values, _values));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EnumeratedSearchSelectorValues&&const DeepCollectionEquality().equals(other.values, _values));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_values));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_values));
+}
 
 @override
 String toString() {
-  return 'SearchSelectorValues.enumeration(values: $values)';
+    return 'SearchSelectorValues.enumeration(values: $values)';
 }
 
 
@@ -14744,16 +15495,21 @@ $SearchSelectorDefinitionCopyWith<SearchSelectorDefinition> get copyWith => _$Se
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.key, key) || other.key == key)&&(identical(other.valueBindingId, valueBindingId) || other.valueBindingId == valueBindingId)&&(identical(other.values, values) || other.values == values)&&(identical(other.caseSensitive, caseSensitive) || other.caseSensitive == caseSensitive)&&(identical(other.multiplicity, multiplicity) || other.multiplicity == multiplicity)&&(identical(other.colorValue, colorValue) || other.colorValue == colorValue));
+  final _this = this as SearchSelectorDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchSelectorDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.valueBindingId, _this.valueBindingId) || other.valueBindingId == _this.valueBindingId)&&(identical(other.values, _this.values) || other.values == _this.values)&&(identical(other.caseSensitive, _this.caseSensitive) || other.caseSensitive == _this.caseSensitive)&&(identical(other.multiplicity, _this.multiplicity) || other.multiplicity == _this.multiplicity)&&(identical(other.colorValue, _this.colorValue) || other.colorValue == _this.colorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,key,valueBindingId,values,caseSensitive,multiplicity,colorValue);
+int get hashCode {
+  final _this = this as SearchSelectorDefinition;
+  return Object.hash(runtimeType,_this.id,_this.key,_this.valueBindingId,_this.values,_this.caseSensitive,_this.multiplicity,_this.colorValue);
+}
 
 @override
 String toString() {
-  return 'SearchSelectorDefinition(id: $id, key: $key, valueBindingId: $valueBindingId, values: $values, caseSensitive: $caseSensitive, multiplicity: $multiplicity, colorValue: $colorValue)';
+  final _this = this as SearchSelectorDefinition;
+  return 'SearchSelectorDefinition(id: ${_this.id}, key: ${_this.key}, valueBindingId: ${_this.valueBindingId}, values: ${_this.values}, caseSensitive: ${_this.caseSensitive}, multiplicity: ${_this.multiplicity}, colorValue: ${_this.colorValue})';
 }
 
 
@@ -14782,7 +15538,7 @@ class _$SearchSelectorDefinitionCopyWithImpl<$Res>
 /// Create a copy of SearchSelectorDefinition
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? key = null,Object? valueBindingId = null,Object? values = null,Object? caseSensitive = null,Object? multiplicity = null,Object? colorValue = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchSelectorDefinition.keyValue(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,valueBindingId: null == valueBindingId ? _self.valueBindingId : valueBindingId // ignore: cast_nullable_to_non_nullable
@@ -14970,16 +15726,18 @@ $KeyValueSearchSelectorDefinitionCopyWith<KeyValueSearchSelectorDefinition> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is KeyValueSearchSelectorDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.key, key) || other.key == key)&&(identical(other.valueBindingId, valueBindingId) || other.valueBindingId == valueBindingId)&&(identical(other.values, values) || other.values == values)&&(identical(other.caseSensitive, caseSensitive) || other.caseSensitive == caseSensitive)&&(identical(other.multiplicity, multiplicity) || other.multiplicity == multiplicity)&&(identical(other.colorValue, colorValue) || other.colorValue == colorValue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is KeyValueSearchSelectorDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.key, key) || other.key == key)&&(identical(other.valueBindingId, valueBindingId) || other.valueBindingId == valueBindingId)&&(identical(other.values, values) || other.values == values)&&(identical(other.caseSensitive, caseSensitive) || other.caseSensitive == caseSensitive)&&(identical(other.multiplicity, multiplicity) || other.multiplicity == multiplicity)&&(identical(other.colorValue, colorValue) || other.colorValue == colorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,key,valueBindingId,values,caseSensitive,multiplicity,colorValue);
+int get hashCode {
+    return Object.hash(runtimeType,id,key,valueBindingId,values,caseSensitive,multiplicity,colorValue);
+}
 
 @override
 String toString() {
-  return 'SearchSelectorDefinition.keyValue(id: $id, key: $key, valueBindingId: $valueBindingId, values: $values, caseSensitive: $caseSensitive, multiplicity: $multiplicity, colorValue: $colorValue)';
+    return 'SearchSelectorDefinition.keyValue(id: $id, key: $key, valueBindingId: $valueBindingId, values: $values, caseSensitive: $caseSensitive, multiplicity: $multiplicity, colorValue: $colorValue)';
 }
 
 
@@ -15055,16 +15813,21 @@ $SearchResultMappingCopyWith<SearchResultMapping> get copyWith => _$SearchResult
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultMapping&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.key, key) || other.key == key)&&(identical(other.selectedValue, selectedValue) || other.selectedValue == selectedValue)&&(identical(other.presentation, presentation) || other.presentation == presentation)&&(identical(other.label, label) || other.label == label));
+  final _this = this as SearchResultMapping;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchResultMapping&&(identical(other.bindingId, _this.bindingId) || other.bindingId == _this.bindingId)&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.selectedValue, _this.selectedValue) || other.selectedValue == _this.selectedValue)&&(identical(other.presentation, _this.presentation) || other.presentation == _this.presentation)&&(identical(other.label, _this.label) || other.label == _this.label));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindingId,key,selectedValue,presentation,label);
+int get hashCode {
+  final _this = this as SearchResultMapping;
+  return Object.hash(runtimeType,_this.bindingId,_this.key,_this.selectedValue,_this.presentation,_this.label);
+}
 
 @override
 String toString() {
-  return 'SearchResultMapping(bindingId: $bindingId, key: $key, selectedValue: $selectedValue, presentation: $presentation, label: $label)';
+  final _this = this as SearchResultMapping;
+  return 'SearchResultMapping(bindingId: ${_this.bindingId}, key: ${_this.key}, selectedValue: ${_this.selectedValue}, presentation: ${_this.presentation}, label: ${_this.label})';
 }
 
 
@@ -15093,7 +15856,7 @@ class _$SearchResultMappingCopyWithImpl<$Res>
 /// Create a copy of SearchResultMapping
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bindingId = null,Object? key = null,Object? selectedValue = null,Object? presentation = null,Object? label = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SearchResultMapping(
 bindingId: null == bindingId ? _self.bindingId : bindingId // ignore: cast_nullable_to_non_nullable
 as BindingId,key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as TypedExpression,selectedValue: null == selectedValue ? _self.selectedValue : selectedValue // ignore: cast_nullable_to_non_nullable
@@ -15307,16 +16070,18 @@ _$SearchResultMappingCopyWith<_SearchResultMapping> get copyWith => __$SearchRes
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResultMapping&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.key, key) || other.key == key)&&(identical(other.selectedValue, selectedValue) || other.selectedValue == selectedValue)&&(identical(other.presentation, presentation) || other.presentation == presentation)&&(identical(other.label, label) || other.label == label));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchResultMapping&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.key, key) || other.key == key)&&(identical(other.selectedValue, selectedValue) || other.selectedValue == selectedValue)&&(identical(other.presentation, presentation) || other.presentation == presentation)&&(identical(other.label, label) || other.label == label));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindingId,key,selectedValue,presentation,label);
+int get hashCode {
+    return Object.hash(runtimeType,bindingId,key,selectedValue,presentation,label);
+}
 
 @override
 String toString() {
-  return 'SearchResultMapping(bindingId: $bindingId, key: $key, selectedValue: $selectedValue, presentation: $presentation, label: $label)';
+    return 'SearchResultMapping(bindingId: $bindingId, key: $key, selectedValue: $selectedValue, presentation: $presentation, label: $label)';
 }
 
 
@@ -15420,16 +16185,21 @@ $HttpQueryParameterCopyWith<HttpQueryParameter> get copyWith => _$HttpQueryParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpQueryParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.value, value) || other.value == value)&&(identical(other.omitIfEmpty, omitIfEmpty) || other.omitIfEmpty == omitIfEmpty));
+  final _this = this as HttpQueryParameter;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpQueryParameter&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.omitIfEmpty, _this.omitIfEmpty) || other.omitIfEmpty == _this.omitIfEmpty));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,value,omitIfEmpty);
+int get hashCode {
+  final _this = this as HttpQueryParameter;
+  return Object.hash(runtimeType,_this.name,_this.value,_this.omitIfEmpty);
+}
 
 @override
 String toString() {
-  return 'HttpQueryParameter(name: $name, value: $value, omitIfEmpty: $omitIfEmpty)';
+  final _this = this as HttpQueryParameter;
+  return 'HttpQueryParameter(name: ${_this.name}, value: ${_this.value}, omitIfEmpty: ${_this.omitIfEmpty})';
 }
 
 
@@ -15458,7 +16228,7 @@ class _$HttpQueryParameterCopyWithImpl<$Res>
 /// Create a copy of HttpQueryParameter
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? value = null,Object? omitIfEmpty = null,}) {
-  return _then(_self.copyWith(
+  return _then(HttpQueryParameter(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as TypedExpression,omitIfEmpty: null == omitIfEmpty ? _self.omitIfEmpty : omitIfEmpty // ignore: cast_nullable_to_non_nullable
@@ -15629,16 +16399,18 @@ _$HttpQueryParameterCopyWith<_HttpQueryParameter> get copyWith => __$HttpQueryPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HttpQueryParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.value, value) || other.value == value)&&(identical(other.omitIfEmpty, omitIfEmpty) || other.omitIfEmpty == omitIfEmpty));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _HttpQueryParameter&&(identical(other.name, name) || other.name == name)&&(identical(other.value, value) || other.value == value)&&(identical(other.omitIfEmpty, omitIfEmpty) || other.omitIfEmpty == omitIfEmpty));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,value,omitIfEmpty);
+int get hashCode {
+    return Object.hash(runtimeType,name,value,omitIfEmpty);
+}
 
 @override
 String toString() {
-  return 'HttpQueryParameter(name: $name, value: $value, omitIfEmpty: $omitIfEmpty)';
+    return 'HttpQueryParameter(name: $name, value: $value, omitIfEmpty: $omitIfEmpty)';
 }
 
 
@@ -15701,16 +16473,21 @@ $HttpJsonContextBindingCopyWith<HttpJsonContextBinding> get copyWith => _$HttpJs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpJsonContextBinding&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.path, path) || other.path == path)&&(identical(other.type, type) || other.type == type));
+  final _this = this as HttpJsonContextBinding;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpJsonContextBinding&&(identical(other.bindingId, _this.bindingId) || other.bindingId == _this.bindingId)&&(identical(other.path, _this.path) || other.path == _this.path)&&(identical(other.type, _this.type) || other.type == _this.type));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindingId,path,type);
+int get hashCode {
+  final _this = this as HttpJsonContextBinding;
+  return Object.hash(runtimeType,_this.bindingId,_this.path,_this.type);
+}
 
 @override
 String toString() {
-  return 'HttpJsonContextBinding(bindingId: $bindingId, path: $path, type: $type)';
+  final _this = this as HttpJsonContextBinding;
+  return 'HttpJsonContextBinding(bindingId: ${_this.bindingId}, path: ${_this.path}, type: ${_this.type})';
 }
 
 
@@ -15739,7 +16516,7 @@ class _$HttpJsonContextBindingCopyWithImpl<$Res>
 /// Create a copy of HttpJsonContextBinding
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bindingId = null,Object? path = null,Object? type = null,}) {
-  return _then(_self.copyWith(
+  return _then(HttpJsonContextBinding(
 bindingId: null == bindingId ? _self.bindingId : bindingId // ignore: cast_nullable_to_non_nullable
 as BindingId,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -15919,16 +16696,18 @@ _$HttpJsonContextBindingCopyWith<_HttpJsonContextBinding> get copyWith => __$Htt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HttpJsonContextBinding&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.path, path) || other.path == path)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _HttpJsonContextBinding&&(identical(other.bindingId, bindingId) || other.bindingId == bindingId)&&(identical(other.path, path) || other.path == path)&&(identical(other.type, type) || other.type == type));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bindingId,path,type);
+int get hashCode {
+    return Object.hash(runtimeType,bindingId,path,type);
+}
 
 @override
 String toString() {
-  return 'HttpJsonContextBinding(bindingId: $bindingId, path: $path, type: $type)';
+    return 'HttpJsonContextBinding(bindingId: $bindingId, path: $path, type: $type)';
 }
 
 
@@ -16000,16 +16779,21 @@ $SearchRankingFieldCopyWith<SearchRankingField> get copyWith => _$SearchRankingF
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchRankingField&&(identical(other.expression, expression) || other.expression == expression)&&(identical(other.weight, weight) || other.weight == weight));
+  final _this = this as SearchRankingField;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchRankingField&&(identical(other.expression, _this.expression) || other.expression == _this.expression)&&(identical(other.weight, _this.weight) || other.weight == _this.weight));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,expression,weight);
+int get hashCode {
+  final _this = this as SearchRankingField;
+  return Object.hash(runtimeType,_this.expression,_this.weight);
+}
 
 @override
 String toString() {
-  return 'SearchRankingField(expression: $expression, weight: $weight)';
+  final _this = this as SearchRankingField;
+  return 'SearchRankingField(expression: ${_this.expression}, weight: ${_this.weight})';
 }
 
 
@@ -16038,7 +16822,7 @@ class _$SearchRankingFieldCopyWithImpl<$Res>
 /// Create a copy of SearchRankingField
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? expression = null,Object? weight = null,}) {
-  return _then(_self.copyWith(
+  return _then(SearchRankingField(
 expression: null == expression ? _self.expression : expression // ignore: cast_nullable_to_non_nullable
 as TypedExpression,weight: null == weight ? _self.weight : weight // ignore: cast_nullable_to_non_nullable
 as int,
@@ -16207,16 +16991,18 @@ _$SearchRankingFieldCopyWith<_SearchRankingField> get copyWith => __$SearchRanki
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchRankingField&&(identical(other.expression, expression) || other.expression == expression)&&(identical(other.weight, weight) || other.weight == weight));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchRankingField&&(identical(other.expression, expression) || other.expression == expression)&&(identical(other.weight, weight) || other.weight == weight));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,expression,weight);
+int get hashCode {
+    return Object.hash(runtimeType,expression,weight);
+}
 
 @override
 String toString() {
-  return 'SearchRankingField(expression: $expression, weight: $weight)';
+    return 'SearchRankingField(expression: $expression, weight: $weight)';
 }
 
 
@@ -16273,7 +17059,7 @@ mixin _$SearchProvider {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchProvider);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchProvider);
 }
 
 
@@ -16282,7 +17068,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchProvider()';
+    return 'SearchProvider()';
 }
 
 
@@ -16405,13 +17191,13 @@ return merge(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PresentationCollectionSourceId sourceId,  SearchResultMapping result,  TypedExpression? where,  List<SearchSelectorDefinition> selectors)?  collection,TResult Function( TypedExpression values,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  staticValues,TResult Function( TypedExpression uri,  List<HttpQueryParameter> parameters,  String resultPath,  TypeExpression resultType,  SearchResultMapping result,  List<HttpJsonContextBinding> contextBindings,  List<SearchSelectorDefinition> selectors,  Duration timeout)?  httpJson,TResult Function( RealmActionId actionId,  TypedExpression payload,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  realmCallback,TResult Function( TypedExpression condition,  SearchProvider child,  TypedExpression? guidance)?  gate,TResult Function( Duration duration,  SearchProvider child)?  debounce,TResult Function( int capacity,  SearchProvider child,  bool retainStaleResults)?  cache,TResult Function( List<SearchRankingField> fields,  SearchProvider child)?  rank,TResult Function( TypedExpression maximum,  SearchProvider child)?  limit,TResult Function( SearchProvider child)?  distinct,TResult Function( String key,  TypedExpression label,  int capacity,  SearchProvider child)?  history,TResult Function( String id,  TypedExpression label,  SearchProvider child)?  section,TResult Function( List<SearchProvider> children)?  merge,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PresentationCollectionSourceId sourceId,  SearchResultMapping result,  TypedExpression? where,  List<SearchSelectorDefinition> selectors)?  collection,TResult Function( TypedExpression values,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  staticValues,TResult Function( TypedExpression uri,  List<HttpQueryParameter> parameters,  String resultPath,  TypeExpression resultType,  SearchResultMapping result,  List<HttpJsonContextBinding> contextBindings,  List<SearchSelectorDefinition> selectors,  Duration timeout)?  httpJson,TResult Function( CapabilityId capabilityId,  TypedExpression payload,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  realmCallback,TResult Function( TypedExpression condition,  SearchProvider child,  TypedExpression? guidance)?  gate,TResult Function( Duration duration,  SearchProvider child)?  debounce,TResult Function( int capacity,  SearchProvider child,  bool retainStaleResults)?  cache,TResult Function( List<SearchRankingField> fields,  SearchProvider child)?  rank,TResult Function( TypedExpression maximum,  SearchProvider child)?  limit,TResult Function( SearchProvider child)?  distinct,TResult Function( String key,  TypedExpression label,  int capacity,  SearchProvider child)?  history,TResult Function( String id,  TypedExpression label,  SearchProvider child)?  section,TResult Function( List<SearchProvider> children)?  merge,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CollectionSearchProvider() when collection != null:
 return collection(_that.sourceId,_that.result,_that.where,_that.selectors);case StaticSearchProvider() when staticValues != null:
 return staticValues(_that.values,_that.result,_that.selectors);case HttpJsonSearchProvider() when httpJson != null:
 return httpJson(_that.uri,_that.parameters,_that.resultPath,_that.resultType,_that.result,_that.contextBindings,_that.selectors,_that.timeout);case RealmCallbackSearchProvider() when realmCallback != null:
-return realmCallback(_that.actionId,_that.payload,_that.result,_that.selectors);case GatedSearchProvider() when gate != null:
+return realmCallback(_that.capabilityId,_that.payload,_that.result,_that.selectors);case GatedSearchProvider() when gate != null:
 return gate(_that.condition,_that.child,_that.guidance);case DebouncedSearchProvider() when debounce != null:
 return debounce(_that.duration,_that.child);case CachedSearchProvider() when cache != null:
 return cache(_that.capacity,_that.child,_that.retainStaleResults);case RankedSearchProvider() when rank != null:
@@ -16438,13 +17224,13 @@ return merge(_that.children);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PresentationCollectionSourceId sourceId,  SearchResultMapping result,  TypedExpression? where,  List<SearchSelectorDefinition> selectors)  collection,required TResult Function( TypedExpression values,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)  staticValues,required TResult Function( TypedExpression uri,  List<HttpQueryParameter> parameters,  String resultPath,  TypeExpression resultType,  SearchResultMapping result,  List<HttpJsonContextBinding> contextBindings,  List<SearchSelectorDefinition> selectors,  Duration timeout)  httpJson,required TResult Function( RealmActionId actionId,  TypedExpression payload,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)  realmCallback,required TResult Function( TypedExpression condition,  SearchProvider child,  TypedExpression? guidance)  gate,required TResult Function( Duration duration,  SearchProvider child)  debounce,required TResult Function( int capacity,  SearchProvider child,  bool retainStaleResults)  cache,required TResult Function( List<SearchRankingField> fields,  SearchProvider child)  rank,required TResult Function( TypedExpression maximum,  SearchProvider child)  limit,required TResult Function( SearchProvider child)  distinct,required TResult Function( String key,  TypedExpression label,  int capacity,  SearchProvider child)  history,required TResult Function( String id,  TypedExpression label,  SearchProvider child)  section,required TResult Function( List<SearchProvider> children)  merge,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PresentationCollectionSourceId sourceId,  SearchResultMapping result,  TypedExpression? where,  List<SearchSelectorDefinition> selectors)  collection,required TResult Function( TypedExpression values,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)  staticValues,required TResult Function( TypedExpression uri,  List<HttpQueryParameter> parameters,  String resultPath,  TypeExpression resultType,  SearchResultMapping result,  List<HttpJsonContextBinding> contextBindings,  List<SearchSelectorDefinition> selectors,  Duration timeout)  httpJson,required TResult Function( CapabilityId capabilityId,  TypedExpression payload,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)  realmCallback,required TResult Function( TypedExpression condition,  SearchProvider child,  TypedExpression? guidance)  gate,required TResult Function( Duration duration,  SearchProvider child)  debounce,required TResult Function( int capacity,  SearchProvider child,  bool retainStaleResults)  cache,required TResult Function( List<SearchRankingField> fields,  SearchProvider child)  rank,required TResult Function( TypedExpression maximum,  SearchProvider child)  limit,required TResult Function( SearchProvider child)  distinct,required TResult Function( String key,  TypedExpression label,  int capacity,  SearchProvider child)  history,required TResult Function( String id,  TypedExpression label,  SearchProvider child)  section,required TResult Function( List<SearchProvider> children)  merge,}) {final _that = this;
 switch (_that) {
 case CollectionSearchProvider():
 return collection(_that.sourceId,_that.result,_that.where,_that.selectors);case StaticSearchProvider():
 return staticValues(_that.values,_that.result,_that.selectors);case HttpJsonSearchProvider():
 return httpJson(_that.uri,_that.parameters,_that.resultPath,_that.resultType,_that.result,_that.contextBindings,_that.selectors,_that.timeout);case RealmCallbackSearchProvider():
-return realmCallback(_that.actionId,_that.payload,_that.result,_that.selectors);case GatedSearchProvider():
+return realmCallback(_that.capabilityId,_that.payload,_that.result,_that.selectors);case GatedSearchProvider():
 return gate(_that.condition,_that.child,_that.guidance);case DebouncedSearchProvider():
 return debounce(_that.duration,_that.child);case CachedSearchProvider():
 return cache(_that.capacity,_that.child,_that.retainStaleResults);case RankedSearchProvider():
@@ -16467,13 +17253,13 @@ return merge(_that.children);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PresentationCollectionSourceId sourceId,  SearchResultMapping result,  TypedExpression? where,  List<SearchSelectorDefinition> selectors)?  collection,TResult? Function( TypedExpression values,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  staticValues,TResult? Function( TypedExpression uri,  List<HttpQueryParameter> parameters,  String resultPath,  TypeExpression resultType,  SearchResultMapping result,  List<HttpJsonContextBinding> contextBindings,  List<SearchSelectorDefinition> selectors,  Duration timeout)?  httpJson,TResult? Function( RealmActionId actionId,  TypedExpression payload,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  realmCallback,TResult? Function( TypedExpression condition,  SearchProvider child,  TypedExpression? guidance)?  gate,TResult? Function( Duration duration,  SearchProvider child)?  debounce,TResult? Function( int capacity,  SearchProvider child,  bool retainStaleResults)?  cache,TResult? Function( List<SearchRankingField> fields,  SearchProvider child)?  rank,TResult? Function( TypedExpression maximum,  SearchProvider child)?  limit,TResult? Function( SearchProvider child)?  distinct,TResult? Function( String key,  TypedExpression label,  int capacity,  SearchProvider child)?  history,TResult? Function( String id,  TypedExpression label,  SearchProvider child)?  section,TResult? Function( List<SearchProvider> children)?  merge,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PresentationCollectionSourceId sourceId,  SearchResultMapping result,  TypedExpression? where,  List<SearchSelectorDefinition> selectors)?  collection,TResult? Function( TypedExpression values,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  staticValues,TResult? Function( TypedExpression uri,  List<HttpQueryParameter> parameters,  String resultPath,  TypeExpression resultType,  SearchResultMapping result,  List<HttpJsonContextBinding> contextBindings,  List<SearchSelectorDefinition> selectors,  Duration timeout)?  httpJson,TResult? Function( CapabilityId capabilityId,  TypedExpression payload,  SearchResultMapping result,  List<SearchSelectorDefinition> selectors)?  realmCallback,TResult? Function( TypedExpression condition,  SearchProvider child,  TypedExpression? guidance)?  gate,TResult? Function( Duration duration,  SearchProvider child)?  debounce,TResult? Function( int capacity,  SearchProvider child,  bool retainStaleResults)?  cache,TResult? Function( List<SearchRankingField> fields,  SearchProvider child)?  rank,TResult? Function( TypedExpression maximum,  SearchProvider child)?  limit,TResult? Function( SearchProvider child)?  distinct,TResult? Function( String key,  TypedExpression label,  int capacity,  SearchProvider child)?  history,TResult? Function( String id,  TypedExpression label,  SearchProvider child)?  section,TResult? Function( List<SearchProvider> children)?  merge,}) {final _that = this;
 switch (_that) {
 case CollectionSearchProvider() when collection != null:
 return collection(_that.sourceId,_that.result,_that.where,_that.selectors);case StaticSearchProvider() when staticValues != null:
 return staticValues(_that.values,_that.result,_that.selectors);case HttpJsonSearchProvider() when httpJson != null:
 return httpJson(_that.uri,_that.parameters,_that.resultPath,_that.resultType,_that.result,_that.contextBindings,_that.selectors,_that.timeout);case RealmCallbackSearchProvider() when realmCallback != null:
-return realmCallback(_that.actionId,_that.payload,_that.result,_that.selectors);case GatedSearchProvider() when gate != null:
+return realmCallback(_that.capabilityId,_that.payload,_that.result,_that.selectors);case GatedSearchProvider() when gate != null:
 return gate(_that.condition,_that.child,_that.guidance);case DebouncedSearchProvider() when debounce != null:
 return debounce(_that.duration,_that.child);case CachedSearchProvider() when cache != null:
 return cache(_that.capacity,_that.child,_that.retainStaleResults);case RankedSearchProvider() when rank != null:
@@ -16494,7 +17280,7 @@ return merge(_that.children);case _:
 
 
 class CollectionSearchProvider implements SearchProvider {
-  const CollectionSearchProvider({required this.sourceId, required this.result, this.where, final  List<SearchSelectorDefinition> selectors = const []}): _selectors = selectors;
+  const CollectionSearchProvider({required this.sourceId, required this.result, this.where,  List<SearchSelectorDefinition> selectors = const []}): _selectors = selectors;
 
 
  final  PresentationCollectionSourceId sourceId;
@@ -16518,16 +17304,18 @@ $CollectionSearchProviderCopyWith<CollectionSearchProvider> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionSearchProvider&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.result, result) || other.result == result)&&(identical(other.where, where) || other.where == where)&&const DeepCollectionEquality().equals(other._selectors, _selectors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectionSearchProvider&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.result, result) || other.result == result)&&(identical(other.where, where) || other.where == where)&&const DeepCollectionEquality().equals(other.selectors, _selectors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,result,where,const DeepCollectionEquality().hash(_selectors));
+int get hashCode {
+    return Object.hash(runtimeType,sourceId,result,where,const DeepCollectionEquality().hash(_selectors));
+}
 
 @override
 String toString() {
-  return 'SearchProvider.collection(sourceId: $sourceId, result: $result, where: $where, selectors: $selectors)';
+    return 'SearchProvider.collection(sourceId: $sourceId, result: $result, where: $where, selectors: $selectors)';
 }
 
 
@@ -16602,7 +17390,7 @@ $TypedExpressionCopyWith<$Res>? get where {
 
 
 class StaticSearchProvider implements SearchProvider {
-  const StaticSearchProvider({required this.values, required this.result, final  List<SearchSelectorDefinition> selectors = const []}): _selectors = selectors;
+  const StaticSearchProvider({required this.values, required this.result,  List<SearchSelectorDefinition> selectors = const []}): _selectors = selectors;
 
 
  final  TypedExpression values;
@@ -16625,16 +17413,18 @@ $StaticSearchProviderCopyWith<StaticSearchProvider> get copyWith => _$StaticSear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StaticSearchProvider&&(identical(other.values, values) || other.values == values)&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other._selectors, _selectors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StaticSearchProvider&&(identical(other.values, values) || other.values == values)&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other.selectors, _selectors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,values,result,const DeepCollectionEquality().hash(_selectors));
+int get hashCode {
+    return Object.hash(runtimeType,values,result,const DeepCollectionEquality().hash(_selectors));
+}
 
 @override
 String toString() {
-  return 'SearchProvider.staticValues(values: $values, result: $result, selectors: $selectors)';
+    return 'SearchProvider.staticValues(values: $values, result: $result, selectors: $selectors)';
 }
 
 
@@ -16696,7 +17486,7 @@ $SearchResultMappingCopyWith<$Res> get result {
 
 
 class HttpJsonSearchProvider implements SearchProvider {
-  const HttpJsonSearchProvider({required this.uri, required final  List<HttpQueryParameter> parameters, required this.resultPath, required this.resultType, required this.result, final  List<HttpJsonContextBinding> contextBindings = const [], final  List<SearchSelectorDefinition> selectors = const [], this.timeout = const Duration(seconds: 5)}): assert(resultPath != "", 'Result path must not be empty.'),_parameters = parameters,_contextBindings = contextBindings,_selectors = selectors;
+  const HttpJsonSearchProvider({required this.uri, required  List<HttpQueryParameter> parameters, required this.resultPath, required this.resultType, required this.result,  List<HttpJsonContextBinding> contextBindings = const [],  List<SearchSelectorDefinition> selectors = const [], this.timeout = const Duration(seconds: 5)}): assert(resultPath != "", 'Result path must not be empty.'),_parameters = parameters,_contextBindings = contextBindings,_selectors = selectors;
 
 
  final  TypedExpression uri;
@@ -16736,16 +17526,18 @@ $HttpJsonSearchProviderCopyWith<HttpJsonSearchProvider> get copyWith => _$HttpJs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpJsonSearchProvider&&(identical(other.uri, uri) || other.uri == uri)&&const DeepCollectionEquality().equals(other._parameters, _parameters)&&(identical(other.resultPath, resultPath) || other.resultPath == resultPath)&&(identical(other.resultType, resultType) || other.resultType == resultType)&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other._contextBindings, _contextBindings)&&const DeepCollectionEquality().equals(other._selectors, _selectors)&&(identical(other.timeout, timeout) || other.timeout == timeout));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpJsonSearchProvider&&(identical(other.uri, uri) || other.uri == uri)&&const DeepCollectionEquality().equals(other.parameters, _parameters)&&(identical(other.resultPath, resultPath) || other.resultPath == resultPath)&&(identical(other.resultType, resultType) || other.resultType == resultType)&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other.contextBindings, _contextBindings)&&const DeepCollectionEquality().equals(other.selectors, _selectors)&&(identical(other.timeout, timeout) || other.timeout == timeout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uri,const DeepCollectionEquality().hash(_parameters),resultPath,resultType,result,const DeepCollectionEquality().hash(_contextBindings),const DeepCollectionEquality().hash(_selectors),timeout);
+int get hashCode {
+    return Object.hash(runtimeType,uri,const DeepCollectionEquality().hash(_parameters),resultPath,resultType,result,const DeepCollectionEquality().hash(_contextBindings),const DeepCollectionEquality().hash(_selectors),timeout);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.httpJson(uri: $uri, parameters: $parameters, resultPath: $resultPath, resultType: $resultType, result: $result, contextBindings: $contextBindings, selectors: $selectors, timeout: $timeout)';
+    return 'SearchProvider.httpJson(uri: $uri, parameters: $parameters, resultPath: $resultPath, resultType: $resultType, result: $result, contextBindings: $contextBindings, selectors: $selectors, timeout: $timeout)';
 }
 
 
@@ -16821,10 +17613,10 @@ $SearchResultMappingCopyWith<$Res> get result {
 
 
 class RealmCallbackSearchProvider implements SearchProvider {
-  const RealmCallbackSearchProvider({required this.actionId, required this.payload, required this.result, final  List<SearchSelectorDefinition> selectors = const []}): _selectors = selectors;
+  const RealmCallbackSearchProvider({required this.capabilityId, required this.payload, required this.result,  List<SearchSelectorDefinition> selectors = const []}): _selectors = selectors;
 
 
- final  RealmActionId actionId;
+ final  CapabilityId capabilityId;
  final  TypedExpression payload;
  final  SearchResultMapping result;
  final  List<SearchSelectorDefinition> _selectors;
@@ -16845,16 +17637,18 @@ $RealmCallbackSearchProviderCopyWith<RealmCallbackSearchProvider> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmCallbackSearchProvider&&(identical(other.actionId, actionId) || other.actionId == actionId)&&(identical(other.payload, payload) || other.payload == payload)&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other._selectors, _selectors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmCallbackSearchProvider&&(identical(other.capabilityId, capabilityId) || other.capabilityId == capabilityId)&&(identical(other.payload, payload) || other.payload == payload)&&(identical(other.result, result) || other.result == result)&&const DeepCollectionEquality().equals(other.selectors, _selectors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,actionId,payload,result,const DeepCollectionEquality().hash(_selectors));
+int get hashCode {
+    return Object.hash(runtimeType,capabilityId,payload,result,const DeepCollectionEquality().hash(_selectors));
+}
 
 @override
 String toString() {
-  return 'SearchProvider.realmCallback(actionId: $actionId, payload: $payload, result: $result, selectors: $selectors)';
+    return 'SearchProvider.realmCallback(capabilityId: $capabilityId, payload: $payload, result: $result, selectors: $selectors)';
 }
 
 
@@ -16865,11 +17659,11 @@ abstract mixin class $RealmCallbackSearchProviderCopyWith<$Res> implements $Sear
   factory $RealmCallbackSearchProviderCopyWith(RealmCallbackSearchProvider value, $Res Function(RealmCallbackSearchProvider) _then) = _$RealmCallbackSearchProviderCopyWithImpl;
 @useResult
 $Res call({
- RealmActionId actionId, TypedExpression payload, SearchResultMapping result, List<SearchSelectorDefinition> selectors
+ CapabilityId capabilityId, TypedExpression payload, SearchResultMapping result, List<SearchSelectorDefinition> selectors
 });
 
 
-$RealmActionIdCopyWith<$Res> get actionId;$TypedExpressionCopyWith<$Res> get payload;$SearchResultMappingCopyWith<$Res> get result;
+$CapabilityIdCopyWith<$Res> get capabilityId;$TypedExpressionCopyWith<$Res> get payload;$SearchResultMappingCopyWith<$Res> get result;
 
 }
 /// @nodoc
@@ -16882,10 +17676,10 @@ class _$RealmCallbackSearchProviderCopyWithImpl<$Res>
 
 /// Create a copy of SearchProvider
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? actionId = null,Object? payload = null,Object? result = null,Object? selectors = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? capabilityId = null,Object? payload = null,Object? result = null,Object? selectors = null,}) {
   return _then(RealmCallbackSearchProvider(
-actionId: null == actionId ? _self.actionId : actionId // ignore: cast_nullable_to_non_nullable
-as RealmActionId,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+capabilityId: null == capabilityId ? _self.capabilityId : capabilityId // ignore: cast_nullable_to_non_nullable
+as CapabilityId,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
 as TypedExpression,result: null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
 as SearchResultMapping,selectors: null == selectors ? _self._selectors : selectors // ignore: cast_nullable_to_non_nullable
 as List<SearchSelectorDefinition>,
@@ -16896,10 +17690,10 @@ as List<SearchSelectorDefinition>,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RealmActionIdCopyWith<$Res> get actionId {
+$CapabilityIdCopyWith<$Res> get capabilityId {
 
-  return $RealmActionIdCopyWith<$Res>(_self.actionId, (value) {
-    return _then(_self.copyWith(actionId: value));
+  return $CapabilityIdCopyWith<$Res>(_self.capabilityId, (value) {
+    return _then(_self.copyWith(capabilityId: value));
   });
 }/// Create a copy of SearchProvider
 /// with the given fields replaced by the non-null parameter values.
@@ -16943,16 +17737,18 @@ $GatedSearchProviderCopyWith<GatedSearchProvider> get copyWith => _$GatedSearchP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GatedSearchProvider&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.child, child) || other.child == child)&&(identical(other.guidance, guidance) || other.guidance == guidance));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is GatedSearchProvider&&(identical(other.condition, condition) || other.condition == condition)&&(identical(other.child, child) || other.child == child)&&(identical(other.guidance, guidance) || other.guidance == guidance));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,condition,child,guidance);
+int get hashCode {
+    return Object.hash(runtimeType,condition,child,guidance);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.gate(condition: $condition, child: $child, guidance: $guidance)';
+    return 'SearchProvider.gate(condition: $condition, child: $child, guidance: $guidance)';
 }
 
 
@@ -17042,16 +17838,18 @@ $DebouncedSearchProviderCopyWith<DebouncedSearchProvider> get copyWith => _$Debo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DebouncedSearchProvider&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DebouncedSearchProvider&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,duration,child);
+int get hashCode {
+    return Object.hash(runtimeType,duration,child);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.debounce(duration: $duration, child: $child)';
+    return 'SearchProvider.debounce(duration: $duration, child: $child)';
 }
 
 
@@ -17120,16 +17918,18 @@ $CachedSearchProviderCopyWith<CachedSearchProvider> get copyWith => _$CachedSear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CachedSearchProvider&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.child, child) || other.child == child)&&(identical(other.retainStaleResults, retainStaleResults) || other.retainStaleResults == retainStaleResults));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CachedSearchProvider&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.child, child) || other.child == child)&&(identical(other.retainStaleResults, retainStaleResults) || other.retainStaleResults == retainStaleResults));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,capacity,child,retainStaleResults);
+int get hashCode {
+    return Object.hash(runtimeType,capacity,child,retainStaleResults);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.cache(capacity: $capacity, child: $child, retainStaleResults: $retainStaleResults)';
+    return 'SearchProvider.cache(capacity: $capacity, child: $child, retainStaleResults: $retainStaleResults)';
 }
 
 
@@ -17182,7 +17982,7 @@ $SearchProviderCopyWith<$Res> get child {
 
 
 class RankedSearchProvider implements SearchProvider {
-   RankedSearchProvider({required final  List<SearchRankingField> fields, required this.child}): assert(fields.isNotEmpty, 'Ranking fields must not be empty.'),_fields = fields;
+   RankedSearchProvider({required  List<SearchRankingField> fields, required this.child}): assert(fields.isNotEmpty, 'Ranking fields must not be empty.'),_fields = fields;
 
 
  final  List<SearchRankingField> _fields;
@@ -17204,16 +18004,18 @@ $RankedSearchProviderCopyWith<RankedSearchProvider> get copyWith => _$RankedSear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RankedSearchProvider&&const DeepCollectionEquality().equals(other._fields, _fields)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RankedSearchProvider&&const DeepCollectionEquality().equals(other.fields, _fields)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields),child);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields),child);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.rank(fields: $fields, child: $child)';
+    return 'SearchProvider.rank(fields: $fields, child: $child)';
 }
 
 
@@ -17281,16 +18083,18 @@ $LimitedSearchProviderCopyWith<LimitedSearchProvider> get copyWith => _$LimitedS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LimitedSearchProvider&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LimitedSearchProvider&&(identical(other.maximum, maximum) || other.maximum == maximum)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,maximum,child);
+int get hashCode {
+    return Object.hash(runtimeType,maximum,child);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.limit(maximum: $maximum, child: $child)';
+    return 'SearchProvider.limit(maximum: $maximum, child: $child)';
 }
 
 
@@ -17366,16 +18170,18 @@ $DistinctSearchProviderCopyWith<DistinctSearchProvider> get copyWith => _$Distin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DistinctSearchProvider&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DistinctSearchProvider&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,child);
+int get hashCode {
+    return Object.hash(runtimeType,child);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.distinct(child: $child)';
+    return 'SearchProvider.distinct(child: $child)';
 }
 
 
@@ -17444,16 +18250,18 @@ $HistoricalSearchProviderCopyWith<HistoricalSearchProvider> get copyWith => _$Hi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoricalSearchProvider&&(identical(other.key, key) || other.key == key)&&(identical(other.label, label) || other.label == label)&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoricalSearchProvider&&(identical(other.key, key) || other.key == key)&&(identical(other.label, label) || other.label == label)&&(identical(other.capacity, capacity) || other.capacity == capacity)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,label,capacity,child);
+int get hashCode {
+    return Object.hash(runtimeType,key,label,capacity,child);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.history(key: $key, label: $label, capacity: $capacity, child: $child)';
+    return 'SearchProvider.history(key: $key, label: $label, capacity: $capacity, child: $child)';
 }
 
 
@@ -17533,16 +18341,18 @@ $SectionSearchProviderCopyWith<SectionSearchProvider> get copyWith => _$SectionS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionSearchProvider&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.child, child) || other.child == child));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionSearchProvider&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.child, child) || other.child == child));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,child);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,child);
+}
 
 @override
 String toString() {
-  return 'SearchProvider.section(id: $id, label: $label, child: $child)';
+    return 'SearchProvider.section(id: $id, label: $label, child: $child)';
 }
 
 
@@ -17604,7 +18414,7 @@ $SearchProviderCopyWith<$Res> get child {
 
 
 class MergedSearchProvider implements SearchProvider {
-   MergedSearchProvider({required final  List<SearchProvider> children}): assert(children.isNotEmpty, 'Merged providers must not be empty.'),_children = children;
+   MergedSearchProvider({required  List<SearchProvider> children}): assert(children.isNotEmpty, 'Merged providers must not be empty.'),_children = children;
 
 
  final  List<SearchProvider> _children;
@@ -17625,16 +18435,18 @@ $MergedSearchProviderCopyWith<MergedSearchProvider> get copyWith => _$MergedSear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MergedSearchProvider&&const DeepCollectionEquality().equals(other._children, _children));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MergedSearchProvider&&const DeepCollectionEquality().equals(other.children, _children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_children));
+}
 
 @override
 String toString() {
-  return 'SearchProvider.merge(children: $children)';
+    return 'SearchProvider.merge(children: $children)';
 }
 
 
@@ -17670,6 +18482,600 @@ as List<SearchProvider>,
 }
 
 
+}
+
+/// @nodoc
+mixin _$StatusAppearance {
+
+ StatusTone get tone; TypedExpression? get label;
+/// Create a copy of StatusAppearance
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StatusAppearanceCopyWith<StatusAppearance> get copyWith => _$StatusAppearanceCopyWithImpl<StatusAppearance>(this as StatusAppearance, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as StatusAppearance;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatusAppearance&&(identical(other.tone, _this.tone) || other.tone == _this.tone)&&(identical(other.label, _this.label) || other.label == _this.label));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as StatusAppearance;
+  return Object.hash(runtimeType,_this.tone,_this.label);
+}
+
+@override
+String toString() {
+  final _this = this as StatusAppearance;
+  return 'StatusAppearance(tone: ${_this.tone}, label: ${_this.label})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StatusAppearanceCopyWith<$Res>  {
+  factory $StatusAppearanceCopyWith(StatusAppearance value, $Res Function(StatusAppearance) _then) = _$StatusAppearanceCopyWithImpl;
+@useResult
+$Res call({
+ StatusTone tone, TypedExpression? label
+});
+
+
+$TypedExpressionCopyWith<$Res>? get label;
+
+}
+/// @nodoc
+class _$StatusAppearanceCopyWithImpl<$Res>
+    implements $StatusAppearanceCopyWith<$Res> {
+  _$StatusAppearanceCopyWithImpl(this._self, this._then);
+
+  final StatusAppearance _self;
+  final $Res Function(StatusAppearance) _then;
+
+/// Create a copy of StatusAppearance
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? tone = null,Object? label = freezed,}) {
+  return _then(StatusAppearance(
+tone: null == tone ? _self.tone : tone // ignore: cast_nullable_to_non_nullable
+as StatusTone,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as TypedExpression?,
+  ));
+}
+/// Create a copy of StatusAppearance
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypedExpressionCopyWith<$Res>? get label {
+    if (_self.label == null) {
+    return null;
+  }
+
+  return $TypedExpressionCopyWith<$Res>(_self.label!, (value) {
+    return _then(_self.copyWith(label: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [StatusAppearance].
+extension StatusAppearancePatterns on StatusAppearance {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _StatusAppearance value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _StatusAppearance() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _StatusAppearance value)  $default,){
+final _that = this;
+switch (_that) {
+case _StatusAppearance():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _StatusAppearance value)?  $default,){
+final _that = this;
+switch (_that) {
+case _StatusAppearance() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( StatusTone tone,  TypedExpression? label)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _StatusAppearance() when $default != null:
+return $default(_that.tone,_that.label);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( StatusTone tone,  TypedExpression? label)  $default,) {final _that = this;
+switch (_that) {
+case _StatusAppearance():
+return $default(_that.tone,_that.label);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( StatusTone tone,  TypedExpression? label)?  $default,) {final _that = this;
+switch (_that) {
+case _StatusAppearance() when $default != null:
+return $default(_that.tone,_that.label);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _StatusAppearance implements StatusAppearance {
+  const _StatusAppearance({required this.tone, this.label});
+
+
+@override final  StatusTone tone;
+@override final  TypedExpression? label;
+
+/// Create a copy of StatusAppearance
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StatusAppearanceCopyWith<_StatusAppearance> get copyWith => __$StatusAppearanceCopyWithImpl<_StatusAppearance>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatusAppearance&&(identical(other.tone, tone) || other.tone == tone)&&(identical(other.label, label) || other.label == label));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,tone,label);
+}
+
+@override
+String toString() {
+    return 'StatusAppearance(tone: $tone, label: $label)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StatusAppearanceCopyWith<$Res> implements $StatusAppearanceCopyWith<$Res> {
+  factory _$StatusAppearanceCopyWith(_StatusAppearance value, $Res Function(_StatusAppearance) _then) = __$StatusAppearanceCopyWithImpl;
+@override @useResult
+$Res call({
+ StatusTone tone, TypedExpression? label
+});
+
+
+@override $TypedExpressionCopyWith<$Res>? get label;
+
+}
+/// @nodoc
+class __$StatusAppearanceCopyWithImpl<$Res>
+    implements _$StatusAppearanceCopyWith<$Res> {
+  __$StatusAppearanceCopyWithImpl(this._self, this._then);
+
+  final _StatusAppearance _self;
+  final $Res Function(_StatusAppearance) _then;
+
+/// Create a copy of StatusAppearance
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? tone = null,Object? label = freezed,}) {
+  return _then(_StatusAppearance(
+tone: null == tone ? _self.tone : tone // ignore: cast_nullable_to_non_nullable
+as StatusTone,label: freezed == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as TypedExpression?,
+  ));
+}
+
+/// Create a copy of StatusAppearance
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TypedExpressionCopyWith<$Res>? get label {
+    if (_self.label == null) {
+    return null;
+  }
+
+  return $TypedExpressionCopyWith<$Res>(_self.label!, (value) {
+    return _then(_self.copyWith(label: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$StatusCase {
+
+ DataValue get match; StatusAppearance get appearance;
+/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StatusCaseCopyWith<StatusCase> get copyWith => _$StatusCaseCopyWithImpl<StatusCase>(this as StatusCase, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as StatusCase;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatusCase&&(identical(other.match, _this.match) || other.match == _this.match)&&(identical(other.appearance, _this.appearance) || other.appearance == _this.appearance));
+}
+
+
+@override
+int get hashCode {
+  final _this = this as StatusCase;
+  return Object.hash(runtimeType,_this.match,_this.appearance);
+}
+
+@override
+String toString() {
+  final _this = this as StatusCase;
+  return 'StatusCase(match: ${_this.match}, appearance: ${_this.appearance})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StatusCaseCopyWith<$Res>  {
+  factory $StatusCaseCopyWith(StatusCase value, $Res Function(StatusCase) _then) = _$StatusCaseCopyWithImpl;
+@useResult
+$Res call({
+ DataValue match, StatusAppearance appearance
+});
+
+
+$DataValueCopyWith<$Res> get match;$StatusAppearanceCopyWith<$Res> get appearance;
+
+}
+/// @nodoc
+class _$StatusCaseCopyWithImpl<$Res>
+    implements $StatusCaseCopyWith<$Res> {
+  _$StatusCaseCopyWithImpl(this._self, this._then);
+
+  final StatusCase _self;
+  final $Res Function(StatusCase) _then;
+
+/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? match = null,Object? appearance = null,}) {
+  return _then(StatusCase(
+match: null == match ? _self.match : match // ignore: cast_nullable_to_non_nullable
+as DataValue,appearance: null == appearance ? _self.appearance : appearance // ignore: cast_nullable_to_non_nullable
+as StatusAppearance,
+  ));
+}
+/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DataValueCopyWith<$Res> get match {
+
+  return $DataValueCopyWith<$Res>(_self.match, (value) {
+    return _then(_self.copyWith(match: value));
+  });
+}/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$StatusAppearanceCopyWith<$Res> get appearance {
+
+  return $StatusAppearanceCopyWith<$Res>(_self.appearance, (value) {
+    return _then(_self.copyWith(appearance: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [StatusCase].
+extension StatusCasePatterns on StatusCase {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _StatusCase value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _StatusCase() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _StatusCase value)  $default,){
+final _that = this;
+switch (_that) {
+case _StatusCase():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _StatusCase value)?  $default,){
+final _that = this;
+switch (_that) {
+case _StatusCase() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DataValue match,  StatusAppearance appearance)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _StatusCase() when $default != null:
+return $default(_that.match,_that.appearance);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DataValue match,  StatusAppearance appearance)  $default,) {final _that = this;
+switch (_that) {
+case _StatusCase():
+return $default(_that.match,_that.appearance);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DataValue match,  StatusAppearance appearance)?  $default,) {final _that = this;
+switch (_that) {
+case _StatusCase() when $default != null:
+return $default(_that.match,_that.appearance);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _StatusCase implements StatusCase {
+  const _StatusCase({required this.match, required this.appearance});
+
+
+@override final  DataValue match;
+@override final  StatusAppearance appearance;
+
+/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StatusCaseCopyWith<_StatusCase> get copyWith => __$StatusCaseCopyWithImpl<_StatusCase>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatusCase&&(identical(other.match, match) || other.match == match)&&(identical(other.appearance, appearance) || other.appearance == appearance));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,match,appearance);
+}
+
+@override
+String toString() {
+    return 'StatusCase(match: $match, appearance: $appearance)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StatusCaseCopyWith<$Res> implements $StatusCaseCopyWith<$Res> {
+  factory _$StatusCaseCopyWith(_StatusCase value, $Res Function(_StatusCase) _then) = __$StatusCaseCopyWithImpl;
+@override @useResult
+$Res call({
+ DataValue match, StatusAppearance appearance
+});
+
+
+@override $DataValueCopyWith<$Res> get match;@override $StatusAppearanceCopyWith<$Res> get appearance;
+
+}
+/// @nodoc
+class __$StatusCaseCopyWithImpl<$Res>
+    implements _$StatusCaseCopyWith<$Res> {
+  __$StatusCaseCopyWithImpl(this._self, this._then);
+
+  final _StatusCase _self;
+  final $Res Function(_StatusCase) _then;
+
+/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? match = null,Object? appearance = null,}) {
+  return _then(_StatusCase(
+match: null == match ? _self.match : match // ignore: cast_nullable_to_non_nullable
+as DataValue,appearance: null == appearance ? _self.appearance : appearance // ignore: cast_nullable_to_non_nullable
+as StatusAppearance,
+  ));
+}
+
+/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DataValueCopyWith<$Res> get match {
+
+  return $DataValueCopyWith<$Res>(_self.match, (value) {
+    return _then(_self.copyWith(match: value));
+  });
+}/// Create a copy of StatusCase
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$StatusAppearanceCopyWith<$Res> get appearance {
+
+  return $StatusAppearanceCopyWith<$Res>(_self.appearance, (value) {
+    return _then(_self.copyWith(appearance: value));
+  });
+}
 }
 
 // dart format on

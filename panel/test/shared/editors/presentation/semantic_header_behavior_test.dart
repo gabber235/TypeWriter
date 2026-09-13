@@ -114,6 +114,7 @@ void main() {
       tester.getSemantics(find.byTooltip("second")).getSemanticsData().tooltip,
       isNot("second"),
     );
+
     await tester.tap(find.byTooltip("More actions").hitTestable());
     await tester.pumpAndSettle();
     expect(find.text("second"), findsOneWidget);
@@ -213,6 +214,7 @@ void main() {
     final end = tester.getCenter(find.byTooltip("end")).dx;
     expect(before, lessThan(title));
     expect(after, greaterThan(title));
+
     expect(end, greaterThan(after));
   });
 
@@ -317,12 +319,9 @@ void main() {
             SingleActivator(LogicalKeyboardKey.f6),
           ],
         },
-        onRealmAction: (action) {
+        onRealmAction: (action, payload) {
           calls++;
-          return const MutationSuccess(
-            revision: 1,
-            value: StringValue("initial"),
-          );
+          return const RealmCommandResult.success([]);
         },
       ),
     );
@@ -384,6 +383,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text("Confirm toggle"), findsOneWidget);
     await tester.tap(find.text("Cancel"));
+
     await tester.pumpAndSettle();
 
     await tester.pumpTestApp(
@@ -407,6 +407,7 @@ void main() {
     expect(find.byType(RotatingShortcuts), findsOneWidget);
     await tester.tap(find.widgetWithText(MenuItemButton, "Toggle value"));
     await tester.pumpAndSettle();
+
     expect(find.text("Confirm toggle"), findsOneWidget);
   });
 

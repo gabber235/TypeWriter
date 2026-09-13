@@ -58,15 +58,16 @@ class TagGraph extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(tagsProvider);
+    final tags = ref.watch(projectedTagsProvider);
 
     return tags(
       name: "tags",
       builder: (tagList) {
         if (tagList.isEmpty) {
           return EmptyTagsPage(
-            onCreateTag: () =>
-                ref.read(tagsProvider.notifier).createTag(name: "New Tag"),
+            onCreateTag: () => ref
+                .read(canonicalTagsProvider.notifier)
+                .createTag(name: "New Tag"),
           );
         }
 
@@ -81,7 +82,7 @@ class TagGraph extends HookConsumerWidget {
               final tag = tagsById[tagId];
               if (tag == null) continue;
               ref
-                  .read(tagsProvider.notifier)
+                  .read(canonicalTagsProvider.notifier)
                   .updateTag(
                     tag.copyWith(
                       placement: tag.placement.copyWith(
@@ -99,7 +100,7 @@ class TagGraph extends HookConsumerWidget {
               final tag = tagsById[tagId];
               if (tag == null) continue;
               ref
-                  .read(tagsProvider.notifier)
+                  .read(canonicalTagsProvider.notifier)
                   .updateTag(
                     tag.copyWith(
                       placement: tag.placement.copyWith(

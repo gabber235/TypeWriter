@@ -68,7 +68,9 @@ class TypeLink extends HookWidget {
       } on FormatException {
         return;
       }
+
       if (!await canLaunchUrl(uri)) return;
+
       launching.value = true;
       try {
         await launchUrl(

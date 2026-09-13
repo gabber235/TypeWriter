@@ -11,7 +11,7 @@ class PagePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final page = ref.watch(pagesProvider(recordId("page:$pageId")));
+    final page = ref.watch(projectedPageProvider(recordId("page:$pageId")));
     return Pane(
       id: "pagepage",
       primary: true,
@@ -26,14 +26,25 @@ class PagePage extends HookConsumerWidget {
         child: page(
           name: "page",
           builder: (page) {
-            return switch (page.type) {
-              PageType.static ||
-              PageType.sequence ||
-              PageType.manifest => EntryGraph(
+            final definition = ref
+                .watch(realmEditorCatalogProvider)
+                .value
+                ?.snapshot
+                ?.pageCatalog
+                .definitions[page.kind];
+            if (definition == null) {
+              return const Center(
+                child: Text(
+                  "This page kind is unavailable. The page is read only.",
+                ),
+              );
+            }
+            return switch (definition.editor) {
+              RealmGraphPageEditor(:final direction) => EntryGraph(
                 pageId: pageId,
-                graphDirection: page.type.direction!,
+                graphDirection: direction,
               ),
-              PageType.scene => EntryScene(pageId: pageId),
+              RealmTimelinePageEditor() => EntryScene(pageId: pageId),
             };
           },
         ),

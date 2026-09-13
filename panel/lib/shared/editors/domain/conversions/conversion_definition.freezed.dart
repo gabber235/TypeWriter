@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'conversion_definition.dart';
@@ -9,6 +9,7 @@ part of 'conversion_definition.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ConversionDefinitionCopyWith<ConversionDefinition> get copyWith => _$Conversion
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.safety, safety) || other.safety == safety)&&(identical(other.fallible, fallible) || other.fallible == fallible)&&(identical(other.locality, locality) || other.locality == locality)&&(identical(other.cost, cost) || other.cost == cost));
+  final _this = this as ConversionDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.target, _this.target) || other.target == _this.target)&&(identical(other.rule, _this.rule) || other.rule == _this.rule)&&(identical(other.safety, _this.safety) || other.safety == _this.safety)&&(identical(other.fallible, _this.fallible) || other.fallible == _this.fallible)&&(identical(other.locality, _this.locality) || other.locality == _this.locality)&&(identical(other.cost, _this.cost) || other.cost == _this.cost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,source,target,rule,safety,fallible,locality,cost);
+int get hashCode {
+  final _this = this as ConversionDefinition;
+  return Object.hash(runtimeType,_this.id,_this.source,_this.target,_this.rule,_this.safety,_this.fallible,_this.locality,_this.cost);
+}
 
 @override
 String toString() {
-  return 'ConversionDefinition(id: $id, source: $source, target: $target, rule: $rule, safety: $safety, fallible: $fallible, locality: $locality, cost: $cost)';
+  final _this = this as ConversionDefinition;
+  return 'ConversionDefinition(id: ${_this.id}, source: ${_this.source}, target: ${_this.target}, rule: ${_this.rule}, safety: ${_this.safety}, fallible: ${_this.fallible}, locality: ${_this.locality}, cost: ${_this.cost})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ConversionDefinitionCopyWithImpl<$Res>
 /// Create a copy of ConversionDefinition
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? source = null,Object? target = null,Object? rule = null,Object? safety = null,Object? fallible = null,Object? locality = null,Object? cost = null,}) {
-  return _then(_self.copyWith(
+  return _then(ConversionDefinition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as ConversionId,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as ResolvedTypeRef,target: null == target ? _self.target : target // ignore: cast_nullable_to_non_nullable
@@ -80,7 +86,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $ConversionIdCopyWith<$Res> get id {
-  
+
   return $ConversionIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -89,7 +95,7 @@ $ConversionIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get source {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -98,7 +104,7 @@ $ResolvedTypeRefCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get target {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -107,7 +113,7 @@ $ResolvedTypeRefCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $ConversionRuleCopyWith<$Res> get rule {
-  
+
   return $ConversionRuleCopyWith<$Res>(_self.rule, (value) {
     return _then(_self.copyWith(rule: value));
   });
@@ -250,7 +256,7 @@ return $default(_that.id,_that.source,_that.target,_that.rule,_that.safety,_that
 
 class _ConversionDefinition implements ConversionDefinition {
   const _ConversionDefinition({required this.id, required this.source, required this.target, required this.rule, this.safety = ConversionSafety.lossless, this.fallible = false, this.locality = ConversionLocality.local, this.cost = 1}): assert(cost >= 0, 'Cost must not be negative.');
-  
+
 
 @override final  ConversionId id;
 @override final  ResolvedTypeRef source;
@@ -271,16 +277,18 @@ _$ConversionDefinitionCopyWith<_ConversionDefinition> get copyWith => __$Convers
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.safety, safety) || other.safety == safety)&&(identical(other.fallible, fallible) || other.fallible == fallible)&&(identical(other.locality, locality) || other.locality == locality)&&(identical(other.cost, cost) || other.cost == cost));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.source, source) || other.source == source)&&(identical(other.target, target) || other.target == target)&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.safety, safety) || other.safety == safety)&&(identical(other.fallible, fallible) || other.fallible == fallible)&&(identical(other.locality, locality) || other.locality == locality)&&(identical(other.cost, cost) || other.cost == cost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,source,target,rule,safety,fallible,locality,cost);
+int get hashCode {
+    return Object.hash(runtimeType,id,source,target,rule,safety,fallible,locality,cost);
+}
 
 @override
 String toString() {
-  return 'ConversionDefinition(id: $id, source: $source, target: $target, rule: $rule, safety: $safety, fallible: $fallible, locality: $locality, cost: $cost)';
+    return 'ConversionDefinition(id: $id, source: $source, target: $target, rule: $rule, safety: $safety, fallible: $fallible, locality: $locality, cost: $cost)';
 }
 
 
@@ -327,7 +335,7 @@ as int,
 @override
 @pragma('vm:prefer-inline')
 $ConversionIdCopyWith<$Res> get id {
-  
+
   return $ConversionIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -336,7 +344,7 @@ $ConversionIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get source {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -345,7 +353,7 @@ $ResolvedTypeRefCopyWith<$Res> get source {
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get target {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.target, (value) {
     return _then(_self.copyWith(target: value));
   });
@@ -354,7 +362,7 @@ $ResolvedTypeRefCopyWith<$Res> get target {
 @override
 @pragma('vm:prefer-inline')
 $ConversionRuleCopyWith<$Res> get rule {
-  
+
   return $ConversionRuleCopyWith<$Res>(_self.rule, (value) {
     return _then(_self.copyWith(rule: value));
   });

@@ -121,14 +121,11 @@ final class _ConnectionLayerRenderSurface
 
 final class _RenderConnectionLayerSurface extends RenderProxyBox {
   _RenderConnectionLayerSurface({
-    required List<PresentationConnection> connections,
-    required PresentationRenderScope scope,
-    required TextDirection textDirection,
-    required ValueChanged<_ConnectionOverlay> onOverlayChanged,
-  }) : _connections = connections,
-       _scope = scope,
-       _textDirection = textDirection,
-       _onOverlayChanged = onOverlayChanged;
+    required this._connections,
+    required this._scope,
+    required this._textDirection,
+    required this._onOverlayChanged,
+  });
 
   List<PresentationConnection> _connections;
   PresentationRenderScope _scope;
@@ -167,6 +164,7 @@ final class _RenderConnectionLayerSurface extends RenderProxyBox {
     );
     _lastResolution = resolution;
     _collectStrokeSurface()?.strokes = resolution.strokes;
+
     final markerSurfaces = _collectMarkerSurfaces();
     for (final surface in markerSurfaces.values) {
       surface.hide();

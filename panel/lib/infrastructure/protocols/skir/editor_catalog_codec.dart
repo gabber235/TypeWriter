@@ -34,6 +34,7 @@ extension TypeCatalogWireEncoding on TypeCatalog {
         if (encoded.valueOrNull case final item?) parents.add(item);
       }
       final parameters = <wire.TypeParameter>[];
+
       for (final parameter in definition.parameters) {
         final bound = parameter.bound is AnyType
             ? const TypeResult<wire.TypeExpression?>.success(null)
@@ -95,6 +96,7 @@ extension WireTypeDefinitionListDecoding on Iterable<wire.TypeDefinition> {
     final wireDefinitions = toList();
     final diagnostics = <TypeDiagnostic>[];
     final shells = <TypeDefinition>[];
+
     for (final value in wireDefinitions) {
       final reference = value._decodeReference();
       final kind = value.kind._decodeDomain();
@@ -116,9 +118,11 @@ extension WireTypeDefinitionListDecoding on Iterable<wire.TypeDefinition> {
         }
       }
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     final codec = SkirTypeCodec(TypeRegistry(TypeCatalog(shells)));
     final definitions = <TypeDefinition>[];
+
     for (final entry in wireDefinitions.indexed) {
       final decoded = entry.$2._decodeDomain(shells[entry.$1].id, codec);
       diagnostics.addAll(decoded.diagnostics);
@@ -126,6 +130,7 @@ extension WireTypeDefinitionListDecoding on Iterable<wire.TypeDefinition> {
         definitions.add(definition);
       }
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     final catalog = TypeCatalog(definitions);
     return TypeResult.success(
@@ -152,6 +157,7 @@ extension on wire.TypeDefinition {
       diagnostics.addAll(decoded.diagnostics);
       if (decoded.valueOrNull case final parent?) parents.add(parent);
     }
+
     final parameters = <TypeParameter>[];
     for (final value in value.parameters) {
       final decoded = value._decodeDomain(codec);
@@ -172,6 +178,7 @@ extension on wire.TypeDefinition {
             (value) => value,
           );
     diagnostics.addAll(defaultPresentation.diagnostics);
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
     return TypeResult.success(
       TypeDefinition(
@@ -215,6 +222,7 @@ extension on wire.TypeParameter {
       wire.TypeVariance.contravariant => TypeVariance.contravariant,
       _ => null,
     };
+
     if (variance == null) return invalidWire("Unknown type variance");
     return bound.mapValue(
       (value) =>

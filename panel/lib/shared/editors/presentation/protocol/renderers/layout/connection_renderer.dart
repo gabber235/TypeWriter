@@ -58,6 +58,7 @@ extension on PresentationAnchorPoint {
         ),
       );
     }
+
     final resolvedOffset = offset?._resolve(scope);
     if (resolvedOffset case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);
@@ -81,7 +82,9 @@ extension on PresentationOffset {
     final yValue = scope.evaluate(y);
     final diagnostics = [...xValue.diagnostics, ...yValue.diagnostics];
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+
     final dx = xValue.valueOrNull._connectionNumber;
+
     final dy = yValue.valueOrNull._connectionNumber;
     if (dx == null || dy == null || !dx.isFinite || !dy.isFinite) {
       return TypeResult.failure([

@@ -210,7 +210,7 @@ class _ListInputRendererState extends State<_ListInputRenderer> {
       final childScope = itemScope
           .withAlias(
             widget.element.itemBindingId,
-            reference,
+            widget.element.control.binding.at(DataPath.root.index(index)),
             BindingSnapshot(
               type: type.element,
               value: value,

@@ -24,7 +24,7 @@ class PresentationSearchInput extends HookConsumerWidget {
   });
 
   final SearchInputElement element;
-  final ResolvedBinding binding;
+  final InspectedBinding binding;
   final PresentationRenderScope scope;
   final double maximumExtent;
   final PresentationSearchSourceBuilder? sourceBuilder;
@@ -38,14 +38,18 @@ class PresentationSearchInput extends HookConsumerWidget {
     final editing = useState(false);
     final original = useRef(binding.value);
     final explicitExit = useRef(false);
+
     final interaction = useEditorFieldInteraction(scope, binding.reference);
+
     final selectingWithPointer = useRef(false);
+
     final validationMessage = useState<String?>(null);
     final selections = useMemoized(
       () => StreamController<PresentationSearchSelectionEvent>.broadcast(
         sync: true,
       ),
     );
+
     useEffect(() => selections.close, [selections]);
     final historyStorage = useMemoized(
       () => PresentationSearchHistoryStorage(
@@ -57,8 +61,10 @@ class PresentationSearchInput extends HookConsumerWidget {
     );
 
     void restoreOriginal() {
-      if (binding.value != original.value) {
-        scope.update(binding.reference, original.value);
+      final current = binding.value.valueOrNull;
+      final previous = original.value.valueOrNull;
+      if (current != previous && previous != null) {
+        scope.update(binding.reference, previous);
       }
     }
 
@@ -75,6 +81,7 @@ class PresentationSearchInput extends HookConsumerWidget {
       }
       inputController.endInteraction();
       inputController.inputFocusNode.unfocus();
+
       editing.value = false;
       if (restoreFocus) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -85,9 +92,9 @@ class PresentationSearchInput extends HookConsumerWidget {
 
     DataValue? nextValue(DataValue selected, {required bool toggle}) {
       if (element.selectionMode == SearchSelectionMode.single) return selected;
-      final current = binding.value;
-      if (current is! ListValue) return null;
-      final values = [...current.values];
+      final current = binding.value.valueOrNull;
+      final values = current is ListValue ? [...current.values] : <DataValue>[];
+
       final index = values.indexOf(selected);
       if (toggle && index >= 0) {
         values.removeAt(index);
@@ -112,8 +119,11 @@ class PresentationSearchInput extends HookConsumerWidget {
         validationMessage.value = diagnostics.first.message;
         return false;
       }
+
       validationMessage.value = null;
+
       scope.update(binding.reference, next);
+
       if (finishAfterUpdate) finish();
       return true;
     }
@@ -131,6 +141,7 @@ class PresentationSearchInput extends HookConsumerWidget {
       )) {
         return;
       }
+
       if (!commit) return;
       selections.add(
         PresentationSearchSelectionEvent(
@@ -163,15 +174,19 @@ class PresentationSearchInput extends HookConsumerWidget {
         toggle: false,
         finishAfterUpdate: element.selectionMode == SearchSelectionMode.single,
       );
+
       if (accepted && element.selectionMode == SearchSelectionMode.multiple) {
         finish();
       }
+
       return accepted;
     }
 
     String initialQuery() {
       final expression = element.initialQuery;
-      if (expression == null) return binding.value.expressionDisplayText;
+      if (expression == null) {
+        return binding.value.valueOrNull?.expressionDisplayText ?? "";
+      }
       final result = scope.evaluate(expression);
       if (result.valueOrNull case StringValue(:final value)) return value;
       validationMessage.value =
@@ -215,11 +230,14 @@ class PresentationSearchInput extends HookConsumerWidget {
           original.value = binding.value;
           interaction.begin();
           explicitExit.value = false;
+
           validationMessage.value = null;
           if (element.selectionMode == SearchSelectionMode.single) {
             controller.updateQuery(initialQuery());
           }
+
           inputController.inputFocusNode.unfocus();
+
           editing.value = true;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!editing.value) return;

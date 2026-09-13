@@ -11,6 +11,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 serde.workspace = true
+serde_json.workspace = true
 skir-client.workspace = true
 surrealdb-types.workspace = true
 surrealdb-component-sdk.workspace = true
@@ -21,7 +22,3 @@ otel-wasi.workspace = true
 tracing.workspace = true
 tracing-opentelemetry.workspace = true
 wit-bindgen.workspace = true
-
-
-[dev-dependencies]
-serde_json.workspace = true

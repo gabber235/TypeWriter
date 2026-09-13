@@ -16,18 +16,34 @@ struct JoinCode {
   };
 }
 
+struct OrganizationJoinCodesSnapshot {
+  sequence: int64;
+  values: [JoinCode];
+}
+
+enum OrganizationJoinCodesChange {
+  add: JoinCode;
+  remove: RecordId;
+}
+
+struct OrganizationJoinCodesChanged {
+  sequence: int64;
+  operation_id: string;
+  changes: [OrganizationJoinCodesChange];
+}
+
 method WatchOrganizationJoinCodes(
   struct {}
 ): enum {
   internal_error: InternalError;
 
-  list: [JoinCode];
-  add: JoinCode;
-  remove: RecordId;
+  snapshot: OrganizationJoinCodesSnapshot;
+  changed: OrganizationJoinCodesChanged;
 } = 690316;
 
 method GenerateOrganizationJoinCode(
   struct {
+    operation_id: string;
     single_use: bool;
     expiration: enum {
       never;
@@ -38,9 +54,14 @@ method GenerateOrganizationJoinCode(
     };
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  success: JoinCode;
+  success: struct {
+    code: JoinCode;
+    event: OrganizationJoinCodesChanged;
+  };
 
   roles_not_found_error: struct {
     role_ids: [RecordId];
@@ -57,12 +78,17 @@ method GenerateOrganizationJoinCode(
 
 method RevokeOrganizationJoinCode(
   struct {
+    operation_id: string;
     code_id: RecordId;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  success: struct {};
+  success: struct {
+    event: OrganizationJoinCodesChanged;
+  };
 
   code_not_found_error: struct {
     code_id: RecordId;

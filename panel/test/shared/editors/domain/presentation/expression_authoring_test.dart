@@ -39,6 +39,7 @@ void main() {
   const rightBindingId = BindingId(4);
   final values = _values();
   final item = _binding(itemBindingId);
+
   final predicate = item.compare(
     ComparisonOperator.greaterThan,
     1.asIntegerLiteral,

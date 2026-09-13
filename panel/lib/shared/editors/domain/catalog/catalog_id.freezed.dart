@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'catalog_id.dart';
@@ -9,6 +9,7 @@ part of 'catalog_id.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PresentationIdCopyWith<PresentationId> get copyWith => _$PresentationIdCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+  final _this = this as PresentationId;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationId&&(identical(other.namespace, _this.namespace) || other.namespace == _this.namespace)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+  final _this = this as PresentationId;
+  return Object.hash(runtimeType,_this.namespace,_this.name);
+}
 
 @override
 String toString() {
-  return 'PresentationId(namespace: $namespace, name: $name)';
+  final _this = this as PresentationId;
+  return 'PresentationId(namespace: ${_this.namespace}, name: ${_this.name})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PresentationIdCopyWithImpl<$Res>
 /// Create a copy of PresentationId
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? namespace = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationId(
 namespace: null == namespace ? _self.namespace : namespace // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
@@ -208,7 +214,7 @@ return $default(_that.namespace,_that.name);case _:
 
 class _PresentationId implements PresentationId {
   const _PresentationId({required this.namespace, required this.name}): assert(namespace != "", 'Namespace must not be empty.'),assert(name != "", 'Name must not be empty.');
-  
+
 
 @override final  String namespace;
 @override final  String name;
@@ -223,16 +229,18 @@ _$PresentationIdCopyWith<_PresentationId> get copyWith => __$PresentationIdCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+    return Object.hash(runtimeType,namespace,name);
+}
 
 @override
 String toString() {
-  return 'PresentationId(namespace: $namespace, name: $name)';
+    return 'PresentationId(namespace: $namespace, name: $name)';
 }
 
 
@@ -285,16 +293,21 @@ $ConversionIdCopyWith<ConversionId> get copyWith => _$ConversionIdCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+  final _this = this as ConversionId;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionId&&(identical(other.namespace, _this.namespace) || other.namespace == _this.namespace)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+  final _this = this as ConversionId;
+  return Object.hash(runtimeType,_this.namespace,_this.name);
+}
 
 @override
 String toString() {
-  return 'ConversionId(namespace: $namespace, name: $name)';
+  final _this = this as ConversionId;
+  return 'ConversionId(namespace: ${_this.namespace}, name: ${_this.name})';
 }
 
 
@@ -323,7 +336,7 @@ class _$ConversionIdCopyWithImpl<$Res>
 /// Create a copy of ConversionId
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? namespace = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(ConversionId(
 namespace: null == namespace ? _self.namespace : namespace // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
@@ -468,7 +481,7 @@ return $default(_that.namespace,_that.name);case _:
 
 class _ConversionId implements ConversionId {
   const _ConversionId({required this.namespace, required this.name}): assert(namespace != "", 'Namespace must not be empty.'),assert(name != "", 'Name must not be empty.');
-  
+
 
 @override final  String namespace;
 @override final  String name;
@@ -483,16 +496,18 @@ _$ConversionIdCopyWith<_ConversionId> get copyWith => __$ConversionIdCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConversionId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+    return Object.hash(runtimeType,namespace,name);
+}
 
 @override
 String toString() {
-  return 'ConversionId(namespace: $namespace, name: $name)';
+    return 'ConversionId(namespace: $namespace, name: $name)';
 }
 
 
@@ -532,40 +547,45 @@ as String,
 }
 
 /// @nodoc
-mixin _$RealmActionId {
+mixin _$CapabilityId {
 
- String get namespace; String get name;
-/// Create a copy of RealmActionId
+ String get value;
+/// Create a copy of CapabilityId
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$RealmActionIdCopyWith<RealmActionId> get copyWith => _$RealmActionIdCopyWithImpl<RealmActionId>(this as RealmActionId, _$identity);
+$CapabilityIdCopyWith<CapabilityId> get copyWith => _$CapabilityIdCopyWithImpl<CapabilityId>(this as CapabilityId, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RealmActionId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+  final _this = this as CapabilityId;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CapabilityId&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+  final _this = this as CapabilityId;
+  return Object.hash(runtimeType,_this.value);
+}
 
 @override
 String toString() {
-  return 'RealmActionId(namespace: $namespace, name: $name)';
+  final _this = this as CapabilityId;
+  return 'CapabilityId(value: ${_this.value})';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $RealmActionIdCopyWith<$Res>  {
-  factory $RealmActionIdCopyWith(RealmActionId value, $Res Function(RealmActionId) _then) = _$RealmActionIdCopyWithImpl;
+abstract mixin class $CapabilityIdCopyWith<$Res>  {
+  factory $CapabilityIdCopyWith(CapabilityId value, $Res Function(CapabilityId) _then) = _$CapabilityIdCopyWithImpl;
 @useResult
 $Res call({
- String namespace, String name
+ String value
 });
 
 
@@ -573,19 +593,18 @@ $Res call({
 
 }
 /// @nodoc
-class _$RealmActionIdCopyWithImpl<$Res>
-    implements $RealmActionIdCopyWith<$Res> {
-  _$RealmActionIdCopyWithImpl(this._self, this._then);
+class _$CapabilityIdCopyWithImpl<$Res>
+    implements $CapabilityIdCopyWith<$Res> {
+  _$CapabilityIdCopyWithImpl(this._self, this._then);
 
-  final RealmActionId _self;
-  final $Res Function(RealmActionId) _then;
+  final CapabilityId _self;
+  final $Res Function(CapabilityId) _then;
 
-/// Create a copy of RealmActionId
+/// Create a copy of CapabilityId
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? namespace = null,Object? name = null,}) {
-  return _then(_self.copyWith(
-namespace: null == namespace ? _self.namespace : namespace // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
+  return _then(CapabilityId(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -593,8 +612,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [RealmActionId].
-extension RealmActionIdPatterns on RealmActionId {
+/// Adds pattern-matching-related methods to [CapabilityId].
+extension CapabilityIdPatterns on CapabilityId {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -607,10 +626,10 @@ extension RealmActionIdPatterns on RealmActionId {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RealmActionId value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CapabilityId value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _RealmActionId() when $default != null:
+case _CapabilityId() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -629,10 +648,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RealmActionId value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CapabilityId value)  $default,){
 final _that = this;
 switch (_that) {
-case _RealmActionId():
+case _CapabilityId():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -650,10 +669,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RealmActionId value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CapabilityId value)?  $default,){
 final _that = this;
 switch (_that) {
-case _RealmActionId() when $default != null:
+case _CapabilityId() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -671,10 +690,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String namespace,  String name)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String value)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _RealmActionId() when $default != null:
-return $default(_that.namespace,_that.name);case _:
+case _CapabilityId() when $default != null:
+return $default(_that.value);case _:
   return orElse();
 
 }
@@ -692,10 +711,10 @@ return $default(_that.namespace,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String namespace,  String name)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String value)  $default,) {final _that = this;
 switch (_that) {
-case _RealmActionId():
-return $default(_that.namespace,_that.name);case _:
+case _CapabilityId():
+return $default(_that.value);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -712,10 +731,10 @@ return $default(_that.namespace,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String namespace,  String name)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String value)?  $default,) {final _that = this;
 switch (_that) {
-case _RealmActionId() when $default != null:
-return $default(_that.namespace,_that.name);case _:
+case _CapabilityId() when $default != null:
+return $default(_that.value);case _:
   return null;
 
 }
@@ -726,44 +745,45 @@ return $default(_that.namespace,_that.name);case _:
 /// @nodoc
 
 
-class _RealmActionId implements RealmActionId {
-  const _RealmActionId({required this.namespace, required this.name}): assert(namespace != "", 'Namespace must not be empty.'),assert(name != "", 'Name must not be empty.');
-  
+class _CapabilityId implements CapabilityId {
+  const _CapabilityId(this.value): assert(value != "", 'Capability ID must not be empty.');
 
-@override final  String namespace;
-@override final  String name;
 
-/// Create a copy of RealmActionId
+@override final  String value;
+
+/// Create a copy of CapabilityId
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$RealmActionIdCopyWith<_RealmActionId> get copyWith => __$RealmActionIdCopyWithImpl<_RealmActionId>(this, _$identity);
+_$CapabilityIdCopyWith<_CapabilityId> get copyWith => __$CapabilityIdCopyWithImpl<_CapabilityId>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RealmActionId&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CapabilityId&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,namespace,name);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'RealmActionId(namespace: $namespace, name: $name)';
+    return 'CapabilityId(value: $value)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$RealmActionIdCopyWith<$Res> implements $RealmActionIdCopyWith<$Res> {
-  factory _$RealmActionIdCopyWith(_RealmActionId value, $Res Function(_RealmActionId) _then) = __$RealmActionIdCopyWithImpl;
+abstract mixin class _$CapabilityIdCopyWith<$Res> implements $CapabilityIdCopyWith<$Res> {
+  factory _$CapabilityIdCopyWith(_CapabilityId value, $Res Function(_CapabilityId) _then) = __$CapabilityIdCopyWithImpl;
 @override @useResult
 $Res call({
- String namespace, String name
+ String value
 });
 
 
@@ -771,19 +791,18 @@ $Res call({
 
 }
 /// @nodoc
-class __$RealmActionIdCopyWithImpl<$Res>
-    implements _$RealmActionIdCopyWith<$Res> {
-  __$RealmActionIdCopyWithImpl(this._self, this._then);
+class __$CapabilityIdCopyWithImpl<$Res>
+    implements _$CapabilityIdCopyWith<$Res> {
+  __$CapabilityIdCopyWithImpl(this._self, this._then);
 
-  final _RealmActionId _self;
-  final $Res Function(_RealmActionId) _then;
+  final _CapabilityId _self;
+  final $Res Function(_CapabilityId) _then;
 
-/// Create a copy of RealmActionId
+/// Create a copy of CapabilityId
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? namespace = null,Object? name = null,}) {
-  return _then(_RealmActionId(
-namespace: null == namespace ? _self.namespace : namespace // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+@override @pragma('vm:prefer-inline') $Res call({Object? value = null,}) {
+  return _then(_CapabilityId(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -805,16 +824,21 @@ $CatalogGenerationCopyWith<CatalogGeneration> get copyWith => _$CatalogGeneratio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CatalogGeneration&&(identical(other.value, value) || other.value == value));
+  final _this = this as CatalogGeneration;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CatalogGeneration&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+  final _this = this as CatalogGeneration;
+  return Object.hash(runtimeType,_this.value);
+}
 
 @override
 String toString() {
-  return 'CatalogGeneration(value: $value)';
+  final _this = this as CatalogGeneration;
+  return 'CatalogGeneration(value: ${_this.value})';
 }
 
 
@@ -843,8 +867,8 @@ class _$CatalogGenerationCopyWithImpl<$Res>
 /// Create a copy of CatalogGeneration
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
-  return _then(_self.copyWith(
-value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+  return _then(CatalogGeneration(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -987,7 +1011,7 @@ return $default(_that.value);case _:
 
 class _CatalogGeneration implements CatalogGeneration {
   const _CatalogGeneration(this.value): assert(value != "", 'Generation must not be empty.');
-  
+
 
 @override final  String value;
 
@@ -1001,16 +1025,18 @@ _$CatalogGenerationCopyWith<_CatalogGeneration> get copyWith => __$CatalogGenera
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CatalogGeneration&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CatalogGeneration&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'CatalogGeneration(value: $value)';
+    return 'CatalogGeneration(value: $value)';
 }
 
 

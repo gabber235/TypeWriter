@@ -70,7 +70,7 @@ class _SearchInputStoryState extends State<SearchInputStory> {
       resolvePresentation: (_, _) => null,
       expansionStore: _expansionStore,
     );
-    final binding = environment.resolve(searchStoryRootBinding).valueOrNull!;
+    final binding = environment.inspect(searchStoryRootBinding).valueOrNull!;
     return FakeApp(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: widget.width),

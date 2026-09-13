@@ -14,13 +14,13 @@ class TagsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagsAsync = ref.watch(tagsProvider);
+    final tagsAsync = ref.watch(projectedTagsProvider);
 
     Future<void> handleCreateTag() async {
       final name = await _showTagNameDialog(context);
       if (name == null || name.isEmpty) return;
       final newTag = await ref
-          .read(tagsProvider.notifier)
+          .read(canonicalTagsProvider.notifier)
           .createTag(name: name);
       ref.read(selectionProvider.notifier).select(TagIdentifier(newTag.tagId));
     }
@@ -60,8 +60,7 @@ class TagsPage extends HookConsumerWidget {
               children: [
                 const PageHeading(
                   title: "Tags",
-                  subtext:
-                      "Organize books with colored labels that match your project structure. Build nested tag groups for locations or story progress, then use them to filter large libraries.",
+                  subtext: "Organize books with colored labels that match your project structure. Build nested tag groups for locations or story progress, then use them to filter large libraries.",
                 ),
                 Expanded(
                   child: tagsAsync(
@@ -117,9 +116,10 @@ class TagsPage extends HookConsumerWidget {
                   icon: const Icones(Fa6Solid.xmark),
                   label: const Text("Cancel"),
                   style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.color,
+                    foregroundColor: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.color,
                   ),
                   onPressed: () => Navigator.of(context).pop(),
                 ),

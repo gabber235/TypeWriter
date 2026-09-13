@@ -15,7 +15,7 @@ abstract class ExpressionContext with _$ExpressionContext {
 
   const ExpressionContext._();
 
-  ExpressionContext withBinding(BindingId id, BindingSnapshot binding) =>
+  ExpressionContext withBinding(BindingId id, BindingSource binding) =>
       ExpressionContext(
         bindings: BindingEnvironment({...bindings.bindings, id: binding}),
         conversions: conversions,
@@ -53,7 +53,9 @@ final class _ExpressionEvaluator {
     evaluations++;
     final budgetFailure = _checkBudget(depth);
     if (budgetFailure != null) return budgetFailure;
+
     final result = _evaluate(typed.expression, depth);
+
     if (result case TypeFailure()) return result;
     final diagnostics = (result.valueOrNull!).validateAgainst(
       typed.resultType,
@@ -95,7 +97,7 @@ final class _ExpressionEvaluator {
   };
 
   TypeResult<DataValue> _binding(BindingReference reference) {
-    final binding = context.bindings.resolve(reference);
+    final binding = context.bindings.resolve(reference, registry: registry);
     if (binding case TypeFailure(:final diagnostics)) {
       return TypeResult.failure(diagnostics);
     }
@@ -109,6 +111,7 @@ final class _ExpressionEvaluator {
     if (value is! RecordValue) {
       return _failure("Field access requires a record");
     }
+
     final field = value.fields[expression.fieldName];
     return field == null
         ? _failure("Field '${expression.fieldName}' is absent")
@@ -137,7 +140,9 @@ final class _ExpressionEvaluator {
     final right = evaluate(expression.right, depth + 1);
     if (left case TypeFailure()) return left;
     if (right case TypeFailure()) return right;
+
     final leftValue = left.valueOrNull!;
+
     final rightValue = right.valueOrNull!;
     if (expression.operator == ComparisonOperator.equal) {
       return TypeResult.success(BooleanValue(leftValue == rightValue));
@@ -145,7 +150,9 @@ final class _ExpressionEvaluator {
     if (expression.operator == ComparisonOperator.notEqual) {
       return TypeResult.success(BooleanValue(leftValue != rightValue));
     }
+
     final comparison = compareExpressionValues(leftValue, rightValue);
+
     if (comparison == null) return _failure("Values are not comparable");
     return TypeResult.success(
       BooleanValue(switch (expression.operator) {
@@ -233,9 +240,11 @@ final class _ExpressionEvaluator {
       MapType(value: final valueType) => valueType,
       _ => null,
     };
+
     if (itemType == null) {
       return _failure("Projection source type must be a collection");
     }
+
     final projected = <DataValue>[];
     for (final item in items) {
       final remainingNodes = budget.maximumNodes - nodes;
@@ -260,9 +269,13 @@ final class _ExpressionEvaluator {
         ),
         registry,
       );
+
       final result = child.evaluate(expression.transform, depth + 1);
+
       nodes += child.nodes;
+
       evaluations += child.evaluations;
+
       if (result case TypeFailure()) return result;
       projected.add(result.valueOrNull!);
     }
@@ -292,9 +305,11 @@ final class _ExpressionEvaluator {
     if (color case TypeFailure()) return color;
     final alpha = evaluate(expression.alpha, depth + 1);
     if (alpha case TypeFailure()) return alpha;
+
     final colorValue = color.valueOrNull;
     final alphaValue = alpha.valueOrNull;
-    if (colorValue is! IntegerValue || colorValue.colorOrNull == null) {
+    final decodedColor = colorValue?.asColorOrNull;
+    if (decodedColor == null) {
       return _failure("Color operation requires a Color");
     }
     if (alphaValue is! IntegerValue ||
@@ -302,7 +317,8 @@ final class _ExpressionEvaluator {
         alphaValue.value > BigInt.from(255)) {
       return _failure("Color alpha must be between 0 and 255");
     }
-    final value = colorValue.colorOrNull!.withAlpha(alphaValue.value.toInt());
+
+    final value = decodedColor.withAlpha(alphaValue.value.toInt());
     return TypeResult.success(IntegerValue(BigInt.from(value.toARGB32())));
   }
 

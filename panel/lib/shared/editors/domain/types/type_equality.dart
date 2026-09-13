@@ -19,38 +19,46 @@ bool typeExpressionsEqual(TypeExpression left, TypeExpression right) {
         left.minimum == right.minimum &&
         left.maximum == right.maximum;
   }
+
   if (left is FloatType && right is FloatType) {
     return left.width == right.width &&
         left.minimum == right.minimum &&
         left.maximum == right.maximum;
   }
+
   if (left is DecimalType && right is DecimalType) {
     return left.minimum == right.minimum &&
         left.maximum == right.maximum &&
         left.scale == right.scale;
   }
+
   if (left is TimestampType && right is TimestampType) {
     return left.minimum == right.minimum && left.maximum == right.maximum;
   }
+
   if (left is DurationType && right is DurationType) {
     return left.minimum == right.minimum && left.maximum == right.maximum;
   }
+
   if (left is EnumType && right is EnumType) {
     return typeExpressionsEqual(left.valueType, right.valueType) &&
         const ListEquality<DataValue>().equals(left.values, right.values);
   }
+
   if (left is ListType && right is ListType) {
     return typeExpressionsEqual(left.element, right.element) &&
         left.minimumLength == right.minimumLength &&
         left.maximumLength == right.maximumLength &&
         left.unique == right.unique;
   }
+
   if (left is MapType && right is MapType) {
     return typeExpressionsEqual(left.key, right.key) &&
         typeExpressionsEqual(left.value, right.value) &&
         left.minimumLength == right.minimumLength &&
         left.maximumLength == right.maximumLength;
   }
+
   if (left is RecordType && right is RecordType) {
     return left.closed == right.closed &&
         const SetEquality<String>().equals(
@@ -62,12 +70,15 @@ bool typeExpressionsEqual(TypeExpression left, TypeExpression right) {
           return other != null && typeFieldsEqual(entry.value, other);
         });
   }
+
   if (left is NamedType && right is NamedType) {
     return left.reference == right.reference;
   }
+
   if (left is ParameterType && right is ParameterType) {
     return left.name == right.name;
   }
+
   return false;
 }
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'shortcut_display.dart';
@@ -9,6 +9,7 @@ part of 'shortcut_display.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $KeyStyleCopyWith<KeyStyle> get copyWith => _$KeyStyleCopyWithImpl<KeyStyle>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is KeyStyle&&(identical(other.foregroundColor, foregroundColor) || other.foregroundColor == foregroundColor));
+  final _this = this as KeyStyle;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is KeyStyle&&(identical(other.foregroundColor, _this.foregroundColor) || other.foregroundColor == _this.foregroundColor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,foregroundColor);
+int get hashCode {
+  final _this = this as KeyStyle;
+  return Object.hash(runtimeType,_this.foregroundColor);
+}
 
 @override
 String toString() {
-  return 'KeyStyle(foregroundColor: $foregroundColor)';
+  final _this = this as KeyStyle;
+  return 'KeyStyle(foregroundColor: ${_this.foregroundColor})';
 }
 
 
@@ -207,7 +213,7 @@ return outline(_that.foregroundColor,_that.borderColor);case _:
 
 class SolidKeyStyle implements KeyStyle {
   const SolidKeyStyle({this.backgroundColor, this.foregroundColor, this.shadowColor});
-  
+
 
  final  Color? backgroundColor;
 @override final  Color? foregroundColor;
@@ -223,16 +229,18 @@ $SolidKeyStyleCopyWith<SolidKeyStyle> get copyWith => _$SolidKeyStyleCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SolidKeyStyle&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.foregroundColor, foregroundColor) || other.foregroundColor == foregroundColor)&&(identical(other.shadowColor, shadowColor) || other.shadowColor == shadowColor));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SolidKeyStyle&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.foregroundColor, foregroundColor) || other.foregroundColor == foregroundColor)&&(identical(other.shadowColor, shadowColor) || other.shadowColor == shadowColor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,backgroundColor,foregroundColor,shadowColor);
+int get hashCode {
+    return Object.hash(runtimeType,backgroundColor,foregroundColor,shadowColor);
+}
 
 @override
 String toString() {
-  return 'KeyStyle.solid(backgroundColor: $backgroundColor, foregroundColor: $foregroundColor, shadowColor: $shadowColor)';
+    return 'KeyStyle.solid(backgroundColor: $backgroundColor, foregroundColor: $foregroundColor, shadowColor: $shadowColor)';
 }
 
 
@@ -277,7 +285,7 @@ as Color?,
 
 class OutlineKeyStyle implements KeyStyle {
   const OutlineKeyStyle({this.foregroundColor, this.borderColor});
-  
+
 
 @override final  Color? foregroundColor;
  final  Color? borderColor;
@@ -292,16 +300,18 @@ $OutlineKeyStyleCopyWith<OutlineKeyStyle> get copyWith => _$OutlineKeyStyleCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutlineKeyStyle&&(identical(other.foregroundColor, foregroundColor) || other.foregroundColor == foregroundColor)&&(identical(other.borderColor, borderColor) || other.borderColor == borderColor));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OutlineKeyStyle&&(identical(other.foregroundColor, foregroundColor) || other.foregroundColor == foregroundColor)&&(identical(other.borderColor, borderColor) || other.borderColor == borderColor));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,foregroundColor,borderColor);
+int get hashCode {
+    return Object.hash(runtimeType,foregroundColor,borderColor);
+}
 
 @override
 String toString() {
-  return 'KeyStyle.outline(foregroundColor: $foregroundColor, borderColor: $borderColor)';
+    return 'KeyStyle.outline(foregroundColor: $foregroundColor, borderColor: $borderColor)';
 }
 
 

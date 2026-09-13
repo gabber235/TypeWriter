@@ -3,15 +3,18 @@ import { ServiceRole } from "service/v1/service.skir";
 
 method BindService(
   struct {
+    operation_id: string;
     registration_token: string;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
   success: struct {
     service_id: string;
     service_name: string?;
-    service_roles: [ServiceRole];
+    service_role: ServiceRole;
   };
 
   invalid_registration_token_error: struct {};
@@ -25,9 +28,12 @@ struct ServiceBoundNotification {
 
 method UnbindService(
   struct {
+    operation_id: string;
     service_id: string;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
   success: struct {};

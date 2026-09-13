@@ -25,6 +25,7 @@ final class RouteAccessCoordinator extends ChangeNotifier {
       module.reevaluation.removeListener(_forwardNotification);
       module.dispose();
     }
+
     super.dispose();
   }
 }

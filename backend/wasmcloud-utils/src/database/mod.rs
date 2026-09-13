@@ -10,8 +10,10 @@ pub use surrealdb_component_sdk::{
     TransactionOutcome,
 };
 
+pub mod mutation;
 pub mod organization;
 pub mod service;
+pub mod topology;
 
 pub const TRANSACTION_CONFLICT_MAX_ATTEMPTS: u32 = 3;
 pub const TRANSACTION_CONFLICT_INITIAL_DELAY: Duration = Duration::from_millis(10);

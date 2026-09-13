@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'authentication_route_access.dart';
@@ -9,6 +9,7 @@ part of 'authentication_route_access.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -19,14 +20,14 @@ mixin _$RouteAuthenticationDecision implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteAuthenticationDecision'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationDecision);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationDecision);
 }
 
 
@@ -35,7 +36,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteAuthenticationDecision()';
+    return 'RouteAuthenticationDecision()';
 }
 
 
@@ -194,7 +195,7 @@ return unavailable();case _:
 
 class RouteAuthenticationLoading with DiagnosticableTreeMixin implements RouteAuthenticationDecision {
   const RouteAuthenticationLoading();
-  
+
 
 
 
@@ -202,14 +203,14 @@ class RouteAuthenticationLoading with DiagnosticableTreeMixin implements RouteAu
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteAuthenticationDecision.loading'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationLoading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationLoading);
 }
 
 
@@ -218,7 +219,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteAuthenticationDecision.loading()';
+    return 'RouteAuthenticationDecision.loading()';
 }
 
 
@@ -232,7 +233,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 class RouteAuthenticationAuthenticated with DiagnosticableTreeMixin implements RouteAuthenticationDecision {
   const RouteAuthenticationAuthenticated();
-  
+
 
 
 
@@ -240,14 +241,14 @@ class RouteAuthenticationAuthenticated with DiagnosticableTreeMixin implements R
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteAuthenticationDecision.authenticated'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationAuthenticated);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationAuthenticated);
 }
 
 
@@ -256,7 +257,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteAuthenticationDecision.authenticated()';
+    return 'RouteAuthenticationDecision.authenticated()';
 }
 
 
@@ -270,7 +271,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 class RouteAuthenticationUnauthenticated with DiagnosticableTreeMixin implements RouteAuthenticationDecision {
   const RouteAuthenticationUnauthenticated();
-  
+
 
 
 
@@ -278,14 +279,14 @@ class RouteAuthenticationUnauthenticated with DiagnosticableTreeMixin implements
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteAuthenticationDecision.unauthenticated'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationUnauthenticated);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationUnauthenticated);
 }
 
 
@@ -294,7 +295,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteAuthenticationDecision.unauthenticated()';
+    return 'RouteAuthenticationDecision.unauthenticated()';
 }
 
 
@@ -308,7 +309,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 class RouteAuthenticationUnavailable with DiagnosticableTreeMixin implements RouteAuthenticationDecision {
   const RouteAuthenticationUnavailable();
-  
+
 
 
 
@@ -316,14 +317,14 @@ class RouteAuthenticationUnavailable with DiagnosticableTreeMixin implements Rou
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteAuthenticationDecision.unavailable'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationUnavailable);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteAuthenticationUnavailable);
 }
 
 
@@ -332,7 +333,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteAuthenticationDecision.unavailable()';
+    return 'RouteAuthenticationDecision.unavailable()';
 }
 
 

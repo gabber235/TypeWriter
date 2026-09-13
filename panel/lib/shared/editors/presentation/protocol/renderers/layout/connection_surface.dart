@@ -54,14 +54,11 @@ final class _PresentationAnchorSurface extends SingleChildRenderObjectWidget {
 
 final class _RenderAnchorSurface extends RenderProxyBox {
   _RenderAnchorSurface({
-    required List<_ResolvedAnchorPoint> points,
-    required PresentationRenderScope scope,
-    required Object? occurrenceIdentity,
-    required TextDirection textDirection,
-  }) : _points = points,
-       _scope = scope,
-       _occurrenceIdentity = occurrenceIdentity,
-       _textDirection = textDirection;
+    required this._points,
+    required this._scope,
+    required this._occurrenceIdentity,
+    required this._textDirection,
+  });
 
   List<_ResolvedAnchorPoint> _points;
   PresentationRenderScope _scope;

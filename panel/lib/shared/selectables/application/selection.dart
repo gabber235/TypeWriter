@@ -72,8 +72,9 @@ class Selected extends _$Selected {
     final values = <Selectable>[];
     for (final id in ids) {
       final value = id.create(ref);
-      if (!value.hasValue) {
-        return value.whenData((_) => []);
+      if (value.mapUnready<List<Selectable<SelectableIdentifier>>>()
+          case final v?) {
+        return v;
       }
       values.add(value.requireValue);
     }

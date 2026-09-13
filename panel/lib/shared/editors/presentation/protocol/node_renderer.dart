@@ -25,10 +25,12 @@ class PresentationNodeRenderer extends StatelessWidget {
       enabled: nodeEnabled,
       readOnly: scope.readOnly || node.properties.readOnly,
     );
+
     final chain = node.resolveHeaderChain(childScope);
     final headerBinding = chain.header?.binding == null
         ? null
         : childScope.canonical(chain.header!.binding!);
+
     final headerKey = (node.id, headerBinding);
     final header = childScope.suppressedHeaders.contains(headerKey)
         ? null
@@ -36,6 +38,7 @@ class PresentationNodeRenderer extends StatelessWidget {
     final renderScope = childScope.copyWith(
       suppressedHeaders: {...childScope.suppressedHeaders, ...chain.suppressed},
     );
+
     final child = node.element._render(context, renderScope);
     final surface = header == null
         ? child
@@ -85,6 +88,7 @@ class PresentationNodeRenderer extends StatelessWidget {
       return TypeResult.failure(diagnostics);
     }
     final value = result.valueOrNull;
+
     if (value is BooleanValue) return TypeResult.success(value.value);
     return TypeResult.failure([
       const TypeDiagnostic(
@@ -102,6 +106,10 @@ extension on PresentationElement {
         context,
         scope,
       ),
+      final PresentationInvocationElement element => element.render(
+        context,
+        scope,
+      ),
       final TextElement element => element.render(scope),
       final MarkdownElement element => element.render(scope),
       final IconElement element => element.render(context, scope),
@@ -109,6 +117,9 @@ extension on PresentationElement {
       final BadgeElement element => element.render(context, scope),
       final ChipElement element => element.render(context, scope),
       final ProgressElement element => element.render(context, scope),
+      final StatusElement element => element.render(context, scope),
+      final DateTimeElement element => element.render(context, scope),
+      final RelativeTimeElement element => element.render(context, scope),
       final DiagnosticElement element => element.render(context),
       final TypedFieldElement element => element.render(scope),
       final ConditionalElement element => element.render(context, scope),
@@ -133,6 +144,20 @@ extension on PresentationElement {
       final ListInputElement element => element.renderInput(context, scope),
       final MapInputElement element => element.renderInput(context, scope),
       final RecordInputElement element => element.renderInput(context, scope),
+      final CommitControlsElement element =>
+        scope.accessOf(element.binding) == PresentationInputAccess.edit &&
+                scope.ownerReference(element.binding) != null &&
+                scope.resolve(element.binding) is TypeSuccess
+            ? EditorCommitPlacement(
+                binding: scope.ownerReference(element.binding)!,
+                enabled: scope.enabled && !scope.readOnly,
+              )
+            : presentationDiagnostic(context, [
+                const TypeDiagnostic(
+                  code: TypeDiagnosticCode.invalidPresentation,
+                  message: "Commit controls require an editable binding",
+                ),
+              ]),
       final ButtonElement element => element.render(scope),
       final IconButtonElement element => element.render(context, scope),
       final MenuElement element => element.render(scope),

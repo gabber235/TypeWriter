@@ -205,6 +205,7 @@ void main() {
     expect(color.saturation, 0);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
+
     expect(color.saturation, closeTo(0.01, 0.001));
   });
 
@@ -231,6 +232,7 @@ void main() {
     expect(value, 1);
     await tester.sendKeyEvent(LogicalKeyboardKey.pageDown);
     await tester.pump();
+
     expect(value, closeTo(0.9, 0.001));
     await tester.sendKeyEvent(LogicalKeyboardKey.home);
     await tester.pump();

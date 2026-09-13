@@ -115,6 +115,7 @@ final class CollectionPresentationSearchSource implements SearchSource {
       }
       rows.add(SearchNode.result(result: mapped.valueOrNull!));
     }
+
     _snapshots.add(
       SearchSourceSnapshot.ready(nodes: rows, errorSummaries: errors),
     );

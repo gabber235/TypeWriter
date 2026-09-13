@@ -126,6 +126,7 @@ extension on PresentationElement {
           budget: budget,
         ),
       ),
+      CommitControlsElement() => element,
       PresentationSlotElement() => element,
       TabsElement() => TabsElement(
         tabs: [

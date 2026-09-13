@@ -46,6 +46,7 @@ extension PolymorphicMatchElementRendering on PolymorphicMatchElement {
         ),
         interactionTarget: scope.canonical(binding),
       ),
+      source: binding,
     );
     final child = selected.child.localizeFailures(
       childScope.expressions,

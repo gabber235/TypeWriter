@@ -175,6 +175,7 @@ extension SkirPresentationLayoutEncoder on SkirPresentationEncoder {
     final itemSpacing = expressions.encode(value.itemSpacing);
     final indentation = expressions.encode(value.indentation);
     final leadingSpacing = expressions.encode(value.leadingSpacing);
+
     final anchor = _connectorAnchor(value.itemAnchor);
     final flatten = expressions.encode(value.flattenSingleItem);
     final diagnostics = [

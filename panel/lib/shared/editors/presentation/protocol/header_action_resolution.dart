@@ -142,8 +142,11 @@ extension on _ResolvedHeaderReorderHandleItem {
     final diagnostics = <TypeDiagnostic>[];
     final canonical = scope.canonical(source);
     final location = canonical._listItemLocation(scope, diagnostics);
+
     if (location == null) return;
+
     final destination = _reorderDestination(command, location.$1, location.$2);
+
     if (destination == null) return;
     scope.invoke(
       LocalEditorAction(
@@ -309,11 +312,15 @@ extension on HeaderItem {
       HeaderBooleanToggleItem(:final enabledIf) ||
       HeaderReorderHandleItem(:final enabledIf) => enabledIf,
     };
+
     final resolvedLabel = label._string(scope, diagnostics);
     final resolvedTooltip =
         tooltip?._string(scope, diagnostics) ?? resolvedLabel;
+
     final resolvedPriority = priority?._integer(scope, diagnostics) ?? 0;
+
     final resolvedVisible = visibleIf?._boolean(scope, diagnostics) ?? true;
+
     final resolvedEnabled = enabledIf?._boolean(scope, diagnostics) ?? true;
     final actionAllowed =
         action == null || !(scope.readOnly && action is LocalEditorAction);
@@ -358,10 +365,11 @@ extension on BindingReference {
       bindingId: bindingId,
       path: DataPath(path.segments.sublist(0, path.segments.length - 1)),
     );
+
     final resolved = scope.resolve(parent);
+
     diagnostics.addAll(resolved.diagnostics);
     if (resolved.valueOrNull case ResolvedBinding(
-      type: ListType(),
       value: ListValue(:final values),
     )) {
       if (index < values.length) return (index, values.length);

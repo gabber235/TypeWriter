@@ -10,6 +10,7 @@ extension on SkirPresentationEncoder {
         : _headerTitle(value.title!).mapValue((value) => value);
     final description = _optional(value.description);
     final encodedItems = <wire.HeaderItem>[];
+
     final diagnostics = [
       ...binding.diagnostics,
       ...title.diagnostics,
@@ -85,6 +86,7 @@ extension on HeaderButtonItem {
     final action = encoder.actions.encode(this.action);
     final priority = encoder._optional(this.priority);
     final visible = encoder._optional(visibleIf);
+
     final enabled = encoder._optional(enabledIf);
     final confirmation = this.confirmation?._encode(encoder);
     final diagnostics = [
@@ -97,6 +99,7 @@ extension on HeaderButtonItem {
       ...enabled.diagnostics,
       ...?confirmation?.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.HeaderItem.createButton(
@@ -127,6 +130,7 @@ extension on HeaderBooleanToggleItem {
     final tooltip = encoder._optional(this.tooltip);
     final priority = encoder._optional(this.priority);
     final visible = encoder._optional(visibleIf);
+
     final enabled = encoder._optional(enabledIf);
     final confirmation = this.confirmation?._encode(encoder);
     final diagnostics = [
@@ -139,6 +143,7 @@ extension on HeaderBooleanToggleItem {
       ...enabled.diagnostics,
       ...?confirmation?.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.HeaderItem.createBooleanToggle(
@@ -172,6 +177,7 @@ extension on HeaderReorderHandleItem {
       ...visible.diagnostics,
       ...enabled.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.HeaderItem.createReorderHandle(

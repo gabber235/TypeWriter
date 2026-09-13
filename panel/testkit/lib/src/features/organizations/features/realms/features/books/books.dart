@@ -29,7 +29,6 @@ Book Function() generateRandomBook(List<Tag> tags) {
 
     return Book(
       bookId: recordId("book:$title"),
-      revision: 1,
       title: title,
       icon: generateRandomIconName(),
       color: safeColors.randomElement(),
@@ -38,14 +37,16 @@ Book Function() generateRandomBook(List<Tag> tags) {
   };
 }
 
-class BooksMock extends Books {
-  BooksMock(this.displayState);
+class BooksMock extends CanonicalBooks {
+  BooksMock(this.displayState, {this.specificBooks});
   final DisplayState displayState;
+  final List<Book>? specificBooks;
 
   @override
-  Stream<List<Book>> build() async* {
-    final tagsIds = await ref.watch(tagsProvider.future);
-    yield await displayState.generate(generateRandomBook(tagsIds));
+  Future<List<Book>> build() async {
+    if (specificBooks != null) return specificBooks!;
+    final tagsIds = await ref.watch(canonicalTagsProvider.future);
+    return displayState.generate(generateRandomBook(tagsIds));
   }
 
   @override
@@ -60,7 +61,6 @@ class BooksMock extends Books {
       bookId: recordId(
         "book:${faker.lorem.words(random.integer(4, min: 1)).join(" ").snakeCase()}",
       ),
-      revision: 1,
       title: title,
       icon: icon ?? "mdi:book",
       color: color ?? safeColors.randomElement(),
@@ -73,58 +73,26 @@ class BooksMock extends Books {
   }
 
   @override
-  Future<TypedMutationResult> updateBook(Book book) async {
+  Future<TypedMutationResult> updateBook(Book book, {Book? expected}) async {
     await Future.delayed(500.ms);
-    final canonical = book.copyWith(revision: book.revision + 1);
+    final canonical = book;
     state = AsyncData(
       (await future)
           .map((value) => value.bookId == book.bookId ? canonical : value)
           .toList(),
     );
     return TypedMutationResult.success(
-      revision: canonical.revision,
-      value: bookMockInspectorValue(canonical),
+      revision: 1,
+      value: canonical.inspectorValue,
     );
-  }
-
-  @override
-  Future<skir.RecordId> createPage(
-    skir.RecordId bookId,
-    String name,
-    skir.PageType type,
-    String chapter,
-    int priority,
-  ) async {
-    await Future.delayed(500.ms);
-    final id = faker.lorem
-        .words(random.integer(4, min: 1))
-        .join(" ")
-        .snakeCase();
-    return recordId("page:$id");
-  }
-
-  @override
-  Future<void> deletePage(skir.RecordId pageId) async {
-    await Future.delayed(500.ms);
-  }
-
-  @override
-  Future<void> changePagesChapters(
-    skir.RecordId bookId,
-    String oldChapter,
-    String newChapter,
-  ) async {
-    await Future.delayed(500.ms);
   }
 }
 
 List<Override> booksProviderOverrides({
   DisplayState state = DisplayState.loading,
-}) => [booksProvider.overrideWith(() => BooksMock(state))];
-
-RecordValue bookMockInspectorValue(Book book) => RecordValue({
-  "title": StringValue(book.title),
-  "icon": IconValue.from(book.icon).typedValue,
-  "color": book.color.integerValue,
-  "tags": ListValue(book.tagIds.map((tagId) => StringValue(tagId.id)).toList()),
-});
+  List<Book>? books,
+}) => [
+  canonicalBooksProvider.overrideWith(
+    () => BooksMock(state, specificBooks: books),
+  ),
+];

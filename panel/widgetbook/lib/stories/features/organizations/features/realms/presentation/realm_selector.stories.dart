@@ -10,7 +10,7 @@ Widget realmSelectorUseCase(BuildContext context) {
   final displayState = context.knobs.displayState();
   return FakeApp(
     overrides: [
-      ...servicesProviderOverrides(state: displayState),
+      ...canonicalServicesProviderOverrides(state: displayState),
       ...realmProviderOverrides(),
     ],
     child: Center(child: RealmSelector()),

@@ -6,12 +6,14 @@ extension DurationInputElementRendering on DurationInputElement {
       control: control,
       scope: scope,
       shapeMismatch: (binding) =>
-          binding.type is DurationType && binding.value is DurationValue
+          binding.type is DurationType &&
+              (binding.value is MixedEditorValue ||
+                  binding.value.valueOrNull is DurationValue)
           ? null
           : "Duration control requires a duration binding",
       builder: (context, field) => ValidatedTextField<Duration>(
         key: ValueKey(field.binding.reference),
-        value: (field.binding.value as DurationValue).value,
+        value: (field.value as DurationValue?)?.value,
         name: "duration",
         icon: Bi.stopwatch_fill,
         inputFormatters: [
@@ -34,11 +36,11 @@ extension DurationInputElementRendering on DurationInputElement {
           return "Valid Duration: $formatted";
         },
         validator: (value) {
-          final diagnostics = DurationValue(
-            value,
-          ).validateAgainst(field.binding.type);
+          final diagnostics = DurationValue(value)
+              .validateAgainst(field.binding.type);
           return diagnostics.isEmpty ? null : diagnostics.first.message;
         },
+        mixed: field.mixed,
         readOnly: field.locked,
         onInputFocus: field.interaction.begin,
         onInputBlur: field.interaction.commit,

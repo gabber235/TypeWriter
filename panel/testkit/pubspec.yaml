@@ -4,23 +4,21 @@ publish_to: "none"
 version: 0.0.0
 
 environment:
-  sdk: ">=3.10.0 <4.0.0"
+  sdk: ">=3.13.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   typewriter_panel:
     path: ../
-  hooks_riverpod: 3.3.1
-  riverpod_annotation: 4.0.2
+  hooks_riverpod: 3.4.3
+  riverpod_annotation: 4.0.7
   flutter_animate:
   faker:
   pub_semver:
   collection:
-  dart_nats: ^1.1.1
-  mocktail: ^1.0.4
   iconify_flutter_plus: ^1.0.4
-  riverpod: 3.2.1
+  riverpod: 3.4.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -28,6 +26,13 @@ dev_dependencies:
   flutter_lints:
   riverpod_generator:
   riverpod_lint:
+
+dependency_overrides:
+  nats_core:
+    git:
+      url: https://github.com/gabber235/nats.dart.git
+      ref: 5c695ca2f0e46440dbd9e2afe618a20980673036
+      path: packages/nats_core
 
 flutter:
   uses-material-design: true

@@ -3,6 +3,7 @@ part of "../../input_renderer.dart";
 extension SearchInputElementRendering on SearchInputElement {
   Widget render(BuildContext context, PresentationRenderScope scope) {
     return BoundControlShell(
+      nominal: true,
       control: control,
       scope: scope,
       builder: (context, field) {

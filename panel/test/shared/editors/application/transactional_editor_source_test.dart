@@ -39,24 +39,18 @@ void main() {
 
     await source.flush();
     expect(commits.single.changedPaths, {title});
+    expect(
+      commits.single.mutations.single,
+      isA<EditorSetValue>()
+          .having((mutation) => mutation.path, "path", title)
+          .having(
+            (mutation) => mutation.value,
+            "value",
+            const StringValue("New"),
+          ),
+    );
     expect(source.document.revision, 2);
     expect(source.saveState(title).phase, EditorSavePhase.saved);
-    source.dispose();
-  });
-
-  test("successful session commits retain session durability", () async {
-    final source = _source(
-      successfulSavePhase: EditorSavePhase.sessionOnly,
-      commit: (commit) async => TypedMutationResult.success(
-        revision: commit.expectedRevision + 1,
-        value: commit.rootValue,
-      ),
-    );
-
-    source.update(title, const StringValue("Session"));
-    await source.flush();
-
-    expect(source.saveState(title).phase, EditorSavePhase.sessionOnly);
     source.dispose();
   });
 
@@ -154,6 +148,7 @@ void main() {
     expect(source.value(title).valueOrNull, const StringValue("Yours"));
     expect(source.saveState(title).phase, EditorSavePhase.conflict);
     expect(source.saveState(color).phase, EditorSavePhase.saved);
+
     expect(
       source.document.confirmedValue,
       _value(title: "Theirs", color: "Blue"),
@@ -162,7 +157,7 @@ void main() {
   });
 
   test(
-    "stale in flight success retries without regressing remote state",
+    "stale accepted result acknowledges captured edits without resending",
     () async {
       final first = Completer<TypedMutationResult>();
       final commits = <EditorCommit>[];
@@ -193,14 +188,17 @@ void main() {
       );
       await flush;
 
-      expect(commits, hasLength(2));
-      expect(commits.last.expectedRevision, 3);
-      expect(commits.last.rootValue, _value(title: "New", color: "Blue"));
-      expect(source.document.revision, 4);
+      expect(commits, hasLength(1));
+      expect(source.document.revision, 3);
       expect(
         source.document.confirmedValue,
-        _value(title: "New", color: "Blue"),
+        _value(title: "Old", color: "Blue"),
       );
+      expect(
+        source.value(DataPath.root).valueOrNull,
+        _value(title: "Old", color: "Blue"),
+      );
+      expect(source.saveState(title).phase, EditorSavePhase.saved);
       source.dispose();
     },
   );
@@ -474,7 +472,9 @@ void main() {
     source.update(title, const StringValue("New"));
     await interaction.commit();
     expect(interaction.active, isFalse);
-    expect(await interaction.commit(), isA<MutationUnavailable>());
+    await interaction.commit();
+    expect(interaction.active, isFalse);
+
     source.dispose();
   });
 
@@ -495,6 +495,7 @@ void main() {
       source.update(title, const StringValue("Cancelled"));
       cancelled.cancel();
       expect(source.value(title).valueOrNull, const StringValue("Old"));
+
       expect(calls, 0);
 
       final committed = source.beginInteraction(title);
@@ -507,11 +508,13 @@ void main() {
 
   test("repeated contention pauses after three jittered retries", () async {
     final scheduler = _Scheduler();
+    var calls = 0;
     var revision = 1;
     final source = _source(
       scheduler: scheduler,
       jitter: const _Jitter(Duration.zero),
       commit: (commit) async {
+        calls++;
         revision++;
         return TypedMutationResult.conflict(
           expectedRevision: commit.expectedRevision,
@@ -530,7 +533,16 @@ void main() {
       Duration(milliseconds: 100),
       Duration(milliseconds: 200),
     ]);
+    expect(calls, 4);
+    expect(source.value(title).valueOrNull, const StringValue("New"));
     expect(source.saveState(title).phase, EditorSavePhase.repeatedContention);
+    final contention = source.saveState(title).contention!;
+    expect(contention.kind, EditorContentionKind.versionMismatch);
+    expect(contention.attempts, 4);
+    expect(contention.retryLimit, 3);
+    expect(contention.expectedVersion, 4);
+    expect(contention.observedVersion, 5);
+    expect(contention.paths, {title});
     source.dispose();
   });
 
@@ -544,6 +556,7 @@ void main() {
     source.update(title, const StringValue("New"));
     final flush = source.flush();
     source.acceptRemoteDeletion();
+
     pending.complete(
       TypedMutationResult.success(
         revision: 2,
@@ -569,6 +582,7 @@ void main() {
     )..addListener(() => notifications++);
     source.update(title, const StringValue("New"));
     final flush = source.flush();
+
     final notificationsAtDispose = notifications;
 
     source.dispose();
@@ -604,22 +618,6 @@ void main() {
   });
 
   test("metadata refresh preserves a rebased local draft", () {
-    final collection = LocalPresentationCollectionSource(
-      id: const PresentationCollectionSourceId("metadata"),
-      schema: const PresentationCollectionSchema(
-        rowType: StringType(),
-        keyType: StringType(),
-        rowBindingId: BindingId(3),
-        key: TypedExpression(
-          resultType: StringType(),
-          expression: BindingExpression(
-            BindingReference(bindingId: BindingId(3)),
-          ),
-        ),
-      ),
-      rows: const [StringValue("row")],
-      registry: TypeRegistry(const TypeCatalog([])),
-    );
     final source = _source(
       commit: (commit) async => TypedMutationResult.success(
         revision: commit.expectedRevision + 1,
@@ -636,7 +634,6 @@ void main() {
       typeCatalog: const TypeCatalog([]),
       confirmedValue: _value(title: "Old", color: "Remote"),
       revision: 2,
-      collections: [collection],
       readOnly: true,
     );
     source.refreshDocument(refreshed);
@@ -646,7 +643,6 @@ void main() {
       source.value(DataPath.root.field("color")).valueOrNull,
       const StringValue("Remote"),
     );
-    expect(source.document.collections, [collection]);
     expect(source.document.readOnly, isTrue);
     expect(notifications, greaterThan(notificationsBeforeRefresh));
 
@@ -661,7 +657,6 @@ TransactionalEditorSource _source({
   required EditorCommitter commit,
   EditorDelayScheduler? scheduler,
   EditorJitterSource? jitter,
-  EditorSavePhase successfulSavePhase = EditorSavePhase.saved,
   Duration debounce = const Duration(milliseconds: 250),
   void Function()? onDeleted,
 }) {
@@ -681,7 +676,6 @@ TransactionalEditorSource _source({
     commit: commit,
     scheduler: scheduler ?? _ControlledScheduler(),
     jitter: jitter,
-    successfulSavePhase: successfulSavePhase,
     onDeleted: onDeleted,
   );
 }

@@ -44,6 +44,7 @@ extension PresentationNodeHeaderCombination on PresentationNode {
     if (binding != anchor) {
       return ResolvedHeaderChain(header: outer, suppressed: suppressed);
     }
+
     final nextSuppressed = {...suppressed, (child.$1.id, binding)};
     return child.$1._collect(
       child.$2,
@@ -76,6 +77,7 @@ extension on PresentationElement {
     final ScopedBindingElement element => element._scopedChild(scope),
     final ConditionalElement element => element._selectedChild(scope),
     final DefaultPresentationElement element => element._delegatedChild(scope),
+    final PresentationInvocationElement element => element._invokedChild(scope),
     SectionElement(:final child) => (child, scope),
     _ => null,
   };
@@ -91,7 +93,7 @@ extension on ScopedBindingElement {
       child,
       scope.withAlias(
         scopeBindingId,
-        scope.canonical(binding),
+        binding,
         BindingSnapshot(
           type: resolved.type,
           value: resolved.value,
@@ -130,23 +132,25 @@ extension on DefaultPresentationElement {
     if (selected != null && scope.activePresentations.contains(selected.id)) {
       return null;
     }
-    final childScope = scope.withAlias(
-      const BindingId(0),
-      scope.canonical(binding),
-      BindingSnapshot(
-        type: resolved.type,
-        value: resolved.value,
-        revision: resolved.revision,
-        writable: resolved.writable,
-      ),
-    );
-    return (
-      child,
-      selected == null
-          ? childScope
-          : childScope.copyWith(
-              activePresentations: {...scope.activePresentations, selected.id},
-            ),
-    );
+
+    if (selected == null) return (child, scope);
+
+    final input = selected.primaryInput;
+
+    if (input == null) return null;
+    return scope.bindPresentation(selected, {input: binding}).valueOrNull;
+  }
+}
+
+extension on PresentationInvocationElement {
+  (PresentationNode, PresentationRenderScope)? _invokedChild(
+    PresentationRenderScope scope,
+  ) {
+    final definition = scope.resolvePresentation(null, presentationId);
+    if (definition == null ||
+        scope.activePresentations.contains(presentationId)) {
+      return null;
+    }
+    return scope.bindPresentation(definition, arguments).valueOrNull;
   }
 }

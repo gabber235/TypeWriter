@@ -8,21 +8,18 @@ import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
 
-class _MockBooks extends Books {
+class _MockBooks extends CanonicalBooks {
   _MockBooks(this._books);
 
   final List<Book> _books;
 
   @override
-  Stream<List<Book>> build() async* {
-    yield _books;
-  }
+  Future<List<Book>> build() async => _books;
 }
 
 Book _book(String id, String title, {List<skir.RecordId> tagIds = const []}) {
   return Book(
     bookId: recordId("book:$id"),
-    revision: 1,
     title: title,
     icon: "book",
     color: Colors.blue,
@@ -33,7 +30,6 @@ Book _book(String id, String title, {List<skir.RecordId> tagIds = const []}) {
 Tag _tag(String id) {
   return Tag(
     tagId: recordId("tag:$id"),
-    revision: 1,
     name: id,
     color: Colors.blue,
     parentIds: const [],
@@ -91,7 +87,9 @@ void main() {
 
     test("returns all books when query is empty", () async {
       final container = ProviderContainer.test(
-        overrides: [booksProvider.overrideWith(() => _MockBooks(testBooks))],
+        overrides: [
+          canonicalBooksProvider.overrideWith(() => _MockBooks(testBooks)),
+        ],
       );
 
       final result = await getFilteredBooks(container, "");
@@ -101,7 +99,9 @@ void main() {
 
     test("matches book title case-insensitively", () async {
       final container = ProviderContainer.test(
-        overrides: [booksProvider.overrideWith(() => _MockBooks(testBooks))],
+        overrides: [
+          canonicalBooksProvider.overrideWith(() => _MockBooks(testBooks)),
+        ],
       );
 
       final result = await getFilteredBooks(container, "QUEST");
@@ -112,7 +112,9 @@ void main() {
 
     test("matches book title with partial query", () async {
       final container = ProviderContainer.test(
-        overrides: [booksProvider.overrideWith(() => _MockBooks(testBooks))],
+        overrides: [
+          canonicalBooksProvider.overrideWith(() => _MockBooks(testBooks)),
+        ],
       );
 
       final result = await getFilteredBooks(container, "glory");
@@ -124,7 +126,7 @@ void main() {
     test("matches book tags case-insensitively", () async {
       final container = ProviderContainer.test(
         overrides: [
-          booksProvider.overrideWith(() => _MockBooks(testBooks)),
+          canonicalBooksProvider.overrideWith(() => _MockBooks(testBooks)),
           ...tagsProviderOverrides(
             state: DisplayState.fewItems,
             tags: testTags,
@@ -141,7 +143,7 @@ void main() {
     test("matches any of multiple tags", () async {
       final container = ProviderContainer.test(
         overrides: [
-          booksProvider.overrideWith(() => _MockBooks(testBooks)),
+          canonicalBooksProvider.overrideWith(() => _MockBooks(testBooks)),
           ...tagsProviderOverrides(
             state: DisplayState.fewItems,
             tags: testTags,
@@ -157,7 +159,9 @@ void main() {
 
     test("returns empty list when no matches", () async {
       final container = ProviderContainer.test(
-        overrides: [booksProvider.overrideWith(() => _MockBooks(testBooks))],
+        overrides: [
+          canonicalBooksProvider.overrideWith(() => _MockBooks(testBooks)),
+        ],
       );
 
       final result = await getFilteredBooks(container, "zombies");
@@ -170,8 +174,10 @@ void main() {
 
       final container = ProviderContainer.test(
         overrides: [
-          booksProvider.overrideWith(() => _MockBooks(booksWithNoTags)),
-          tagsProvider.overrideWith(
+          canonicalBooksProvider.overrideWith(
+            () => _MockBooks(booksWithNoTags),
+          ),
+          canonicalTagsProvider.overrideWith(
             () => TagsMock(
               displayState: DisplayState.fewItems,
               specificTags: testTags,
@@ -187,7 +193,9 @@ void main() {
 
     test("handles empty book list", () async {
       final container = ProviderContainer.test(
-        overrides: [booksProvider.overrideWith(() => _MockBooks(<Book>[]))],
+        overrides: [
+          canonicalBooksProvider.overrideWith(() => _MockBooks(<Book>[])),
+        ],
       );
 
       final result = await getFilteredBooks(container, "anything");

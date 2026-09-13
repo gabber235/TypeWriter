@@ -72,6 +72,7 @@ void main() {
     expect(snapcraft, contains("name: $_applicationId"));
     final snapDesktop = _read("snap/gui/typewriter-panel.desktop");
     expect(snapDesktop, contains("Name=$_productName"));
+
     expect(snapDesktop, contains("StartupWMClass=$_applicationId"));
   });
 

@@ -55,7 +55,6 @@ abstract interface class RecordValue implements DataValue {
 class BytesValue extends DataValue with _$BytesValue {
   BytesValue(Uint8List value) : value = Uint8List.fromList(value), super._();
 
-  @override
   final Uint8List value;
 }
 
@@ -63,7 +62,6 @@ class BytesValue extends DataValue with _$BytesValue {
 class TimestampValue extends DataValue with _$TimestampValue {
   TimestampValue(DateTime value) : value = value.toUtc(), super._();
 
-  @override
   final DateTime value;
 }
 

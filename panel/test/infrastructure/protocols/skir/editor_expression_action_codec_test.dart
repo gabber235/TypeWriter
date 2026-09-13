@@ -16,6 +16,7 @@ void main() {
   final expressionDecoder = SkirExpressionDecoder(types, values);
   final actionEncoder = SkirActionEncoder(expressionEncoder, values);
   final actionDecoder = SkirActionDecoder(expressionDecoder, values);
+
   const binding = BindingReference(
     bindingId: BindingId(7),
     path: DataPath.root,
@@ -195,6 +196,7 @@ void main() {
 
     for (final (expression, expectedKind) in expressions) {
       final encoded = expressionEncoder.encode(expression).valueOrNull!;
+
       expect(encoded.expression?.kind, expectedKind);
       expect(expressionDecoder.decode(encoded).valueOrNull, expression);
     }
@@ -273,12 +275,12 @@ void main() {
       ),
       (
         const EditorAction.realm(
-          InvokeRealmCallbackAction(
-            actionId: RealmActionId(namespace: "example", name: "save"),
+          InvokeRealmCommandAction(
+            capabilityId: CapabilityId("capability"),
             payload: text,
           ),
         ),
-        wire_action.RealmEditorAction_kind.callbackWrapper,
+        wire_action.RealmEditorAction_kind.commandWrapper,
       ),
     ];
 
@@ -289,6 +291,7 @@ void main() {
         wire_action.EditorAction_realmWrapper(:final value) => value.kind,
         wire_action.EditorAction_unknown() => null,
       };
+
       expect(actualKind, expectedKind);
       expect(actionDecoder.decode(encoded).valueOrNull, action);
     }
@@ -333,6 +336,7 @@ void main() {
     );
     final invalid = actionDecoder.decodeMutation(results[2]).valueOrNull!;
     expect(invalid, isA<MutationInvalid>());
+
     expect((invalid as MutationInvalid).diagnostics.single.message, "Invalid");
     final unavailable = actionDecoder.decodeMutation(results[3]).valueOrNull!;
     expect(unavailable, isA<MutationUnavailable>());

@@ -35,6 +35,7 @@ void main() {
       ),
       findsNothing,
     );
+
     expect(tester.widget<Icon>(find.byIcon(Icons.expand_more)).size, 18);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -169,6 +170,7 @@ void main() {
     await tester.pump();
     final lastHandle = tester.getRect(handles.last);
     await gesture.moveTo(Offset(lastHandle.center.dx, lastHandle.bottom + 48));
+
     await tester.pump();
     await gesture.up();
     await tester.pumpAndSettle();
@@ -254,6 +256,7 @@ void main() {
     await tester.pumpAndSettle();
     tester.testTextInput.hide();
     FocusManager.instance.primaryFocus?.unfocus();
+
     await tester.pumpAndSettle();
 
     await _dragFirstItemAfterSecond(tester);
@@ -368,6 +371,7 @@ void main() {
     field.focusNode.requestFocus();
     await tester.pump();
     await _sendAltKey(tester, LogicalKeyboardKey.keyK);
+
     await tester.pumpAndSettle();
 
     expect(
@@ -760,6 +764,7 @@ Future<FocusNode> _focusHeaderContainingValue(
         .first,
   );
   final focusNode = inkWell.focusNode!..requestFocus();
+
   await tester.pumpAndSettle();
   return focusNode;
 }
@@ -808,6 +813,7 @@ Future<void> _dragFirstItemAfterSecond(WidgetTester tester) async {
     Offset(secondHandle.center.dx, secondHandle.bottom + 48),
   );
   await tester.pump();
+
   await gesture.up();
   await tester.pumpAndSettle();
 }

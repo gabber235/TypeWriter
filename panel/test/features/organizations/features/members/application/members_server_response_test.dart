@@ -10,70 +10,90 @@ import "support/members_test_support.dart";
 
 void main() {
   group("OrganizationMembers.updateMemberRoles role merging", () {
-    late MockNatsClient mockNats;
+    late FakeNatsClient mockNats;
 
     setUp(() {
-      mockNats = MockNatsClient();
+      mockNats = FakeNatsClient();
     });
 
     tearDown(() {
       mockNats.dispose();
     });
 
-    test("uses server response to update member", () async {
-      final role = createRole(
-        id: "member",
-        name: "Member",
-        color: Colors.grey,
-        assignable: true,
-      );
+    test(
+      "ignores a historical receipt older than current membership",
+      () async {
+        final role = createRole(
+          id: "member",
+          name: "Member",
+          color: Colors.grey,
+          assignable: true,
+        );
 
-      final member = OrganizationMember(
-        userId: recordId("user:m1"),
-        name: "Original Name",
-        email: "test@test.com",
-        avatarUrl: "",
-        roles: [role],
-        joinedAt: testTimestamp,
-      );
+        final member = OrganizationMember(
+          userId: recordId("user:m1"),
+          name: "Current Name",
+          email: "test@test.com",
+          avatarUrl: "",
+          roles: [role],
+          joinedAt: testTimestamp,
+        );
 
-      final container = ProviderContainer.test(
-        overrides: [
-          userIdProvider.overrideWith((ref) async => testUserId),
-          organizationIdProvider.overrideWith((ref) => testOrganizationId),
-          natsProvider.overrideWithValue(mockNats),
-          organizationMembersProvider.overrideWith(
-            () => MockMembersNotifier([member]),
-          ),
-          organizationRolesProvider.overrideWith(
-            () => MockRolesNotifier([role]),
-          ),
-        ],
-      );
+        final container = ProviderContainer.test(
+          overrides: [
+            userIdProvider.overrideWith((ref) async => testUserId),
+            organizationIdProvider.overrideWith((ref) => testOrganizationId),
+            natsProvider.overrideWithValue(mockNats),
+            organizationMembersProvider.overrideWith(
+              () => _SequencedMembers([member], sequence: 2),
+            ),
+            organizationRolesProvider.overrideWith(
+              () => MockRolesNotifier([role]),
+            ),
+          ],
+        );
 
-      await readMembers(container);
+        await readMembers(container);
 
-      mockNats.registerHandler(
-        memberUpdateSubject,
-        (data) => skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.createSuccess(
-            userId: recordId("user:m1"),
-            name: "Updated Name",
-            email: "test@test.com",
-            avatarUrl: "",
-            roles: [],
-            joinedAt: testTimestamp,
-          ),
-        ),
-      );
+        mockNats.registerHandler(
+          memberUpdateSubject,
+          (data) =>
+              skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
+                successfulMemberUpdate([
+                  skir.OrganizationMember(
+                    userId: recordId("user:m1"),
+                    name: "Historical Name",
+                    email: "test@test.com",
+                    avatarUrl: "",
+                    roles: [],
+                    joinedAt: testTimestamp,
+                  ),
+                ]),
+              ),
+        );
 
-      await container
-          .read(organizationMembersProvider.notifier)
-          .updateMemberRoles(recordId("user:m1"), [role]);
+        await container
+            .read(organizationMembersProvider.notifier)
+            .updateMemberRoles([recordId("user:m1")], [role]);
 
-      final currentState = container.read(organizationMembersProvider);
-      expect(currentState.value, isNotNull);
-      expect(currentState.value!.first.name, "Updated Name");
-    });
+        final current = await readMembers(container);
+        expect(current.single.name, "Current Name");
+      },
+    );
   });
+}
+
+class _SequencedMembers extends OrganizationMembers {
+  _SequencedMembers(this.members, {required this.sequence});
+  final List<OrganizationMember> members;
+  final int sequence;
+
+  @override
+  Stream<List<OrganizationMember>> build() async* {
+    sequencedCollection.snapshot = SequencedSnapshot(
+      sequence: sequence,
+      value: members,
+    );
+    yield members;
+  }
 }

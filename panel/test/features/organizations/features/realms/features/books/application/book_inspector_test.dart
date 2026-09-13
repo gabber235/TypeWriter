@@ -4,28 +4,27 @@ import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart" hide Tags;
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
+import "package:typewriter_testkit/typewriter_testkit.dart";
 
 import "../../../../../../../support/test_utils.dart";
 
-class _Books extends Books {
+class _Books extends CanonicalBooks {
   _Books(this.books);
 
   final List<Book> books;
 
   @override
-  Stream<List<Book>> build() => Stream.value(books);
+  Future<List<Book>> build() async => books;
 }
 
-class _Tags extends Tags {
+class _Tags extends CanonicalTags {
   _Tags(this.tags);
 
   final List<Tag> tags;
 
   @override
-  Stream<List<Tag>> build() => Stream.value(tags);
+  Future<List<Tag>> build() async => tags;
 }
-
-final _refProvider = Provider<Ref>((ref) => ref);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +32,6 @@ void main() {
   test("Book inspector exposes direct and effective Tags", () async {
     final directTag = Tag(
       tagId: recordId("tag:direct"),
-      revision: 1,
       name: "Direct",
       color: Colors.blue,
       parentIds: [recordId("tag:parent")],
@@ -41,7 +39,6 @@ void main() {
     );
     final parentTag = Tag(
       tagId: recordId("tag:parent"),
-      revision: 1,
       name: "Parent",
       color: Colors.green,
       parentIds: const [],
@@ -49,49 +46,75 @@ void main() {
     );
     final book = Book(
       bookId: recordId("book:test"),
-      revision: 4,
       title: "Test Book",
       icon: "mdi:book",
       color: Colors.deepPurple,
       tagIds: [directTag.tagId],
     );
+
     final container = ProviderContainer.test(
       overrides: [
-        booksProvider.overrideWith(() => _Books([book])),
-        tagsProvider.overrideWith(() => _Tags([directTag, parentTag])),
+        organizationIdProvider.overrideWithValue(recordId("organization:test")),
+        realmIdProvider.overrideWithValue(recordId("realm:test")),
+        authoringSessionProvider(
+          recordId("organization:test"),
+          recordId("realm:test"),
+        ).overrideWithValue(
+          AuthoringSessionState(
+            sequence: 1,
+            books: {book.bookId: book.toWire()},
+            tags: {
+              directTag.tagId: directTag.toWire(),
+              parentTag.tagId: parentTag.toWire(),
+            },
+          ),
+        ),
+        natsProvider.overrideWithValue(FakeNatsClient()),
+        panelTelemetryProvider.overrideWithValue(
+          const AsyncData(NoopPanelTelemetry()),
+        ),
+        canonicalBooksProvider.overrideWith(() => _Books([book])),
+        canonicalTagsProvider.overrideWith(() => _Tags([directTag, parentTag])),
       ],
     );
     final bookSubscription = container.listen(
-      booksProvider,
+      canonicalBooksProvider,
       (_, _) {},
       fireImmediately: true,
     );
     final tagSubscription = container.listen(
-      tagsProvider,
+      canonicalTagsProvider,
       (_, _) {},
       fireImmediately: true,
     );
     addTearDown(bookSubscription.close);
     addTearDown(tagSubscription.close);
     await Future.wait([
-      container.read(booksProvider.future),
-      container.read(tagsProvider.future),
+      container.read(canonicalBooksProvider.future),
+      container.read(canonicalTagsProvider.future),
     ]);
+
     container
         .read(selectionProvider.notifier)
         .select(BookIdentifier(book.bookId));
 
     final selected = await _selected(container);
-    final document = (selected as BookSelection).document;
-    final resolved = TypeRegistry(
-      document.typeCatalog,
-    ).resolve(document.rootType as NamedType);
-    final root = document.presentations.single.root.element as ColumnElement;
+    final open = selected.capabilities
+        .whereType<OpenSelectionCapability>()
+        .single;
+
+    expect(open.allowMultiSelect, isFalse);
+    final inspector = selected as BookSelection;
+    final document = inspector.document;
+    final resolved = TypeRegistry(document.typeCatalog)
+        .resolve(document.rootType as NamedType);
+    final root = inspector.presentations.single.root.element as ColumnElement;
     final direct =
         root.children
                 .singleWhere((node) => node.id == "book.tags.search")
                 .element
             as SearchInputElement;
+
     final effectiveVisibility =
         root.children
                 .singleWhere(
@@ -107,14 +130,15 @@ void main() {
         directSummary.presentation.item.element as CollectionLookupElement;
     final summaryChip = summaryLookup.found.element as ChipElement;
 
-    expect(document.revision, 4);
+    expect(document.revision, 1);
     expect(resolved.diagnostics, isEmpty);
     expect(resolved.valueOrNull, isNotNull);
-    expect(document.collections.single.id, tagCollectionSourceId);
+    expect(inspector.collections.single.id, tagCollectionSourceId);
     expect(document.mergePolicies, {
       DataPath.root.field("tags"): EditorMergePolicy.set,
     });
     expect(direct.selectionMode, SearchSelectionMode.multiple);
+
     expect(direct.provider, isA<CollectionSearchProvider>());
     final summaryLayout =
         directSummary.presentation.layout as PresentationStandardSequenceLayout;
@@ -122,10 +146,12 @@ void main() {
     expect(directSummary.presentation.empty, isNotNull);
     _expectTagChip(summaryChip);
     expect(effective.sourceId, tagCollectionSourceId);
+
     expect(effective.relation, tagInheritsRelationId);
     expect(effective.direction, CollectionGraphDirection.forward);
     expect(effective.childrenBindingId, const BindingId(45));
     expect(effective.childBindingId, const BindingId(46));
+
     expect(effective.node.presentationSlotIds, {"book.effectiveTags.children"});
     final hierarchy =
         effective.children.layout as PresentationHierarchySequenceLayout;
@@ -136,12 +162,14 @@ void main() {
     );
     final branching = effective.node.element as ConditionalElement;
     final branchNode = branching.whenTrue;
+
     final branch = branchNode.element as SectionElement;
     expect(branch.border, isA<PresentationBorderSides>());
     final branchBorder = branch.border! as PresentationBorderSides;
     expect(branchBorder.top, isNull);
     expect(branchBorder.start?.width, 4);
     expect(branchBorder.end, isNull);
+
     expect(branchBorder.bottom, isNull);
     expect(branch.child.element, isA<PresentationSlotElement>());
     final branchTitle = branchNode.header!.title;
@@ -155,22 +183,27 @@ void main() {
     (tester) async {
       final book = Book(
         bookId: recordId("book:empty"),
-        revision: 1,
         title: "Empty Book",
         icon: "mdi:book",
         color: Colors.deepPurple,
         tagIds: const [],
       );
-      final container = ProviderContainer.test();
       final selected = BookSelection(
-        ref: container.read(_refProvider),
+        resource: FakeEditableResource(
+          key: EditorResourceKey(scope: null, identity: book.bookId),
+          current: BookEditorSnapshot(book, 1),
+          commit: (_) async =>
+              throw StateError("No save in this rendering test"),
+        ),
+        onOpen: null,
         id: BookIdentifier(book.bookId),
         book: book,
-        tagCollection: tagPresentationCollection(const []),
+        revision: 1,
+        tagCollection: const <Tag>[].presentationCollection(),
       );
 
       await tester.pumpTestApp(
-        child: SizedBox(width: 400, child: _render(selected.document)),
+        child: SizedBox(width: 400, child: _render(selected)),
         settle: false,
       );
       await tester.pumpAndSettle();
@@ -181,7 +214,59 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  test("Book multi inspection rejects inconsistent Tag collections", () {
+    final first = _bookSelection(
+      "first",
+      [_tag("shared", Colors.blue)].presentationCollection(),
+    );
+    final second = _bookSelection(
+      "second",
+      [_tag("shared", Colors.red)].presentationCollection(),
+    );
+
+    final result = [first, second].sharedBookTagCollection;
+
+    expect(result.valueOrNull, isNull);
+    expect(
+      result.diagnostics.single.message,
+      "Selected Books have inconsistent Tag collections",
+    );
+  });
 }
+
+BookSelection _bookSelection(
+  String id,
+  PresentationCollectionSource tagCollection,
+) {
+  final book = Book(
+    bookId: recordId("book:$id"),
+    title: id,
+    icon: "mdi:book",
+    color: Colors.blue,
+    tagIds: const [],
+  );
+  return BookSelection(
+    resource: FakeEditableResource(
+      key: EditorResourceKey(scope: null, identity: book.bookId),
+      current: BookEditorSnapshot(book, 1),
+      commit: (_) async => throw StateError("No save in this domain test"),
+    ),
+    onOpen: null,
+    id: BookIdentifier(book.bookId),
+    book: book,
+    revision: 1,
+    tagCollection: tagCollection,
+  );
+}
+
+Tag _tag(String id, Color color) => Tag(
+  tagId: recordId("tag:$id"),
+  name: id,
+  color: color,
+  parentIds: const [],
+  placement: const Placement(x: 0, y: 0, width: 4, height: 1),
+);
 
 void _expectTagChip(ChipElement chip) {
   expect(chip.color, isNotNull);
@@ -190,16 +275,16 @@ void _expectTagChip(ChipElement chip) {
   expect(color.binding.path, DataPath.root.field("color"));
 }
 
-EditorProtocolRenderer _render(EditorDocument document) =>
+EditorProtocolRenderer _render(EditableSelectable inspector) =>
     EditorProtocolRenderer(
       envelope: TypedValueEnvelope(
-        rootType: (document.rootType as NamedType).reference,
-        rootValue: document.confirmedValue,
+        rootType: (inspector.document.rootType as NamedType).reference,
+        rootValue: inspector.document.confirmedValue,
       ),
-      typeCatalog: document.typeCatalog,
-      collections: document.collections,
-      presentations: document.presentations,
-      presentation: document.presentations.single.root,
+      typeCatalog: inspector.document.typeCatalog,
+      collections: inspector.collections,
+      presentations: inspector.presentations,
+      presentation: inspector.presentations.single.root,
     );
 
 Future<Selectable> _selected(ProviderContainer container) async {

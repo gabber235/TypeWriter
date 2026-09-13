@@ -8,6 +8,26 @@ enum DisplayState {
   manyItems,
   error;
 
+  /// Materializes ready fixture values while preserving loading and errors.
+  List<T>? generateReady<T>(T Function() generator) {
+    return switch (this) {
+      DisplayState.loading || DisplayState.error => null,
+      DisplayState.noItems => <T>[],
+      DisplayState.fewItems => List.generate(6, (_) => generator()),
+      DisplayState.manyItems => List.generate(80, (_) => generator()),
+    };
+  }
+
+  /// Materializes a ready batch while preserving loading and errors.
+  List<T>? generateReadyBatch<T>(List<T> Function(int count) generator) {
+    return switch (this) {
+      DisplayState.loading || DisplayState.error => null,
+      DisplayState.noItems => <T>[],
+      DisplayState.fewItems => generator(6),
+      DisplayState.manyItems => generator(80),
+    };
+  }
+
   Future<List<T>> generate<T>(T Function() generator) {
     return switch (this) {
       DisplayState.loading => Future.delayed(

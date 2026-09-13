@@ -85,8 +85,11 @@ final class HistoricalSearchSource implements SearchSource {
     _disposed = true;
     unawaited(_snapshotSubscription?.cancel());
     _snapshotSubscription = null;
+
     unawaited(_selectionSubscription?.cancel());
+
     _selectionSubscription = null;
+
     unawaited(_snapshots.close());
     source.dispose();
   }
@@ -137,6 +140,7 @@ final class HistoricalSearchSource implements SearchSource {
       _pendingSelections.add(result);
       return;
     }
+
     _remember(result);
     if (_isEmptyQuery) {
       _emitHistory(_lastChildSnapshot ?? SearchSourceSnapshot.idle());

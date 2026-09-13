@@ -117,6 +117,7 @@ final class SkirExpressionDecoder {
   ) {
     final decoded = <InterpolationPart>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final part in parts) {
       switch (part) {
         case wire.InterpolationPart_textWrapper(:final value):
@@ -131,6 +132,7 @@ final class SkirExpressionDecoder {
           diagnostics.add(wireDiagnostic("Unknown interpolation part"));
       }
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(InterpolationExpression(decoded))
         : TypeResult.failure(diagnostics);

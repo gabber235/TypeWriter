@@ -6,6 +6,7 @@ TypeResult<DataValue> _collectionAccess(List<DataValue> values) {
   }
   final collection = values[0];
   final key = values[1];
+
   if (collection is ListValue && key is IntegerValue) {
     final index = key.value;
     if (index < BigInt.zero || index >= BigInt.from(collection.values.length)) {
@@ -17,6 +18,7 @@ TypeResult<DataValue> _collectionAccess(List<DataValue> values) {
     for (final entry in collection.entries) {
       if (entry.key == key) return TypeResult.success(entry.value);
     }
+
     return _failure("Collection key is absent");
   }
   if (collection is RecordValue && key is StringValue) {

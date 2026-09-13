@@ -39,6 +39,7 @@ void main() {
       final inheritedContainer = tester.getSize(
         find.byKey(const ValueKey("book.effectiveTags.leaf.container")),
       );
+
       expect(directContainer.width, greaterThan(300));
       expect(inheritedContainer.width, directContainer.width);
       expect(directContainer.width, lessThanOrEqualTo(400));
@@ -92,6 +93,7 @@ void main() {
     final hierarchyLayouts = find.byWidgetPredicate(
       (widget) => widget.runtimeType.toString() == "_HierarchyRenderSurface",
     );
+
     final strokes = [
       for (final element in hierarchyLayouts.evaluate())
         (element.renderObject as dynamic).debugStrokes,
@@ -120,7 +122,6 @@ void main() {
     final firstLeaf = _tag("tag:firstLeaf", name: "First leaf");
     final secondLeaf = _tag("tag:secondLeaf", name: "Second leaf");
     late StateSetter rebuild;
-    var revision = firstRoot.revision;
 
     await tester.pumpTestApp(
       child: StatefulBuilder(
@@ -130,13 +131,7 @@ void main() {
             child: SizedBox(
               width: 400,
               child: _renderer(
-                [
-                  firstRoot.copyWith(revision: revision),
-                  secondRoot,
-                  shared,
-                  firstLeaf,
-                  secondLeaf,
-                ],
+                [firstRoot, secondRoot, shared, firstLeaf, secondLeaf],
                 [firstRoot.tagId.id, secondRoot.tagId.id],
               ),
             ),
@@ -158,7 +153,7 @@ void main() {
     expect(find.text(secondLeaf.name), findsOneWidget);
     expect(find.text(firstLeaf.name, skipOffstage: false), findsNWidgets(2));
 
-    rebuild(() => revision++);
+    rebuild(() {});
     await tester.pump();
 
     expect(find.text(firstLeaf.name), findsOneWidget);
@@ -185,7 +180,6 @@ void main() {
 Tag _tag(String id, {required String name, List<String> parents = const []}) =>
     Tag(
       tagId: recordId(id),
-      revision: 1,
       name: name,
       color: Colors.blue,
       parentIds: parents.map(recordId).toList(),
@@ -210,7 +204,7 @@ EditorProtocolRenderer _renderer(List<Tag> tags, List<String> rootTagIds) {
         representation: ListType(element: tagReferenceType),
       ),
     ]),
-    collections: [tagPresentationCollection(tags)],
+    collections: [tags.presentationCollection()],
     presentation: effectiveTagGraph(
       id: "book.effectiveTags",
       title: "Effective Tags",

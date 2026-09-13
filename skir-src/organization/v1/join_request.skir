@@ -3,7 +3,10 @@ import {
   InvalidRecordIdError,
 } from "kernel/v1/errors.skir";
 import { RecordId } from "kernel/v1/record_id.skir";
-import { OrganizationMember } from "organization/v1/member.skir";
+import {
+  OrganizationMember,
+  OrganizationMembersChanged,
+} from "organization/v1/member.skir";
 import { OrganizationRole } from "organization/v1/role.skir";
 
 // OrganizationJoinRequest represents a pending request from a user to join an organization.
@@ -28,6 +31,38 @@ struct UserJoinRequest {
   expires_at: timestamp;
 }
 
+struct OrganizationJoinRequestsSnapshot {
+  sequence: int64;
+  values: [OrganizationJoinRequest];
+}
+
+enum OrganizationJoinRequestsChange {
+  add: OrganizationJoinRequest;
+  remove: RecordId;
+}
+
+struct OrganizationJoinRequestsChanged {
+  sequence: int64;
+  operation_id: string;
+  changes: [OrganizationJoinRequestsChange];
+}
+
+struct UserJoinRequestsSnapshot {
+  sequence: int64;
+  values: [UserJoinRequest];
+}
+
+enum UserJoinRequestsChange {
+  add: UserJoinRequest;
+  remove: RecordId;
+}
+
+struct UserJoinRequestsChanged {
+  sequence: int64;
+  operation_id: string;
+  changes: [UserJoinRequestsChange];
+}
+
 struct AutoAcceptedMember {
   organization_id: RecordId;
   organization_name: string;
@@ -40,23 +75,32 @@ method WatchOrganizationJoinRequests(
 ): enum {
   internal_error: InternalError;
 
-  list: [OrganizationJoinRequest];
-  add: OrganizationJoinRequest;
-  remove: RecordId;
+  snapshot: OrganizationJoinRequestsSnapshot;
+  changed: OrganizationJoinRequestsChanged;
 } = 399821;
 
-method ApproveOrganizationJoinRequest(
+struct ApprovedOrganizationJoinRequest {
+  request_id: RecordId;
+  member: OrganizationMember;
+}
+
+// Creates all memberships and removes all selected requests atomically.
+// A single approval uses one request ID. Any invalid request rejects the selection.
+method ApproveOrganizationJoinRequests(
   struct {
-    request_id: RecordId;
+    operation_id: string;
+    request_ids: [RecordId];
     role_ids: [RecordId];
   }
 ): enum {
   internal_error: InternalError;
-
-  success: OrganizationMember;
-
+  success: struct {
+    approvals: [ApprovedOrganizationJoinRequest];
+    join_requests_event: OrganizationJoinRequestsChanged;
+    members_event: OrganizationMembersChanged;
+  };
   request_not_found_error: struct {
-    request_id: RecordId;
+    request_ids: [RecordId];
   };
   roles_not_found_error: struct {
     role_ids: [RecordId];
@@ -66,20 +110,26 @@ method ApproveOrganizationJoinRequest(
   };
   roles_required_error: struct {};
   user_already_member_error: struct {
-    user_id: RecordId;
+    user_ids: [RecordId];
   };
-
+  operation_identity_reused_error: struct {};
+  invalid_selection_error: struct {};
   invalid_record_id_error: InvalidRecordIdError;
 } = 167357;
 
 method DeclineOrganizationJoinRequest(
   struct {
+    operation_id: string;
     request_id: RecordId;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  success: struct {};
+  success: struct {
+    event: OrganizationJoinRequestsChanged;
+  };
 
   request_not_found_error: struct {
     request_id: RecordId;

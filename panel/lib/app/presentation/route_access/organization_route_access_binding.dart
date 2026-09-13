@@ -1,17 +1,23 @@
+import "package:freezed_annotation/freezed_annotation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:typewriter_panel/app/application/router/access/organization_route_access.dart";
 import "package:typewriter_panel/features/auth/application/auth.dart";
 import "package:typewriter_panel/features/organizations/application/application.dart";
 import "package:typewriter_panel/infrastructure/protocols/skir/converters.dart";
 
-typedef _OrganizationAccessSnapshot = ({
-  AsyncValue<String?> principal,
-  AsyncValue<List<OrganizationData>> membership,
-});
+part "organization_route_access_binding.freezed.dart";
+
+@freezed
+abstract class _OrganizationAccessSnapshot with _$OrganizationAccessSnapshot {
+  const factory _OrganizationAccessSnapshot({
+    required AsyncValue<String?> principal,
+    required AsyncValue<List<OrganizationData>> membership,
+  }) = __OrganizationAccessSnapshot;
+}
 
 final _organizationAccessSnapshotProvider =
     Provider<_OrganizationAccessSnapshot>(
-      (ref) => (
+      (ref) => _OrganizationAccessSnapshot(
         principal: ref.watch(userIdProvider),
         membership: ref.watch(organizationsProvider),
       ),

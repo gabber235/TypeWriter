@@ -378,6 +378,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 150));
       showLate.value = true;
+
       await tester.pump();
 
       expect(_opacity(tester, "late-sliver"), 1);

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'tree_view.dart';
@@ -9,6 +9,7 @@ part of 'tree_view.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$TreeNode<T> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TreeNode<T>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TreeNode<T>);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TreeNode<$T>()';
+    return 'TreeNode<$T>()';
 }
 
 
@@ -187,8 +188,8 @@ return leaf(_that.value);case _:
 
 
 class RootTreeNode<T> implements TreeNode<T> {
-  const RootTreeNode({required final  List<TreeNode<T>> children}): _children = children;
-  
+  const RootTreeNode({required  List<TreeNode<T>> children}): _children = children;
+
 
  final  List<TreeNode<T>> _children;
  List<TreeNode<T>> get children {
@@ -208,16 +209,18 @@ $RootTreeNodeCopyWith<T, RootTreeNode<T>> get copyWith => _$RootTreeNodeCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RootTreeNode<T>&&const DeepCollectionEquality().equals(other._children, _children));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RootTreeNode<T>&&const DeepCollectionEquality().equals(other.children, _children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_children));
+}
 
 @override
 String toString() {
-  return 'TreeNode<$T>.root(children: $children)';
+    return 'TreeNode<$T>.root(children: $children)';
 }
 
 
@@ -259,8 +262,8 @@ as List<TreeNode<T>>,
 
 
 class InnerTreeNode<T> implements TreeNode<T> {
-  const InnerTreeNode({required this.name, required this.path, required final  List<TreeNode<T>> children}): assert(name != "", 'Name must not be empty.'),assert(path != "", 'Path must not be empty.'),_children = children;
-  
+  const InnerTreeNode({required this.name, required this.path, required  List<TreeNode<T>> children}): assert(name != "", 'Name must not be empty.'),assert(path != "", 'Path must not be empty.'),_children = children;
+
 
  final  String name;
  final  String path;
@@ -282,16 +285,18 @@ $InnerTreeNodeCopyWith<T, InnerTreeNode<T>> get copyWith => _$InnerTreeNodeCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InnerTreeNode<T>&&(identical(other.name, name) || other.name == name)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other._children, _children));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InnerTreeNode<T>&&(identical(other.name, name) || other.name == name)&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.children, _children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,path,const DeepCollectionEquality().hash(_children));
+int get hashCode {
+    return Object.hash(runtimeType,name,path,const DeepCollectionEquality().hash(_children));
+}
 
 @override
 String toString() {
-  return 'TreeNode<$T>.inner(name: $name, path: $path, children: $children)';
+    return 'TreeNode<$T>.inner(name: $name, path: $path, children: $children)';
 }
 
 
@@ -336,7 +341,7 @@ as List<TreeNode<T>>,
 
 class LeafTreeNode<T> implements TreeNode<T> {
   const LeafTreeNode({required this.value});
-  
+
 
  final  T value;
 
@@ -350,16 +355,18 @@ $LeafTreeNodeCopyWith<T, LeafTreeNode<T>> get copyWith => _$LeafTreeNodeCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LeafTreeNode<T>&&const DeepCollectionEquality().equals(other.value, value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LeafTreeNode<T>&&const DeepCollectionEquality().equals(other.value, value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+}
 
 @override
 String toString() {
-  return 'TreeNode<$T>.leaf(value: $value)';
+    return 'TreeNode<$T>.leaf(value: $value)';
 }
 
 
@@ -406,7 +413,7 @@ mixin _$TreeModification<T> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeModification<T>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeModification<T>);
 }
 
 
@@ -415,7 +422,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return '_TreeModification<$T>()';
+    return '_TreeModification<$T>()';
 }
 
 
@@ -574,7 +581,7 @@ return remove(_that.path);case _:
 
 class _TreeAdd<T> implements _TreeModification<T> {
   const _TreeAdd({required this.node});
-  
+
 
  final  TreeNode<T> node;
 
@@ -588,16 +595,18 @@ _$TreeAddCopyWith<T, _TreeAdd<T>> get copyWith => __$TreeAddCopyWithImpl<T, _Tre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeAdd<T>&&(identical(other.node, node) || other.node == node));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeAdd<T>&&(identical(other.node, node) || other.node == node));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,node);
+int get hashCode {
+    return Object.hash(runtimeType,node);
+}
 
 @override
 String toString() {
-  return '_TreeModification<$T>.add(node: $node)';
+    return '_TreeModification<$T>.add(node: $node)';
 }
 
 
@@ -637,7 +646,7 @@ as TreeNode<T>,
 @override
 @pragma('vm:prefer-inline')
 $TreeNodeCopyWith<T, $Res> get node {
-  
+
   return $TreeNodeCopyWith<T, $Res>(_self.node, (value) {
     return _then(_self.copyWith(node: value));
   });
@@ -649,7 +658,7 @@ $TreeNodeCopyWith<T, $Res> get node {
 
 class _TreeUpdate<T> implements _TreeModification<T> {
   const _TreeUpdate({required this.path, required this.node}): assert(path != "", 'Path must not be empty.');
-  
+
 
  final  String path;
  final  TreeNode<T> node;
@@ -664,16 +673,18 @@ _$TreeUpdateCopyWith<T, _TreeUpdate<T>> get copyWith => __$TreeUpdateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeUpdate<T>&&(identical(other.path, path) || other.path == path)&&(identical(other.node, node) || other.node == node));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeUpdate<T>&&(identical(other.path, path) || other.path == path)&&(identical(other.node, node) || other.node == node));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path,node);
+int get hashCode {
+    return Object.hash(runtimeType,path,node);
+}
 
 @override
 String toString() {
-  return '_TreeModification<$T>.update(path: $path, node: $node)';
+    return '_TreeModification<$T>.update(path: $path, node: $node)';
 }
 
 
@@ -714,7 +725,7 @@ as TreeNode<T>,
 @override
 @pragma('vm:prefer-inline')
 $TreeNodeCopyWith<T, $Res> get node {
-  
+
   return $TreeNodeCopyWith<T, $Res>(_self.node, (value) {
     return _then(_self.copyWith(node: value));
   });
@@ -726,7 +737,7 @@ $TreeNodeCopyWith<T, $Res> get node {
 
 class _TreeRemove<T> implements _TreeModification<T> {
   const _TreeRemove({required this.path}): assert(path != "", 'Path must not be empty.');
-  
+
 
  final  String path;
 
@@ -740,16 +751,18 @@ _$TreeRemoveCopyWith<T, _TreeRemove<T>> get copyWith => __$TreeRemoveCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeRemove<T>&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TreeRemove<T>&&(identical(other.path, path) || other.path == path));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path);
+int get hashCode {
+    return Object.hash(runtimeType,path);
+}
 
 @override
 String toString() {
-  return '_TreeModification<$T>.remove(path: $path)';
+    return '_TreeModification<$T>.remove(path: $path)';
 }
 
 

@@ -20,7 +20,10 @@ Future<List<Page>> _viewingPages(Ref ref) async {
 
   await ref.debounce(300.ms);
 
-  return await ref.watch(bookPagesProvider(bookId, search).future);
+  final projected = ref.watch(projectedBookPagesProvider(bookId, search));
+  if (projected.hasValue) return projected.requireValue;
+  await ref.watch(canonicalBookPagesProvider(bookId).future);
+  return ref.read(projectedBookPagesProvider(bookId, search)).requireValue;
 }
 
 class BookSidebarContent extends HookConsumerWidget {
@@ -67,9 +70,8 @@ class BookSidebarContent extends HookConsumerWidget {
                   ref.read(_pageSearchProvider.notifier).search(value),
               decoration: InputDecoration(
                 hintText: "Search pages...",
-                hintStyle: Theme.of(
-                  context,
-                ).textTheme.bodyMedium!.copyWith(fontSize: 12),
+                hintStyle: Theme.of(context).textTheme.bodyMedium!
+                    .copyWith(fontSize: 12),
               ),
             ),
             SizedBox(height: context.spacing.space3),
@@ -155,14 +157,11 @@ class _TreeBarLayout extends SingleChildRenderObjectWidget {
 class _RenderTreeBarLayout extends RenderBox
     with RenderObjectWithChildMixin<RenderBox> {
   _RenderTreeBarLayout({
-    required double barWidth,
-    required EdgeInsets barMargin,
-    required Color barColor,
-    required Radius borderRadius,
-  }) : _barWidth = barWidth,
-       _barMargin = barMargin,
-       _barColor = barColor,
-       _borderRadius = borderRadius;
+    required this._barWidth,
+    required this._barMargin,
+    required this._barColor,
+    required this._borderRadius,
+  });
 
   double _barWidth;
   double get barWidth => _barWidth;

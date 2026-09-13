@@ -50,6 +50,7 @@ pub async fn handle_panel_user(
     {
         allow_subscribe.push(format!("_INBOX.{user_id}.>"));
         allow_publish.push("_INBOX.>".to_string());
+        add_membership_stream_permissions(&mut allow_publish);
 
         add_user_organizations_permissions(&user_id, &mut allow_publish, &mut allow_subscribe);
         main_attribute!("auth.permissions.category.organizations" = true);
@@ -79,6 +80,12 @@ pub async fn handle_panel_user(
                     &mut allow_subscribe,
                 );
                 add_organization_realm_permissions(
+                    org_id,
+                    &mut allow_publish,
+                    &mut allow_subscribe,
+                );
+                add_organization_presence_permissions(
+                    &user_id,
                     org_id,
                     &mut allow_publish,
                     &mut allow_subscribe,
@@ -201,6 +208,7 @@ fn add_user_organizations_permissions(
 ) {
     allow_publish.push(format!("cloud.to.user.{user_id}.organization.watch"));
     allow_subscribe.push(format!("cloud.from.user.{user_id}.organization.watch"));
+    allow_subscribe.push(format!("cloud.from.user.{user_id}.organizations.changed"));
     allow_publish.push(format!("cloud.to.user.{user_id}.organization.create"));
     allow_publish.push(format!(
         "cloud.to.user.{user_id}.organization.join_requests.watch"
@@ -208,6 +216,7 @@ fn add_user_organizations_permissions(
     allow_subscribe.push(format!(
         "cloud.from.user.{user_id}.organization.join_requests.watch"
     ));
+    allow_subscribe.push(format!("cloud.from.user.{user_id}.join_requests.changed"));
     allow_publish.push(format!(
         "cloud.to.user.{user_id}.organization.join_requests.request"
     ));
@@ -240,6 +249,7 @@ fn add_organization_members_permissions(
         "cloud.to.user.{user_id}.organization.{org_id}.members.watch"
     ));
     allow_subscribe.push(format!("cloud.from.organization.{org_id}.members.watch"));
+    allow_subscribe.push(format!("cloud.from.organization.{org_id}.members.changed"));
     allow_publish.push(format!(
         "cloud.to.user.{user_id}.organization.{org_id}.members.update"
     ));
@@ -251,6 +261,9 @@ fn add_organization_members_permissions(
     ));
     allow_subscribe.push(format!(
         "cloud.from.organization.{org_id}.members.join_requests.watch"
+    ));
+    allow_subscribe.push(format!(
+        "cloud.from.organization.{org_id}.join_requests.changed"
     ));
     allow_publish.push(format!(
         "cloud.to.user.{user_id}.organization.{org_id}.members.join_requests.approve"
@@ -264,12 +277,24 @@ fn add_organization_members_permissions(
     allow_subscribe.push(format!(
         "cloud.from.organization.{org_id}.members.join_codes.watch"
     ));
+    allow_subscribe.push(format!(
+        "cloud.from.organization.{org_id}.join_codes.changed"
+    ));
     allow_publish.push(format!(
         "cloud.to.user.{user_id}.organization.{org_id}.members.join_codes.generate"
     ));
     allow_publish.push(format!(
         "cloud.to.user.{user_id}.organization.{org_id}.members.join_codes.revoke"
     ));
+}
+
+fn add_membership_stream_permissions(allow_publish: &mut Vec<String>) {
+    allow_publish.extend([
+        "$JS.API.STREAM.INFO.TYPEWRITER_MEMBERSHIP".to_string(),
+        "$JS.API.CONSUMER.CREATE.TYPEWRITER_MEMBERSHIP.>".to_string(),
+        "$JS.API.CONSUMER.MSG.NEXT.TYPEWRITER_MEMBERSHIP.>".to_string(),
+        "$JS.API.CONSUMER.DELETE.TYPEWRITER_MEMBERSHIP.>".to_string(),
+    ]);
 }
 
 /// Adds permissions for organization/services component
@@ -292,6 +317,13 @@ fn add_organization_services_permissions(
     allow_publish.push(format!(
         "cloud.to.user.{user_id}.organization.{org_id}.services.unbind"
     ));
+    allow_publish.push(format!(
+        "cloud.to.user.{user_id}.organization.{org_id}.topology.watch"
+    ));
+    allow_subscribe.push(format!("cloud.from.organization.{org_id}.topology.watch"));
+    allow_publish.push(format!(
+        "cloud.to.user.{user_id}.organization.{org_id}.topology.configure"
+    ));
 }
 
 /// Adds permissions for organization/realm component
@@ -309,35 +341,29 @@ fn add_organization_realm_permissions(
     for suffix in [
         "editor.catalog.fetch",
         "editor.catalog.invalidate",
+        "editor.elements.fetch",
         "editor.presentation.search",
-        "book.watch",
-        "book.resource.watch",
-        "book.create",
-        "book.update",
-        "page.search",
-        "page.watch",
-        "page.create",
-        "page.update",
-        "page.delete",
-        "pages.chapters",
-        "tag.watch",
-        "tag.resource.watch",
-        "tag.create",
-        "tag.update",
-        "tag.delete",
-        "tag.move",
-        "tag.resize",
+        "editor.presentation.search.cancel",
+        "editor.capability.computation.invoke",
+        "editor.capability.command.invoke",
+        "shared.catalog.fetch",
+        "shared.publish",
+        "shared.blob.metadata",
+        "shared.blob.read",
+        "shared.blob.begin",
+        "shared.blob.write",
+        "shared.blob.complete",
+        "library.authoring.snapshot.get",
+        "library.authoring.batch.apply",
+        "compiled.content.watch",
     ] {
         allow_publish.push(format!("service.to.*.organization.{org_id}.realm.{suffix}",));
     }
     for suffix in [
         "editor.catalog.invalidate",
         "editor.presentation.search",
-        "book.watch",
-        "book.resource.watch",
-        "page.watch",
-        "tag.watch",
-        "tag.resource.watch",
+        "library.authoring.changed",
+        "compiled.content.watch",
     ] {
         allow_subscribe.push(format!(
             "service.from.*.organization.{org_id}.realm.{suffix}",
@@ -345,9 +371,24 @@ fn add_organization_realm_permissions(
     }
 }
 
+fn add_organization_presence_permissions(
+    user_id: &str,
+    org_id: &str,
+    allow_publish: &mut Vec<String>,
+    allow_subscribe: &mut Vec<String>,
+) {
+    allow_publish.push(format!(
+        "typewriter.presence.organization.{org_id}.user.{user_id}"
+    ));
+    allow_subscribe.push(format!("typewriter.presence.organization.{org_id}.user.*"));
+}
+
 #[cfg(test)]
 mod tests {
-    use super::add_organization_members_permissions;
+    use super::{
+        add_membership_stream_permissions, add_organization_members_permissions,
+        add_organization_presence_permissions,
+    };
     use rstest::rstest;
 
     #[rstest]
@@ -385,8 +426,11 @@ mod tests {
             subscribe,
             [
                 format!("{subscribe_prefix}.watch"),
+                format!("{subscribe_prefix}.changed"),
                 format!("{subscribe_prefix}.join_requests.watch"),
+                format!("cloud.from.organization.{org_id}.join_requests.changed"),
                 format!("{subscribe_prefix}.join_codes.watch"),
+                format!("cloud.from.organization.{org_id}.join_codes.changed"),
             ]
         );
         assert!(publish.iter().all(|subject| !subject.ends_with(".list")));
@@ -397,5 +441,59 @@ mod tests {
                 .all(|subject| !subject.ends_with(".role.assign"))
         );
         assert!(publish.iter().all(|subject| !subject.ends_with(".reject")));
+    }
+
+    #[test]
+    fn presence_publish_is_bound_to_authenticated_user() {
+        let mut publish = Vec::new();
+        let mut subscribe = Vec::new();
+
+        add_organization_presence_permissions(
+            "trusted-user",
+            "trusted-org",
+            &mut publish,
+            &mut subscribe,
+        );
+
+        assert_eq!(
+            publish,
+            ["typewriter.presence.organization.trusted-org.user.trusted-user"]
+        );
+        assert_eq!(
+            subscribe,
+            ["typewriter.presence.organization.trusted-org.user.*"]
+        );
+    }
+
+    #[test]
+    fn membership_stream_permissions_only_allow_ordered_consumer_operations() {
+        let mut publish = Vec::new();
+
+        add_membership_stream_permissions(&mut publish);
+
+        assert_eq!(
+            publish,
+            [
+                "$JS.API.STREAM.INFO.TYPEWRITER_MEMBERSHIP",
+                "$JS.API.CONSUMER.CREATE.TYPEWRITER_MEMBERSHIP.>",
+                "$JS.API.CONSUMER.MSG.NEXT.TYPEWRITER_MEMBERSHIP.>",
+                "$JS.API.CONSUMER.DELETE.TYPEWRITER_MEMBERSHIP.>",
+            ]
+        );
+        assert!(
+            publish
+                .iter()
+                .all(|subject| !subject.contains("STREAM.CREATE"))
+        );
+        assert!(
+            publish
+                .iter()
+                .all(|subject| !subject.contains("STREAM.UPDATE"))
+        );
+        assert!(
+            publish
+                .iter()
+                .all(|subject| !subject.contains("STREAM.DELETE"))
+        );
     }
 }

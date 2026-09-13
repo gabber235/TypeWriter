@@ -3,6 +3,28 @@ import "package:flutter_test/flutter_test.dart";
 import "package:typewriter_panel/typewriter_panel.dart";
 
 void main() {
+  group("DataValue color adapters", () {
+    test("converts a Flutter color to an unsigned integer value", () {
+      expect(
+        const Color(0x807C4DFF).asValue,
+        IntegerValue(BigInt.from(0x807C4DFF)),
+      );
+    });
+
+    test("converts valid integer values to Flutter colors", () {
+      expect(
+        IntegerValue(BigInt.from(0x807C4DFF)).asColorOrNull,
+        const Color(0x807C4DFF),
+      );
+    });
+
+    test("rejects non integer and out of range values", () {
+      expect(const StringValue("#807C4DFF").asColorOrNull, isNull);
+      expect(IntegerValue(BigInt.from(-1)).asColorOrNull, isNull);
+      expect(IntegerValue(BigInt.from(0x100000000)).asColorOrNull, isNull);
+    });
+  });
+
   group("color hexadecimal parsing", () {
     test("accepts supported prefixes and formats Typewriter ARGB", () {
       expect(

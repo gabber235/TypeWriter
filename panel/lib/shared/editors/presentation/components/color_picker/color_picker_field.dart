@@ -18,7 +18,18 @@ class ColorPickerField extends HookConsumerWidget {
     super.key,
   });
 
-  final Color color;
+  const ColorPickerField.mixed({
+    required this.includeAlpha,
+    required this.onChanged,
+    this.onInteractionStart,
+    this.onInteractionCommit,
+    this.onInteractionCancel,
+    this.enabled = true,
+    this.readOnly = false,
+    super.key,
+  }) : color = null;
+
+  final Color? color;
   final bool includeAlpha;
   final ValueChanged<Color> onChanged;
   final VoidCallback? onInteractionStart;
@@ -31,9 +42,11 @@ class ColorPickerField extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final open = useState(false);
     final pickerFocus = useFocusNode(debugLabel: "Open color picker");
-    final openingColor = useRef(color.argbValue);
+    final openingColor = useRef(color?.argbValue);
     final tapGroup = useMemoized(Object.new);
     final library = ref.watch(colorLibraryProvider);
+    final currentColor = color;
+    final pickerColor = currentColor ?? Theme.of(context).colorScheme.primary;
 
     void close({bool cancel = false}) {
       if (!open.value) return;
@@ -43,8 +56,12 @@ class ColorPickerField extends HookConsumerWidget {
       } else {
         onInteractionCommit?.call();
       }
-      if (!cancel && openingColor.value != color.argbValue) {
-        ref.read(colorLibraryProvider.notifier).recordRecent(color.argbValue);
+      if (!cancel &&
+          currentColor != null &&
+          openingColor.value != currentColor.argbValue) {
+        ref
+            .read(colorLibraryProvider.notifier)
+            .recordRecent(currentColor.argbValue);
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (pickerFocus.canRequestFocus) pickerFocus.requestFocus();
@@ -56,21 +73,30 @@ class ColorPickerField extends HookConsumerWidget {
         close();
         return;
       }
-      openingColor.value = color.argbValue;
+      openingColor.value = currentColor?.argbValue;
       onInteractionStart?.call();
       open.value = true;
     }
 
     final editable = enabled && !readOnly;
 
-    Future<void> copyColor() => Clipboard.setData(
-      ClipboardData(text: color.formatHex(includeAlpha: includeAlpha)),
-    );
+    Future<void> copyColor() {
+      if (currentColor == null) return Future.value();
+      return Clipboard.setData(
+        ClipboardData(text: currentColor.formatHex(includeAlpha: includeAlpha)),
+      );
+    }
 
-    void toggleFavorite() =>
-        ref.read(colorLibraryProvider.notifier).toggleFavorite(color.argbValue);
+    void toggleFavorite() {
+      if (currentColor == null) return;
+      ref
+          .read(colorLibraryProvider.notifier)
+          .toggleFavorite(currentColor.argbValue);
+    }
 
-    final isFavorite = library.favorites.contains(color.argbValue);
+    final isFavorite =
+        currentColor != null &&
+        library.favorites.contains(currentColor.argbValue);
     return TapRegion(
       groupId: tapGroup,
       onTapOutside: (_) => close(),
@@ -95,17 +121,19 @@ class ColorPickerField extends HookConsumerWidget {
             child: SizedBox(
               width: 340,
               child: ColorPickerSurface(
-                color: color,
+                color: pickerColor,
                 includeAlpha: includeAlpha,
                 enabled: editable,
-                warnsAboutAlpha: !includeAlpha && color.alphaByte != 0xFF,
+                warnsAboutAlpha: !includeAlpha && pickerColor.alphaByte != 0xFF,
+                replacing: currentColor == null,
                 onChanged: onChanged,
               ),
             ),
           ),
         ),
         child: ValidatedTextField<Color>(
-          value: color,
+          value: currentColor,
+          mixed: currentColor == null,
           name: includeAlpha ? "ARGB color" : "RGB color",
           readOnly: !editable,
           deserialize: (value) => value.formatHex(includeAlpha: includeAlpha),
@@ -120,14 +148,14 @@ class ColorPickerField extends HookConsumerWidget {
           onInputBlur: onInteractionCommit,
           onCancel: onInteractionCancel,
           onDone: (value) {
-            if (value.argbValue != color.argbValue) {
+            if (value.argbValue != currentColor?.argbValue) {
               ref
                   .read(colorLibraryProvider.notifier)
                   .recordRecent(value.argbValue);
             }
           },
           surroundingActions: [
-            if (enabled)
+            if (enabled && currentColor != null)
               ActionShortcut(
                 id: "color_copy",
                 label: "Copy Color",
@@ -141,7 +169,7 @@ class ColorPickerField extends HookConsumerWidget {
                 priority: 1000,
                 onInvoke: (_) => copyColor(),
               ),
-            if (editable)
+            if (editable && currentColor != null)
               ActionShortcut(
                 id: "color_toggle_favorite",
                 label: isFavorite ? "Remove Favorite" : "Add Favorite",
@@ -165,24 +193,27 @@ class ColorPickerField extends HookConsumerWidget {
               ),
           ],
           decoration: InputDecoration(
+            hintText: currentColor == null ? "Multiple colors" : null,
             prefixIcon: GestureDetector(
               onTap: enabled ? toggle : null,
               child: Padding(
                 padding: const EdgeInsets.all(5),
-                child: Checkerboard(
-                  borderRadius: context.shapes.smallBorderRadius,
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: context.shapes.smallBorderRadius,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.outline,
+                child: currentColor == null
+                    ? const MixedColorSwatch()
+                    : Checkerboard(
+                        borderRadius: context.shapes.smallBorderRadius,
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: currentColor,
+                            borderRadius: context.shapes.smallBorderRadius,
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               ),
             ),
             suffixIcon: Row(

@@ -13,7 +13,9 @@ extension ContainerElementRendering on ContainerElement {
     if (diagnostics.isNotEmpty) {
       return presentationDiagnostic(context, diagnostics);
     }
+
     final radiusValue = resolvedRadius.valueOrNull!;
+
     final background = resolvedBackground.valueOrNull;
     final content = DecoratedBox(
       decoration: BoxDecoration(
@@ -42,7 +44,8 @@ extension ContainerElementRendering on ContainerElement {
       return TypeResult.failure(diagnostics);
     }
     final value = result.valueOrNull;
-    final color = value is IntegerValue ? value.colorOrNull : null;
+
+    final color = value?.asColorOrNull;
     return color == null
         ? TypeResult.failure([
             const TypeDiagnostic(

@@ -5,8 +5,7 @@ import "package:typewriter_panel/typewriter_panel.dart";
 typedef ActionEffectCallback = void Function(SearchActionEffect effect);
 
 class ActionController with ChangeNotifier {
-  ActionController({required ActionEffectCallback effectCallback})
-    : _effectCallback = effectCallback;
+  ActionController({required this._effectCallback});
 
   final ActionEffectCallback _effectCallback;
 

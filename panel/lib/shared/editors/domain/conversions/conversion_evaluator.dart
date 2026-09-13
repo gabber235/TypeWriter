@@ -113,6 +113,7 @@ extension on PolymorphicConversionRule {
     if (selected == null) {
       return _failure("Concrete type '${input.concreteType}' is not mapped");
     }
+
     final result = selected.rule.evaluate(input.value);
     if (result case ConversionSuccess(:final value)) {
       return ConversionResult.success(

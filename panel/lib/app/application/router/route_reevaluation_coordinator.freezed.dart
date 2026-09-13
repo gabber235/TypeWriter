@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'route_reevaluation_coordinator.dart';
@@ -9,6 +9,7 @@ part of 'route_reevaluation_coordinator.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -19,14 +20,14 @@ mixin _$RouteReevaluationState implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteReevaluationState'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationState);
 }
 
 
@@ -35,7 +36,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteReevaluationState()';
+    return 'RouteReevaluationState()';
 }
 
 
@@ -188,7 +189,7 @@ return disposed();case _:
 
 class RouteReevaluationIdle with DiagnosticableTreeMixin implements RouteReevaluationState {
   const RouteReevaluationIdle();
-  
+
 
 
 
@@ -196,14 +197,14 @@ class RouteReevaluationIdle with DiagnosticableTreeMixin implements RouteReevalu
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteReevaluationState.idle'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationIdle);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationIdle);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteReevaluationState.idle()';
+    return 'RouteReevaluationState.idle()';
 }
 
 
@@ -226,7 +227,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 class RouteReevaluationRunning with DiagnosticableTreeMixin implements RouteReevaluationState {
   const RouteReevaluationRunning({this.followUpRequested = false});
-  
+
 
 @JsonKey() final  bool followUpRequested;
 
@@ -239,23 +240,25 @@ $RouteReevaluationRunningCopyWith<RouteReevaluationRunning> get copyWith => _$Ro
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteReevaluationState.running'))
     ..add(DiagnosticsProperty('followUpRequested', followUpRequested));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationRunning&&(identical(other.followUpRequested, followUpRequested) || other.followUpRequested == followUpRequested));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationRunning&&(identical(other.followUpRequested, followUpRequested) || other.followUpRequested == followUpRequested));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,followUpRequested);
+int get hashCode {
+    return Object.hash(runtimeType,followUpRequested);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteReevaluationState.running(followUpRequested: $followUpRequested)';
+    return 'RouteReevaluationState.running(followUpRequested: $followUpRequested)';
 }
 
 
@@ -298,7 +301,7 @@ as bool,
 
 class RouteReevaluationDisposed with DiagnosticableTreeMixin implements RouteReevaluationState {
   const RouteReevaluationDisposed();
-  
+
 
 
 
@@ -306,14 +309,14 @@ class RouteReevaluationDisposed with DiagnosticableTreeMixin implements RouteRee
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'RouteReevaluationState.disposed'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationDisposed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteReevaluationDisposed);
 }
 
 
@@ -322,7 +325,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'RouteReevaluationState.disposed()';
+    return 'RouteReevaluationState.disposed()';
 }
 
 

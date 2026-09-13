@@ -47,8 +47,13 @@ void main() {
     expect(section.title, "Recent");
     expect(restored.result.id, "Beta");
     expect(restoredPayload.selectedValue, const StringValue("Beta"));
+
     expect(
-      restoredPayload.expressions.bindings.bindings[_resultBindingId]?.value,
+      restoredPayload.expressions.bindings
+          .inspect(const BindingReference(bindingId: _resultBindingId))
+          .valueOrNull
+          ?.value
+          .valueOrNull,
       const StringValue("Beta"),
     );
   });
@@ -60,6 +65,7 @@ void main() {
     first.source.initialize();
     first.source.search(_emptyQuery);
     await _settle();
+
     final selected = first.snapshots.last.nodes
         .walk()
         .whereType<SearchResultNode>()
@@ -134,10 +140,8 @@ SearchProvider _provider() {
     ),
   );
   return SearchProvider.staticValues(
-    values: const ListValue([
-      StringValue("Alpha"),
-      StringValue("Beta"),
-    ]).asLiteral(const ListType(element: StringType())),
+    values: const ListValue([StringValue("Alpha"), StringValue("Beta")])
+        .asLiteral(const ListType(element: StringType())),
     result: const SearchResultMapping(
       bindingId: _resultBindingId,
       key: result,

@@ -23,6 +23,7 @@ void main() {
       addTearDown(source.dispose);
       addTearDown(client.close);
       final snapshots = <SearchSourceSnapshot>[];
+
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
 

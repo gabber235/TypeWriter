@@ -22,6 +22,7 @@ void main() {
     resultType: NamedType(standardTypeRefs.color),
     expression: LiteralExpression(IntegerValue(BigInt.from(0xFF967BFA))),
   );
+
   final concreteType = ResolvedTypeRef(
     id: const QualifiedTypeId(namespace: "example", name: "entry"),
     revision: 1,
@@ -248,6 +249,7 @@ void main() {
     final encodedHeaderPadding =
         (encodedHeader.headerPadding! as wire.PresentationInsets_onlyWrapper)
             .value;
+
     expect(encodedHeaderPadding.top, 1);
     expect(encodedHeaderPadding.left, 2);
     expect(encodedHeaderPadding.right, 3);
@@ -690,6 +692,7 @@ final class _PresentationCodecs {
     final actionEncoder = SkirActionEncoder(expressionEncoder, values);
     final actionDecoder = SkirActionDecoder(expressionDecoder, values);
     encoder = SkirPresentationEncoder(expressionEncoder, actionEncoder, types);
+
     decoder = SkirPresentationDecoder(expressionDecoder, actionDecoder, types);
   }
 

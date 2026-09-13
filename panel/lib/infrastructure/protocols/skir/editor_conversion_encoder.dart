@@ -16,11 +16,13 @@ final class SkirConversionEncoder {
   ) {
     final items = <wire.ConversionDefinition>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final value in values) {
       final encoded = _definition(value);
       diagnostics.addAll(encoded.diagnostics);
       if (encoded.valueOrNull case final item?) items.add(item);
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(items)
         : TypeResult.failure(diagnostics);
@@ -33,12 +35,14 @@ final class SkirConversionEncoder {
     final source = types.encodeReference(value.source);
     final target = types.encodeReference(value.target);
     final rule = _rule(value.rule);
+
     final diagnostics = [
       ...id.diagnostics,
       ...source.diagnostics,
       ...target.diagnostics,
       ...rule.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.ConversionDefinition(
@@ -104,6 +108,7 @@ final class SkirConversionEncoder {
   ) {
     final items = <wire.RecordProjectionField>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final field in fields) {
       final source = paths.encode(field.source);
       final target = paths.encode(field.target);
@@ -114,6 +119,7 @@ final class SkirConversionEncoder {
         ..addAll(source.diagnostics)
         ..addAll(target.diagnostics)
         ..addAll(conversion.diagnostics);
+
       if (diagnostics.isEmpty) {
         items.add(
           wire.RecordProjectionField(
@@ -124,6 +130,7 @@ final class SkirConversionEncoder {
         );
       }
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.ConversionRule.createRecordProjection(fields: items),
@@ -136,9 +143,11 @@ final class SkirConversionEncoder {
   ) {
     final items = <wire.RecordConstructionField>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final field in fields) {
       final source = paths.encode(field.source);
       diagnostics.addAll(source.diagnostics);
+
       if (source.valueOrNull case final path?) {
         items.add(
           wire.RecordConstructionField(
@@ -151,6 +160,7 @@ final class SkirConversionEncoder {
         );
       }
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.ConversionRule.createRecordConstruction(fields: items),
@@ -165,6 +175,7 @@ final class SkirConversionEncoder {
     final diagnostics = <TypeDiagnostic>[
       for (final value in values) ...value.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.ConversionRule.createComposition(

@@ -8,7 +8,6 @@ void main() {
     EditorSavePhase.pending: "Pending",
     EditorSavePhase.saving: "Saving",
     EditorSavePhase.saved: "Saved",
-    EditorSavePhase.sessionOnly: "Session only",
     EditorSavePhase.failed: "Save failed",
     EditorSavePhase.conflict: "Changed elsewhere",
     EditorSavePhase.repeatedContention: "Changed repeatedly elsewhere",
@@ -22,6 +21,34 @@ void main() {
       expect(find.text(entry.value), findsOneWidget);
     });
   }
+
+  testWidgets("Saved expires while unresolved status remains visible", (
+    tester,
+  ) async {
+    await tester.pumpTestApp(
+      child: const EditorSaveStatus(
+        state: EditorSaveState(phase: EditorSavePhase.saved),
+      ),
+    );
+    expect(find.text("Saved"), findsOneWidget);
+    await tester.pump(savedFeedbackDuration);
+    await tester.pumpAndSettle();
+    expect(find.text("Saved"), findsNothing);
+    await tester.pumpTestApp(
+      child: const EditorSaveStatus(
+        state: EditorSaveState(phase: EditorSavePhase.uncertain),
+      ),
+    );
+
+    await tester.pump(savedFeedbackDuration);
+    expect(find.text("Outcome unknown"), findsOneWidget);
+    await tester.pumpTestApp(
+      child: const EditorSaveStatus(
+        state: EditorSaveState(phase: EditorSavePhase.saved),
+      ),
+    );
+    expect(find.text("Saved"), findsOneWidget);
+  });
 
   testWidgets("exposes conflict choices and retry actions", (tester) async {
     var usedRemote = false;

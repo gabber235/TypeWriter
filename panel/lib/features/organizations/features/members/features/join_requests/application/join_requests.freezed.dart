@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'join_requests.dart';
@@ -9,6 +9,7 @@ part of 'join_requests.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OrganizationJoinRequestCopyWith<OrganizationJoinRequest> get copyWith => _$Orga
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationJoinRequest&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.userAvatarUrl, userAvatarUrl) || other.userAvatarUrl == userAvatarUrl));
+  final _this = this as OrganizationJoinRequest;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationJoinRequest&&(identical(other.requestId, _this.requestId) || other.requestId == _this.requestId)&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.requestedAt, _this.requestedAt) || other.requestedAt == _this.requestedAt)&&(identical(other.expiresAt, _this.expiresAt) || other.expiresAt == _this.expiresAt)&&(identical(other.userName, _this.userName) || other.userName == _this.userName)&&(identical(other.userEmail, _this.userEmail) || other.userEmail == _this.userEmail)&&(identical(other.userAvatarUrl, _this.userAvatarUrl) || other.userAvatarUrl == _this.userAvatarUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,requestId,userId,requestedAt,expiresAt,userName,userEmail,userAvatarUrl);
+int get hashCode {
+  final _this = this as OrganizationJoinRequest;
+  return Object.hash(runtimeType,_this.requestId,_this.userId,_this.requestedAt,_this.expiresAt,_this.userName,_this.userEmail,_this.userAvatarUrl);
+}
 
 @override
 String toString() {
-  return 'OrganizationJoinRequest(requestId: $requestId, userId: $userId, requestedAt: $requestedAt, expiresAt: $expiresAt, userName: $userName, userEmail: $userEmail, userAvatarUrl: $userAvatarUrl)';
+  final _this = this as OrganizationJoinRequest;
+  return 'OrganizationJoinRequest(requestId: ${_this.requestId}, userId: ${_this.userId}, requestedAt: ${_this.requestedAt}, expiresAt: ${_this.expiresAt}, userName: ${_this.userName}, userEmail: ${_this.userEmail}, userAvatarUrl: ${_this.userAvatarUrl})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OrganizationJoinRequestCopyWithImpl<$Res>
 /// Create a copy of OrganizationJoinRequest
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? requestId = null,Object? userId = null,Object? requestedAt = null,Object? expiresAt = null,Object? userName = freezed,Object? userEmail = freezed,Object? userAvatarUrl = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(OrganizationJoinRequest(
 requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,requestedAt: null == requestedAt ? _self.requestedAt : requestedAt // ignore: cast_nullable_to_non_nullable
@@ -213,7 +219,7 @@ return $default(_that.requestId,_that.userId,_that.requestedAt,_that.expiresAt,_
 
 class _OrganizationJoinRequest extends OrganizationJoinRequest {
   const _OrganizationJoinRequest({required this.requestId, required this.userId, required this.requestedAt, required this.expiresAt, this.userName, this.userEmail, this.userAvatarUrl}): super._();
-  
+
 
 @override final  skir.RecordId requestId;
 @override final  skir.RecordId userId;
@@ -233,16 +239,18 @@ _$OrganizationJoinRequestCopyWith<_OrganizationJoinRequest> get copyWith => __$O
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationJoinRequest&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.userAvatarUrl, userAvatarUrl) || other.userAvatarUrl == userAvatarUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationJoinRequest&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.userAvatarUrl, userAvatarUrl) || other.userAvatarUrl == userAvatarUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,requestId,userId,requestedAt,expiresAt,userName,userEmail,userAvatarUrl);
+int get hashCode {
+    return Object.hash(runtimeType,requestId,userId,requestedAt,expiresAt,userName,userEmail,userAvatarUrl);
+}
 
 @override
 String toString() {
-  return 'OrganizationJoinRequest(requestId: $requestId, userId: $userId, requestedAt: $requestedAt, expiresAt: $expiresAt, userName: $userName, userEmail: $userEmail, userAvatarUrl: $userAvatarUrl)';
+    return 'OrganizationJoinRequest(requestId: $requestId, userId: $userId, requestedAt: $requestedAt, expiresAt: $expiresAt, userName: $userName, userEmail: $userEmail, userAvatarUrl: $userAvatarUrl)';
 }
 
 

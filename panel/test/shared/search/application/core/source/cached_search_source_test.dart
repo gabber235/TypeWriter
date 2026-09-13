@@ -44,6 +44,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final alpha = queryContext("alpha");
       final beta = queryContext("beta");
 
@@ -64,6 +65,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final alpha = queryContext("alpha");
       final beta = queryContext("beta");
 
@@ -84,6 +86,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final context = queryContext("alpha");
 
       source.search(context);
@@ -101,6 +104,7 @@ void main() {
       final selectors = <List<QuerySelectorDefinition>>[];
       final subscription = source.selectors.listen(selectors.add);
       addTearDown(subscription.cancel);
+
       const emitted = [KeyValueSelectorDefinition(id: "tag", key: "#")];
 
       inner.emitSelectors(emitted);
@@ -169,6 +173,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final loading = SearchSourceSnapshot.loading(
         guidance: const [SearchGuidance(id: "loading", title: "Loading")],
       );
@@ -185,6 +190,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final error = errorSnapshot("Network failed");
 
       inner.emitSnapshot(error);
@@ -199,6 +205,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final idle = SearchSourceSnapshot.idle(
         guidance: const [SearchGuidance(id: "empty", title: "Start typing")],
       );
@@ -215,6 +222,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
 
       inner.emitSnapshot(ready);
@@ -232,6 +240,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final first = readySnapshot(nodes: [resultNode("alpha")]);
       final second = readySnapshot(nodes: [resultNode("beta")]);
 
@@ -249,6 +258,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
       final loadingWithDifferentNode = SearchSourceSnapshot.loading(
         nodes: [resultNode("beta")],
@@ -268,6 +278,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
       final errorWithDifferentNode = errorSnapshot(
         "Network failed",
@@ -288,6 +299,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
       final idleWithDifferentNode = SearchSourceSnapshot.idle(
         nodes: [resultNode("beta")],
@@ -307,6 +319,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
 
       inner.emitSnapshot(ready);
@@ -324,6 +337,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
       final error = errorSnapshot("Network failed");
 
@@ -343,6 +357,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
       final loading = SearchSourceSnapshot.loading(nodes: [resultNode("beta")]);
       final error = errorSnapshot(
@@ -373,6 +388,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(
         nodes: [
           sectionNode("section", [
@@ -394,6 +410,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(
         nodes: [
           sectionNode("section", [resultNode("alpha")]),
@@ -417,6 +434,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = SearchSourceSnapshot.ready(
         nodes: [
           SearchNode.result(
@@ -438,6 +456,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final action = TestSingleAction();
       final ready = readySnapshot(
         nodes: [
@@ -459,6 +478,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       const cachedGuidance = SearchGuidance(id: "ready", title: "Ready");
       const loadingGuidance = SearchGuidance(id: "loading", title: "Loading");
       final ready = SearchSourceSnapshot.ready(
@@ -483,6 +503,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
       final error = errorSnapshot("Network failed");
 
@@ -499,6 +520,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       const errorGuidance = SearchGuidance(id: "retry", title: "Try again");
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
       final error = errorSnapshot(

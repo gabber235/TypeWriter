@@ -35,14 +35,14 @@ final class OrganizationMembersProvider
 }
 
 String _$organizationMembersHash() =>
-    r'ac4cf9e85d8bf57b00dcf9c760ba434185b7c2db';
+    r'7b4ab97b785ccd782417f81f0bc317accf1cac97';
 
 abstract class _$OrganizationMembers
     extends $StreamNotifier<List<OrganizationMember>> {
   Stream<List<OrganizationMember>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
@@ -60,6 +60,6 @@ abstract class _$OrganizationMembers
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

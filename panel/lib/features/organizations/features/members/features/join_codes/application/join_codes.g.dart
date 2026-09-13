@@ -41,7 +41,7 @@ final class OrganizationJoinCodesProvider
 }
 
 String _$organizationJoinCodesHash() =>
-    r'3a193492f24f965e7d82e47a96991e89dfcf7198';
+    r'7e83c097bae355deb3be2f1ccfff472750b40640';
 
 /// Provider for the join codes in the current organization.
 
@@ -50,7 +50,7 @@ abstract class _$OrganizationJoinCodes
   Stream<List<OrganizationJoinCode>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
@@ -68,7 +68,7 @@ abstract class _$OrganizationJoinCodes
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

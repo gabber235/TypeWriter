@@ -131,7 +131,9 @@ class _MultiselectDropdownView<T extends Object> extends StatelessWidget {
     final themeStyle = MenuButtonTheme.of(context).style;
     final foreground =
         entry.style?.foregroundColor ?? themeStyle?.foregroundColor;
+
     final icon = entry.style?.iconColor ?? themeStyle?.iconColor;
+
     final overlay = entry.style?.overlayColor ?? themeStyle?.overlayColor;
     final background =
         entry.style?.backgroundColor ?? themeStyle?.backgroundColor;
@@ -146,7 +148,9 @@ class _MultiselectDropdownView<T extends Object> extends StatelessWidget {
         foreground ?? defaultStyle.foregroundColor!,
       )!;
       final focusedIcon = focused(icon ?? defaultStyle.iconColor!)!;
+
       final focusedOverlay = focused(overlay ?? defaultStyle.overlayColor!)!;
+
       // The default background is transparent, so use the focused surface.
       final focusedBackground =
           focused(background) ??

@@ -32,6 +32,7 @@ extension on TypeExpression {
     if (this case NamedType(:final reference)) {
       return reference.arguments.any((value) => value._containsParameter(name));
     }
+
     return false;
   }
 
@@ -57,6 +58,7 @@ extension on TypeExpression {
         (value) => value._containsParameter(parameterName),
       );
     }
+
     return false;
   }
 }

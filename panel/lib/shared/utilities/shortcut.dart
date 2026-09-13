@@ -153,20 +153,28 @@ class SortedLogicalKeyActivator
     if (length == 1) {
       return h1;
     }
+
     iterator.moveNext();
+
     final h2 = iterator.current.hashCode;
     if (length == 2) {
       return h1 < h2 ? Object.hash(h1, h2) : Object.hash(h2, h1);
     }
+
     final sortedHashes = length == 3 ? _tempHashStore3 : _tempHashStore4;
+
     sortedHashes[0] = h1;
+
     sortedHashes[1] = h2;
+
     iterator.moveNext();
+
     sortedHashes[2] = iterator.current.hashCode;
     if (length == 4) {
       iterator.moveNext();
       sortedHashes[3] = iterator.current.hashCode;
     }
+
     sortedHashes.sort();
     return Object.hashAll(sortedHashes);
   }

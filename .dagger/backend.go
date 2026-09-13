@@ -11,26 +11,49 @@ import (
 
 const componentTestXtask = "/workspace/backend/tests/component/target/debug/component-test-xtask"
 
-func (m *Typewriter) backendTestContainer(source *dagger.Workspace) *dagger.Container {
+func (m *Typewriter) backendContainer(source *dagger.Workspace, cacheScope string) *dagger.Container {
+	cachePrefix := "backend-" + cacheScope
 	return dag.Container().
 		From("rust:1.95-bookworm").
 		WithExec([]string{"rustup", "target", "add", "wasm32-wasip2"}).
 		WithWorkdir("/workspace").
-		WithMountedCache("/usr/local/cargo/registry", dag.CacheVolume("component-test-cargo-registry")).
-		WithMountedCache("/usr/local/cargo/git", dag.CacheVolume("component-test-cargo-git")).
+		WithMountedCache("/usr/local/cargo/registry", lockedCache(cachePrefix+"-cargo-registry")).
+		WithMountedCache("/usr/local/cargo/git", lockedCache(cachePrefix+"-cargo-git")).
 		WithDirectory("/workspace/backend",
 			source.Directory("/backend", dagger.WorkspaceDirectoryOpts{
 				Gitignore: true,
 			}),
 		).
-		WithMountedCache("/workspace/backend/target", dag.CacheVolume("component-test-backend-target")).
-		WithMountedCache("/workspace/backend/tests/component/target", dag.CacheVolume("component-test-host-target")).
+		WithMountedCache("/workspace/backend/target", lockedCache(cachePrefix+"-target")).
+		WithMountedCache("/workspace/backend/tests/component/target", lockedCache(cachePrefix+"-component-target")).
 		WithEnvVariable("CARGO_PROFILE_DEV_DEBUG", "0").
-		WithEnvVariable("CARGO_PROFILE_TEST_DEBUG", "0").
+		WithEnvVariable("CARGO_PROFILE_TEST_DEBUG", "0")
+}
+
+func (m *Typewriter) backendTestContainer(source *dagger.Workspace) *dagger.Container {
+	return m.backendContainer(source, "component-test").
 		WithExec([]string{
 			"cargo", "build",
 			"--manifest-path", "backend/tests/component/Cargo.toml",
 			"-p", "component-test-xtask",
+		})
+}
+
+// +check
+func (m *Typewriter) BackendUnitTest(source *dagger.Workspace) *dagger.Container {
+	return m.backendContainer(source, "unit-test").
+		WithExec([]string{
+			"cargo", "test", "--manifest-path", "backend/Cargo.toml",
+			"--workspace", "--no-fail-fast", "--jobs", "2",
+		})
+}
+
+// +check
+func (m *Typewriter) BackendSupportTest(source *dagger.Workspace) *dagger.Container {
+	return m.backendContainer(source, "support-test").
+		WithExec([]string{
+			"cargo", "test", "--manifest-path", "backend/tests/component/Cargo.toml",
+			"--workspace", "--exclude", "typewriter-component-tests", "--no-fail-fast", "--jobs", "2",
 		})
 }
 

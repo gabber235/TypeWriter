@@ -211,6 +211,7 @@ void main() {
     final rankThenLimit = firstInner.ranked(fields).limited(1);
     final limitThenRank = secondInner.limited(1).ranked(fields);
     addTearDown(rankThenLimit.dispose);
+
     addTearDown(limitThenRank.dispose);
     final rankedSnapshots = <SearchSourceSnapshot>[];
     final limitedSnapshots = <SearchSourceSnapshot>[];
@@ -221,6 +222,7 @@ void main() {
       limitedSnapshots.add,
     );
     addTearDown(firstSubscription.cancel);
+
     addTearDown(secondSubscription.cancel);
 
     rankThenLimit.search(queryContext("home"));

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'header_renderer.dart';
@@ -9,6 +9,7 @@ part of 'header_renderer.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ _$ResolvedHeaderItemCopyWith<_ResolvedHeaderItem> get copyWith => __$ResolvedHea
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.declarationOrder, declarationOrder) || other.declarationOrder == declarationOrder)&&(identical(other.visible, visible) || other.visible == visible)&&(identical(other.enabled, enabled) || other.enabled == enabled));
+  final _this = this as _ResolvedHeaderItem;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderItem&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.tooltip, _this.tooltip) || other.tooltip == _this.tooltip)&&(identical(other.declarationOrder, _this.declarationOrder) || other.declarationOrder == _this.declarationOrder)&&(identical(other.visible, _this.visible) || other.visible == _this.visible)&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,tooltip,declarationOrder,visible,enabled);
+int get hashCode {
+  final _this = this as _ResolvedHeaderItem;
+  return Object.hash(runtimeType,_this.id,_this.label,_this.tooltip,_this.declarationOrder,_this.visible,_this.enabled);
+}
 
 @override
 String toString() {
-  return '_ResolvedHeaderItem(id: $id, label: $label, tooltip: $tooltip, declarationOrder: $declarationOrder, visible: $visible, enabled: $enabled)';
+  final _this = this as _ResolvedHeaderItem;
+  return '_ResolvedHeaderItem(id: ${_this.id}, label: ${_this.label}, tooltip: ${_this.tooltip}, declarationOrder: ${_this.declarationOrder}, visible: ${_this.visible}, enabled: ${_this.enabled})';
 }
 
 
@@ -78,7 +84,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $HeaderItemIdCopyWith<$Res> get id {
-  
+
   return $HeaderItemIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -227,7 +233,7 @@ return reorderHandle(_that.id,_that.label,_that.tooltip,_that.source,_that.index
 
 class _ResolvedHeaderButtonItem extends _ResolvedHeaderItem {
   const _ResolvedHeaderButtonItem({required this.id, required this.icon, required this.label, required this.tooltip, required this.action, required this.priority, required this.declarationOrder, required this.visible, required this.enabled, required this.placement, required this.tone, required this.confirmation}): super._();
-  
+
 
 @override final  HeaderItemId id;
  final  IconValue icon;
@@ -252,16 +258,18 @@ _$ResolvedHeaderButtonItemCopyWith<_ResolvedHeaderButtonItem> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderButtonItem&&(identical(other.id, id) || other.id == id)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.label, label) || other.label == label)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.action, action) || other.action == action)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.declarationOrder, declarationOrder) || other.declarationOrder == declarationOrder)&&(identical(other.visible, visible) || other.visible == visible)&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.tone, tone) || other.tone == tone)&&(identical(other.confirmation, confirmation) || other.confirmation == confirmation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderButtonItem&&(identical(other.id, id) || other.id == id)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.label, label) || other.label == label)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.action, action) || other.action == action)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.declarationOrder, declarationOrder) || other.declarationOrder == declarationOrder)&&(identical(other.visible, visible) || other.visible == visible)&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.tone, tone) || other.tone == tone)&&(identical(other.confirmation, confirmation) || other.confirmation == confirmation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,icon,label,tooltip,action,priority,declarationOrder,visible,enabled,placement,tone,confirmation);
+int get hashCode {
+    return Object.hash(runtimeType,id,icon,label,tooltip,action,priority,declarationOrder,visible,enabled,placement,tone,confirmation);
+}
 
 @override
 String toString() {
-  return '_ResolvedHeaderItem.button(id: $id, icon: $icon, label: $label, tooltip: $tooltip, action: $action, priority: $priority, declarationOrder: $declarationOrder, visible: $visible, enabled: $enabled, placement: $placement, tone: $tone, confirmation: $confirmation)';
+    return '_ResolvedHeaderItem.button(id: $id, icon: $icon, label: $label, tooltip: $tooltip, action: $action, priority: $priority, declarationOrder: $declarationOrder, visible: $visible, enabled: $enabled, placement: $placement, tone: $tone, confirmation: $confirmation)';
 }
 
 
@@ -312,7 +320,7 @@ as _ResolvedConfirmation?,
 @override
 @pragma('vm:prefer-inline')
 $HeaderItemIdCopyWith<$Res> get id {
-  
+
   return $HeaderItemIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -321,7 +329,7 @@ $HeaderItemIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $IconValueCopyWith<$Res> get icon {
-  
+
   return $IconValueCopyWith<$Res>(_self.icon, (value) {
     return _then(_self.copyWith(icon: value));
   });
@@ -330,7 +338,7 @@ $IconValueCopyWith<$Res> get icon {
 @override
 @pragma('vm:prefer-inline')
 $EditorActionCopyWith<$Res> get action {
-  
+
   return $EditorActionCopyWith<$Res>(_self.action, (value) {
     return _then(_self.copyWith(action: value));
   });
@@ -354,7 +362,7 @@ _$ResolvedConfirmationCopyWith<$Res>? get confirmation {
 
 class _ResolvedHeaderBooleanToggleItem extends _ResolvedHeaderItem {
   const _ResolvedHeaderBooleanToggleItem({required this.id, required this.label, required this.tooltip, required this.checked, required this.action, required this.priority, required this.declarationOrder, required this.visible, required this.enabled, required this.placement, required this.confirmation}): super._();
-  
+
 
 @override final  HeaderItemId id;
 @override final  String label;
@@ -378,16 +386,18 @@ _$ResolvedHeaderBooleanToggleItemCopyWith<_ResolvedHeaderBooleanToggleItem> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderBooleanToggleItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.checked, checked) || other.checked == checked)&&(identical(other.action, action) || other.action == action)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.declarationOrder, declarationOrder) || other.declarationOrder == declarationOrder)&&(identical(other.visible, visible) || other.visible == visible)&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.confirmation, confirmation) || other.confirmation == confirmation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderBooleanToggleItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.checked, checked) || other.checked == checked)&&(identical(other.action, action) || other.action == action)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.declarationOrder, declarationOrder) || other.declarationOrder == declarationOrder)&&(identical(other.visible, visible) || other.visible == visible)&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.confirmation, confirmation) || other.confirmation == confirmation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,tooltip,checked,action,priority,declarationOrder,visible,enabled,placement,confirmation);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,tooltip,checked,action,priority,declarationOrder,visible,enabled,placement,confirmation);
+}
 
 @override
 String toString() {
-  return '_ResolvedHeaderItem.booleanToggle(id: $id, label: $label, tooltip: $tooltip, checked: $checked, action: $action, priority: $priority, declarationOrder: $declarationOrder, visible: $visible, enabled: $enabled, placement: $placement, confirmation: $confirmation)';
+    return '_ResolvedHeaderItem.booleanToggle(id: $id, label: $label, tooltip: $tooltip, checked: $checked, action: $action, priority: $priority, declarationOrder: $declarationOrder, visible: $visible, enabled: $enabled, placement: $placement, confirmation: $confirmation)';
 }
 
 
@@ -437,7 +447,7 @@ as _ResolvedConfirmation?,
 @override
 @pragma('vm:prefer-inline')
 $HeaderItemIdCopyWith<$Res> get id {
-  
+
   return $HeaderItemIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -446,7 +456,7 @@ $HeaderItemIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $EditorActionCopyWith<$Res> get action {
-  
+
   return $EditorActionCopyWith<$Res>(_self.action, (value) {
     return _then(_self.copyWith(action: value));
   });
@@ -470,7 +480,7 @@ _$ResolvedConfirmationCopyWith<$Res>? get confirmation {
 
 class _ResolvedHeaderReorderHandleItem extends _ResolvedHeaderItem {
   const _ResolvedHeaderReorderHandleItem({required this.id, required this.label, required this.tooltip, required this.source, required this.index, required this.itemCount, required this.declarationOrder, required this.visible, required this.enabled}): super._();
-  
+
 
 @override final  HeaderItemId id;
 @override final  String label;
@@ -492,16 +502,18 @@ _$ResolvedHeaderReorderHandleItemCopyWith<_ResolvedHeaderReorderHandleItem> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderReorderHandleItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.source, source) || other.source == source)&&(identical(other.index, index) || other.index == index)&&(identical(other.itemCount, itemCount) || other.itemCount == itemCount)&&(identical(other.declarationOrder, declarationOrder) || other.declarationOrder == declarationOrder)&&(identical(other.visible, visible) || other.visible == visible)&&(identical(other.enabled, enabled) || other.enabled == enabled));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedHeaderReorderHandleItem&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.tooltip, tooltip) || other.tooltip == tooltip)&&(identical(other.source, source) || other.source == source)&&(identical(other.index, index) || other.index == index)&&(identical(other.itemCount, itemCount) || other.itemCount == itemCount)&&(identical(other.declarationOrder, declarationOrder) || other.declarationOrder == declarationOrder)&&(identical(other.visible, visible) || other.visible == visible)&&(identical(other.enabled, enabled) || other.enabled == enabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,label,tooltip,source,index,itemCount,declarationOrder,visible,enabled);
+int get hashCode {
+    return Object.hash(runtimeType,id,label,tooltip,source,index,itemCount,declarationOrder,visible,enabled);
+}
 
 @override
 String toString() {
-  return '_ResolvedHeaderItem.reorderHandle(id: $id, label: $label, tooltip: $tooltip, source: $source, index: $index, itemCount: $itemCount, declarationOrder: $declarationOrder, visible: $visible, enabled: $enabled)';
+    return '_ResolvedHeaderItem.reorderHandle(id: $id, label: $label, tooltip: $tooltip, source: $source, index: $index, itemCount: $itemCount, declarationOrder: $declarationOrder, visible: $visible, enabled: $enabled)';
 }
 
 
@@ -549,7 +561,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $HeaderItemIdCopyWith<$Res> get id {
-  
+
   return $HeaderItemIdCopyWith<$Res>(_self.id, (value) {
     return _then(_self.copyWith(id: value));
   });
@@ -558,7 +570,7 @@ $HeaderItemIdCopyWith<$Res> get id {
 @override
 @pragma('vm:prefer-inline')
 $BindingReferenceCopyWith<$Res> get source {
-  
+
   return $BindingReferenceCopyWith<$Res>(_self.source, (value) {
     return _then(_self.copyWith(source: value));
   });
@@ -579,16 +591,21 @@ _$ResolvedPresentationHeaderCopyWith<_ResolvedPresentationHeader> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedPresentationHeader&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.items, items));
+  final _this = this as _ResolvedPresentationHeader;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedPresentationHeader&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&const DeepCollectionEquality().equals(other.items, _this.items));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,description,const DeepCollectionEquality().hash(items));
+int get hashCode {
+  final _this = this as _ResolvedPresentationHeader;
+  return Object.hash(runtimeType,_this.title,_this.description,const DeepCollectionEquality().hash(_this.items));
+}
 
 @override
 String toString() {
-  return '_ResolvedPresentationHeader(title: $title, description: $description, items: $items)';
+  final _this = this as _ResolvedPresentationHeader;
+  return '_ResolvedPresentationHeader(title: ${_this.title}, description: ${_this.description}, items: ${_this.items})';
 }
 
 
@@ -617,7 +634,7 @@ class __$ResolvedPresentationHeaderCopyWithImpl<$Res>
 /// Create a copy of _ResolvedPresentationHeader
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? description = null,Object? items = null,}) {
-  return _then(_self.copyWith(
+  return _then(_ResolvedPresentationHeader(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as PresentationHeaderTitle?,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
@@ -774,8 +791,8 @@ return $default(_that.title,_that.description,_that.items);case _:
 
 
 class _ResolvedPresentationHeaderValue implements _ResolvedPresentationHeader {
-  const _ResolvedPresentationHeaderValue({required this.title, required this.description, required final  List<_ResolvedHeaderItem> items}): _items = items;
-  
+  const _ResolvedPresentationHeaderValue({required this.title, required this.description, required  List<_ResolvedHeaderItem> items}): _items = items;
+
 
 @override final  PresentationHeaderTitle? title;
 @override final  String description;
@@ -797,16 +814,18 @@ _$ResolvedPresentationHeaderValueCopyWith<_ResolvedPresentationHeaderValue> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedPresentationHeaderValue&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._items, _items));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedPresentationHeaderValue&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.items, _items));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,description,const DeepCollectionEquality().hash(_items));
+int get hashCode {
+    return Object.hash(runtimeType,title,description,const DeepCollectionEquality().hash(_items));
+}
 
 @override
 String toString() {
-  return '_ResolvedPresentationHeader(title: $title, description: $description, items: $items)';
+    return '_ResolvedPresentationHeader(title: $title, description: $description, items: $items)';
 }
 
 
@@ -872,16 +891,21 @@ _$ResolvedConfirmationCopyWith<_ResolvedConfirmation> get copyWith => __$Resolve
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedConfirmation&&(identical(other.title, title) || other.title == title)&&(identical(other.message, message) || other.message == message)&&(identical(other.confirmationLabel, confirmationLabel) || other.confirmationLabel == confirmationLabel));
+  final _this = this as _ResolvedConfirmation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedConfirmation&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.confirmationLabel, _this.confirmationLabel) || other.confirmationLabel == _this.confirmationLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,message,confirmationLabel);
+int get hashCode {
+  final _this = this as _ResolvedConfirmation;
+  return Object.hash(runtimeType,_this.title,_this.message,_this.confirmationLabel);
+}
 
 @override
 String toString() {
-  return '_ResolvedConfirmation(title: $title, message: $message, confirmationLabel: $confirmationLabel)';
+  final _this = this as _ResolvedConfirmation;
+  return '_ResolvedConfirmation(title: ${_this.title}, message: ${_this.message}, confirmationLabel: ${_this.confirmationLabel})';
 }
 
 
@@ -910,7 +934,7 @@ class __$ResolvedConfirmationCopyWithImpl<$Res>
 /// Create a copy of _ResolvedConfirmation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? message = null,Object? confirmationLabel = null,}) {
-  return _then(_self.copyWith(
+  return _then(_ResolvedConfirmation(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,confirmationLabel: null == confirmationLabel ? _self.confirmationLabel : confirmationLabel // ignore: cast_nullable_to_non_nullable
@@ -1056,7 +1080,7 @@ return $default(_that.title,_that.message,_that.confirmationLabel);case _:
 
 class _ResolvedConfirmationValue implements _ResolvedConfirmation {
   const _ResolvedConfirmationValue({required this.title, required this.message, required this.confirmationLabel});
-  
+
 
 @override final  String title;
 @override final  String message;
@@ -1072,16 +1096,18 @@ _$ResolvedConfirmationValueCopyWith<_ResolvedConfirmationValue> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedConfirmationValue&&(identical(other.title, title) || other.title == title)&&(identical(other.message, message) || other.message == message)&&(identical(other.confirmationLabel, confirmationLabel) || other.confirmationLabel == confirmationLabel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolvedConfirmationValue&&(identical(other.title, title) || other.title == title)&&(identical(other.message, message) || other.message == message)&&(identical(other.confirmationLabel, confirmationLabel) || other.confirmationLabel == confirmationLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,message,confirmationLabel);
+int get hashCode {
+    return Object.hash(runtimeType,title,message,confirmationLabel);
+}
 
 @override
 String toString() {
-  return '_ResolvedConfirmation(title: $title, message: $message, confirmationLabel: $confirmationLabel)';
+    return '_ResolvedConfirmation(title: $title, message: $message, confirmationLabel: $confirmationLabel)';
 }
 
 

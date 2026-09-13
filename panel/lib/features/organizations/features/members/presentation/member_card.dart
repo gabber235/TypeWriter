@@ -202,10 +202,9 @@ class MemberTabletCard extends HookConsumerWidget {
                                       .read(
                                         organizationMembersProvider.notifier,
                                       )
-                                      .updateMemberRoles(
+                                      .updateMemberRoles([
                                         member.userId,
-                                        newRoles,
-                                      )
+                                      ], newRoles)
                                       .catchApiExceptionsAndDisplay(context);
                                 },
                               ),

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'editor_value.dart';
@@ -9,6 +9,7 @@ part of 'editor_value.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$EditorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorValue);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorValue()';
+    return 'EditorValue()';
 }
 
 
@@ -55,12 +56,12 @@ extension EditorValuePatterns on EditorValue {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadingEditorValue value)?  loading,TResult Function( ConflictEditorValue value)?  conflict,TResult Function( InvalidEditorValue value)?  invalid,TResult Function( ReadyEditorValue value)?  ready,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadingEditorValue value)?  loading,TResult Function( MixedEditorValue value)?  mixed,TResult Function( InvalidEditorValue value)?  invalid,TResult Function( ReadyEditorValue value)?  ready,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadingEditorValue() when loading != null:
-return loading(_that);case ConflictEditorValue() when conflict != null:
-return conflict(_that);case InvalidEditorValue() when invalid != null:
+return loading(_that);case MixedEditorValue() when mixed != null:
+return mixed(_that);case InvalidEditorValue() when invalid != null:
 return invalid(_that);case ReadyEditorValue() when ready != null:
 return ready(_that);case _:
   return orElse();
@@ -80,12 +81,12 @@ return ready(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadingEditorValue value)  loading,required TResult Function( ConflictEditorValue value)  conflict,required TResult Function( InvalidEditorValue value)  invalid,required TResult Function( ReadyEditorValue value)  ready,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadingEditorValue value)  loading,required TResult Function( MixedEditorValue value)  mixed,required TResult Function( InvalidEditorValue value)  invalid,required TResult Function( ReadyEditorValue value)  ready,}){
 final _that = this;
 switch (_that) {
 case LoadingEditorValue():
-return loading(_that);case ConflictEditorValue():
-return conflict(_that);case InvalidEditorValue():
+return loading(_that);case MixedEditorValue():
+return mixed(_that);case InvalidEditorValue():
 return invalid(_that);case ReadyEditorValue():
 return ready(_that);}
 }
@@ -101,12 +102,12 @@ return ready(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadingEditorValue value)?  loading,TResult? Function( ConflictEditorValue value)?  conflict,TResult? Function( InvalidEditorValue value)?  invalid,TResult? Function( ReadyEditorValue value)?  ready,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadingEditorValue value)?  loading,TResult? Function( MixedEditorValue value)?  mixed,TResult? Function( InvalidEditorValue value)?  invalid,TResult? Function( ReadyEditorValue value)?  ready,}){
 final _that = this;
 switch (_that) {
 case LoadingEditorValue() when loading != null:
-return loading(_that);case ConflictEditorValue() when conflict != null:
-return conflict(_that);case InvalidEditorValue() when invalid != null:
+return loading(_that);case MixedEditorValue() when mixed != null:
+return mixed(_that);case InvalidEditorValue() when invalid != null:
 return invalid(_that);case ReadyEditorValue() when ready != null:
 return ready(_that);case _:
   return null;
@@ -125,11 +126,11 @@ return ready(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loading,TResult Function()?  conflict,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult Function( DataValue value)?  ready,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loading,TResult Function()?  mixed,TResult Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult Function( DataValue value)?  ready,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadingEditorValue() when loading != null:
-return loading();case ConflictEditorValue() when conflict != null:
-return conflict();case InvalidEditorValue() when invalid != null:
+return loading();case MixedEditorValue() when mixed != null:
+return mixed();case InvalidEditorValue() when invalid != null:
 return invalid(_that.diagnostics);case ReadyEditorValue() when ready != null:
 return ready(_that.value);case _:
   return orElse();
@@ -149,11 +150,11 @@ return ready(_that.value);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loading,required TResult Function()  conflict,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,required TResult Function( DataValue value)  ready,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loading,required TResult Function()  mixed,required TResult Function( List<TypeDiagnostic> diagnostics)  invalid,required TResult Function( DataValue value)  ready,}) {final _that = this;
 switch (_that) {
 case LoadingEditorValue():
-return loading();case ConflictEditorValue():
-return conflict();case InvalidEditorValue():
+return loading();case MixedEditorValue():
+return mixed();case InvalidEditorValue():
 return invalid(_that.diagnostics);case ReadyEditorValue():
 return ready(_that.value);}
 }
@@ -169,11 +170,11 @@ return ready(_that.value);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loading,TResult? Function()?  conflict,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult? Function( DataValue value)?  ready,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loading,TResult? Function()?  mixed,TResult? Function( List<TypeDiagnostic> diagnostics)?  invalid,TResult? Function( DataValue value)?  ready,}) {final _that = this;
 switch (_that) {
 case LoadingEditorValue() when loading != null:
-return loading();case ConflictEditorValue() when conflict != null:
-return conflict();case InvalidEditorValue() when invalid != null:
+return loading();case MixedEditorValue() when mixed != null:
+return mixed();case InvalidEditorValue() when invalid != null:
 return invalid(_that.diagnostics);case ReadyEditorValue() when ready != null:
 return ready(_that.value);case _:
   return null;
@@ -188,7 +189,7 @@ return ready(_that.value);case _:
 
 class LoadingEditorValue extends EditorValue {
   const LoadingEditorValue(): super._();
-  
+
 
 
 
@@ -197,7 +198,7 @@ class LoadingEditorValue extends EditorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingEditorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingEditorValue);
 }
 
 
@@ -206,7 +207,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorValue.loading()';
+    return 'EditorValue.loading()';
 }
 
 
@@ -218,9 +219,9 @@ String toString() {
 /// @nodoc
 
 
-class ConflictEditorValue extends EditorValue {
-  const ConflictEditorValue(): super._();
-  
+class MixedEditorValue extends EditorValue {
+  const MixedEditorValue(): super._();
+
 
 
 
@@ -229,7 +230,7 @@ class ConflictEditorValue extends EditorValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictEditorValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MixedEditorValue);
 }
 
 
@@ -238,7 +239,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorValue.conflict()';
+    return 'EditorValue.mixed()';
 }
 
 
@@ -251,8 +252,8 @@ String toString() {
 
 
 class InvalidEditorValue extends EditorValue {
-  const InvalidEditorValue(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
-  
+  const InvalidEditorValue( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -272,16 +273,18 @@ $InvalidEditorValueCopyWith<InvalidEditorValue> get copyWith => _$InvalidEditorV
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorValue&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorValue&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'EditorValue.invalid(diagnostics: $diagnostics)';
+    return 'EditorValue.invalid(diagnostics: $diagnostics)';
 }
 
 
@@ -324,7 +327,7 @@ as List<TypeDiagnostic>,
 
 class ReadyEditorValue extends EditorValue {
   const ReadyEditorValue(this.value): super._();
-  
+
 
  final  DataValue value;
 
@@ -338,16 +341,18 @@ $ReadyEditorValueCopyWith<ReadyEditorValue> get copyWith => _$ReadyEditorValueCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReadyEditorValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReadyEditorValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'EditorValue.ready(value: $value)';
+    return 'EditorValue.ready(value: $value)';
 }
 
 
@@ -387,7 +392,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -403,7 +408,7 @@ mixin _$EditorMutationResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorMutationResult);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditorMutationResult);
 }
 
 
@@ -412,7 +417,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorMutationResult()';
+    return 'EditorMutationResult()';
 }
 
 
@@ -565,7 +570,7 @@ return invalid(_that.diagnostics);case _:
 
 class AppliedEditorMutation extends EditorMutationResult {
   const AppliedEditorMutation(this.value): super._();
-  
+
 
  final  DataValue value;
 
@@ -579,16 +584,18 @@ $AppliedEditorMutationCopyWith<AppliedEditorMutation> get copyWith => _$AppliedE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppliedEditorMutation&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppliedEditorMutation&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'EditorMutationResult.applied(value: $value)';
+    return 'EditorMutationResult.applied(value: $value)';
 }
 
 
@@ -628,7 +635,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -640,7 +647,7 @@ $DataValueCopyWith<$Res> get value {
 
 class ConflictingEditorMutation extends EditorMutationResult {
   const ConflictingEditorMutation(): super._();
-  
+
 
 
 
@@ -649,7 +656,7 @@ class ConflictingEditorMutation extends EditorMutationResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictingEditorMutation);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictingEditorMutation);
 }
 
 
@@ -658,7 +665,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditorMutationResult.conflict()';
+    return 'EditorMutationResult.conflict()';
 }
 
 
@@ -671,8 +678,8 @@ String toString() {
 
 
 class InvalidEditorMutation extends EditorMutationResult {
-  const InvalidEditorMutation(final  List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
-  
+  const InvalidEditorMutation( List<TypeDiagnostic> diagnostics): _diagnostics = diagnostics,super._();
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -692,16 +699,18 @@ $InvalidEditorMutationCopyWith<InvalidEditorMutation> get copyWith => _$InvalidE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorMutation&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InvalidEditorMutation&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'EditorMutationResult.invalid(diagnostics: $diagnostics)';
+    return 'EditorMutationResult.invalid(diagnostics: $diagnostics)';
 }
 
 

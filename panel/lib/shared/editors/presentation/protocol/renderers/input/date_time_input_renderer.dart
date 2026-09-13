@@ -11,16 +11,37 @@ extension DateTimeInputElementRendering on DateTimeInputElement {
       control: control,
       scope: scope,
       shapeMismatch: (binding) =>
-          binding.type is TimestampType && binding.value is TimestampValue
+          binding.type is TimestampType &&
+              (binding.value is MixedEditorValue ||
+                  binding.value.valueOrNull is TimestampValue)
           ? null
           : "Date and time control requires a timestamp",
       builder: (context, field) {
+        if (field.mixed) {
+          return DateTimePickerField.mixed(
+            includeDate: includeDate,
+            includeTime: includeTime,
+            enabled: field.enabled,
+            readOnly: field.readOnly,
+            onInteractionStart: field.interaction.begin,
+            onInteractionCommit: field.interaction.commit,
+            onInteractionCancel: field.interaction.cancel,
+            onChanged: (next) => field.update(TimestampValue(next)),
+          );
+        }
+        final value = field.value;
+        if (value is! TimestampValue) {
+          return _inputDiagnostic("Date and time control requires a timestamp");
+        }
         return DateTimePickerField(
-          value: (field.binding.value as TimestampValue).value,
+          value: value.value,
           includeDate: includeDate,
           includeTime: includeTime,
           enabled: field.enabled,
           readOnly: field.readOnly,
+          onInteractionStart: field.interaction.begin,
+          onInteractionCommit: field.interaction.commit,
+          onInteractionCancel: field.interaction.cancel,
           onChanged: (next) => field.update(TimestampValue(next)),
         );
       },

@@ -35,6 +35,7 @@ void main() {
       expect(merged.headerPadding, const PresentationInsets.only(top: 3));
       expect(merged.contentPadding, const PresentationInsets.only(left: 6));
       final item = merged.items.single as HeaderButtonItem;
+
       expect(item.label, "outer".asStringLiteral);
       expect(item.placement, HeaderActionPlacement.afterTitle);
     });
@@ -79,9 +80,9 @@ void main() {
     test("reorders from a lower to a higher final position", () {
       final result = _reorder(0, 2).execute(_context(), registry: null);
 
-      expect(result, isA<MutationSuccess>());
+      expect(result, isA<LocalMutationApplied>());
       expect(
-        (result as MutationSuccess).value,
+        (result as LocalMutationApplied).value,
         _list(["second", "third", "first"]),
       );
     });
@@ -90,7 +91,7 @@ void main() {
       final result = _reorder(2, 0).execute(_context(), registry: null);
 
       expect(
-        (result as MutationSuccess).value,
+        (result as LocalMutationApplied).value,
         _list(["third", "first", "second"]),
       );
     });
@@ -98,15 +99,18 @@ void main() {
     test("keeps the revision for a successful no operation", () {
       final result = _reorder(1, 1).execute(_context(), registry: null);
 
-      expect(result, isA<MutationSuccess>());
-      expect((result as MutationSuccess).revision, 7);
-      expect(result.value, _list(["first", "second", "third"]));
+      expect(result, isA<LocalMutationApplied>());
+
+      expect(
+        (result as LocalMutationApplied).value,
+        _list(["first", "second", "third"]),
+      );
     });
 
     test("rejects a destination at the list length", () {
       final result = _reorder(0, 3).execute(_context(), registry: null);
 
-      expect(result, isA<MutationInvalid>());
+      expect(result, isA<LocalMutationInvalid>());
     });
 
     test("rejects a source that is not an item binding", () {
@@ -114,7 +118,7 @@ void main() {
         ReorderListItemAction(source: _root, newIndex: 0.asSigned64Literal),
       ).execute(_context(), registry: null);
 
-      expect(result, isA<MutationInvalid>());
+      expect(result, isA<LocalMutationInvalid>());
     });
 
     test("appends and duplicates through dedicated actions", () {
@@ -126,11 +130,11 @@ void main() {
       ).execute(_context(), registry: null);
 
       expect(
-        (appended as MutationSuccess).value,
+        (appended as LocalMutationApplied).value,
         _list(["first", "second", "third", "fourth"]),
       );
       expect(
-        (duplicated as MutationSuccess).value,
+        (duplicated as LocalMutationApplied).value,
         _list(["first", "second", "second", "third"]),
       );
     });

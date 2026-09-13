@@ -25,7 +25,7 @@ extension on PresentationElement {
     final value = this;
     return switch (value) {
       DiagnosticElement() => DiagnosticElement(value.diagnostics),
-      DefaultPresentationElement() => value,
+      DefaultPresentationElement() || PresentationInvocationElement() => value,
       ColumnElement() => ColumnElement(
         children: value.children._substituteTypes(substitutions),
         spacing: value.spacing,
@@ -137,6 +137,27 @@ extension on PresentationElement {
         maximum: value.maximum._substituteTypes(substitutions),
         label: value.label._substituteTypes(substitutions),
       ),
+      StatusElement() => StatusElement(
+        value: value.value._substituteTypes(substitutions),
+        cases: [
+          for (final item in value.cases)
+            StatusCase(
+              match: item.match,
+              appearance: item.appearance._substituteTypes(substitutions),
+            ),
+        ],
+        fallback: value.fallback?._substituteTypes(substitutions),
+      ),
+      DateTimeElement() => DateTimeElement(
+        value: value.value._substituteTypes(substitutions),
+        format: value.format._substituteTypes(substitutions),
+        timeZone: value.timeZone,
+      ),
+      RelativeTimeElement() => RelativeTimeElement(
+        value: value.value._substituteTypes(substitutions),
+        style: value.style,
+        timeZone: value.timeZone,
+      ),
       TypedFieldElement() => TypedFieldElement(
         binding: value.binding,
         expectedType: value.expectedType.substitute(substitutions),
@@ -183,6 +204,7 @@ extension on PresentationElement {
             )
             .toList(),
         allowCustomValue: value.allowCustomValue,
+        defaultValue: value.defaultValue._substituteTypes(substitutions),
       ),
       SliderInputElement() => SliderInputElement(
         control: value.control._substituteTypes(substitutions),
@@ -265,6 +287,7 @@ extension on PresentationElement {
             .toList(),
         fallback: value.fallback?.substitute(substitutions),
       ),
+      CommitControlsElement() => value,
       ButtonElement() => ButtonElement(
         label: value.label._substituteTypes(substitutions),
         action: value.action.substituteTypes(substitutions),
@@ -292,6 +315,15 @@ extension on PresentationElement {
       ),
     };
   }
+}
+
+extension on StatusAppearance {
+  StatusAppearance _substituteTypes(
+    Map<String, TypeExpression> substitutions,
+  ) => StatusAppearance(
+    tone: tone,
+    label: label._substituteTypes(substitutions),
+  );
 }
 
 extension on BoundControl {

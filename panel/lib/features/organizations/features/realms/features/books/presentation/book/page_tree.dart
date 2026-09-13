@@ -163,11 +163,17 @@ class _TreeCategory extends HookConsumerWidget {
               builder: (context, chapterCandidates, chapterRejected) {
                 return DragTarget<PageDrag>(
                   onWillAcceptWithDetails: (details) => true,
-                  onAcceptWithDetails: (details) {
-                    final pageId = details.data.pageId;
-                    ref
-                        .read(pagesProvider(pageId).notifier)
-                        .updatePage(chapter: node.path);
+                  onAcceptWithDetails: (details) async {
+                    final result = await ref.editPage(
+                      id: details.data.pageId,
+                      chapter: skir.StringChange(
+                        expected: details.data.chapter,
+                        value: node.path,
+                      ),
+                    );
+                    result.requireApplied(
+                      conflictMessage: "The page chapter changed",
+                    );
                   },
                   builder: (context, pageCandidates, pageRejected) {
                     final isAccepting =

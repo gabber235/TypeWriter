@@ -5,10 +5,16 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 extension FutureExt<T> on Future<T> {
   Future<T> catchApiExceptionsAndDisplay(BuildContext context) {
-    return catchError((error, stackTrace) {
-      if (!context.mounted) return;
-      showErrorSnackBar(context, error.toString());
-    }, test: (error) => error is ApiException);
+    return catchError(
+      (error, stackTrace) {
+        if (!context.mounted) return;
+        showErrorSnackBar(context, error.toString());
+      },
+      test: (error) =>
+          error is ApiException ||
+          error is SubmissionException ||
+          error is EditorMutationException,
+    );
   }
 }
 

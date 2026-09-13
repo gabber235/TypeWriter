@@ -59,7 +59,9 @@ DateTime parseDateTimeEditorValue(
   var month = current.month;
   var day = current.day;
   var hour = current.hour;
+
   var minute = current.minute;
+
   var second = current.second;
   if (includeDate) {
     year = int.parse(match.group(1)!);

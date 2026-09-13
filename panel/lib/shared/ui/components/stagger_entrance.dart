@@ -388,6 +388,7 @@ class _ScheduledSliverEntrance extends StatelessWidget {
       begin: schedule.slideOffset,
       end: 0,
     ).animate(progress);
+
     return SliverFadeTransition(
       opacity: progress,
       sliver: _SliverFractionalTranslation(
@@ -431,9 +432,8 @@ class _StaggerCoordinator {
     required this.parent,
     required this.settings,
     required this.localController,
-    required bool animationsDisabled,
-  }) : groupNode = _StaggerGroupNode(),
-       _animationsDisabled = animationsDisabled {
+    required this._animationsDisabled,
+  }) : groupNode = _StaggerGroupNode() {
     groupNode.coordinator = this;
   }
 
@@ -587,7 +587,9 @@ class _StaggerCoordinator {
       final bPosition = b.globalPosition!;
       final vertical = aPosition.dy.compareTo(bPosition.dy);
       if (vertical != 0) return vertical;
+
       final horizontal = aPosition.dx.compareTo(bPosition.dx);
+
       if (horizontal != 0) return horizontal;
       return a.sequence.compareTo(b.sequence);
     });
@@ -744,6 +746,7 @@ abstract class _StaggerGeometryOwner {
       renderObject.getTransformTo(null),
       Offset.zero,
     );
+
     if (!position.dx.isFinite || !position.dy.isFinite) return null;
     return position;
   }

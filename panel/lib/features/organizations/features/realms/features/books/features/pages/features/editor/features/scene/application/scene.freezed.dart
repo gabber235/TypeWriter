@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'scene.dart';
@@ -9,6 +9,7 @@ part of 'scene.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CueCopyWith<Cue> get copyWith => _$CueCopyWithImpl<Cue>(this as Cue, _$identity
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Cue&&(identical(other.id, id) || other.id == id)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other.inwardLinks, inwardLinks));
+  final _this = this as Cue;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Cue&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.elementDefinition, _this.elementDefinition) || other.elementDefinition == _this.elementDefinition)&&(identical(other.data, _this.data) || other.data == _this.data)&&const DeepCollectionEquality().equals(other.inwardLinks, _this.inwardLinks));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,elementDefinition,data,const DeepCollectionEquality().hash(inwardLinks));
+int get hashCode {
+  final _this = this as Cue;
+  return Object.hash(runtimeType,_this.id,_this.elementDefinition,_this.data,const DeepCollectionEquality().hash(_this.inwardLinks));
+}
 
 @override
 String toString() {
-  return 'Cue(id: $id, elementDefinition: $elementDefinition, data: $data, inwardLinks: $inwardLinks)';
+  final _this = this as Cue;
+  return 'Cue(id: ${_this.id}, elementDefinition: ${_this.elementDefinition}, data: ${_this.data}, inwardLinks: ${_this.inwardLinks})';
 }
 
 
@@ -76,7 +82,7 @@ as List<ElementLink>,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-  
+
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });
@@ -224,8 +230,8 @@ return keyframe(_that.id,_that.frame,_that.elementDefinition,_that.data,_that.in
 
 
 class Segment implements Cue {
-  const Segment({required this.id, required this.startFrame, required this.endFrame, required this.elementDefinition, required this.data, required final  List<ElementLink> inwardLinks, required final  List<ElementLink> outwardLinks}): assert(id != "", 'ID must not be empty.'),assert(startFrame >= 0, 'Start frame must not be negative.'),assert(endFrame >= startFrame, 'End frame must not precede start frame.'),_inwardLinks = inwardLinks,_outwardLinks = outwardLinks;
-  
+  const Segment({required this.id, required this.startFrame, required this.endFrame, required this.elementDefinition, required this.data, required  List<ElementLink> inwardLinks, required  List<ElementLink> outwardLinks}): assert(id != "", 'ID must not be empty.'),assert(startFrame >= 0, 'Start frame must not be negative.'),assert(endFrame >= startFrame, 'End frame must not precede start frame.'),_inwardLinks = inwardLinks,_outwardLinks = outwardLinks;
+
 
 @override final  String id;
  final  int startFrame;
@@ -257,16 +263,18 @@ $SegmentCopyWith<Segment> get copyWith => _$SegmentCopyWithImpl<Segment>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Segment&&(identical(other.id, id) || other.id == id)&&(identical(other.startFrame, startFrame) || other.startFrame == startFrame)&&(identical(other.endFrame, endFrame) || other.endFrame == endFrame)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other._inwardLinks, _inwardLinks)&&const DeepCollectionEquality().equals(other._outwardLinks, _outwardLinks));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Segment&&(identical(other.id, id) || other.id == id)&&(identical(other.startFrame, startFrame) || other.startFrame == startFrame)&&(identical(other.endFrame, endFrame) || other.endFrame == endFrame)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other.inwardLinks, _inwardLinks)&&const DeepCollectionEquality().equals(other.outwardLinks, _outwardLinks));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,startFrame,endFrame,elementDefinition,data,const DeepCollectionEquality().hash(_inwardLinks),const DeepCollectionEquality().hash(_outwardLinks));
+int get hashCode {
+    return Object.hash(runtimeType,id,startFrame,endFrame,elementDefinition,data,const DeepCollectionEquality().hash(_inwardLinks),const DeepCollectionEquality().hash(_outwardLinks));
+}
 
 @override
 String toString() {
-  return 'Cue.segment(id: $id, startFrame: $startFrame, endFrame: $endFrame, elementDefinition: $elementDefinition, data: $data, inwardLinks: $inwardLinks, outwardLinks: $outwardLinks)';
+    return 'Cue.segment(id: $id, startFrame: $startFrame, endFrame: $endFrame, elementDefinition: $elementDefinition, data: $data, inwardLinks: $inwardLinks, outwardLinks: $outwardLinks)';
 }
 
 
@@ -312,7 +320,7 @@ as List<ElementLink>,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-  
+
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });
@@ -323,8 +331,8 @@ $ElementDefinitionCopyWith<$Res> get elementDefinition {
 
 
 class Keyframe implements Cue {
-  const Keyframe({required this.id, required this.frame, required this.elementDefinition, required this.data, required final  List<ElementLink> inwardLinks}): assert(id != "", 'ID must not be empty.'),assert(frame >= 0, 'Frame must not be negative.'),_inwardLinks = inwardLinks;
-  
+  const Keyframe({required this.id, required this.frame, required this.elementDefinition, required this.data, required  List<ElementLink> inwardLinks}): assert(id != "", 'ID must not be empty.'),assert(frame >= 0, 'Frame must not be negative.'),_inwardLinks = inwardLinks;
+
 
 @override final  String id;
  final  int frame;
@@ -348,16 +356,18 @@ $KeyframeCopyWith<Keyframe> get copyWith => _$KeyframeCopyWithImpl<Keyframe>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Keyframe&&(identical(other.id, id) || other.id == id)&&(identical(other.frame, frame) || other.frame == frame)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other._inwardLinks, _inwardLinks));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Keyframe&&(identical(other.id, id) || other.id == id)&&(identical(other.frame, frame) || other.frame == frame)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other.inwardLinks, _inwardLinks));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,frame,elementDefinition,data,const DeepCollectionEquality().hash(_inwardLinks));
+int get hashCode {
+    return Object.hash(runtimeType,id,frame,elementDefinition,data,const DeepCollectionEquality().hash(_inwardLinks));
+}
 
 @override
 String toString() {
-  return 'Cue.keyframe(id: $id, frame: $frame, elementDefinition: $elementDefinition, data: $data, inwardLinks: $inwardLinks)';
+    return 'Cue.keyframe(id: $id, frame: $frame, elementDefinition: $elementDefinition, data: $data, inwardLinks: $inwardLinks)';
 }
 
 
@@ -401,7 +411,7 @@ as List<ElementLink>,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-  
+
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });

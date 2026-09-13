@@ -154,6 +154,7 @@ List<ActionShortcut> buildTimelineShortcuts({
       priority: -2,
       onInvoke: (_) => _invokeTimelineZoomReset(
         controller: controller,
+        style: style,
         viewport: viewport,
         layout: layout,
       ),
@@ -335,10 +336,16 @@ Object? _invokeTimelineZoomOut({
 
 void _invokeTimelineZoomReset({
   required TimelineController controller,
+  required TimelineStyle style,
   required TimelineViewport viewport,
   required TimelineLayoutResult layout,
 }) {
-  controller.resetZoom(viewport, layout);
+  controller.resetZoom(
+    viewport,
+    layout,
+    minPixelsPerFrame: style.minPixelsPerFrame,
+    maxPixelsPerFrame: style.maxPixelsPerFrame,
+  );
 }
 
 void _invokeTimelinePlaneMove(

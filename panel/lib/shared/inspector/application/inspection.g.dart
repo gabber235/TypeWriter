@@ -66,7 +66,7 @@ final class InspectedSelectionProvider
 }
 
 String _$inspectedSelectionHash() =>
-    r'403e1791575d1980022006a7024a19233db027e5';
+    r'fdba8a3d317c067c0afab2040f701d5c23ebca8d';
 
 @ProviderFor(hasInspectableSelection)
 final hasInspectableSelectionProvider = HasInspectableSelectionProvider._();
@@ -108,87 +108,51 @@ final class HasInspectableSelectionProvider
 }
 
 String _$hasInspectableSelectionHash() =>
-    r'fc35f93d31e8a73986f4932f8650aac64a93cc09';
+    r'7cbf8deaf3235756f3140f855bf5bd9bf7d40ccb';
 
-@ProviderFor(inspectedRootType)
-final inspectedRootTypeProvider = InspectedRootTypeProvider._();
+@ProviderFor(inspectionSession)
+final inspectionSessionProvider = InspectionSessionProvider._();
 
-final class InspectedRootTypeProvider
+final class InspectionSessionProvider
     extends
-        $FunctionalProvider<TypeExpression?, TypeExpression?, TypeExpression?>
-    with $Provider<TypeExpression?> {
-  InspectedRootTypeProvider._()
+        $FunctionalProvider<
+          InspectionSession,
+          InspectionSession,
+          InspectionSession
+        >
+    with $Provider<InspectionSession> {
+  InspectionSessionProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'inspectedRootTypeProvider',
+        name: r'inspectionSessionProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$inspectedRootTypeHash();
+  String debugGetCreateSourceHash() => _$inspectionSessionHash();
 
   @$internal
   @override
-  $ProviderElement<TypeExpression?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<InspectionSession> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  TypeExpression? create(Ref ref) {
-    return inspectedRootType(ref);
+  InspectionSession create(Ref ref) {
+    return inspectionSession(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(TypeExpression? value) {
+  Override overrideWithValue(InspectionSession value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<TypeExpression?>(value),
+      providerOverride: $SyncValueProvider<InspectionSession>(value),
     );
   }
 }
 
-String _$inspectedRootTypeHash() => r'dde8d50025d4f9ff0d0bed58b42ec4cfdccc1ba3';
-
-@ProviderFor(inspectedHeader)
-final inspectedHeaderProvider = InspectedHeaderProvider._();
-
-final class InspectedHeaderProvider
-    extends $FunctionalProvider<Widget?, Widget?, Widget?>
-    with $Provider<Widget?> {
-  InspectedHeaderProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'inspectedHeaderProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$inspectedHeaderHash();
-
-  @$internal
-  @override
-  $ProviderElement<Widget?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  Widget? create(Ref ref) {
-    return inspectedHeader(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Widget? value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Widget?>(value),
-    );
-  }
-}
-
-String _$inspectedHeaderHash() => r'6ff81ff07e2b42ada33b6d29f99c52ea618485f1';
+String _$inspectionSessionHash() => r'14f2a059ff1e398bb511ef4551ed1a6076bcf77f';

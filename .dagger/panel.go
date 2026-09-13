@@ -4,9 +4,9 @@ import (
 	"dagger/typewriter/internal/dagger"
 )
 
-const panelFlutterVersion = "3.44.7"
+const panelFlutterVersion = "3.47.2"
 
-const panelGeneratorCacheVersion = "flutter-3.44.7-lock-v2"
+const panelGeneratorCacheVersion = "flutter-3.47.2-lock-v2"
 
 var defaultWorkspaceOpts = dagger.WorkspaceDirectoryOpts{
 	Exclude:   []string{".git", "target", "node_modules", "build", "dist"},
@@ -20,15 +20,12 @@ func (m *Typewriter) dartContainer() *dagger.Container {
 		WithExec([]string{"flutter", "precache", "--linux"})
 }
 
-func (m *Typewriter) panelContainer(source *dagger.Workspace) *dagger.Container {
+func (m *Typewriter) panelContainer(source *dagger.Workspace, cacheScope string) *dagger.Container {
 	panelSource := source.Directory("/panel", defaultWorkspaceOpts)
 
 	return m.dartContainer().
 		WithDirectory("/workspace/panel", panelSource).
-		WithMountedCache("/root/.pub-cache", dag.CacheVolume("pub-cache")).
-		WithMountedCache("/workspace/panel/.dart_tool", dag.CacheVolume("dart-tool")).
-		WithMountedCache("/workspace/panel/testkit/.dart_tool", dag.CacheVolume("dart-tool-testkit")).
-		WithMountedCache("/workspace/panel/widgetbook/.dart_tool", dag.CacheVolume("dart-tool-widgetbook"))
+		WithMountedCache("/root/.pub-cache", lockedCache("panel-"+cacheScope+"-pub-cache"))
 }
 
 func (m *Typewriter) panelGeneratorContainer(source *dagger.Workspace, packageName string) *dagger.Container {
@@ -37,10 +34,10 @@ func (m *Typewriter) panelGeneratorContainer(source *dagger.Workspace, packageNa
 
 	return m.dartContainer().
 		WithDirectory("/workspace/panel", panelSource).
-		WithMountedCache("/root/.pub-cache", dag.CacheVolume(cachePrefix+"-pub-cache")).
-		WithMountedCache("/workspace/panel/.dart_tool", dag.CacheVolume(cachePrefix+"-dart-tool")).
-		WithMountedCache("/workspace/panel/testkit/.dart_tool", dag.CacheVolume(cachePrefix+"-dart-tool-testkit")).
-		WithMountedCache("/workspace/panel/widgetbook/.dart_tool", dag.CacheVolume(cachePrefix+"-dart-tool-widgetbook"))
+		WithMountedCache("/root/.pub-cache", lockedCache(cachePrefix+"-pub-cache")).
+		WithMountedCache("/workspace/panel/.dart_tool", lockedCache(cachePrefix+"-dart-tool")).
+		WithMountedCache("/workspace/panel/testkit/.dart_tool", lockedCache(cachePrefix+"-dart-tool-testkit")).
+		WithMountedCache("/workspace/panel/widgetbook/.dart_tool", lockedCache(cachePrefix+"-dart-tool-widgetbook"))
 }
 
 func (m *Typewriter) buildRunner(
@@ -102,7 +99,7 @@ func (m *Typewriter) PanelWidgetbookBuildRunner(
 func (m *Typewriter) PanelAnalysis(
 	source *dagger.Workspace,
 ) *dagger.Container {
-	return m.panelContainer(source).
+	return m.panelContainer(source, "analysis").
 		WithWorkdir("/workspace/panel/testkit").
 		WithExec([]string{"flutter", "pub", "get"}).
 		WithExec([]string{"flutter", "analyze"}).
@@ -118,8 +115,62 @@ func (m *Typewriter) PanelAnalysis(
 func (m *Typewriter) PanelTest(
 	source *dagger.Workspace,
 ) *dagger.Container {
-	return m.panelContainer(source).
+	return m.panelContainer(source, "test").
+		WithDirectory("/workspace/skir-src", source.Directory("/skir-src", defaultWorkspaceOpts)).
 		WithWorkdir("/workspace/panel").
 		WithExec([]string{"flutter", "pub", "get"}).
 		WithExec([]string{"flutter", "test"})
+}
+
+// +check
+func (m *Typewriter) PanelTestKitTest(source *dagger.Workspace) *dagger.Container {
+	return m.panelContainer(source, "testkit-test").
+		WithWorkdir("/workspace/panel/testkit").
+		WithExec([]string{"flutter", "pub", "get"}).
+		WithExec([]string{"flutter", "test"})
+}
+
+// +check
+func (m *Typewriter) PanelWidgetbookTest(source *dagger.Workspace) *dagger.Container {
+	return m.panelContainer(source, "widgetbook-test").
+		WithWorkdir("/workspace/panel/widgetbook").
+		WithExec([]string{"flutter", "pub", "get"}).
+		WithExec([]string{"flutter", "test"})
+}
+
+// +check
+func (m *Typewriter) PanelNatsIntegration(
+	source *dagger.Workspace,
+) *dagger.Container {
+	config := `
+port: 4222
+authorization {
+  users: [{
+    nkey: "UD466L6EBCM3YY5HEGHJANNTN4LSKTSUXTH7RILHCKEQMQHTBNLHJJXT"
+    permissions: {
+      publish: {allow: ["allowed.>", "_INBOX.integration.>"]}
+      subscribe: {allow: ["allowed.>", "_INBOX.integration.>"]}
+    }
+  }]
+}
+`
+	nats := dag.Container().
+		From("nats:2.14.6-alpine").
+		WithNewFile("/etc/nats/nats.conf", config).
+		WithExposedPort(4222).
+		AsService(dagger.ContainerAsServiceOpts{
+			Args:          []string{"-c", "/etc/nats/nats.conf"},
+			UseEntrypoint: true,
+		})
+
+	return m.panelContainer(source, "nats-integration").
+		WithServiceBinding("nats", nats).
+		WithEnvVariable("NATS_ADAPTER_URL", "nats://nats:4222").
+		WithWorkdir("/workspace/panel").
+		WithExec([]string{"flutter", "pub", "get"}).
+		WithExec([]string{
+			"flutter",
+			"test",
+			"test/infrastructure/messaging/nats_core_client_integration_test.dart",
+		})
 }

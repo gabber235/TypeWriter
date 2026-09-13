@@ -20,7 +20,7 @@ List<PageElement>? pageStoryElements({
 
 List<PageElement> _entryStoryElements(PageType pageType, int count) {
   final rootType = ResolvedTypeRef(
-    id: QualifiedTypeId(namespace: "widgetbook", name: "${pageType.name}Entry"),
+    id: fixtureDeclaredTypeId("widgetbook:${pageType.name}Entry"),
     revision: 1,
   );
   return [
@@ -79,6 +79,74 @@ RealmEditorCatalogState pageStoryCatalog(
   );
 }
 
+RealmEditorCatalogState pageStoryPageCatalog(
+  PageType pageType,
+  List<PageElement> elements,
+) {
+  final elementDefinitions = [
+    for (final element in elements)
+      switch (element) {
+        PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
+          definition.elementDefinition,
+        PageElementCue(:final cue) => cue.elementDefinition,
+        _ => null,
+      },
+  ].nonNulls;
+  final editor = switch (pageType) {
+    PageType.scene => const RealmTimelinePageEditor(
+      trackTypes: [],
+      segmentTypes: [],
+      keyframeTypes: [],
+    ),
+    _ => const RealmGraphPageEditor(
+      direction: GraphDirection.leftToRight,
+      nodeTypes: [],
+    ),
+  };
+  final definition = RealmPageDefinition(
+    kind: pageType.kind,
+    name: pageType.displayName.formatted,
+    description: "Widgetbook page definition",
+    icon: _storyEntryIcon,
+    color: safeColors.first,
+    editor: editor,
+    originArtifactId: "widgetbook",
+    sourcePart: "page-story",
+  );
+  return RealmEditorCatalogState.ready(
+    RealmEditorCatalogSnapshot(
+      catalog: TypeCatalog([
+        for (final entry in _rootValues(elements).entries)
+          TypeDefinition(
+            id: entry.key,
+            kind: NominalTypeKind.concrete,
+            representation: _recordType(entry.value),
+          ),
+      ]),
+      generation: const CatalogGeneration("widgetbook"),
+      elements: {
+        for (final definition in elementDefinitions)
+          definition.typeId.uuid: RealmElementCatalogEntry(
+            originArtifactId: "widgetbook",
+            sourcePart: "page-story",
+            definition: DiscoveredElementDefinition(
+              id: definition.typeId.uuid,
+              type: definition.rootType,
+              name: definition.name,
+              description: definition.description,
+              icon: definition.icon,
+              color: definition.color,
+              availability: const ElementAvailability.always(),
+            ),
+            eligible: true,
+            available: true,
+          ),
+      },
+      pageCatalog: RealmPageCatalog(definitions: {pageType.kind: definition}),
+    ),
+  );
+}
+
 Map<ResolvedTypeRef, RecordValue> _rootValues(List<PageElement> elements) {
   final values = <ResolvedTypeRef, RecordValue>{};
   for (final element in elements) {
@@ -125,4 +193,92 @@ TypeExpression _valueType(DataValue value) {
     PolymorphicValue(:final concreteType) => NamedType(concreteType),
     _ => const AnyType(),
   };
+}
+
+AuthoringSessionState pageStoryAuthoring(
+  PageType pageType,
+  List<PageElement> elements,
+) {
+  final page = wire.Page(
+    id: recordId("page:example-page-id"),
+    book: recordId("book:example-book-id"),
+    name: "Example",
+    kind: skir.PageKindRef(id: skir.PageKindId(value: "example"), revision: 1),
+    chapter: "",
+    priority: 0,
+  );
+  final catalog = (pageStoryPageCatalog(
+    pageType,
+    elements,
+  ) as RealmEditorCatalogReady).value.catalog;
+  final codec = SkirEditorCodec(TypeRegistry(catalog));
+  return AuthoringSessionState(
+    sequence: 1,
+    pages: {page.id: page},
+    documents: {
+      page.id: wire.PageDocument(
+        page: page,
+        elements: [
+          for (final element in elements)
+            switch (element) {
+              PageElementEntry(entry: DefinitionPageEntry(:final definition)) =>
+                wire.PageElement(
+                  id: recordId("element:${definition.id}"),
+                  page: page.id,
+                  name: definition.name,
+                  elementType: definition.elementDefinition.typeId.uuid,
+                  schemaRevision:
+                      definition.elementDefinition.rootType.revision,
+                  value: codec.encodeValue(definition.data).valueOrNull!,
+                  placement: wire.ElementPlacement.createGraph(
+                    x: definition.placement.x,
+                    y: definition.placement.y,
+                    width: definition.placement.width,
+                    height: definition.placement.height,
+                  ),
+                ),
+              PageElementCue(:final cue) => wire.PageElement(
+                id: recordId("element:${cue.id}"),
+                page: page.id,
+                name: cue.elementDefinition.name,
+                elementType: cue.elementDefinition.typeId.uuid,
+                schemaRevision: cue.elementDefinition.rootType.revision,
+                value: codec.encodeValue(cue.data).valueOrNull!,
+                placement: switch (cue) {
+                  Segment(:final startFrame, :final endFrame) =>
+                    wire.ElementPlacement.createTimelineSegment(
+                      startFrame: startFrame,
+                      endFrame: endFrame,
+                    ),
+                  Keyframe(:final frame) =>
+                    wire.ElementPlacement.createTimelineKeyframe(frame: frame),
+                  _ => throw StateError("Unknown story cue"),
+                },
+              ),
+              _ => throw StateError("Unsupported story element"),
+            },
+        ],
+        references: [
+          for (final element in elements)
+            for (final link in switch (element) {
+              PageElementEntry(:final entry) => entry.links.$2,
+              PageElementCue(cue: Segment(:final outwardLinks)) => outwardLinks,
+              _ => const <ElementLink>[],
+            })
+              wire.PageReference(
+                source: recordId("element:${element.id}"),
+                slot: link.path,
+                target: recordId("element:${link.otherId}"),
+              ),
+        ],
+        crossPageTargets: const [],
+        crossPageSources: const [],
+        diagnostics: const [],
+        compileStatus: wire.PageCompileStatus.createBlocked(
+          lastActiveManifestId: null,
+          diagnosticCount: 0,
+        ),
+      ),
+    },
+  );
 }

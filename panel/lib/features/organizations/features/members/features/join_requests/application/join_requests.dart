@@ -54,6 +54,8 @@ abstract class OrganizationJoinRequest with _$OrganizationJoinRequest {
 
 @riverpod
 class OrganizationJoinRequests extends _$OrganizationJoinRequests {
+  final _sequenceState = SequencedCollection<List<OrganizationJoinRequest>>();
+
   @override
   Stream<List<OrganizationJoinRequest>> build() async* {
     final userId = await ref.watch(userIdProvider.future);
@@ -68,45 +70,47 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
     }
 
     final request = skir.WatchOrganizationJoinRequestsRequest();
-    yield* ref.watchRequest(
+    yield* ref.watchSequencedRequest(
       subject:
           "cloud.to.user.$userId.organization.${organizationId.id}.members.join_requests.watch",
-      listenSubject:
-          "cloud.from.organization.${organizationId.id}.members.join_requests.watch",
+      eventSubject:
+          "cloud.from.organization.${organizationId.id}.join_requests.changed",
       requestBytes: skir.WatchOrganizationJoinRequestsRequest.serializer
           .toBytes(request),
-      serializer: skir.WatchOrganizationJoinRequestsResponse.serializer,
-      transformer: (previous, response) {
-        switch (response) {
-          case skir.WatchOrganizationJoinRequestsResponse_unknown():
-            throw ApiException.unknownResponseMessage();
-          case skir.WatchOrganizationJoinRequestsResponse_internalErrorWrapper():
-            throw ApiException.internalServerError();
-          case skir.WatchOrganizationJoinRequestsResponse_listWrapper(
+      responseSerializer: skir.WatchOrganizationJoinRequestsResponse.serializer,
+      eventSerializer: skir.OrganizationJoinRequestsChanged.serializer,
+      snapshot: (response) {
+        return switch (response) {
+          skir.WatchOrganizationJoinRequestsResponse_unknown() =>
+            throw ApiException.unknownResponseMessage(),
+          skir.WatchOrganizationJoinRequestsResponse_internalErrorWrapper() =>
+            throw ApiException.internalServerError(),
+          skir.WatchOrganizationJoinRequestsResponse_snapshotWrapper(
             :final value,
-          ):
-            return value.map(OrganizationJoinRequest.fromSkir).toList();
-          case skir.WatchOrganizationJoinRequestsResponse_addWrapper(
-            :final value,
-          ):
-            return previous.upsertByKey(
-              (request) => request.requestId,
-              OrganizationJoinRequest.fromSkir(value),
-            );
-          case skir.WatchOrganizationJoinRequestsResponse_removeWrapper(
-            :final value,
-          ):
-            return previous?.where((e) => e.requestId != value).toList() ?? [];
-        }
+          ) =>
+            SequencedSnapshot(
+              sequence: value.sequence,
+              value: value.values
+                  .map(OrganizationJoinRequest.fromSkir)
+                  .toList(),
+            ),
+          skir.WatchOrganizationJoinRequestsResponse_changedWrapper() =>
+            throw StateError("Snapshot request returned a delta"),
+        };
       },
+      eventSequence: (event) => event.sequence,
+      reduce: _reduceOrganizationJoinRequests,
+      sequenceState: _sequenceState,
     );
   }
 
   /// Approves a join request and assigns roles to the new member.
-  Future<void> approveRequest(
-    skir.RecordId requestId,
+  Future<void> approveRequests(
+    Iterable<skir.RecordId> requestIds,
     List<OrganizationRole> roles,
   ) async {
+    final ids = List<skir.RecordId>.unmodifiable(requestIds);
+    final selectedRoles = List<OrganizationRole>.unmodifiable(roles);
     final userId = await ref.read(userIdProvider.future);
     if (userId == null) {
       throw ApiException.notAuthenticated();
@@ -117,46 +121,87 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
     }
 
     try {
-      final request = skir.ApproveOrganizationJoinRequestRequest(
-        requestId: requestId,
-        roleIds: roles.map((r) => r.roleId),
+      final request = skir.ApproveOrganizationJoinRequestsRequest(
+        operationId: uuid.v4(),
+        requestIds: ids,
+        roleIds: selectedRoles.map((r) => r.roleId),
       );
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.join_requests.approve",
-        skir.ApproveOrganizationJoinRequestRequest.serializer.toBytes(request),
-        skir.ApproveOrganizationJoinRequestResponse.serializer,
+        skir.ApproveOrganizationJoinRequestsRequest.serializer.toBytes(request),
+        skir.ApproveOrganizationJoinRequestsResponse.serializer,
+        onResponse: (response) async {
+          if (!ref.mounted ||
+              ref.read(organizationIdProvider) != organizationId) {
+            return;
+          }
+          if (response
+              case skir.ApproveOrganizationJoinRequestsResponse_successWrapper(
+                :final value,
+              )) {
+            _applyEvent(value.joinRequestsEvent);
+          }
+        },
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
+        label: "Approve membership",
+        resources: {for (final id in ids) (organizationId, id)},
+        classify: (response) => switch (response) {
+          skir.ApproveOrganizationJoinRequestsResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.ApproveOrganizationJoinRequestsResponse_unknown() ||
+          skir.ApproveOrganizationJoinRequestsResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {
-        case skir.ApproveOrganizationJoinRequestResponse_unknown():
+        case skir.ApproveOrganizationJoinRequestsResponse_unknown():
           throw ApiException.unknownResponseMessage();
-        case skir.ApproveOrganizationJoinRequestResponse_internalErrorWrapper():
+        case skir.ApproveOrganizationJoinRequestsResponse_internalErrorWrapper():
           throw ApiException.internalServerError();
-        case skir.ApproveOrganizationJoinRequestResponse_invalidRecordIdErrorWrapper(
+        case skir.ApproveOrganizationJoinRequestsResponse_invalidRecordIdErrorWrapper(
           :final value,
         ):
           throw ApiException.invalidRecordId(value);
-        case skir.ApproveOrganizationJoinRequestResponse_requestNotFoundErrorWrapper():
+        case skir.ApproveOrganizationJoinRequestsResponse_requestNotFoundErrorWrapper():
           throw ApiException.notFound("Request");
-        case skir.ApproveOrganizationJoinRequestResponse_rolesNotFoundErrorWrapper():
+        case skir.ApproveOrganizationJoinRequestsResponse_rolesNotFoundErrorWrapper():
           throw ApiException.notFound("Roles");
-        case skir.ApproveOrganizationJoinRequestResponse_rolesNotAssignableErrorWrapper():
+        case skir.ApproveOrganizationJoinRequestsResponse_rolesNotAssignableErrorWrapper():
           throw ApiException.badRequest("One or more roles cannot be assigned");
-        case skir.ApproveOrganizationJoinRequestResponse_rolesRequiredErrorWrapper():
-          throw ApiException.badRequest("At least one role is required");
-        case skir.ApproveOrganizationJoinRequestResponse_userAlreadyMemberErrorWrapper():
-          throw ApiException.conflict("User is already an organization member");
-        case skir.ApproveOrganizationJoinRequestResponse_successWrapper(
-          :final value,
-        ):
-          debugPrint(
-            "Successfully approved join request $requestId for ${value.name ?? value.email ?? value.userId}",
+        case skir.ApproveOrganizationJoinRequestsResponse_operationIdentityReusedErrorWrapper():
+          throw ApiException.conflict(
+            "Operation identity was reused with different input",
           );
+        case skir.ApproveOrganizationJoinRequestsResponse_invalidSelectionErrorWrapper():
+          throw ApiException.badRequest("Select distinct pending requests");
+        case skir.ApproveOrganizationJoinRequestsResponse_rolesRequiredErrorWrapper():
+          throw ApiException.badRequest("At least one role is required");
+        case skir.ApproveOrganizationJoinRequestsResponse_userAlreadyMemberErrorWrapper():
+          throw ApiException.conflict("User is already an organization member");
+        case skir.ApproveOrganizationJoinRequestsResponse_successWrapper():
+          break;
       }
     } catch (e) {
       ref.invalidateSelf();
       rethrow;
+    }
+  }
+
+  void _applyEvent(skir.OrganizationJoinRequestsChanged event) {
+    switch (_sequenceState.apply(
+      sequence: event.sequence,
+      reduce: (requests) => _reduceOrganizationJoinRequests(requests, event),
+    )) {
+      case SequencedEventResult.duplicate:
+        return;
+      case SequencedEventResult.applied:
+        state = AsyncData(_sequenceState.value);
+      case SequencedEventResult.gap:
+        ref.invalidateSelf();
     }
   }
 
@@ -181,16 +226,35 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
 
     try {
       final request = skir.DeclineOrganizationJoinRequestRequest(
+        operationId: uuid.v4(),
         requestId: requestId,
       );
 
-      final response = await ref.requestSkir(
+      final response = await ref.mutateSkir(
         "cloud.to.user.$userId.organization.${organizationId.id}.members.join_requests.decline",
         skir.DeclineOrganizationJoinRequestRequest.serializer.toBytes(request),
         skir.DeclineOrganizationJoinRequestResponse.serializer,
+        submissionId: request.operationId,
+        replay: SubmissionReplay.identicalRequest,
+        label: "Decline membership",
+        resources: {(organizationId, requestId)},
+        classify: (response) => switch (response) {
+          skir.DeclineOrganizationJoinRequestResponse_successWrapper() =>
+            MutationResponseDisposition.confirmed,
+          skir.DeclineOrganizationJoinRequestResponse_unknown() ||
+          skir.DeclineOrganizationJoinRequestResponse_internalErrorWrapper() =>
+            MutationResponseDisposition.uncertain,
+          _ => MutationResponseDisposition.rejected,
+        },
       );
 
       switch (response) {
+        case skir.DeclineOrganizationJoinRequestResponse_invalidOperationIdErrorWrapper():
+          throw ApiException.badRequest("Operation identity is required");
+        case skir.DeclineOrganizationJoinRequestResponse_operationIdentityReusedErrorWrapper():
+          throw ApiException.conflict(
+            "Operation identity was reused with different input",
+          );
         case skir.DeclineOrganizationJoinRequestResponse_unknown():
           throw ApiException.unknownResponseMessage();
         case skir.DeclineOrganizationJoinRequestResponse_internalErrorWrapper():
@@ -218,6 +282,25 @@ class OrganizationJoinRequests extends _$OrganizationJoinRequests {
       state.requireValue.where((request) => !request.isExpired).toList(),
     );
   }
+}
+
+List<OrganizationJoinRequest> _reduceOrganizationJoinRequests(
+  List<OrganizationJoinRequest> requests,
+  skir.OrganizationJoinRequestsChanged event,
+) {
+  return event.changes.fold(requests, (current, change) {
+    return switch (change) {
+      skir.OrganizationJoinRequestsChange_unknown() =>
+        throw ApiException.unknownResponseMessage(),
+      skir.OrganizationJoinRequestsChange_addWrapper(:final value) =>
+        current.upsertByKey(
+          (request) => request.requestId,
+          OrganizationJoinRequest.fromSkir(value),
+        ),
+      skir.OrganizationJoinRequestsChange_removeWrapper(:final value) =>
+        current.where((request) => request.requestId != value).toList(),
+    };
+  });
 }
 
 /// Provider for the count of pending join requests.

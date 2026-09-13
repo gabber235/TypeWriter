@@ -2,7 +2,7 @@ part of "../../composite_input_renderer.dart";
 
 extension RecordInputElementRendering on RecordInputElement {
   Widget render({
-    required ResolvedBinding binding,
+    required InspectedBinding binding,
     required PresentationRenderScope scope,
   }) => fieldPresentation == null
       ? binding.renderDefaultPresentation(

@@ -33,13 +33,13 @@ final class OrganizationsProvider
   Organizations create() => Organizations();
 }
 
-String _$organizationsHash() => r'448b72915a9bca9cb6d6457b2ccd17ed680b4c02';
+String _$organizationsHash() => r'8b84312287b074e43bd8627f586b812e80c6f2be';
 
 abstract class _$Organizations extends $StreamNotifier<List<OrganizationData>> {
   Stream<List<OrganizationData>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<List<OrganizationData>>, List<OrganizationData>>;
@@ -54,7 +54,7 @@ abstract class _$Organizations extends $StreamNotifier<List<OrganizationData>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -129,7 +129,7 @@ abstract class _$Organization extends $AsyncNotifier<OrganizationData?> {
   FutureOr<OrganizationData?> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<OrganizationData?>, OrganizationData?>;
     final element =
@@ -140,6 +140,6 @@ abstract class _$Organization extends $AsyncNotifier<OrganizationData?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

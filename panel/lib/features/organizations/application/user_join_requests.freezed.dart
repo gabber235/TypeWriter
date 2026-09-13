@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user_join_requests.dart';
@@ -9,6 +9,7 @@ part of 'user_join_requests.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -24,23 +25,29 @@ $UserJoinRequestCopyWith<UserJoinRequest> get copyWith => _$UserJoinRequestCopyW
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as UserJoinRequest;
   properties
     ..add(DiagnosticsProperty('type', 'UserJoinRequest'))
-    ..add(DiagnosticsProperty('requestId', requestId))..add(DiagnosticsProperty('organizationId', organizationId))..add(DiagnosticsProperty('organizationName', organizationName))..add(DiagnosticsProperty('organizationLogoUrl', organizationLogoUrl))..add(DiagnosticsProperty('requestedAt', requestedAt))..add(DiagnosticsProperty('expiresAt', expiresAt));
+    ..add(DiagnosticsProperty('requestId', _this.requestId))..add(DiagnosticsProperty('organizationId', _this.organizationId))..add(DiagnosticsProperty('organizationName', _this.organizationName))..add(DiagnosticsProperty('organizationLogoUrl', _this.organizationLogoUrl))..add(DiagnosticsProperty('requestedAt', _this.requestedAt))..add(DiagnosticsProperty('expiresAt', _this.expiresAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserJoinRequest&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.organizationName, organizationName) || other.organizationName == organizationName)&&(identical(other.organizationLogoUrl, organizationLogoUrl) || other.organizationLogoUrl == organizationLogoUrl)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
+  final _this = this as UserJoinRequest;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserJoinRequest&&(identical(other.requestId, _this.requestId) || other.requestId == _this.requestId)&&(identical(other.organizationId, _this.organizationId) || other.organizationId == _this.organizationId)&&(identical(other.organizationName, _this.organizationName) || other.organizationName == _this.organizationName)&&(identical(other.organizationLogoUrl, _this.organizationLogoUrl) || other.organizationLogoUrl == _this.organizationLogoUrl)&&(identical(other.requestedAt, _this.requestedAt) || other.requestedAt == _this.requestedAt)&&(identical(other.expiresAt, _this.expiresAt) || other.expiresAt == _this.expiresAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,requestId,organizationId,organizationName,organizationLogoUrl,requestedAt,expiresAt);
+int get hashCode {
+  final _this = this as UserJoinRequest;
+  return Object.hash(runtimeType,_this.requestId,_this.organizationId,_this.organizationName,_this.organizationLogoUrl,_this.requestedAt,_this.expiresAt);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'UserJoinRequest(requestId: $requestId, organizationId: $organizationId, organizationName: $organizationName, organizationLogoUrl: $organizationLogoUrl, requestedAt: $requestedAt, expiresAt: $expiresAt)';
+  final _this = this as UserJoinRequest;
+  return 'UserJoinRequest(requestId: ${_this.requestId}, organizationId: ${_this.organizationId}, organizationName: ${_this.organizationName}, organizationLogoUrl: ${_this.organizationLogoUrl}, requestedAt: ${_this.requestedAt}, expiresAt: ${_this.expiresAt})';
 }
 
 
@@ -69,7 +76,7 @@ class _$UserJoinRequestCopyWithImpl<$Res>
 /// Create a copy of UserJoinRequest
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? requestId = null,Object? organizationId = null,Object? organizationName = null,Object? organizationLogoUrl = null,Object? requestedAt = null,Object? expiresAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserJoinRequest(
 requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,organizationId: null == organizationId ? _self.organizationId : organizationId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,organizationName: null == organizationName ? _self.organizationName : organizationName // ignore: cast_nullable_to_non_nullable
@@ -218,7 +225,7 @@ return $default(_that.requestId,_that.organizationId,_that.organizationName,_tha
 
 class _UserJoinRequest extends UserJoinRequest with DiagnosticableTreeMixin {
   const _UserJoinRequest({required this.requestId, required this.organizationId, required this.organizationName, required this.organizationLogoUrl, required this.requestedAt, required this.expiresAt}): super._();
-  
+
 
 @override final  skir.RecordId requestId;
 @override final  skir.RecordId organizationId;
@@ -236,23 +243,25 @@ _$UserJoinRequestCopyWith<_UserJoinRequest> get copyWith => __$UserJoinRequestCo
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'UserJoinRequest'))
     ..add(DiagnosticsProperty('requestId', requestId))..add(DiagnosticsProperty('organizationId', organizationId))..add(DiagnosticsProperty('organizationName', organizationName))..add(DiagnosticsProperty('organizationLogoUrl', organizationLogoUrl))..add(DiagnosticsProperty('requestedAt', requestedAt))..add(DiagnosticsProperty('expiresAt', expiresAt));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserJoinRequest&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.organizationName, organizationName) || other.organizationName == organizationName)&&(identical(other.organizationLogoUrl, organizationLogoUrl) || other.organizationLogoUrl == organizationLogoUrl)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserJoinRequest&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.organizationId, organizationId) || other.organizationId == organizationId)&&(identical(other.organizationName, organizationName) || other.organizationName == organizationName)&&(identical(other.organizationLogoUrl, organizationLogoUrl) || other.organizationLogoUrl == organizationLogoUrl)&&(identical(other.requestedAt, requestedAt) || other.requestedAt == requestedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,requestId,organizationId,organizationName,organizationLogoUrl,requestedAt,expiresAt);
+int get hashCode {
+    return Object.hash(runtimeType,requestId,organizationId,organizationName,organizationLogoUrl,requestedAt,expiresAt);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'UserJoinRequest(requestId: $requestId, organizationId: $organizationId, organizationName: $organizationName, organizationLogoUrl: $organizationLogoUrl, requestedAt: $requestedAt, expiresAt: $expiresAt)';
+    return 'UserJoinRequest(requestId: $requestId, organizationId: $organizationId, organizationName: $organizationName, organizationLogoUrl: $organizationLogoUrl, requestedAt: $requestedAt, expiresAt: $expiresAt)';
 }
 
 

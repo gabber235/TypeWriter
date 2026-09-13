@@ -196,21 +196,23 @@ class _ActionIntent extends Intent {
 
 final _intentActionFactories =
     <Type, Action<Intent> Function(ActionInvoke onInvoke, WidgetRef ref)>{
-  ActivateIntent: (onInvoke, ref) =>
-      CallbackAction<ActivateIntent>(onInvoke: (_) => onInvoke(ref)),
-  ActivateAllIntent: (onInvoke, ref) =>
-      CallbackAction<ActivateAllIntent>(onInvoke: (_) => onInvoke(ref)),
-  CancelIntent: (onInvoke, ref) =>
-      CallbackAction<CancelIntent>(onInvoke: (_) => onInvoke(ref)),
-  DeleteIntent: (onInvoke, ref) =>
-      CallbackAction<DeleteIntent>(onInvoke: (_) => onInvoke(ref)),
-  DismissIntent: (onInvoke, ref) =>
-      CallbackAction<DismissIntent>(onInvoke: (_) => onInvoke(ref)),
-  FirstItemIntent: (onInvoke, ref) =>
-      CallbackAction<FirstItemIntent>(onInvoke: (_) => onInvoke(ref)),
-  LastItemIntent: (onInvoke, ref) =>
-      CallbackAction<LastItemIntent>(onInvoke: (_) => onInvoke(ref)),
-};
+      ActivateIntent: (onInvoke, ref) =>
+          CallbackAction<ActivateIntent>(onInvoke: (_) => onInvoke(ref)),
+      ActivateAllIntent: (onInvoke, ref) =>
+          CallbackAction<ActivateAllIntent>(onInvoke: (_) => onInvoke(ref)),
+      CancelIntent: (onInvoke, ref) =>
+          CallbackAction<CancelIntent>(onInvoke: (_) => onInvoke(ref)),
+      DeleteIntent: (onInvoke, ref) =>
+          CallbackAction<DeleteIntent>(onInvoke: (_) => onInvoke(ref)),
+      DismissIntent: (onInvoke, ref) =>
+          CallbackAction<DismissIntent>(onInvoke: (_) => onInvoke(ref)),
+      FirstItemIntent: (onInvoke, ref) =>
+          CallbackAction<FirstItemIntent>(onInvoke: (_) => onInvoke(ref)),
+      LastItemIntent: (onInvoke, ref) =>
+          CallbackAction<LastItemIntent>(onInvoke: (_) => onInvoke(ref)),
+      PrimaryActionIntent: (onInvoke, ref) =>
+          CallbackAction<PrimaryActionIntent>(onInvoke: (_) => onInvoke(ref)),
+    };
 
 extension on IntentActionShortcut {
   Action<Intent> createCallbackAction(WidgetRef ref) {
@@ -300,7 +302,7 @@ class _RenderActionRowLayout extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, _ActionRowParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, _ActionRowParentData> {
-  _RenderActionRowLayout({required double spacing}) : _spacing = spacing;
+  _RenderActionRowLayout({required this._spacing});
 
   double _spacing;
   double get spacing => _spacing;

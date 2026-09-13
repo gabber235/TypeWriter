@@ -119,7 +119,7 @@ impl<T> SkirDomainResultExt<T> for surrealdb_component_sdk::TransactionOutcome<T
                 Ok(SkirDomainResult::Value(value))
             }
             surrealdb_component_sdk::TransactionOutcome::Rejected(error) => {
-                domain_response(error.message(), override_constructor)
+                domain_response(database_domain_slug(error.message()), override_constructor)
             }
         }
     }
@@ -141,4 +141,33 @@ where
         "skir-domain-error-unknown",
         format!("unknown SKIR domain error slug `{slug}`"),
     ))
+}
+
+/// SurrealDB adds its display prefix when a THROW crosses a query block.
+/// Normalize only structured database rejections, before matching known domain slugs.
+fn database_domain_slug(message: &str) -> &str {
+    message.trim_start_matches("An error occurred: ")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::database_domain_slug;
+
+    #[test]
+    fn nested_database_rejections_keep_the_original_domain_slug() {
+        for message in [
+            "founder-cannot-be-removed-error",
+            "An error occurred: founder-cannot-be-removed-error",
+            "An error occurred: An error occurred: founder-cannot-be-removed-error",
+        ] {
+            assert_eq!(
+                database_domain_slug(message),
+                "founder-cannot-be-removed-error"
+            );
+        }
+        assert_eq!(
+            database_domain_slug("unknown database failure"),
+            "unknown database failure"
+        );
+    }
 }

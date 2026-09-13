@@ -1,4 +1,9 @@
 import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:typewriter_panel/infrastructure/protocols/skir/skir.dart"
+    as skir;
+import "package:typewriter_panel/infrastructure/protocols/skir/skirout/library/v1/authoring.dart"
+    as wire;
 import "package:typewriter_panel/typewriter_panel.dart";
 import "package:typewriter_testkit/typewriter_testkit.dart";
 import "package:widgetbook/widgetbook.dart";
@@ -47,8 +52,28 @@ Widget pagePageStory({
     state: entriesState,
     overwriteElements: overwriteElements,
   );
+  final storyEntryIndex = {
+    for (final element in storyElements ?? const <PageElement>[])
+      if (element case PageElementEntry(
+        entry: DefinitionPageEntry(:final definition),
+      ))
+        definition.id: CachedPageEntry(
+          pageId: "example-page-id",
+          definition: definition,
+        ),
+  };
   return FakeApp(
     overrides: [
+      ...authoringSessionMockOverrides(
+        initial: pageStoryAuthoring(pageType, storyElements ?? const []),
+      ),
+      authoringEntryIndexProvider.overrideWith(
+        (ref, scope) =>
+            AsyncData(AuthoringValue(value: storyEntryIndex, revision: 1)),
+      ),
+      realmEntryIndexProvider.overrideWith(
+        (ref, scope) => AsyncData(storyEntryIndex),
+      ),
       realmInteractionProvider.overrideWith(
         (ref) => const RealmInteractionState(
           connectionState: RealmConnectionState.online,
@@ -61,6 +86,13 @@ Widget pagePageStory({
         (ref, rootType) =>
             Stream.value(pageStoryCatalog(rootType, storyElements ?? const [])),
       ),
+      realmEditorCatalogProvider.overrideWith(
+        (ref) => Stream.value(
+          pageStoryPageCatalog(pageType, storyElements ?? const []),
+        ),
+      ),
+      realmEditorCatalogLeaseProvider.overrideWith((ref, request) => null),
+      pageDocumentHealthProvider.overrideWith((ref, argument) => null),
       ...entryProviderOverrides(),
       ...pageElementsProviderOverrides(
         state: entriesState,
@@ -72,8 +104,13 @@ Widget pagePageStory({
       ...pageIdProviderOverrides(pageId: "example-page-id"),
       ...bookIdProviderOverrides(bookId: "example-book-id"),
       ...booksProviderOverrides(state: pagesState),
-      ...servicesProviderOverrides(state: servicesState),
-      ...realmProviderOverrides(),
+      ...canonicalServicesProviderOverrides(state: servicesState),
+      realmIdProvider.overrideWith(
+        (ref) => recordId("realm_instance:example-realm-id"),
+      ),
+      realmsProvider.overrideWith((ref) async => const []),
+      selectedRealmProvider.overrideWith((ref) async => null),
+      activeRealmEditorRuntimeProvider.overrideWith((ref) => null),
       ...organizationProviderOverrides(),
       ...organizationsProviderOverrides(state: DisplayState.manyItems),
       ...authProviderOverrides(),

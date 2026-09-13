@@ -11,15 +11,33 @@ class DateTimePickerField extends HookConsumerWidget {
     required this.includeDate,
     required this.includeTime,
     required this.onChanged,
+    this.onInteractionStart,
+    this.onInteractionCommit,
+    this.onInteractionCancel,
     this.enabled = true,
     this.readOnly = false,
     super.key,
   });
 
-  final DateTime value;
+  const DateTimePickerField.mixed({
+    required this.includeDate,
+    required this.includeTime,
+    required this.onChanged,
+    this.onInteractionStart,
+    this.onInteractionCommit,
+    this.onInteractionCancel,
+    this.enabled = true,
+    this.readOnly = false,
+    super.key,
+  }) : value = null;
+
+  final DateTime? value;
   final bool includeDate;
   final bool includeTime;
   final ValueChanged<DateTime> onChanged;
+  final VoidCallback? onInteractionStart;
+  final VoidCallback? onInteractionCommit;
+  final VoidCallback? onInteractionCancel;
   final bool enabled;
   final bool readOnly;
 
@@ -34,16 +52,29 @@ class DateTimePickerField extends HookConsumerWidget {
       ),
     );
     useEffect(() => pickerScope.dispose, [pickerScope]);
+
     final tapGroup = useMemoized(Object.new);
+    final replacementSeed = useMemoized(() {
+      final now = DateTime.now();
+      return DateTime(now.year, now.month, now.day);
+    });
+
     final editable = enabled && !readOnly;
+    final currentValue = value;
+    final pickerValue = currentValue ?? replacementSeed;
     final format = dateTimeEditorFormat(
       includeDate: includeDate,
       includeTime: includeTime,
     );
 
-    void close() {
+    void close({bool cancel = false}) {
       if (!open.value) return;
       open.value = false;
+      if (cancel) {
+        onInteractionCancel?.call();
+      } else {
+        onInteractionCommit?.call();
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (pickerFocus.canRequestFocus) pickerFocus.requestFocus();
       });
@@ -55,18 +86,22 @@ class DateTimePickerField extends HookConsumerWidget {
         close();
         return;
       }
+      onInteractionStart?.call();
       open.value = true;
     }
 
-    Future<void> copyValue() => Clipboard.setData(
-      ClipboardData(
-        text: formatDateTimeEditorValue(
-          value,
-          includeDate: includeDate,
-          includeTime: includeTime,
+    Future<void> copyValue() {
+      if (currentValue == null) return Future.value();
+      return Clipboard.setData(
+        ClipboardData(
+          text: formatDateTimeEditorValue(
+            currentValue,
+            includeDate: includeDate,
+            includeTime: includeTime,
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     return TapRegion(
       groupId: tapGroup,
@@ -90,6 +125,12 @@ class DateTimePickerField extends HookConsumerWidget {
                   return null;
                 },
               ),
+              CancelIntent: CallbackAction<CancelIntent>(
+                onInvoke: (intent) {
+                  close(cancel: true);
+                  return null;
+                },
+              ),
             },
             child: CallbackShortcuts(
               bindings: {
@@ -100,10 +141,11 @@ class DateTimePickerField extends HookConsumerWidget {
                 child: SizedBox(
                   width: 372,
                   child: DateTimePickerSurface(
-                    value: value,
+                    value: pickerValue,
                     includeDate: includeDate,
                     includeTime: includeTime,
                     enabled: editable,
+                    replacing: currentValue == null,
                     onChanged: onChanged,
                   ),
                 ),
@@ -112,7 +154,8 @@ class DateTimePickerField extends HookConsumerWidget {
           ),
         ),
         child: ValidatedTextField<DateTime>(
-          value: value,
+          value: currentValue,
+          mixed: currentValue == null,
           name: includeDate && includeTime
               ? "date and time"
               : includeDate
@@ -129,7 +172,7 @@ class DateTimePickerField extends HookConsumerWidget {
           ),
           serialize: (draft) => parseDateTimeEditorValue(
             draft,
-            current: value,
+            current: pickerValue,
             includeDate: includeDate,
             includeTime: includeTime,
           ),
@@ -139,8 +182,11 @@ class DateTimePickerField extends HookConsumerWidget {
           ],
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 13),
           onChanged: onChanged,
+          onInputFocus: onInteractionStart,
+          onInputBlur: onInteractionCommit,
+          onCancel: onInteractionCancel,
           surroundingActions: [
-            if (enabled)
+            if (enabled && currentValue != null)
               ActionShortcut(
                 id: "date_time_copy",
                 label: "Copy Value",
@@ -167,7 +213,7 @@ class DateTimePickerField extends HookConsumerWidget {
               ),
           ],
           decoration: InputDecoration(
-            hintText: format,
+            hintText: currentValue == null ? "Multiple values" : format,
             suffixIcon: readOnly
                 ? null
                 : Row(

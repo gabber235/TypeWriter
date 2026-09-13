@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'presentation_collection.dart';
@@ -9,6 +9,7 @@ part of 'presentation_collection.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,12 +26,16 @@ $PresentationCollectionSourceIdCopyWith<PresentationCollectionSourceId> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSourceId&&(identical(other.value, value) || other.value == value));
+  final _this = this as PresentationCollectionSourceId;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSourceId&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+  final _this = this as PresentationCollectionSourceId;
+  return Object.hash(runtimeType,_this.value);
+}
 
 
 
@@ -59,8 +64,8 @@ class _$PresentationCollectionSourceIdCopyWithImpl<$Res>
 /// Create a copy of PresentationCollectionSourceId
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
-  return _then(_self.copyWith(
-value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+  return _then(PresentationCollectionSourceId(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -217,12 +222,14 @@ _$PresentationCollectionSourceIdCopyWith<_PresentationCollectionSourceId> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionSourceId&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionSourceId&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 
 
@@ -274,12 +281,16 @@ $PresentationCollectionRelationIdCopyWith<PresentationCollectionRelationId> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionRelationId&&(identical(other.value, value) || other.value == value));
+  final _this = this as PresentationCollectionRelationId;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionRelationId&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+  final _this = this as PresentationCollectionRelationId;
+  return Object.hash(runtimeType,_this.value);
+}
 
 
 
@@ -308,8 +319,8 @@ class _$PresentationCollectionRelationIdCopyWithImpl<$Res>
 /// Create a copy of PresentationCollectionRelationId
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? value = null,}) {
-  return _then(_self.copyWith(
-value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+  return _then(PresentationCollectionRelationId(
+null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -466,12 +477,14 @@ _$PresentationCollectionRelationIdCopyWith<_PresentationCollectionRelationId> ge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionRelationId&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionRelationId&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 
 
@@ -523,16 +536,21 @@ $PresentationCollectionSchemaCopyWith<PresentationCollectionSchema> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSchema&&(identical(other.rowType, rowType) || other.rowType == rowType)&&(identical(other.keyType, keyType) || other.keyType == keyType)&&(identical(other.rowBindingId, rowBindingId) || other.rowBindingId == rowBindingId)&&(identical(other.key, key) || other.key == key)&&const DeepCollectionEquality().equals(other.relations, relations));
+  final _this = this as PresentationCollectionSchema;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSchema&&(identical(other.rowType, _this.rowType) || other.rowType == _this.rowType)&&(identical(other.keyType, _this.keyType) || other.keyType == _this.keyType)&&(identical(other.rowBindingId, _this.rowBindingId) || other.rowBindingId == _this.rowBindingId)&&(identical(other.key, _this.key) || other.key == _this.key)&&const DeepCollectionEquality().equals(other.relations, _this.relations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rowType,keyType,rowBindingId,key,const DeepCollectionEquality().hash(relations));
+int get hashCode {
+  final _this = this as PresentationCollectionSchema;
+  return Object.hash(runtimeType,_this.rowType,_this.keyType,_this.rowBindingId,_this.key,const DeepCollectionEquality().hash(_this.relations));
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionSchema(rowType: $rowType, keyType: $keyType, rowBindingId: $rowBindingId, key: $key, relations: $relations)';
+  final _this = this as PresentationCollectionSchema;
+  return 'PresentationCollectionSchema(rowType: ${_this.rowType}, keyType: ${_this.keyType}, rowBindingId: ${_this.rowBindingId}, key: ${_this.key}, relations: ${_this.relations})';
 }
 
 
@@ -561,7 +579,7 @@ class _$PresentationCollectionSchemaCopyWithImpl<$Res>
 /// Create a copy of PresentationCollectionSchema
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? rowType = null,Object? keyType = null,Object? rowBindingId = null,Object? key = null,Object? relations = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationCollectionSchema(
 rowType: null == rowType ? _self.rowType : rowType // ignore: cast_nullable_to_non_nullable
 as TypeExpression,keyType: null == keyType ? _self.keyType : keyType // ignore: cast_nullable_to_non_nullable
 as TypeExpression,rowBindingId: null == rowBindingId ? _self.rowBindingId : rowBindingId // ignore: cast_nullable_to_non_nullable
@@ -744,7 +762,7 @@ return $default(_that.rowType,_that.keyType,_that.rowBindingId,_that.key,_that.r
 
 
 class _PresentationCollectionSchema implements PresentationCollectionSchema {
-  const _PresentationCollectionSchema({required this.rowType, required this.keyType, required this.rowBindingId, required this.key, final  List<PresentationCollectionRelation> relations = const <PresentationCollectionRelation>[]}): _relations = relations;
+  const _PresentationCollectionSchema({required this.rowType, required this.keyType, required this.rowBindingId, required this.key,  List<PresentationCollectionRelation> relations = const <PresentationCollectionRelation>[]}): _relations = relations;
 
 
 @override final  TypeExpression rowType;
@@ -769,16 +787,18 @@ _$PresentationCollectionSchemaCopyWith<_PresentationCollectionSchema> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionSchema&&(identical(other.rowType, rowType) || other.rowType == rowType)&&(identical(other.keyType, keyType) || other.keyType == keyType)&&(identical(other.rowBindingId, rowBindingId) || other.rowBindingId == rowBindingId)&&(identical(other.key, key) || other.key == key)&&const DeepCollectionEquality().equals(other._relations, _relations));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionSchema&&(identical(other.rowType, rowType) || other.rowType == rowType)&&(identical(other.keyType, keyType) || other.keyType == keyType)&&(identical(other.rowBindingId, rowBindingId) || other.rowBindingId == rowBindingId)&&(identical(other.key, key) || other.key == key)&&const DeepCollectionEquality().equals(other.relations, _relations));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rowType,keyType,rowBindingId,key,const DeepCollectionEquality().hash(_relations));
+int get hashCode {
+    return Object.hash(runtimeType,rowType,keyType,rowBindingId,key,const DeepCollectionEquality().hash(_relations));
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionSchema(rowType: $rowType, keyType: $keyType, rowBindingId: $rowBindingId, key: $key, relations: $relations)';
+    return 'PresentationCollectionSchema(rowType: $rowType, keyType: $keyType, rowBindingId: $rowBindingId, key: $key, relations: $relations)';
 }
 
 
@@ -870,16 +890,21 @@ $PresentationCollectionRelationCopyWith<PresentationCollectionRelation> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionRelation&&(identical(other.id, id) || other.id == id)&&(identical(other.targets, targets) || other.targets == targets));
+  final _this = this as PresentationCollectionRelation;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionRelation&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.targets, _this.targets) || other.targets == _this.targets));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,targets);
+int get hashCode {
+  final _this = this as PresentationCollectionRelation;
+  return Object.hash(runtimeType,_this.id,_this.targets);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionRelation(id: $id, targets: $targets)';
+  final _this = this as PresentationCollectionRelation;
+  return 'PresentationCollectionRelation(id: ${_this.id}, targets: ${_this.targets})';
 }
 
 
@@ -908,7 +933,7 @@ class _$PresentationCollectionRelationCopyWithImpl<$Res>
 /// Create a copy of PresentationCollectionRelation
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? targets = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationCollectionRelation(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as PresentationCollectionRelationId,targets: null == targets ? _self.targets : targets // ignore: cast_nullable_to_non_nullable
 as TypedExpression,
@@ -1086,16 +1111,18 @@ _$PresentationCollectionRelationCopyWith<_PresentationCollectionRelation> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionRelation&&(identical(other.id, id) || other.id == id)&&(identical(other.targets, targets) || other.targets == targets));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionRelation&&(identical(other.id, id) || other.id == id)&&(identical(other.targets, targets) || other.targets == targets));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,targets);
+int get hashCode {
+    return Object.hash(runtimeType,id,targets);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionRelation(id: $id, targets: $targets)';
+    return 'PresentationCollectionRelation(id: $id, targets: $targets)';
 }
 
 
@@ -1161,7 +1188,7 @@ mixin _$PresentationCollectionQuery {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionQuery);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionQuery);
 }
 
 
@@ -1170,7 +1197,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationCollectionQuery()';
+    return 'PresentationCollectionQuery()';
 }
 
 
@@ -1338,7 +1365,7 @@ class PresentationCollectionAll implements PresentationCollectionQuery {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionAll);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionAll);
 }
 
 
@@ -1347,7 +1374,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PresentationCollectionQuery.all()';
+    return 'PresentationCollectionQuery.all()';
 }
 
 
@@ -1360,7 +1387,7 @@ String toString() {
 
 
 class PresentationCollectionKeys implements PresentationCollectionQuery {
-  const PresentationCollectionKeys(final  List<DataValue> keys): _keys = keys;
+  const PresentationCollectionKeys( List<DataValue> keys): _keys = keys;
 
 
  final  List<DataValue> _keys;
@@ -1381,16 +1408,18 @@ $PresentationCollectionKeysCopyWith<PresentationCollectionKeys> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionKeys&&const DeepCollectionEquality().equals(other._keys, _keys));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionKeys&&const DeepCollectionEquality().equals(other.keys, _keys));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_keys));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_keys));
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionQuery.keys(keys: $keys)';
+    return 'PresentationCollectionQuery.keys(keys: $keys)';
 }
 
 
@@ -1447,16 +1476,18 @@ $PresentationCollectionSearchCopyWith<PresentationCollectionSearch> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSearch&&(identical(other.query, query) || other.query == query));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSearch&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode {
+    return Object.hash(runtimeType,query);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionQuery.search(query: $query)';
+    return 'PresentationCollectionQuery.search(query: $query)';
 }
 
 
@@ -1507,7 +1538,7 @@ $SearchQueryContextCopyWith<$Res> get query {
 
 
 class PresentationCollectionGraph implements PresentationCollectionQuery {
-  const PresentationCollectionGraph({required final  List<DataValue> roots, required this.relation, required this.direction, this.maximumDepth}): assert(maximumDepth == null || maximumDepth > 0, 'Maximum depth must be positive.'),_roots = roots;
+  const PresentationCollectionGraph({required  List<DataValue> roots, required this.relation, required this.direction, this.maximumDepth}): assert(maximumDepth == null || maximumDepth > 0, 'Maximum depth must be positive.'),_roots = roots;
 
 
  final  List<DataValue> _roots;
@@ -1531,16 +1562,18 @@ $PresentationCollectionGraphCopyWith<PresentationCollectionGraph> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionGraph&&const DeepCollectionEquality().equals(other._roots, _roots)&&(identical(other.relation, relation) || other.relation == relation)&&(identical(other.direction, direction) || other.direction == direction)&&(identical(other.maximumDepth, maximumDepth) || other.maximumDepth == maximumDepth));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionGraph&&const DeepCollectionEquality().equals(other.roots, _roots)&&(identical(other.relation, relation) || other.relation == relation)&&(identical(other.direction, direction) || other.direction == direction)&&(identical(other.maximumDepth, maximumDepth) || other.maximumDepth == maximumDepth));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_roots),relation,direction,maximumDepth);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_roots),relation,direction,maximumDepth);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionQuery.graph(roots: $roots, relation: $relation, direction: $direction, maximumDepth: $maximumDepth)';
+    return 'PresentationCollectionQuery.graph(roots: $roots, relation: $relation, direction: $direction, maximumDepth: $maximumDepth)';
 }
 
 
@@ -1604,16 +1637,21 @@ $PresentationCollectionRowCopyWith<PresentationCollectionRow> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionRow&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+  final _this = this as PresentationCollectionRow;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionRow&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+  final _this = this as PresentationCollectionRow;
+  return Object.hash(runtimeType,_this.key,_this.value);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionRow(key: $key, value: $value)';
+  final _this = this as PresentationCollectionRow;
+  return 'PresentationCollectionRow(key: ${_this.key}, value: ${_this.value})';
 }
 
 
@@ -1642,7 +1680,7 @@ class _$PresentationCollectionRowCopyWithImpl<$Res>
 /// Create a copy of PresentationCollectionRow
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationCollectionRow(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as DataValue,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as DataValue,
@@ -1820,16 +1858,18 @@ _$PresentationCollectionRowCopyWith<_PresentationCollectionRow> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionRow&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionRow&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+    return Object.hash(runtimeType,key,value);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionRow(key: $key, value: $value)';
+    return 'PresentationCollectionRow(key: $key, value: $value)';
 }
 
 
@@ -1900,16 +1940,21 @@ $PresentationCollectionPathCopyWith<PresentationCollectionPath> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionPath&&const DeepCollectionEquality().equals(other.keys, keys));
+  final _this = this as PresentationCollectionPath;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionPath&&const DeepCollectionEquality().equals(other.keys, _this.keys));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(keys));
+int get hashCode {
+  final _this = this as PresentationCollectionPath;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.keys));
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionPath(keys: $keys)';
+  final _this = this as PresentationCollectionPath;
+  return 'PresentationCollectionPath(keys: ${_this.keys})';
 }
 
 
@@ -1938,8 +1983,8 @@ class _$PresentationCollectionPathCopyWithImpl<$Res>
 /// Create a copy of PresentationCollectionPath
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? keys = null,}) {
-  return _then(_self.copyWith(
-keys: null == keys ? _self.keys : keys // ignore: cast_nullable_to_non_nullable
+  return _then(PresentationCollectionPath(
+null == keys ? _self.keys : keys // ignore: cast_nullable_to_non_nullable
 as List<DataValue>,
   ));
 }
@@ -2081,7 +2126,7 @@ return $default(_that.keys);case _:
 
 
 class _PresentationCollectionPath implements PresentationCollectionPath {
-  const _PresentationCollectionPath(final  List<DataValue> keys): _keys = keys;
+  const _PresentationCollectionPath( List<DataValue> keys): _keys = keys;
 
 
  final  List<DataValue> _keys;
@@ -2102,16 +2147,18 @@ _$PresentationCollectionPathCopyWith<_PresentationCollectionPath> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionPath&&const DeepCollectionEquality().equals(other._keys, _keys));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionPath&&const DeepCollectionEquality().equals(other.keys, _keys));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_keys));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_keys));
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionPath(keys: $keys)';
+    return 'PresentationCollectionPath(keys: $keys)';
 }
 
 
@@ -2163,16 +2210,21 @@ $PresentationCollectionSnapshotCopyWith<PresentationCollectionSnapshot> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSnapshot&&const DeepCollectionEquality().equals(other.rootRows, rootRows)&&const DeepCollectionEquality().equals(other.rows, rows)&&const DeepCollectionEquality().equals(other.paths, paths)&&const DeepCollectionEquality().equals(other.diagnostics, diagnostics)&&(identical(other.loading, loading) || other.loading == loading));
+  final _this = this as PresentationCollectionSnapshot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PresentationCollectionSnapshot&&const DeepCollectionEquality().equals(other.rootRows, _this.rootRows)&&const DeepCollectionEquality().equals(other.rows, _this.rows)&&const DeepCollectionEquality().equals(other.paths, _this.paths)&&const DeepCollectionEquality().equals(other.diagnostics, _this.diagnostics)&&(identical(other.loading, _this.loading) || other.loading == _this.loading));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(rootRows),const DeepCollectionEquality().hash(rows),const DeepCollectionEquality().hash(paths),const DeepCollectionEquality().hash(diagnostics),loading);
+int get hashCode {
+  final _this = this as PresentationCollectionSnapshot;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.rootRows),const DeepCollectionEquality().hash(_this.rows),const DeepCollectionEquality().hash(_this.paths),const DeepCollectionEquality().hash(_this.diagnostics),_this.loading);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionSnapshot(rootRows: $rootRows, rows: $rows, paths: $paths, diagnostics: $diagnostics, loading: $loading)';
+  final _this = this as PresentationCollectionSnapshot;
+  return 'PresentationCollectionSnapshot(rootRows: ${_this.rootRows}, rows: ${_this.rows}, paths: ${_this.paths}, diagnostics: ${_this.diagnostics}, loading: ${_this.loading})';
 }
 
 
@@ -2201,7 +2253,7 @@ class _$PresentationCollectionSnapshotCopyWithImpl<$Res>
 /// Create a copy of PresentationCollectionSnapshot
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? rootRows = null,Object? rows = null,Object? paths = null,Object? diagnostics = null,Object? loading = null,}) {
-  return _then(_self.copyWith(
+  return _then(PresentationCollectionSnapshot(
 rootRows: null == rootRows ? _self.rootRows : rootRows // ignore: cast_nullable_to_non_nullable
 as List<PresentationCollectionRow>,rows: null == rows ? _self.rows : rows // ignore: cast_nullable_to_non_nullable
 as List<PresentationCollectionRow>,paths: null == paths ? _self.paths : paths // ignore: cast_nullable_to_non_nullable
@@ -2348,7 +2400,7 @@ return $default(_that.rootRows,_that.rows,_that.paths,_that.diagnostics,_that.lo
 
 
 class _PresentationCollectionSnapshot extends PresentationCollectionSnapshot {
-  const _PresentationCollectionSnapshot({final  List<PresentationCollectionRow> rootRows = const <PresentationCollectionRow>[], final  List<PresentationCollectionRow> rows = const <PresentationCollectionRow>[], final  List<PresentationCollectionPath> paths = const <PresentationCollectionPath>[], final  List<TypeDiagnostic> diagnostics = const <TypeDiagnostic>[], this.loading = false}): _rootRows = rootRows,_rows = rows,_paths = paths,_diagnostics = diagnostics,super._();
+  const _PresentationCollectionSnapshot({ List<PresentationCollectionRow> rootRows = const <PresentationCollectionRow>[],  List<PresentationCollectionRow> rows = const <PresentationCollectionRow>[],  List<PresentationCollectionPath> paths = const <PresentationCollectionPath>[],  List<TypeDiagnostic> diagnostics = const <TypeDiagnostic>[], this.loading = false}): _rootRows = rootRows,_rows = rows,_paths = paths,_diagnostics = diagnostics,super._();
 
 
  final  List<PresentationCollectionRow> _rootRows;
@@ -2391,16 +2443,18 @@ _$PresentationCollectionSnapshotCopyWith<_PresentationCollectionSnapshot> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionSnapshot&&const DeepCollectionEquality().equals(other._rootRows, _rootRows)&&const DeepCollectionEquality().equals(other._rows, _rows)&&const DeepCollectionEquality().equals(other._paths, _paths)&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics)&&(identical(other.loading, loading) || other.loading == loading));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PresentationCollectionSnapshot&&const DeepCollectionEquality().equals(other.rootRows, _rootRows)&&const DeepCollectionEquality().equals(other.rows, _rows)&&const DeepCollectionEquality().equals(other.paths, _paths)&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics)&&(identical(other.loading, loading) || other.loading == loading));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_rootRows),const DeepCollectionEquality().hash(_rows),const DeepCollectionEquality().hash(_paths),const DeepCollectionEquality().hash(_diagnostics),loading);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_rootRows),const DeepCollectionEquality().hash(_rows),const DeepCollectionEquality().hash(_paths),const DeepCollectionEquality().hash(_diagnostics),loading);
+}
 
 @override
 String toString() {
-  return 'PresentationCollectionSnapshot(rootRows: $rootRows, rows: $rows, paths: $paths, diagnostics: $diagnostics, loading: $loading)';
+    return 'PresentationCollectionSnapshot(rootRows: $rootRows, rows: $rows, paths: $paths, diagnostics: $diagnostics, loading: $loading)';
 }
 
 

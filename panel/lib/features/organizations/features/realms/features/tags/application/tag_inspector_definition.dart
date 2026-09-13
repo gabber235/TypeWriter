@@ -59,7 +59,7 @@ final tagInspectorTypeDefinition = TypeDefinition(
 
 final _tagInspectorCatalog = TypeCatalog([tagInspectorTypeDefinition]);
 
-final _tagInspectorPresentation = PresentationDefinition(
+final _tagInspectorPresentation = PresentationDefinition.single(
   id: _tagInspectorPresentationId,
   target: NamedType(tagInspectorTypeRef),
   root: PresentationNode(
@@ -152,6 +152,142 @@ final _tagLayoutPresentation = PresentationNode(
     ),
   ),
 );
+
+final class TagMultiInspectionDefinition implements MultiInspectionDefinition {
+  const TagMultiInspectionDefinition();
+
+  @override
+  PresentationId get id => _tagInspectorPresentationId;
+
+  @override
+  bool isCompatibleWith(MultiInspectionDefinition other) =>
+      other is TagMultiInspectionDefinition;
+
+  @override
+  TypeResult<InspectionContent> build(
+    List<EditableSelectable> selection,
+    InspectionBuildContext context,
+  ) {
+    final selected = selection.requireAll<TagSelectable>();
+    final tags = selected.valueOrNull;
+    if (tags == null) return TypeResult.failure(selected.diagnostics);
+    final catalog = tags.mergedTypeCatalog;
+    final merged = catalog.valueOrNull;
+    if (merged == null) return TypeResult.failure(catalog.diagnostics);
+    final collection = tags.sharedTagCollection;
+    final shared = collection.valueOrNull;
+    if (shared == null) return TypeResult.failure(collection.diagnostics);
+    final owner = context.multiEditorFor(
+      tags,
+      rootType: const NamedType(tagInspectorTypeRef),
+      typeCatalog: merged,
+    );
+    return TypeResult.success(
+      InspectionContent(
+        model: PresentationModel.editor(
+          owner: owner,
+          presentations: [_tagInspectorPresentation],
+          collections: [shared],
+        ),
+      ),
+    );
+  }
+}
+
+extension TagSelectionCollectionIntersection on List<TagSelectable> {
+  TypeResult<PresentationCollectionSource> get sharedTagCollection {
+    final sources = map((selection) => selection.tagCollection).toList();
+    if (sources.isEmpty ||
+        sources.any((source) => source is! LocalPresentationCollectionSource)) {
+      return _inconsistentTagCollection();
+    }
+    final local = sources.cast<LocalPresentationCollectionSource>();
+    final first = local.first;
+    if (local.any(
+      (source) => source.id != first.id || source.schema != first.schema,
+    )) {
+      return _inconsistentTagCollection();
+    }
+    final indexed = local.map((source) => source.rows._indexTagRows()).toList();
+    if (indexed.any((rows) => rows == null)) {
+      return _inconsistentTagCollection();
+    }
+    final rows = indexed.cast<Map<DataValue, RecordValue>>();
+    final keys = rows.first.keys.toSet();
+    if (rows
+        .skip(1)
+        .any(
+          (candidate) => !const SetEquality<DataValue>().equals(
+            keys,
+            candidate.keys.toSet(),
+          ),
+        )) {
+      return _inconsistentTagCollection();
+    }
+
+    final combined = <DataValue>[];
+    for (final key in rows.first.keys) {
+      final candidates = rows.map((values) => values[key]!).toList();
+      final stableFields = candidates.first.fields.withoutSelectable;
+      if (candidates
+          .skip(1)
+          .any(
+            (candidate) => !const MapEquality<String, DataValue>().equals(
+              stableFields,
+              candidate.fields.withoutSelectable,
+            ),
+          )) {
+        return _inconsistentTagCollection();
+      }
+      final selectable = candidates.every(
+        (candidate) =>
+            candidate.fields["selectable"] == const BooleanValue(true),
+      );
+      combined.add(
+        RecordValue({...stableFields, "selectable": BooleanValue(selectable)}),
+      );
+    }
+    return TypeResult.success(
+      LocalPresentationCollectionSource(
+        id: first.id,
+        schema: first.schema,
+        rows: combined,
+        registry: first.registry,
+        searchPredicate: first.searchPredicate,
+        expressionBudget: first.expressionBudget,
+        graphNodeBudget: first.graphNodeBudget,
+      ),
+    );
+  }
+}
+
+extension on Iterable<DataValue> {
+  Map<DataValue, RecordValue>? _indexTagRows() {
+    final indexed = <DataValue, RecordValue>{};
+    for (final value in this) {
+      if (value is! RecordValue) return null;
+      final key = value.fields["key"];
+      if (key == null || indexed.containsKey(key)) return null;
+      indexed[key] = value;
+    }
+    return indexed;
+  }
+}
+
+extension on Map<String, DataValue> {
+  Map<String, DataValue> get withoutSelectable => {
+    for (final entry in entries)
+      if (entry.key != "selectable") entry.key: entry.value,
+  };
+}
+
+TypeResult<PresentationCollectionSource> _inconsistentTagCollection() =>
+    TypeResult.failure([
+      const TypeDiagnostic(
+        code: TypeDiagnosticCode.invalidValue,
+        message: "Selected Tags have inconsistent collection snapshots",
+      ),
+    ]);
 
 BindingReference _tagInspectorField(String name) => BindingReference(
   bindingId: const BindingId(0),

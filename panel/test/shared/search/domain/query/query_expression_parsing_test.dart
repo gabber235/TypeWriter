@@ -80,6 +80,7 @@ void main() {
       leftAnd.right().isSelector(id: "tag", value: "b");
       final rightAnd = orNode.right().isAnd();
       rightAnd.left().isSelector(id: "tag", value: "c");
+
       rightAnd.right().isSelector(id: "tag", value: "d");
     }).done();
   });

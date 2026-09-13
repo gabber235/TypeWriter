@@ -33,6 +33,7 @@ void main() {
       final selectors = <List<QuerySelectorDefinition>>[];
       final subscription = source.selectors.listen(selectors.add);
       addTearDown(subscription.cancel);
+
       const emitted = [KeyValueSelectorDefinition(id: "tag", key: "#")];
 
       source.search(queryContext("alpha"));
@@ -59,6 +60,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final snapshot = readySnapshot(nodes: [resultNode("alpha")]);
 
       source.search(queryContext("alpha"));
@@ -174,6 +176,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
+
       addTearDown(subscription.cancel);
 
       source.search(queryContext("alpha"));
@@ -206,6 +209,7 @@ void main() {
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
       addTearDown(subscription.cancel);
+
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
 
       source.search(queryContext("alpha"));
@@ -267,6 +271,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
+
       addTearDown(subscription.cancel);
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
 
@@ -287,6 +292,7 @@ void main() {
       addTearDown(source.dispose);
       final snapshots = <SearchSourceSnapshot>[];
       final subscription = source.snapshots.listen(snapshots.add);
+
       addTearDown(subscription.cancel);
       final ready = readySnapshot(nodes: [resultNode("alpha")]);
 

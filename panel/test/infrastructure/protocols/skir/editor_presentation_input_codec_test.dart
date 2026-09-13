@@ -22,6 +22,7 @@ void main() {
     prefix: prefix,
     semanticLabel: text,
   );
+
   const leaf = PresentationNode(id: "leaf", element: DividerElement());
   final concreteType = ResolvedTypeRef(
     id: const QualifiedTypeId(namespace: "example", name: "entry"),
@@ -58,6 +59,7 @@ void main() {
           control: control,
           options: const [SelectOption(id: "one", label: text, value: text)],
           allowCustomValue: true,
+          defaultValue: text,
         ),
         wire.PresentationElement_kind.selectInputWrapper,
       ),

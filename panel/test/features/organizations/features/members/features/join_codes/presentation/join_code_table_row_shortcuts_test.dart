@@ -14,6 +14,7 @@ void main() {
     var selectAll = 0;
     var clears = 0;
     var copies = 0;
+
     final code = OrganizationJoinCode(
       code: recordId("join_code:code"),
       createdAt: DateTime.utc(2024),

@@ -12,10 +12,10 @@ import "support/members_test_support.dart";
 
 void main() {
   group("OrganizationMembers command state", () {
-    late MockNatsClient mockNats;
+    late FakeNatsClient mockNats;
 
     setUp(() {
-      mockNats = MockNatsClient();
+      mockNats = FakeNatsClient();
     });
 
     tearDown(() {
@@ -23,7 +23,7 @@ void main() {
     });
 
     test(
-      "removeMember optimistically removes then restores on error",
+      "removeMember preserves the member when delivery is uncertain",
       () async {
         final member = createMember();
 
@@ -48,7 +48,7 @@ void main() {
           container
               .read(organizationMembersProvider.notifier)
               .removeMember(testMemberId),
-          throwsA(isA<TimeoutException>()),
+          throwsA(isA<SubmissionException>()),
         );
 
         final currentState = container.read(organizationMembersProvider);
@@ -60,6 +60,7 @@ void main() {
 
     test("removeMember succeeds when server confirms", () async {
       final member = createMember();
+      var confirmed = [member];
 
       final container = ProviderContainer.test(
         overrides: [
@@ -67,19 +68,19 @@ void main() {
           organizationIdProvider.overrideWith((ref) => testOrganizationId),
           natsProvider.overrideWithValue(mockNats),
           organizationMembersProvider.overrideWith(
-            () => MockMembersNotifier([member]),
+            () => MockMembersNotifier([member], load: () => confirmed),
           ),
         ],
       );
 
       await readMembers(container);
 
-      mockNats.registerHandler(
-        memberRemoveSubject,
-        (data) => skir.RemoveOrganizationMemberResponse.serializer.toBytes(
-          skir.RemoveOrganizationMemberResponse.createSuccess(),
-        ),
-      );
+      mockNats.registerHandler(memberRemoveSubject, (data) {
+        confirmed = [];
+        return skir.RemoveOrganizationMemberResponse.serializer.toBytes(
+          successfulMemberRemoval(recordId("user:m1")),
+        );
+      });
 
       await container
           .read(organizationMembersProvider.notifier)
@@ -131,8 +132,8 @@ void main() {
         await expectLater(
           container
               .read(organizationMembersProvider.notifier)
-              .updateMemberRoles(testMemberId, [newRole]),
-          throwsA(isA<TimeoutException>()),
+              .updateMemberRoles([testMemberId], [newRole]),
+          throwsA(isA<SubmissionException>()),
         );
 
         final currentState = container.read(organizationMembersProvider);
@@ -160,6 +161,7 @@ void main() {
       );
 
       final member = createMember(roles: [oldRole]);
+      var confirmed = member;
 
       final container = ProviderContainer.test(
         overrides: [
@@ -167,7 +169,7 @@ void main() {
           organizationIdProvider.overrideWith((ref) => testOrganizationId),
           natsProvider.overrideWithValue(mockNats),
           organizationMembersProvider.overrideWith(
-            () => MockMembersNotifier([member]),
+            () => MockMembersNotifier([member], load: () => [confirmed]),
           ),
           organizationRolesProvider.overrideWith(
             () => MockRolesNotifier([oldRole, newRole]),
@@ -177,24 +179,27 @@ void main() {
 
       await readMembers(container);
 
-      mockNats.registerHandler(
-        memberUpdateSubject,
-        (data) => skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
-          skir.UpdateOrganizationMemberRolesResponse.createSuccess(
-            userId: recordId("user:m1"),
-            name: "Test",
-            email: "test@test.com",
-            avatarUrl: "",
-            roles: [newRole.toSkir()],
-            joinedAt: testTimestamp,
-          ),
-        ),
-      );
+      mockNats.registerHandler(memberUpdateSubject, (data) {
+        confirmed = member.copyWith(roles: [newRole]);
+        return skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
+          successfulMemberUpdate([
+            skir.OrganizationMember(
+              userId: recordId("user:m1"),
+              name: "Test",
+              email: "test@test.com",
+              avatarUrl: "",
+              roles: [newRole.toSkir()],
+              joinedAt: testTimestamp,
+            ),
+          ]),
+        );
+      });
 
       await container
           .read(organizationMembersProvider.notifier)
-          .updateMemberRoles(recordId("user:m1"), [newRole]);
+          .updateMemberRoles([recordId("user:m1")], [newRole]);
 
+      await readMembers(container);
       final currentState = container.read(organizationMembersProvider);
       expect(currentState.value, isNotNull);
       expect(currentState.value!.first.roles.length, 1);

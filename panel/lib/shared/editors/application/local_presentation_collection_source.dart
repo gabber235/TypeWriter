@@ -113,6 +113,7 @@ final class LocalPresentationCollectionSource
     final paths = <PresentationCollectionPath>[];
     final pathKeys = <_GraphPathKey>{};
     final diagnostics = <TypeDiagnostic>[];
+
     final rootKeys = query.roots.toSet();
     var visitedNodes = 0;
 
@@ -135,7 +136,9 @@ final class LocalPresentationCollectionSource
         diagnostics.add(_diagnostic("Collection graph target is missing", key));
         return;
       }
+
       final nextPath = [...path, key];
+
       if (!rootKeys.contains(key)) reached.putIfAbsent(key, () => row);
       if (pathKeys.add(_GraphPathKey(nextPath))) {
         paths.add(PresentationCollectionPath(nextPath));

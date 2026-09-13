@@ -109,6 +109,7 @@ Widget notificationBubbleCountUseCase(BuildContext context) {
     min: 32,
     max: 128,
   );
+
   final bg = context.knobs.color(
     label: "Bubble Color",
     initialValue: Colors.red,

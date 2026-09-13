@@ -38,14 +38,14 @@ final class OrganizationJoinRequestsProvider
 }
 
 String _$organizationJoinRequestsHash() =>
-    r'fef6905f08b048161ddb3731bea8369df9be45d7';
+    r'a69d3713503d665e2290b563f9372f2439650b30';
 
 abstract class _$OrganizationJoinRequests
     extends $StreamNotifier<List<OrganizationJoinRequest>> {
   Stream<List<OrganizationJoinRequest>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<
@@ -63,7 +63,7 @@ abstract class _$OrganizationJoinRequests
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

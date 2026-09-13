@@ -100,6 +100,7 @@ dynamic maskObjects(dynamic a, dynamic b) {
   if (a != null && b == null) {
     return a;
   }
+
   // If the types are not compatible, then the base is the correct type.
   return a;
 }

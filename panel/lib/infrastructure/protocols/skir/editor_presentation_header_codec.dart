@@ -11,6 +11,7 @@ extension on SkirPresentationDecoder {
     final description = _optionalExpression(value.description);
     final headerPadding = _insets(value.headerPadding);
     final contentPadding = _insets(value.contentPadding);
+
     final diagnostics = [
       ...binding.diagnostics,
       ...title.diagnostics,
@@ -109,6 +110,7 @@ extension on SkirPresentationDecoder {
     final action = actions.decode(value.action);
     final priority = _optionalExpression(value.priority);
     final visible = _optionalExpression(value.visibleIf);
+
     final enabled = _optionalExpression(value.enabledIf);
     final confirmation = value.confirmation?._decode(this);
     final diagnostics = [
@@ -122,6 +124,7 @@ extension on SkirPresentationDecoder {
       ...?confirmation?.diagnostics,
       ...value.itemId._validate,
     ];
+
     if (diagnostics.isNotEmpty) return diagnostics._invalidHeaderItem;
     return HeaderButtonItem(
       id: value.itemId._decode,
@@ -147,6 +150,7 @@ extension on SkirPresentationDecoder {
     final tooltip = _optionalExpression(value.tooltip);
     final priority = _optionalExpression(value.priority);
     final visible = _optionalExpression(value.visibleIf);
+
     final enabled = _optionalExpression(value.enabledIf);
     final confirmation = value.confirmation?._decode(this);
     final diagnostics = [
@@ -160,6 +164,7 @@ extension on SkirPresentationDecoder {
       ...?confirmation?.diagnostics,
       ...value.itemId._validate,
     ];
+
     if (diagnostics.isNotEmpty) return diagnostics._invalidHeaderItem;
     return HeaderBooleanToggleItem(
       id: value.itemId._decode,
@@ -189,6 +194,7 @@ extension on SkirPresentationDecoder {
       ...enabled.diagnostics,
       ...value.itemId._validate,
     ];
+
     if (diagnostics.isNotEmpty) return diagnostics._invalidHeaderItem;
     return HeaderReorderHandleItem(
       id: value.itemId._decode,

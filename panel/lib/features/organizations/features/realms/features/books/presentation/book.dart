@@ -322,9 +322,9 @@ class _TopRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: 16,
+          width: 28,
           child: IconTheme(
-            data: const IconThemeData(color: Colors.white60),
+            data: const IconThemeData(color: Colors.white60, size: 28),
             child: icon,
           ),
         ),
@@ -406,32 +406,6 @@ class _TagChip extends HookWidget {
     return Container(
       decoration: ShapeDecoration(color: tag.color, shape: StadiumBorder()),
       height: 8,
-    );
-  }
-}
-
-/// Header for a book displaying title and identifier.
-class BookHeader extends HookWidget {
-  const BookHeader({
-    required this.id,
-    required this.name,
-    required this.color,
-    super.key,
-  });
-
-  final String id;
-  final String name;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Title(title: name, color: color),
-        SizedBox(height: context.spacing.space2),
-        Identifier(id: id),
-      ],
     );
   }
 }

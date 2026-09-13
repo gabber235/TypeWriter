@@ -4,7 +4,9 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 class DepthContainer extends InheritedWidget {
   const DepthContainer({required this.depth, required super.child, super.key});
+
   final int depth;
+
   @override
   bool updateShouldNotify(covariant DepthContainer oldWidget) {
     return depth != oldWidget.depth;

@@ -17,6 +17,7 @@ class BoundControlShell extends HookWidget {
     required this.builder,
     this.shapeMismatch,
     this.labeled = true,
+    this.nominal = false,
     super.key,
   });
 
@@ -26,26 +27,43 @@ class BoundControlShell extends HookWidget {
   /// Whether the built control is wrapped in a [LabeledControl]. Disable for
   /// controls whose chrome is provided elsewhere, such as absorbed headers.
   final bool labeled;
+  final bool nominal;
 
   /// Returns a diagnostic message when the resolved binding does not have
   /// the shape this control requires.
-  final String? Function(ResolvedBinding binding)? shapeMismatch;
+  final String? Function(InspectedBinding binding)? shapeMismatch;
 
   final Widget Function(BuildContext context, BoundControlField field) builder;
 
   @override
   Widget build(BuildContext context) {
     final interaction = useEditorFieldInteraction(scope, control.binding);
-    final resolved = scope.resolve(control.binding);
+    final resolved = scope.inspect(control.binding);
     if (resolved case TypeFailure(:final diagnostics)) {
       return presentationDiagnostic(context, diagnostics);
     }
-    final binding = resolved.valueOrNull!;
+    final declared = resolved.valueOrNull!;
+    if (declared.value case InvalidEditorValue(:final diagnostics)) {
+      return presentationDiagnostic(context, diagnostics);
+    }
+    if (declared.value is LoadingEditorValue) {
+      return LabeledControl(
+        control: control,
+        scope: scope,
+        child: const LinearProgressIndicator(),
+      );
+    }
+    final binding = declared.copyWith(
+      type: nominal
+          ? declared.type.bindingNominal(scope.registry)
+          : declared.type.bindingRepresentation(scope.registry),
+    );
     if (shapeMismatch?.call(binding) case final message?) {
       return presentationDiagnostic(context, [
         TypeDiagnostic(code: TypeDiagnosticCode.invalidValue, message: message),
       ]);
     }
+
     final field = BoundControlField._(
       scope: scope,
       binding: binding,
@@ -53,7 +71,9 @@ class BoundControlShell extends HookWidget {
       enabled: scope.enabled && binding.writable,
       readOnly: scope.readOnly,
     );
+
     final child = builder(context, field);
+
     if (!labeled) return child;
     return LabeledControl(control: control, scope: scope, child: child);
   }
@@ -61,21 +81,23 @@ class BoundControlShell extends HookWidget {
 
 final class BoundControlField {
   const BoundControlField._({
-    required PresentationRenderScope scope,
+    required this._scope,
     required this.binding,
     required this.interaction,
     required this.enabled,
     required this.readOnly,
-  }) : _scope = scope;
+  });
 
   final PresentationRenderScope _scope;
-  final ResolvedBinding binding;
+  final InspectedBinding binding;
   final EditorFieldInteraction interaction;
   final bool enabled;
   final bool readOnly;
 
   bool get editable => enabled && !readOnly;
   bool get locked => !editable;
+  bool get mixed => binding.value is MixedEditorValue;
+  DataValue? get value => binding.value.valueOrNull;
 
   void update(DataValue value) => _scope.update(binding.reference, value);
 }

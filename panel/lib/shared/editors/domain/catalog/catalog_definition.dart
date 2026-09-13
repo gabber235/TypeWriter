@@ -7,18 +7,64 @@ part "catalog_definition.freezed.dart";
 abstract class PresentationDefinition with _$PresentationDefinition {
   const factory PresentationDefinition({
     required PresentationId id,
+    required List<PresentationInputParameter> inputs,
+    required PresentationNode root,
+    BindingId? primaryInput,
+  }) = _PresentationDefinition;
+
+  const PresentationDefinition._();
+
+  factory PresentationDefinition.single({
+    required PresentationId id,
     required TypeExpression target,
     required PresentationNode root,
-  }) = _PresentationDefinition;
+  }) => PresentationDefinition(
+    id: id,
+    inputs: [
+      PresentationInputParameter(
+        id: const BindingId(0),
+        name: "value",
+        type: target,
+      ),
+    ],
+    primaryInput: const BindingId(0),
+    root: root,
+  );
+
+  TypeExpression? get target =>
+      inputs.where((input) => input.id == primaryInput).firstOrNull?.type;
+}
+
+enum PresentationInputAccess { read, edit }
+
+@freezed
+abstract class PresentationInputParameter with _$PresentationInputParameter {
+  const factory PresentationInputParameter({
+    required BindingId id,
+    required String name,
+    required TypeExpression type,
+    @Default(PresentationInputAccess.read) PresentationInputAccess access,
+  }) = _PresentationInputParameter;
 }
 
 @freezed
-abstract class RealmActionDefinition with _$RealmActionDefinition {
-  const factory RealmActionDefinition({
-    required RealmActionId id,
-    required ResolvedTypeRef payloadType,
-    ResolvedTypeRef? resultType,
-  }) = _RealmActionDefinition;
+sealed class CapabilityDefinition with _$CapabilityDefinition {
+  const factory CapabilityDefinition.search({
+    required CapabilityId id,
+    required ResolvedTypeRef requestType,
+    required ResolvedTypeRef resultType,
+  }) = SearchCapabilityDefinition;
+
+  const factory CapabilityDefinition.computation({
+    required CapabilityId id,
+    required ResolvedTypeRef requestType,
+    required ResolvedTypeRef resultType,
+  }) = ComputationCapabilityDefinition;
+
+  const factory CapabilityDefinition.command({
+    required CapabilityId id,
+    required ResolvedTypeRef requestType,
+  }) = CommandCapabilityDefinition;
 }
 
 @freezed

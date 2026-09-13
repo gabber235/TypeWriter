@@ -143,33 +143,40 @@ extension TypeExpressionConstraintValidation on TypeExpression {
     _ => const {},
   };
 
-  List<TypeDiagnostic> validateResolvedEnums(
+  List<TypeDiagnostic> validateResolvedValues(
     TypeRegistry registry, {
     DataPath path = DataPath.root,
   }) => switch (this) {
     EnumType(:final valueType, :final values) => [
       for (final value in values)
         ...value.validateAgainst(valueType, path: path, registry: registry),
-      ...valueType.validateResolvedEnums(registry, path: path),
+      ...valueType.validateResolvedValues(registry, path: path),
     ],
-    ListType(:final element) => element.validateResolvedEnums(
+    ListType(:final element) => element.validateResolvedValues(
       registry,
       path: path,
     ),
     MapType(:final key, :final value) => [
-      ...key.validateResolvedEnums(registry, path: path),
-      ...value.validateResolvedEnums(registry, path: path),
+      ...key.validateResolvedValues(registry, path: path),
+      ...value.validateResolvedValues(registry, path: path),
     ],
     RecordType(:final fields) => [
-      for (final field in fields.values)
-        ...field.type.validateResolvedEnums(
+      for (final field in fields.values) ...[
+        if (field.initialValue case final initial?)
+          ...initial.validateAgainst(
+            field.type,
+            registry: registry,
+            path: path.field(field.name),
+          ),
+        ...field.type.validateResolvedValues(
           registry,
           path: path.field(field.name),
         ),
+      ],
     ],
     NamedType(:final reference) => [
       for (final argument in reference.arguments)
-        ...argument.validateResolvedEnums(registry, path: path),
+        ...argument.validateResolvedValues(registry, path: path),
     ],
     _ => const [],
   };

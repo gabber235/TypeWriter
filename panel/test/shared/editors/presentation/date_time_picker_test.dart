@@ -91,6 +91,7 @@ void main() {
     await tester.sendKeyDownEvent(modifier);
     await tester.sendKeyEvent(LogicalKeyboardKey.keyC);
     await tester.sendKeyUpEvent(modifier);
+
     await tester.pump();
     expect(clipboardText, "2024-08-12 18:30:45");
 
@@ -165,6 +166,7 @@ void main() {
     await tester.tap(find.bySemanticsLabel(RegExp("February")));
     await tester.pump();
     expect(find.byType(DateTimePickerSurface), findsOneWidget);
+
     expect(find.bySemanticsLabel("Monday, February 12, 2024"), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey("date_time_year_picker")));
@@ -201,6 +203,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel("Friday, September 12, 2025"), findsOneWidget);
+
     expect(find.byType(DateTimePickerSurface), findsOneWidget);
   });
 
@@ -236,6 +239,7 @@ void main() {
     await tester.pump();
     await tester.enterText(minuteField, "07");
     await tester.pump();
+
     expect(
       tester
           .widget<EditableText>(
@@ -261,6 +265,7 @@ void main() {
     await tester.pump();
     await tester.enterText(secondField, "09");
     await tester.pumpAndSettle();
+
     expect(key.currentState!.value.second, 9);
     expect(key.currentState!.value.microsecond, 456);
   });
@@ -427,6 +432,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(DateTimePickerSurface), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pump();
     expect(readOnlyKey.currentState!.value.day, 12);
@@ -454,6 +460,7 @@ void main() {
     expect(find.bySemanticsLabel("Time"), findsWidgets);
     expect(find.bySemanticsLabel("Hour"), findsWidgets);
     expect(find.bySemanticsLabel("Minute"), findsWidgets);
+
     expect(find.bySemanticsLabel("Second"), findsWidgets);
   });
 }

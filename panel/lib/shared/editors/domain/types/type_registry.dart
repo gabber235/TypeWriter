@@ -2,18 +2,20 @@ import "package:typewriter_panel/typewriter_panel.dart";
 
 final class TypeRegistry {
   TypeRegistry(TypeCatalog catalog)
-    : this._(bootstrapTypeCatalog(catalog.definitions));
+    : this._(catalog, bootstrapTypeCatalog(catalog.definitions));
 
-  TypeRegistry._(TypeCatalog catalog)
+  TypeRegistry._(this.catalog, TypeCatalog resolvedCatalog)
     : _definitions = {
-        for (final definition in catalog.definitions) definition.id: definition,
+        for (final definition in resolvedCatalog.definitions)
+          definition.id: definition,
       },
-      _duplicates = _findDuplicates(catalog.definitions),
+      _duplicates = _findDuplicates(resolvedCatalog.definitions),
       _declarationDiagnostics = {
-        for (final definition in catalog.definitions)
+        for (final definition in resolvedCatalog.definitions)
           definition.id: definition.validateDeclaration(),
       };
 
+  final TypeCatalog catalog;
   final Map<ResolvedTypeRef, TypeDefinition> _definitions;
   final Set<ResolvedTypeRef> _duplicates;
   final Map<ResolvedTypeRef, List<TypeDiagnostic>> _declarationDiagnostics;
@@ -52,10 +54,12 @@ final class TypeRegistry {
         declaration,
       );
     }
+
     final declarationDiagnostics = _declarationDiagnostics[declaration];
     if (declarationDiagnostics != null && declarationDiagnostics.isNotEmpty) {
       return TypeResult.failure(declarationDiagnostics);
     }
+
     final definition = _definitions[declaration];
     if (definition == null) {
       return _failure(
@@ -78,6 +82,7 @@ final class TypeRegistry {
         declaration,
       );
     }
+
     final varianceDiagnostics = definition.validateVarianceUse();
     if (varianceDiagnostics.isNotEmpty) {
       return TypeResult.failure(varianceDiagnostics);
@@ -101,6 +106,7 @@ final class TypeRegistry {
     var effective = declaredRepresentation;
     final ancestors = <ResolvedTypeRef>{};
     final directParents = <ResolvedTypeRef>{};
+
     final nextStack = [...inheritanceStack, declaration];
     for (final parent in definition.parents) {
       final appliedParent = parent.substitute(substitutions);
@@ -113,11 +119,13 @@ final class TypeRegistry {
         appliedParent,
         ...parentValue.ancestors,
       });
+
       if (ownership.isNotEmpty) return TypeResult.failure(ownership);
       final weakening = _findWeakening(
         parentValue.representation,
         declaredRepresentation,
       );
+
       if (weakening.isNotEmpty) return TypeResult.failure(weakening);
       final merged = parentValue.representation.safelyRefineWith(
         effective,
@@ -138,15 +146,13 @@ final class TypeRegistry {
               .toList(),
         );
       }
+
       effective = merged.valueOrNull!;
+
       directParents.add(appliedParent);
       ancestors
         ..add(appliedParent)
         ..addAll(parentValue.ancestors);
-    }
-    final resolvedDiagnostics = effective.validateResolvedEnums(this);
-    if (resolvedDiagnostics.isNotEmpty) {
-      return TypeResult.failure(resolvedDiagnostics);
     }
     final result = ResolvedType(
       reference: reference,
@@ -155,7 +161,14 @@ final class TypeRegistry {
       ancestors: ancestors,
       directParents: directParents,
     );
+
     _cache[reference] = result;
+
+    final resolvedDiagnostics = effective.validateResolvedValues(this);
+    if (resolvedDiagnostics.isNotEmpty) {
+      _cache.remove(reference);
+      return TypeResult.failure(resolvedDiagnostics);
+    }
     return TypeResult.success(result);
   }
 
@@ -258,6 +271,7 @@ final class TypeRegistry {
 extension on TypeId {
   String get _owner => switch (this) {
     OptionTypeId() || SomeTypeId() || NoneTypeId() => "builtin",
+    DeclaredTypeId(:final uuid) => uuid,
     QualifiedTypeId(:final namespace) => namespace,
   };
 }

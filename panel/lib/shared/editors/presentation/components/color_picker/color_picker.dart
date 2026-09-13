@@ -6,3 +6,4 @@ export "color_picker_surface.dart";
 export "color_slider.dart";
 export "color_swatches.dart";
 export "color_value.dart";
+export "mixed_color_swatch.dart";

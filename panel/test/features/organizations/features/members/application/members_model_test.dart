@@ -59,6 +59,7 @@ void main() {
       expect(member.avatarUrl, "https://example.com/avatar.png");
       expect(member.roles.length, 1);
       expect(member.roles.first.name, "Admin");
+
       expect(member.joinedAt, now);
     });
   });

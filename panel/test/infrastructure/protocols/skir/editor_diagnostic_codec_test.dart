@@ -7,6 +7,7 @@ void main() {
   test("maps every diagnostic code and all metadata", () {
     final paths = _paths();
     final path = paths.encode(DataPath.root.field("value")).valueOrNull!;
+
     final codes = <wire.DiagnosticCode>[
       wire.DiagnosticCode.invalidTypeId,
       wire.DiagnosticCode.invalidRevision,
@@ -32,11 +33,13 @@ void main() {
       wire.DiagnosticCode.mutationConflict,
       wire.DiagnosticCode.permissionDenied,
     ];
+
     final severities = [
       wire.DiagnosticSeverity.information,
       wire.DiagnosticSeverity.warning,
       wire.DiagnosticSeverity.error,
     ];
+
     final domainCodes = [
       TypeDiagnosticCode.invalidTypeId,
       TypeDiagnosticCode.invalidRevision,
@@ -62,6 +65,7 @@ void main() {
       TypeDiagnosticCode.mutationConflict,
       TypeDiagnosticCode.permissionDenied,
     ];
+
     final domainSeverities = TypeDiagnosticSeverity.values;
 
     for (final entry in codes.indexed) {
@@ -89,6 +93,7 @@ void main() {
         TypeDiagnosticDetail(key: "index", value: "${entry.$1}"),
         const TypeDiagnosticDetail(key: "source", value: "test"),
       ]);
+
       expect(encoded.code, original.code);
       expect(encoded.severity, original.severity);
       expect(encoded.message, original.message);

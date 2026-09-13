@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'type_diagnostic.dart';
@@ -9,6 +9,7 @@ part of 'type_diagnostic.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $TypeDiagnosticDetailCopyWith<TypeDiagnosticDetail> get copyWith => _$TypeDiagno
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeDiagnosticDetail&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+  final _this = this as TypeDiagnosticDetail;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeDiagnosticDetail&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+  final _this = this as TypeDiagnosticDetail;
+  return Object.hash(runtimeType,_this.key,_this.value);
+}
 
 @override
 String toString() {
-  return 'TypeDiagnosticDetail(key: $key, value: $value)';
+  final _this = this as TypeDiagnosticDetail;
+  return 'TypeDiagnosticDetail(key: ${_this.key}, value: ${_this.value})';
 }
 
 
@@ -63,7 +69,7 @@ class _$TypeDiagnosticDetailCopyWithImpl<$Res>
 /// Create a copy of TypeDiagnosticDetail
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(TypeDiagnosticDetail(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as String,
@@ -208,7 +214,7 @@ return $default(_that.key,_that.value);case _:
 
 class _TypeDiagnosticDetail implements TypeDiagnosticDetail {
   const _TypeDiagnosticDetail({required this.key, required this.value});
-  
+
 
 @override final  String key;
 @override final  String value;
@@ -223,16 +229,18 @@ _$TypeDiagnosticDetailCopyWith<_TypeDiagnosticDetail> get copyWith => __$TypeDia
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeDiagnosticDetail&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeDiagnosticDetail&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+    return Object.hash(runtimeType,key,value);
+}
 
 @override
 String toString() {
-  return 'TypeDiagnosticDetail(key: $key, value: $value)';
+    return 'TypeDiagnosticDetail(key: $key, value: $value)';
 }
 
 
@@ -285,12 +293,16 @@ $TypeDiagnosticCopyWith<TypeDiagnostic> get copyWith => _$TypeDiagnosticCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeDiagnostic&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.path, path) || other.path == path)&&(identical(other.type, type) || other.type == type)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.relatedType, relatedType) || other.relatedType == relatedType)&&const DeepCollectionEquality().equals(other.details, details)&&(identical(other.pathPresent, pathPresent) || other.pathPresent == pathPresent));
+  final _this = this as TypeDiagnostic;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeDiagnostic&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.path, _this.path) || other.path == _this.path)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.severity, _this.severity) || other.severity == _this.severity)&&(identical(other.relatedType, _this.relatedType) || other.relatedType == _this.relatedType)&&const DeepCollectionEquality().equals(other.details, _this.details)&&(identical(other.pathPresent, _this.pathPresent) || other.pathPresent == _this.pathPresent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,code,message,path,type,severity,relatedType,const DeepCollectionEquality().hash(details),pathPresent);
+int get hashCode {
+  final _this = this as TypeDiagnostic;
+  return Object.hash(runtimeType,_this.code,_this.message,_this.path,_this.type,_this.severity,_this.relatedType,const DeepCollectionEquality().hash(_this.details),_this.pathPresent);
+}
 
 
 
@@ -319,7 +331,7 @@ class _$TypeDiagnosticCopyWithImpl<$Res>
 /// Create a copy of TypeDiagnostic
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? path = null,Object? type = freezed,Object? severity = null,Object? relatedType = freezed,Object? details = null,Object? pathPresent = null,}) {
-  return _then(_self.copyWith(
+  return _then(TypeDiagnostic(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as TypeDiagnosticCode,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
@@ -336,7 +348,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get path {
-  
+
   return $DataPathCopyWith<$Res>(_self.path, (value) {
     return _then(_self.copyWith(path: value));
   });
@@ -490,8 +502,8 @@ return $default(_that.code,_that.message,_that.path,_that.type,_that.severity,_t
 
 
 class _TypeDiagnostic extends TypeDiagnostic {
-  const _TypeDiagnostic({required this.code, required this.message, this.path = DataPath.root, this.type, this.severity = TypeDiagnosticSeverity.error, this.relatedType, final  List<TypeDiagnosticDetail> details = const [], this.pathPresent = true}): _details = details,super._();
-  
+  const _TypeDiagnostic({required this.code, required this.message, this.path = DataPath.root, this.type, this.severity = TypeDiagnosticSeverity.error, this.relatedType,  List<TypeDiagnosticDetail> details = const [], this.pathPresent = true}): _details = details,super._();
+
 
 @override final  TypeDiagnosticCode code;
 @override final  String message;
@@ -518,12 +530,14 @@ _$TypeDiagnosticCopyWith<_TypeDiagnostic> get copyWith => __$TypeDiagnosticCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeDiagnostic&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.path, path) || other.path == path)&&(identical(other.type, type) || other.type == type)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.relatedType, relatedType) || other.relatedType == relatedType)&&const DeepCollectionEquality().equals(other._details, _details)&&(identical(other.pathPresent, pathPresent) || other.pathPresent == pathPresent));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TypeDiagnostic&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.path, path) || other.path == path)&&(identical(other.type, type) || other.type == type)&&(identical(other.severity, severity) || other.severity == severity)&&(identical(other.relatedType, relatedType) || other.relatedType == relatedType)&&const DeepCollectionEquality().equals(other.details, _details)&&(identical(other.pathPresent, pathPresent) || other.pathPresent == pathPresent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,code,message,path,type,severity,relatedType,const DeepCollectionEquality().hash(_details),pathPresent);
+int get hashCode {
+    return Object.hash(runtimeType,code,message,path,type,severity,relatedType,const DeepCollectionEquality().hash(_details),pathPresent);
+}
 
 
 
@@ -570,7 +584,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $DataPathCopyWith<$Res> get path {
-  
+
   return $DataPathCopyWith<$Res>(_self.path, (value) {
     return _then(_self.copyWith(path: value));
   });
@@ -598,7 +612,7 @@ mixin _$TypeResult<T> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeResult<T>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeResult<T>);
 }
 
 
@@ -607,7 +621,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TypeResult<$T>()';
+    return 'TypeResult<$T>()';
 }
 
 
@@ -754,7 +768,7 @@ return failure(_that.diagnostics);case _:
 
 class TypeSuccess<T> extends TypeResult<T> {
   const TypeSuccess(this.value): super._();
-  
+
 
  final  T value;
 
@@ -768,16 +782,18 @@ $TypeSuccessCopyWith<T, TypeSuccess<T>> get copyWith => _$TypeSuccessCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeSuccess<T>&&const DeepCollectionEquality().equals(other.value, value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeSuccess<T>&&const DeepCollectionEquality().equals(other.value, value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+}
 
 @override
 String toString() {
-  return 'TypeResult<$T>.success(value: $value)';
+    return 'TypeResult<$T>.success(value: $value)';
 }
 
 
@@ -819,8 +835,8 @@ as T,
 
 
 class TypeFailure<T> extends TypeResult<T> {
-   TypeFailure(final  List<TypeDiagnostic> diagnostics): assert(diagnostics.length > 0, 'Diagnostics must not be empty.'),_diagnostics = diagnostics,super._();
-  
+   TypeFailure( List<TypeDiagnostic> diagnostics): assert(diagnostics.length > 0, 'Diagnostics must not be empty.'),_diagnostics = diagnostics,super._();
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -840,16 +856,18 @@ $TypeFailureCopyWith<T, TypeFailure<T>> get copyWith => _$TypeFailureCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeFailure<T>&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TypeFailure<T>&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'TypeResult<$T>.failure(diagnostics: $diagnostics)';
+    return 'TypeResult<$T>.failure(diagnostics: $diagnostics)';
 }
 
 

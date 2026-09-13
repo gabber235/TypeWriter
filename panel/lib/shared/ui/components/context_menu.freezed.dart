@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'context_menu.dart';
@@ -9,6 +9,7 @@ part of 'context_menu.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -19,14 +20,14 @@ mixin _$MenuItem implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'MenuItem'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItem);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItem);
 }
 
 
@@ -35,7 +36,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'MenuItem()';
+    return 'MenuItem()';
 }
 
 
@@ -199,8 +200,8 @@ return divider();case _:
 
 
 class _MenuItem with DiagnosticableTreeMixin implements MenuItem {
-  const _MenuItem({required this.label, this.icon, this.color, this.onPressed, final  List<ShortcutActivator> shortcuts = const []}): assert(label != "", 'Label must not be empty.'),_shortcuts = shortcuts;
-  
+  const _MenuItem({required this.label, this.icon, this.color, this.onPressed,  List<ShortcutActivator> shortcuts = const []}): assert(label != "", 'Label must not be empty.'),_shortcuts = shortcuts;
+
 
  final  String label;
  final  Widget? icon;
@@ -223,23 +224,25 @@ _$MenuItemCopyWith<_MenuItem> get copyWith => __$MenuItemCopyWithImpl<_MenuItem>
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'MenuItem'))
     ..add(DiagnosticsProperty('label', label))..add(DiagnosticsProperty('icon', icon))..add(DiagnosticsProperty('color', color))..add(DiagnosticsProperty('onPressed', onPressed))..add(DiagnosticsProperty('shortcuts', shortcuts));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MenuItem&&(identical(other.label, label) || other.label == label)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.onPressed, onPressed) || other.onPressed == onPressed)&&const DeepCollectionEquality().equals(other._shortcuts, _shortcuts));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MenuItem&&(identical(other.label, label) || other.label == label)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color)&&(identical(other.onPressed, onPressed) || other.onPressed == onPressed)&&const DeepCollectionEquality().equals(other.shortcuts, _shortcuts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,icon,color,onPressed,const DeepCollectionEquality().hash(_shortcuts));
+int get hashCode {
+    return Object.hash(runtimeType,label,icon,color,onPressed,const DeepCollectionEquality().hash(_shortcuts));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'MenuItem(label: $label, icon: $icon, color: $color, onPressed: $onPressed, shortcuts: $shortcuts)';
+    return 'MenuItem(label: $label, icon: $icon, color: $color, onPressed: $onPressed, shortcuts: $shortcuts)';
 }
 
 
@@ -285,8 +288,8 @@ as List<ShortcutActivator>,
 
 
 class MenuItemSubmenu with DiagnosticableTreeMixin implements MenuItem {
-  const MenuItemSubmenu({required this.label, required final  List<MenuItem> items, this.icon, this.color}): assert(label != "", 'Label must not be empty.'),assert(items.length > 0, 'Items must not be empty.'),_items = items;
-  
+  const MenuItemSubmenu({required this.label, required  List<MenuItem> items, this.icon, this.color}): assert(label != "", 'Label must not be empty.'),assert(items.length > 0, 'Items must not be empty.'),_items = items;
+
 
  final  String label;
  final  List<MenuItem> _items;
@@ -308,23 +311,25 @@ $MenuItemSubmenuCopyWith<MenuItemSubmenu> get copyWith => _$MenuItemSubmenuCopyW
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'MenuItem.submenu'))
     ..add(DiagnosticsProperty('label', label))..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('icon', icon))..add(DiagnosticsProperty('color', color));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItemSubmenu&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItemSubmenu&&(identical(other.label, label) || other.label == label)&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,const DeepCollectionEquality().hash(_items),icon,color);
+int get hashCode {
+    return Object.hash(runtimeType,label,const DeepCollectionEquality().hash(_items),icon,color);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'MenuItem.submenu(label: $label, items: $items, icon: $icon, color: $color)';
+    return 'MenuItem.submenu(label: $label, items: $items, icon: $icon, color: $color)';
 }
 
 
@@ -369,8 +374,8 @@ as Color?,
 
 
 class MenuItemSection with DiagnosticableTreeMixin implements MenuItem {
-  const MenuItemSection({required final  List<MenuItem> items, this.label, this.icon, this.color}): assert(items.length > 0, 'Items must not be empty.'),assert(label == null || label != "", 'Label must be null or nonempty.'),_items = items;
-  
+  const MenuItemSection({required  List<MenuItem> items, this.label, this.icon, this.color}): assert(items.length > 0, 'Items must not be empty.'),assert(label == null || label != "", 'Label must be null or nonempty.'),_items = items;
+
 
  final  List<MenuItem> _items;
  List<MenuItem> get items {
@@ -392,23 +397,25 @@ $MenuItemSectionCopyWith<MenuItemSection> get copyWith => _$MenuItemSectionCopyW
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'MenuItem.section'))
     ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('label', label))..add(DiagnosticsProperty('icon', icon))..add(DiagnosticsProperty('color', color));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItemSection&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.label, label) || other.label == label)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItemSection&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.label, label) || other.label == label)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.color, color) || other.color == color));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),label,icon,color);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),label,icon,color);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'MenuItem.section(items: $items, label: $label, icon: $icon, color: $color)';
+    return 'MenuItem.section(items: $items, label: $label, icon: $icon, color: $color)';
 }
 
 
@@ -454,7 +461,7 @@ as Color?,
 
 class MenuItemDivider with DiagnosticableTreeMixin implements MenuItem {
   const MenuItemDivider();
-  
+
 
 
 
@@ -462,14 +469,14 @@ class MenuItemDivider with DiagnosticableTreeMixin implements MenuItem {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'MenuItem.divider'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItemDivider);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuItemDivider);
 }
 
 
@@ -478,7 +485,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'MenuItem.divider()';
+    return 'MenuItem.divider()';
 }
 
 

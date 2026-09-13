@@ -27,6 +27,7 @@ extension DefaultPresentationElementRendering on DefaultPresentationElement {
       );
       return PresentationNodeRenderer(node: generated, scope: scope);
     }
+
     if (scope.activePresentations.contains(selected.id)) {
       return presentationDiagnostic(context, [
         const TypeDiagnostic(
@@ -35,20 +36,24 @@ extension DefaultPresentationElementRendering on DefaultPresentationElement {
         ),
       ]);
     }
-    final childScope = scope
-        .withAlias(
-          const BindingId(0),
-          scope.canonical(binding),
-          BindingSnapshot(
-            type: resolvedBinding.type,
-            value: resolvedBinding.value,
-            revision: resolvedBinding.revision,
-            writable: resolvedBinding.writable,
-          ),
-        )
-        .copyWith(
-          activePresentations: {...scope.activePresentations, selected.id},
-        );
-    return PresentationNodeRenderer(node: selected.root, scope: childScope);
+
+    final input = selected.primaryInput;
+    if (input == null) {
+      return presentationDiagnostic(context, [
+        const TypeDiagnostic(
+          code: TypeDiagnosticCode.invalidPresentation,
+          message: "Default presentation requires one primary input",
+        ),
+      ]);
+    }
+
+    final bound = scope.bindPresentation(selected, {input: binding});
+    if (bound case TypeFailure(:final diagnostics)) {
+      return presentationDiagnostic(context, diagnostics);
+    }
+    return PresentationNodeRenderer(
+      node: bound.valueOrNull!.$1,
+      scope: bound.valueOrNull!.$2,
+    );
   }
 }

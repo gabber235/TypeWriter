@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'data_value.dart';
@@ -9,6 +9,7 @@ part of 'data_value.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$DataValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DataValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DataValue);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DataValue()';
+    return 'DataValue()';
 }
 
 
@@ -47,7 +48,7 @@ $DataValueCopyWith(DataValue _, $Res Function(DataValue) __);
 
 class UnitValue extends DataValue {
   const UnitValue(): super._();
-  
+
 
 
 
@@ -56,7 +57,7 @@ class UnitValue extends DataValue {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnitValue);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UnitValue);
 }
 
 
@@ -65,7 +66,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DataValue.unit()';
+    return 'DataValue.unit()';
 }
 
 
@@ -79,7 +80,7 @@ String toString() {
 
 class BooleanValue extends DataValue {
   const BooleanValue(this.value): super._();
-  
+
 
  final  bool value;
 
@@ -93,16 +94,18 @@ $BooleanValueCopyWith<BooleanValue> get copyWith => _$BooleanValueCopyWithImpl<B
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BooleanValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BooleanValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'DataValue.boolean(value: $value)';
+    return 'DataValue.boolean(value: $value)';
 }
 
 
@@ -145,7 +148,7 @@ as bool,
 
 class IntegerValue extends DataValue {
    IntegerValue(this.value): super._();
-  
+
 
  final  BigInt value;
 
@@ -159,16 +162,18 @@ $IntegerValueCopyWith<IntegerValue> get copyWith => _$IntegerValueCopyWithImpl<I
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IntegerValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IntegerValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'DataValue.integer(value: $value)';
+    return 'DataValue.integer(value: $value)';
 }
 
 
@@ -211,7 +216,7 @@ as BigInt,
 
 class FloatValue extends DataValue {
   const FloatValue(this.value): super._();
-  
+
 
  final  double value;
 
@@ -225,16 +230,18 @@ $FloatValueCopyWith<FloatValue> get copyWith => _$FloatValueCopyWithImpl<FloatVa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FloatValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FloatValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'DataValue.float(value: $value)';
+    return 'DataValue.float(value: $value)';
 }
 
 
@@ -277,7 +284,7 @@ as double,
 
 class DecimalValue extends DataValue {
    DecimalValue(this.value): assert(RegExp(r"^-?(0|[1-9][0-9]*)(\.[0-9]+)?$").hasMatch(value), 'Decimal value must use canonical decimal syntax.'),super._();
-  
+
 
  final  String value;
 
@@ -291,16 +298,18 @@ $DecimalValueCopyWith<DecimalValue> get copyWith => _$DecimalValueCopyWithImpl<D
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DecimalValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DecimalValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'DataValue.decimal(value: $value)';
+    return 'DataValue.decimal(value: $value)';
 }
 
 
@@ -343,7 +352,7 @@ as String,
 
 class StringValue extends DataValue {
   const StringValue(this.value): super._();
-  
+
 
  final  String value;
 
@@ -357,16 +366,18 @@ $StringValueCopyWith<StringValue> get copyWith => _$StringValueCopyWithImpl<Stri
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StringValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StringValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'DataValue.string(value: $value)';
+    return 'DataValue.string(value: $value)';
 }
 
 
@@ -411,7 +422,7 @@ as String,
 
 class DurationValue extends DataValue {
   const DurationValue(this.value): super._();
-  
+
 
  final  Duration value;
 
@@ -425,16 +436,18 @@ $DurationValueCopyWith<DurationValue> get copyWith => _$DurationValueCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DurationValue&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DurationValue&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'DataValue.duration(value: $value)';
+    return 'DataValue.duration(value: $value)';
 }
 
 
@@ -476,8 +489,8 @@ as Duration,
 
 
 class ListValue extends DataValue {
-  const ListValue(final  List<DataValue> values): _values = values,super._();
-  
+  const ListValue( List<DataValue> values): _values = values,super._();
+
 
  final  List<DataValue> _values;
  List<DataValue> get values {
@@ -497,16 +510,18 @@ $ListValueCopyWith<ListValue> get copyWith => _$ListValueCopyWithImpl<ListValue>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ListValue&&const DeepCollectionEquality().equals(other._values, _values));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ListValue&&const DeepCollectionEquality().equals(other.values, _values));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_values));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_values));
+}
 
 @override
 String toString() {
-  return 'DataValue.list(values: $values)';
+    return 'DataValue.list(values: $values)';
 }
 
 
@@ -548,8 +563,8 @@ as List<DataValue>,
 
 
 class MapValue extends DataValue {
-  const MapValue(final  List<DataMapEntry> entries): _entries = entries,super._();
-  
+  const MapValue( List<DataMapEntry> entries): _entries = entries,super._();
+
 
  final  List<DataMapEntry> _entries;
  List<DataMapEntry> get entries {
@@ -569,16 +584,18 @@ $MapValueCopyWith<MapValue> get copyWith => _$MapValueCopyWithImpl<MapValue>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MapValue&&const DeepCollectionEquality().equals(other._entries, _entries));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MapValue&&const DeepCollectionEquality().equals(other.entries, _entries));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_entries));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_entries));
+}
 
 @override
 String toString() {
-  return 'DataValue.map(entries: $entries)';
+    return 'DataValue.map(entries: $entries)';
 }
 
 
@@ -620,8 +637,8 @@ as List<DataMapEntry>,
 
 
 class _RecordValue extends DataValue implements RecordValue {
-  const _RecordValue(final  Map<String, DataValue> fields): _fields = fields,super._();
-  
+  const _RecordValue( Map<String, DataValue> fields): _fields = fields,super._();
+
 
  final  Map<String, DataValue> _fields;
  Map<String, DataValue> get fields {
@@ -641,16 +658,18 @@ _$RecordValueCopyWith<_RecordValue> get copyWith => __$RecordValueCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecordValue&&const DeepCollectionEquality().equals(other._fields, _fields));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecordValue&&const DeepCollectionEquality().equals(other.fields, _fields));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+}
 
 @override
 String toString() {
-  return 'DataValue.record(fields: $fields)';
+    return 'DataValue.record(fields: $fields)';
 }
 
 
@@ -693,7 +712,7 @@ as Map<String, DataValue>,
 
 class PolymorphicValue extends DataValue {
   const PolymorphicValue({required this.concreteType, required this.value}): super._();
-  
+
 
  final  ResolvedTypeRef concreteType;
  final  DataValue value;
@@ -708,16 +727,18 @@ $PolymorphicValueCopyWith<PolymorphicValue> get copyWith => _$PolymorphicValueCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicValue&&(identical(other.concreteType, concreteType) || other.concreteType == concreteType)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PolymorphicValue&&(identical(other.concreteType, concreteType) || other.concreteType == concreteType)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,concreteType,value);
+int get hashCode {
+    return Object.hash(runtimeType,concreteType,value);
+}
 
 @override
 String toString() {
-  return 'DataValue.polymorphic(concreteType: $concreteType, value: $value)';
+    return 'DataValue.polymorphic(concreteType: $concreteType, value: $value)';
 }
 
 
@@ -758,7 +779,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $ResolvedTypeRefCopyWith<$Res> get concreteType {
-  
+
   return $ResolvedTypeRefCopyWith<$Res>(_self.concreteType, (value) {
     return _then(_self.copyWith(concreteType: value));
   });
@@ -767,7 +788,7 @@ $ResolvedTypeRefCopyWith<$Res> get concreteType {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -777,7 +798,7 @@ $DataValueCopyWith<$Res> get value {
 /// @nodoc
 mixin _$BytesValue {
 
- Uint8List get value;
+
 /// Create a copy of BytesValue
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -788,16 +809,21 @@ $BytesValueCopyWith<BytesValue> get copyWith => _$BytesValueCopyWithImpl<BytesVa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BytesValue&&const DeepCollectionEquality().equals(other.value, value));
+  final _this = this as BytesValue;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BytesValue&&const DeepCollectionEquality().equals(other.value, _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+int get hashCode {
+  final _this = this as BytesValue;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.value));
+}
 
 @override
 String toString() {
-  return 'BytesValue(value: $value)';
+  final _this = this as BytesValue;
+  return 'BytesValue(value: ${_this.value})';
 }
 
 
@@ -962,7 +988,7 @@ case _:
 /// @nodoc
 mixin _$TimestampValue {
 
- DateTime get value;
+
 /// Create a copy of TimestampValue
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -973,16 +999,21 @@ $TimestampValueCopyWith<TimestampValue> get copyWith => _$TimestampValueCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimestampValue&&(identical(other.value, value) || other.value == value));
+  final _this = this as TimestampValue;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimestampValue&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+  final _this = this as TimestampValue;
+  return Object.hash(runtimeType,_this.value);
+}
 
 @override
 String toString() {
-  return 'TimestampValue(value: $value)';
+  final _this = this as TimestampValue;
+  return 'TimestampValue(value: ${_this.value})';
 }
 
 
@@ -1158,16 +1189,21 @@ $DataMapEntryCopyWith<DataMapEntry> get copyWith => _$DataMapEntryCopyWithImpl<D
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DataMapEntry&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+  final _this = this as DataMapEntry;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DataMapEntry&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+  final _this = this as DataMapEntry;
+  return Object.hash(runtimeType,_this.key,_this.value);
+}
 
 @override
 String toString() {
-  return 'DataMapEntry(key: $key, value: $value)';
+  final _this = this as DataMapEntry;
+  return 'DataMapEntry(key: ${_this.key}, value: ${_this.value})';
 }
 
 
@@ -1196,7 +1232,7 @@ class _$DataMapEntryCopyWithImpl<$Res>
 /// Create a copy of DataMapEntry
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(DataMapEntry(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as DataValue,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as DataValue,
@@ -1207,7 +1243,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get key {
-  
+
   return $DataValueCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });
@@ -1216,7 +1252,7 @@ $DataValueCopyWith<$Res> get key {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -1359,7 +1395,7 @@ return $default(_that.key,_that.value);case _:
 
 class _DataMapEntry implements DataMapEntry {
   const _DataMapEntry({required this.key, required this.value});
-  
+
 
 @override final  DataValue key;
 @override final  DataValue value;
@@ -1374,16 +1410,18 @@ _$DataMapEntryCopyWith<_DataMapEntry> get copyWith => __$DataMapEntryCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DataMapEntry&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DataMapEntry&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+    return Object.hash(runtimeType,key,value);
+}
 
 @override
 String toString() {
-  return 'DataMapEntry(key: $key, value: $value)';
+    return 'DataMapEntry(key: $key, value: $value)';
 }
 
 
@@ -1424,7 +1462,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get key {
-  
+
   return $DataValueCopyWith<$Res>(_self.key, (value) {
     return _then(_self.copyWith(key: value));
   });
@@ -1433,7 +1471,7 @@ $DataValueCopyWith<$Res> get key {
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });

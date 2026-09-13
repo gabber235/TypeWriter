@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'entries.dart';
@@ -9,6 +9,7 @@ part of 'entries.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -19,14 +20,14 @@ mixin _$PageEntry implements DiagnosticableTreeMixin {
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PageEntry'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageEntry);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PageEntry);
 }
 
 
@@ -35,7 +36,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PageEntry()';
+    return 'PageEntry()';
 }
 
 
@@ -200,7 +201,7 @@ return missingElementDefinition(_that.id,_that.name,_that.placement,_that.inward
 
 class DefinitionPageEntry with DiagnosticableTreeMixin implements PageEntry {
   const DefinitionPageEntry({required this.definition});
-  
+
 
  final  EntryDefinition definition;
 
@@ -213,23 +214,25 @@ $DefinitionPageEntryCopyWith<DefinitionPageEntry> get copyWith => _$DefinitionPa
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PageEntry.definition'))
     ..add(DiagnosticsProperty('definition', definition));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DefinitionPageEntry&&(identical(other.definition, definition) || other.definition == definition));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DefinitionPageEntry&&(identical(other.definition, definition) || other.definition == definition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,definition);
+int get hashCode {
+    return Object.hash(runtimeType,definition);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PageEntry.definition(definition: $definition)';
+    return 'PageEntry.definition(definition: $definition)';
 }
 
 
@@ -269,7 +272,7 @@ as EntryDefinition,
 @override
 @pragma('vm:prefer-inline')
 $EntryDefinitionCopyWith<$Res> get definition {
-  
+
   return $EntryDefinitionCopyWith<$Res>(_self.definition, (value) {
     return _then(_self.copyWith(definition: value));
   });
@@ -280,8 +283,8 @@ $EntryDefinitionCopyWith<$Res> get definition {
 
 
 class ReferencePageEntry with DiagnosticableTreeMixin implements PageEntry {
-  const ReferencePageEntry({required this.id, required this.name, required this.elementDefinition, required this.pageId, final  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),assert(pageId != "", 'Page ID must not be empty.'),_metadata = metadata;
-  
+  const ReferencePageEntry({required this.id, required this.name, required this.elementDefinition, required this.pageId,  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),assert(pageId != "", 'Page ID must not be empty.'),_metadata = metadata;
+
 
  final  String id;
  final  String name;
@@ -304,23 +307,25 @@ $ReferencePageEntryCopyWith<ReferencePageEntry> get copyWith => _$ReferencePageE
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PageEntry.reference'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('elementDefinition', elementDefinition))..add(DiagnosticsProperty('pageId', pageId))..add(DiagnosticsProperty('metadata', metadata));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReferencePageEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.pageId, pageId) || other.pageId == pageId)&&const DeepCollectionEquality().equals(other._metadata, _metadata));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReferencePageEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.pageId, pageId) || other.pageId == pageId)&&const DeepCollectionEquality().equals(other.metadata, _metadata));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,elementDefinition,pageId,const DeepCollectionEquality().hash(_metadata));
+int get hashCode {
+    return Object.hash(runtimeType,id,name,elementDefinition,pageId,const DeepCollectionEquality().hash(_metadata));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PageEntry.reference(id: $id, name: $name, elementDefinition: $elementDefinition, pageId: $pageId, metadata: $metadata)';
+    return 'PageEntry.reference(id: $id, name: $name, elementDefinition: $elementDefinition, pageId: $pageId, metadata: $metadata)';
 }
 
 
@@ -364,7 +369,7 @@ as List<EntryMetadata>,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-  
+
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });
@@ -376,7 +381,7 @@ $ElementDefinitionCopyWith<$Res> get elementDefinition {
 
 class NonexistentPageEntry with DiagnosticableTreeMixin implements PageEntry {
   const NonexistentPageEntry({required this.id}): assert(id != "", 'ID must not be empty.');
-  
+
 
  final  String id;
 
@@ -389,23 +394,25 @@ $NonexistentPageEntryCopyWith<NonexistentPageEntry> get copyWith => _$Nonexisten
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PageEntry.nonexistent'))
     ..add(DiagnosticsProperty('id', id));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NonexistentPageEntry&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NonexistentPageEntry&&(identical(other.id, id) || other.id == id));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+    return Object.hash(runtimeType,id);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PageEntry.nonexistent(id: $id)';
+    return 'PageEntry.nonexistent(id: $id)';
 }
 
 
@@ -447,8 +454,8 @@ as String,
 
 
 class MissingElementDefinitionPageEntry with DiagnosticableTreeMixin implements PageEntry {
-  const MissingElementDefinitionPageEntry({required this.id, required this.name, required this.placement, required final  List<ElementLink> inwardLinks, required final  List<ElementLink> outwardLinks, final  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),_inwardLinks = inwardLinks,_outwardLinks = outwardLinks,_metadata = metadata;
-  
+  const MissingElementDefinitionPageEntry({required this.id, required this.name, required this.placement, required  List<ElementLink> inwardLinks, required  List<ElementLink> outwardLinks,  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),_inwardLinks = inwardLinks,_outwardLinks = outwardLinks,_metadata = metadata;
+
 
  final  String id;
  final  String name;
@@ -484,23 +491,25 @@ $MissingElementDefinitionPageEntryCopyWith<MissingElementDefinitionPageEntry> ge
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PageEntry.missingElementDefinition'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('placement', placement))..add(DiagnosticsProperty('inwardLinks', inwardLinks))..add(DiagnosticsProperty('outwardLinks', outwardLinks))..add(DiagnosticsProperty('metadata', metadata));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MissingElementDefinitionPageEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.placement, placement) || other.placement == placement)&&const DeepCollectionEquality().equals(other._inwardLinks, _inwardLinks)&&const DeepCollectionEquality().equals(other._outwardLinks, _outwardLinks)&&const DeepCollectionEquality().equals(other._metadata, _metadata));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MissingElementDefinitionPageEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.placement, placement) || other.placement == placement)&&const DeepCollectionEquality().equals(other.inwardLinks, _inwardLinks)&&const DeepCollectionEquality().equals(other.outwardLinks, _outwardLinks)&&const DeepCollectionEquality().equals(other.metadata, _metadata));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,placement,const DeepCollectionEquality().hash(_inwardLinks),const DeepCollectionEquality().hash(_outwardLinks),const DeepCollectionEquality().hash(_metadata));
+int get hashCode {
+    return Object.hash(runtimeType,id,name,placement,const DeepCollectionEquality().hash(_inwardLinks),const DeepCollectionEquality().hash(_outwardLinks),const DeepCollectionEquality().hash(_metadata));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PageEntry.missingElementDefinition(id: $id, name: $name, placement: $placement, inwardLinks: $inwardLinks, outwardLinks: $outwardLinks, metadata: $metadata)';
+    return 'PageEntry.missingElementDefinition(id: $id, name: $name, placement: $placement, inwardLinks: $inwardLinks, outwardLinks: $outwardLinks, metadata: $metadata)';
 }
 
 
@@ -545,7 +554,7 @@ as List<EntryMetadata>,
 @override
 @pragma('vm:prefer-inline')
 $EntryPlacementCopyWith<$Res> get placement {
-  
+
   return $EntryPlacementCopyWith<$Res>(_self.placement, (value) {
     return _then(_self.copyWith(placement: value));
   });
@@ -565,23 +574,29 @@ $EntryDefinitionCopyWith<EntryDefinition> get copyWith => _$EntryDefinitionCopyW
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as EntryDefinition;
   properties
     ..add(DiagnosticsProperty('type', 'EntryDefinition'))
-    ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('elementDefinition', elementDefinition))..add(DiagnosticsProperty('placement', placement))..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('inwardEdges', inwardEdges))..add(DiagnosticsProperty('outwardEdges', outwardEdges))..add(DiagnosticsProperty('metadata', metadata));
+    ..add(DiagnosticsProperty('id', _this.id))..add(DiagnosticsProperty('name', _this.name))..add(DiagnosticsProperty('elementDefinition', _this.elementDefinition))..add(DiagnosticsProperty('placement', _this.placement))..add(DiagnosticsProperty('data', _this.data))..add(DiagnosticsProperty('inwardEdges', _this.inwardEdges))..add(DiagnosticsProperty('outwardEdges', _this.outwardEdges))..add(DiagnosticsProperty('metadata', _this.metadata));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other.inwardEdges, inwardEdges)&&const DeepCollectionEquality().equals(other.outwardEdges, outwardEdges)&&const DeepCollectionEquality().equals(other.metadata, metadata));
+  final _this = this as EntryDefinition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryDefinition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.elementDefinition, _this.elementDefinition) || other.elementDefinition == _this.elementDefinition)&&(identical(other.placement, _this.placement) || other.placement == _this.placement)&&(identical(other.data, _this.data) || other.data == _this.data)&&const DeepCollectionEquality().equals(other.inwardEdges, _this.inwardEdges)&&const DeepCollectionEquality().equals(other.outwardEdges, _this.outwardEdges)&&const DeepCollectionEquality().equals(other.metadata, _this.metadata));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,elementDefinition,placement,data,const DeepCollectionEquality().hash(inwardEdges),const DeepCollectionEquality().hash(outwardEdges),const DeepCollectionEquality().hash(metadata));
+int get hashCode {
+  final _this = this as EntryDefinition;
+  return Object.hash(runtimeType,_this.id,_this.name,_this.elementDefinition,_this.placement,_this.data,const DeepCollectionEquality().hash(_this.inwardEdges),const DeepCollectionEquality().hash(_this.outwardEdges),const DeepCollectionEquality().hash(_this.metadata));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EntryDefinition(id: $id, name: $name, elementDefinition: $elementDefinition, placement: $placement, data: $data, inwardEdges: $inwardEdges, outwardEdges: $outwardEdges, metadata: $metadata)';
+  final _this = this as EntryDefinition;
+  return 'EntryDefinition(id: ${_this.id}, name: ${_this.name}, elementDefinition: ${_this.elementDefinition}, placement: ${_this.placement}, data: ${_this.data}, inwardEdges: ${_this.inwardEdges}, outwardEdges: ${_this.outwardEdges}, metadata: ${_this.metadata})';
 }
 
 
@@ -610,7 +625,7 @@ class _$EntryDefinitionCopyWithImpl<$Res>
 /// Create a copy of EntryDefinition
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? elementDefinition = null,Object? placement = null,Object? data = null,Object? inwardEdges = null,Object? outwardEdges = null,Object? metadata = null,}) {
-  return _then(_self.copyWith(
+  return _then(EntryDefinition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,elementDefinition: null == elementDefinition ? _self.elementDefinition : elementDefinition // ignore: cast_nullable_to_non_nullable
@@ -627,7 +642,7 @@ as List<EntryMetadata>,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-  
+
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });
@@ -636,7 +651,7 @@ $ElementDefinitionCopyWith<$Res> get elementDefinition {
 @override
 @pragma('vm:prefer-inline')
 $EntryPlacementCopyWith<$Res> get placement {
-  
+
   return $EntryPlacementCopyWith<$Res>(_self.placement, (value) {
     return _then(_self.copyWith(placement: value));
   });
@@ -778,8 +793,8 @@ return $default(_that.id,_that.name,_that.elementDefinition,_that.placement,_tha
 
 
 class _EntryDefinition with DiagnosticableTreeMixin implements EntryDefinition {
-  const _EntryDefinition({required this.id, required this.name, required this.elementDefinition, required this.placement, required this.data, required final  List<ElementLink> inwardEdges, required final  List<ElementLink> outwardEdges, final  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),_inwardEdges = inwardEdges,_outwardEdges = outwardEdges,_metadata = metadata;
-  
+  const _EntryDefinition({required this.id, required this.name, required this.elementDefinition, required this.placement, required this.data, required  List<ElementLink> inwardEdges, required  List<ElementLink> outwardEdges,  List<EntryMetadata> metadata = const []}): assert(id != "", 'ID must not be empty.'),_inwardEdges = inwardEdges,_outwardEdges = outwardEdges,_metadata = metadata;
+
 
 @override final  String id;
 @override final  String name;
@@ -817,23 +832,25 @@ _$EntryDefinitionCopyWith<_EntryDefinition> get copyWith => __$EntryDefinitionCo
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'EntryDefinition'))
     ..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('elementDefinition', elementDefinition))..add(DiagnosticsProperty('placement', placement))..add(DiagnosticsProperty('data', data))..add(DiagnosticsProperty('inwardEdges', inwardEdges))..add(DiagnosticsProperty('outwardEdges', outwardEdges))..add(DiagnosticsProperty('metadata', metadata));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntryDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other._inwardEdges, _inwardEdges)&&const DeepCollectionEquality().equals(other._outwardEdges, _outwardEdges)&&const DeepCollectionEquality().equals(other._metadata, _metadata));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntryDefinition&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.elementDefinition, elementDefinition) || other.elementDefinition == elementDefinition)&&(identical(other.placement, placement) || other.placement == placement)&&(identical(other.data, data) || other.data == data)&&const DeepCollectionEquality().equals(other.inwardEdges, _inwardEdges)&&const DeepCollectionEquality().equals(other.outwardEdges, _outwardEdges)&&const DeepCollectionEquality().equals(other.metadata, _metadata));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,elementDefinition,placement,data,const DeepCollectionEquality().hash(_inwardEdges),const DeepCollectionEquality().hash(_outwardEdges),const DeepCollectionEquality().hash(_metadata));
+int get hashCode {
+    return Object.hash(runtimeType,id,name,elementDefinition,placement,data,const DeepCollectionEquality().hash(_inwardEdges),const DeepCollectionEquality().hash(_outwardEdges),const DeepCollectionEquality().hash(_metadata));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EntryDefinition(id: $id, name: $name, elementDefinition: $elementDefinition, placement: $placement, data: $data, inwardEdges: $inwardEdges, outwardEdges: $outwardEdges, metadata: $metadata)';
+    return 'EntryDefinition(id: $id, name: $name, elementDefinition: $elementDefinition, placement: $placement, data: $data, inwardEdges: $inwardEdges, outwardEdges: $outwardEdges, metadata: $metadata)';
 }
 
 
@@ -880,7 +897,7 @@ as List<EntryMetadata>,
 @override
 @pragma('vm:prefer-inline')
 $ElementDefinitionCopyWith<$Res> get elementDefinition {
-  
+
   return $ElementDefinitionCopyWith<$Res>(_self.elementDefinition, (value) {
     return _then(_self.copyWith(elementDefinition: value));
   });
@@ -889,7 +906,7 @@ $ElementDefinitionCopyWith<$Res> get elementDefinition {
 @override
 @pragma('vm:prefer-inline')
 $EntryPlacementCopyWith<$Res> get placement {
-  
+
   return $EntryPlacementCopyWith<$Res>(_self.placement, (value) {
     return _then(_self.copyWith(placement: value));
   });
@@ -900,7 +917,7 @@ $EntryPlacementCopyWith<$Res> get placement {
 /// @nodoc
 mixin _$EntryPlacement implements DiagnosticableTreeMixin {
 
- int get x; int get y; int get width; int get height;
+ int get x; int get y; int get width; int get height; EntryPlacementKind get kind;
 /// Create a copy of EntryPlacement
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -912,23 +929,29 @@ $EntryPlacementCopyWith<EntryPlacement> get copyWith => _$EntryPlacementCopyWith
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as EntryPlacement;
   properties
     ..add(DiagnosticsProperty('type', 'EntryPlacement'))
-    ..add(DiagnosticsProperty('x', x))..add(DiagnosticsProperty('y', y))..add(DiagnosticsProperty('width', width))..add(DiagnosticsProperty('height', height));
+    ..add(DiagnosticsProperty('x', _this.x))..add(DiagnosticsProperty('y', _this.y))..add(DiagnosticsProperty('width', _this.width))..add(DiagnosticsProperty('height', _this.height))..add(DiagnosticsProperty('kind', _this.kind));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryPlacement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+  final _this = this as EntryPlacement;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryPlacement&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.height, _this.height) || other.height == _this.height)&&(identical(other.kind, _this.kind) || other.kind == _this.kind));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,x,y,width,height);
+int get hashCode {
+  final _this = this as EntryPlacement;
+  return Object.hash(runtimeType,_this.x,_this.y,_this.width,_this.height,_this.kind);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EntryPlacement(x: $x, y: $y, width: $width, height: $height)';
+  final _this = this as EntryPlacement;
+  return 'EntryPlacement(x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, height: ${_this.height}, kind: ${_this.kind})';
 }
 
 
@@ -939,7 +962,7 @@ abstract mixin class $EntryPlacementCopyWith<$Res>  {
   factory $EntryPlacementCopyWith(EntryPlacement value, $Res Function(EntryPlacement) _then) = _$EntryPlacementCopyWithImpl;
 @useResult
 $Res call({
- int x, int y, int width, int height
+ int x, int y, int width, int height, EntryPlacementKind kind
 });
 
 
@@ -956,13 +979,14 @@ class _$EntryPlacementCopyWithImpl<$Res>
 
 /// Create a copy of EntryPlacement
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? x = null,Object? y = null,Object? width = null,Object? height = null,}) {
-  return _then(_self.copyWith(
+@pragma('vm:prefer-inline') @override $Res call({Object? x = null,Object? y = null,Object? width = null,Object? height = null,Object? kind = null,}) {
+  return _then(EntryPlacement(
 x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
 as int,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
 as int,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as int,
+as int,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as EntryPlacementKind,
   ));
 }
 
@@ -1047,10 +1071,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int x,  int y,  int width,  int height)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int x,  int y,  int width,  int height,  EntryPlacementKind kind)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EntryPlacement() when $default != null:
-return $default(_that.x,_that.y,_that.width,_that.height);case _:
+return $default(_that.x,_that.y,_that.width,_that.height,_that.kind);case _:
   return orElse();
 
 }
@@ -1068,10 +1092,10 @@ return $default(_that.x,_that.y,_that.width,_that.height);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int x,  int y,  int width,  int height)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int x,  int y,  int width,  int height,  EntryPlacementKind kind)  $default,) {final _that = this;
 switch (_that) {
 case _EntryPlacement():
-return $default(_that.x,_that.y,_that.width,_that.height);case _:
+return $default(_that.x,_that.y,_that.width,_that.height,_that.kind);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1088,10 +1112,10 @@ return $default(_that.x,_that.y,_that.width,_that.height);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int x,  int y,  int width,  int height)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int x,  int y,  int width,  int height,  EntryPlacementKind kind)?  $default,) {final _that = this;
 switch (_that) {
 case _EntryPlacement() when $default != null:
-return $default(_that.x,_that.y,_that.width,_that.height);case _:
+return $default(_that.x,_that.y,_that.width,_that.height,_that.kind);case _:
   return null;
 
 }
@@ -1103,13 +1127,14 @@ return $default(_that.x,_that.y,_that.width,_that.height);case _:
 @JsonSerializable()
 
 class _EntryPlacement with DiagnosticableTreeMixin implements EntryPlacement {
-  const _EntryPlacement({required this.x, required this.y, required this.width, required this.height}): assert(width >= 0, 'Width must not be negative.'),assert(height >= 0, 'Height must not be negative.');
+  const _EntryPlacement({required this.x, required this.y, required this.width, required this.height, this.kind = EntryPlacementKind.graph}): assert(width >= 0, 'Width must not be negative.'),assert(height >= 0, 'Height must not be negative.');
   factory _EntryPlacement.fromJson(Map<String, dynamic> json) => _$EntryPlacementFromJson(json);
 
 @override final  int x;
 @override final  int y;
 @override final  int width;
 @override final  int height;
+@override@JsonKey() final  EntryPlacementKind kind;
 
 /// Create a copy of EntryPlacement
 /// with the given fields replaced by the non-null parameter values.
@@ -1123,23 +1148,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'EntryPlacement'))
-    ..add(DiagnosticsProperty('x', x))..add(DiagnosticsProperty('y', y))..add(DiagnosticsProperty('width', width))..add(DiagnosticsProperty('height', height));
+    ..add(DiagnosticsProperty('x', x))..add(DiagnosticsProperty('y', y))..add(DiagnosticsProperty('width', width))..add(DiagnosticsProperty('height', height))..add(DiagnosticsProperty('kind', kind));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntryPlacement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EntryPlacement&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.kind, kind) || other.kind == kind));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,x,y,width,height);
+int get hashCode {
+    return Object.hash(runtimeType,x,y,width,height,kind);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EntryPlacement(x: $x, y: $y, width: $width, height: $height)';
+    return 'EntryPlacement(x: $x, y: $y, width: $width, height: $height, kind: $kind)';
 }
 
 
@@ -1150,7 +1177,7 @@ abstract mixin class _$EntryPlacementCopyWith<$Res> implements $EntryPlacementCo
   factory _$EntryPlacementCopyWith(_EntryPlacement value, $Res Function(_EntryPlacement) _then) = __$EntryPlacementCopyWithImpl;
 @override @useResult
 $Res call({
- int x, int y, int width, int height
+ int x, int y, int width, int height, EntryPlacementKind kind
 });
 
 
@@ -1167,13 +1194,14 @@ class __$EntryPlacementCopyWithImpl<$Res>
 
 /// Create a copy of EntryPlacement
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? x = null,Object? y = null,Object? width = null,Object? height = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? x = null,Object? y = null,Object? width = null,Object? height = null,Object? kind = null,}) {
   return _then(_EntryPlacement(
 x: null == x ? _self.x : x // ignore: cast_nullable_to_non_nullable
 as int,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
 as int,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as int,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as int,
+as int,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as EntryPlacementKind,
   ));
 }
 
@@ -1203,23 +1231,29 @@ $EntryMetadataCopyWith<EntryMetadata> get copyWith => _$EntryMetadataCopyWithImp
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as EntryMetadata;
   properties
     ..add(DiagnosticsProperty('type', 'EntryMetadata'))
-    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('data', data));
+    ..add(DiagnosticsProperty('name', _this.name))..add(DiagnosticsProperty('data', _this.data));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryMetadata&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.data, data));
+  final _this = this as EntryMetadata;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EntryMetadata&&(identical(other.name, _this.name) || other.name == _this.name)&&const DeepCollectionEquality().equals(other.data, _this.data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(data));
+int get hashCode {
+  final _this = this as EntryMetadata;
+  return Object.hash(runtimeType,_this.name,const DeepCollectionEquality().hash(_this.data));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EntryMetadata(name: $name, data: $data)';
+  final _this = this as EntryMetadata;
+  return 'EntryMetadata(name: ${_this.name}, data: ${_this.data})';
 }
 
 
@@ -1248,7 +1282,7 @@ class _$EntryMetadataCopyWithImpl<$Res>
 /// Create a copy of EntryMetadata
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? data = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(EntryMetadata.custom(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as dynamic,
@@ -1410,23 +1444,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'EntryMetadata.custom'))
     ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('data', data));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomEntryMetadata&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.data, data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomEntryMetadata&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.data, data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(data));
+int get hashCode {
+    return Object.hash(runtimeType,name,const DeepCollectionEquality().hash(data));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EntryMetadata.custom(name: $name, data: $data)';
+    return 'EntryMetadata.custom(name: $name, data: $data)';
 }
 
 

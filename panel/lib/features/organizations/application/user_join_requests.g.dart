@@ -33,14 +33,14 @@ final class UserJoinRequestsProvider
   UserJoinRequests create() => UserJoinRequests();
 }
 
-String _$userJoinRequestsHash() => r'cf9ff9a1be76b812208f496d9f8bb81f942cc5d3';
+String _$userJoinRequestsHash() => r'a9e2c1462e3a698b5fc57916f94f18ac31a9e3b2';
 
 abstract class _$UserJoinRequests
     extends $StreamNotifier<List<UserJoinRequest>> {
   Stream<List<UserJoinRequest>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<List<UserJoinRequest>>, List<UserJoinRequest>>;
@@ -55,6 +55,6 @@ abstract class _$UserJoinRequests
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

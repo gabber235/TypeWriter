@@ -46,6 +46,7 @@ final class SkirConversionCodec {
       wire.ConversionSafety.lossy => ConversionSafety.lossy,
       _ => null,
     };
+
     final fallible = switch (value.fallibility) {
       wire.ConversionFallibility.infallible => false,
       wire.ConversionFallibility.fallible => true,

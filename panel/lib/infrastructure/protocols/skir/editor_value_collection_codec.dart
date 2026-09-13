@@ -16,6 +16,7 @@ final class SkirDataValueCollectionCodec {
   TypeResult<wire.TypedValue> encodeMap(List<DataMapEntry> entries) {
     final values = <wire.TypedMapEntry>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final entry in entries) {
       final key = codec.encode(entry.key);
       final item = codec.encode(entry.value);
@@ -26,13 +27,16 @@ final class SkirDataValueCollectionCodec {
         }
       }
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+
     return TypeResult.success(wire.TypedValue.createMap(entries: values));
   }
 
   TypeResult<wire.TypedValue> encodeRecord(Map<String, DataValue> fields) {
     final values = <wire.TypedRecordField>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final entry in fields.entries) {
       if (entry.key.isEmpty) {
         diagnostics.add(wireDiagnostic("Record field name is empty"));
@@ -44,7 +48,9 @@ final class SkirDataValueCollectionCodec {
         values.add(wire.TypedRecordField(name: entry.key, value: encoded));
       }
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+
     return TypeResult.success(wire.TypedValue.createRecord(fields: values));
   }
 
@@ -54,6 +60,7 @@ final class SkirDataValueCollectionCodec {
   TypeResult<DataValue> decodeMap(Iterable<wire.TypedMapEntry> entries) {
     final values = <DataMapEntry>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final entry in entries) {
       final key = codec.decode(entry.key);
       final item = codec.decode(entry.value);
@@ -64,13 +71,16 @@ final class SkirDataValueCollectionCodec {
         }
       }
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+
     return TypeResult.success(MapValue(values));
   }
 
   TypeResult<DataValue> decodeRecord(Iterable<wire.TypedRecordField> fields) {
     final values = <String, DataValue>{};
     final diagnostics = <TypeDiagnostic>[];
+
     for (final field in fields) {
       if (field.name.isEmpty || values.containsKey(field.name)) {
         diagnostics.add(
@@ -82,18 +92,22 @@ final class SkirDataValueCollectionCodec {
       diagnostics.addAll(result.diagnostics);
       if (result.valueOrNull case final decoded?) values[field.name] = decoded;
     }
+
     if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+
     return TypeResult.success(RecordValue(values));
   }
 
   TypeResult<List<wire.TypedValue>> _encodeMany(Iterable<DataValue> values) {
     final encoded = <wire.TypedValue>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final value in values) {
       final result = codec.encode(value);
       diagnostics.addAll(result.diagnostics);
       if (result.valueOrNull case final item?) encoded.add(item);
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(encoded)
         : TypeResult.failure(diagnostics);
@@ -102,11 +116,13 @@ final class SkirDataValueCollectionCodec {
   TypeResult<List<DataValue>> _decodeMany(Iterable<wire.TypedValue> values) {
     final decoded = <DataValue>[];
     final diagnostics = <TypeDiagnostic>[];
+
     for (final value in values) {
       final result = codec.decode(value);
       diagnostics.addAll(result.diagnostics);
       if (result.valueOrNull case final item?) decoded.add(item);
     }
+
     return diagnostics.isEmpty
         ? TypeResult.success(decoded)
         : TypeResult.failure(diagnostics);

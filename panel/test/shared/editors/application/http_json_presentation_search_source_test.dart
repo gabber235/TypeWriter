@@ -44,6 +44,7 @@ void main() {
     expect(captured.url.queryParameters["query"], "account");
     expect(captured.url.queryParameters.containsKey("empty"), isFalse);
     expect(captured.headers["Accept"], "application/json");
+
     expect(captured.headers.containsKey("Authorization"), isFalse);
     expect(captured.headers.containsKey("Cookie"), isFalse);
   });

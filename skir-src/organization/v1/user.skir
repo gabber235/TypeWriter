@@ -5,18 +5,22 @@ import {
 import { RecordId } from "kernel/v1/record_id.skir";
 import {
   AutoAcceptedMember,
+  UserJoinRequestsChanged,
+  UserJoinRequestsSnapshot,
   UserJoinRequest,
 } from "organization/v1/join_request.skir";
-import { Organization } from "organization/v1/organization.skir";
+import {
+  UserOrganizationsChanged,
+  UserOrganizationsSnapshot,
+} from "organization/v1/organization.skir";
 
 method WatchUserOrganizations(
   struct {}
 ): enum {
   internal_error: InternalError;
 
-  list: [Organization];
-  add: Organization;
-  remove: RecordId;
+  snapshot: UserOrganizationsSnapshot;
+  changed: UserOrganizationsChanged;
 } = 246975;
 
 // All pending join requests made by the user.
@@ -25,20 +29,28 @@ method WatchUserJoinRequests(
 ): enum {
   internal_error: InternalError;
 
-  list: [UserJoinRequest];
-  add: UserJoinRequest;
-  remove: RecordId;
+  snapshot: UserJoinRequestsSnapshot;
+  changed: UserJoinRequestsChanged;
 } = 939197;
 
 method SubmitUserJoinRequest(
   struct {
+    operation_id: string;
     code: RecordId;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  request_made: UserJoinRequest;
-  auto_accepted: AutoAcceptedMember;
+  request_made: struct {
+    request: UserJoinRequest;
+    event: UserJoinRequestsChanged;
+  };
+  auto_accepted: struct {
+    member: AutoAcceptedMember;
+    event: UserOrganizationsChanged;
+  };
 
   code_not_found_error: struct {
     code: RecordId;
@@ -53,12 +65,17 @@ method SubmitUserJoinRequest(
 
 method CancelUserJoinRequest(
   struct {
+    operation_id: string;
     request_id: RecordId;
   }
 ): enum {
+  invalid_operation_id_error: struct {};
+  operation_identity_reused_error: struct {};
   internal_error: InternalError;
 
-  success: struct {};
+  success: struct {
+    event: UserJoinRequestsChanged;
+  };
 
   request_not_found_error: struct {
     request_id: RecordId;

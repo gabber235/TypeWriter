@@ -49,12 +49,21 @@ class MembersTab extends HookConsumerWidget {
           confirmText: "Remove",
           confirmIcon: Fa6Solid.user_minus,
           onConfirm: () async {
+            final members = ref.read(organizationMembersProvider.notifier);
+            final succeeded = <skir.RecordId>{};
             for (final id in idsToRemove) {
-              await ref
-                  .read(organizationMembersProvider.notifier)
-                  .removeMember(id);
+              try {
+                await members.removeMember(id);
+                succeeded.add(id);
+              } on ApiException catch (error) {
+                if (context.mounted) showErrorSnackBar(context, error.message);
+              } on SubmissionException {
+                continue;
+              }
             }
-            selectedIds.value = {};
+            if (context.mounted) {
+              selectedIds.value = selectedIds.value.difference(succeeded);
+            }
           },
         );
       } finally {
@@ -87,7 +96,9 @@ class MembersTab extends HookConsumerWidget {
                             selectedCount: selectedIds.value.length,
                             selectedIds: selectedIds.value,
                             onRemove: removeSelection,
-                            onClearSelection: () => selectedIds.value = {},
+                            onUnselect: (ids) => selectedIds.value = selectedIds
+                                .value
+                                .difference(ids),
                           ),
                   ),
                 ),

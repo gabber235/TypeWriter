@@ -1,0 +1,59 @@
+import "package:typewriter_panel/typewriter_panel.dart";
+
+/// Successful feedback remains visible briefly; unresolved work never expires.
+const savedFeedbackDuration = Duration(seconds: 5);
+
+enum MutationActivityPhase {
+  idle,
+  pending,
+  saving,
+  savingWithAttention,
+  needsAttention,
+  needsInput,
+  drafts,
+  saved;
+
+  bool get isSaving => this == saving || this == savingWithAttention;
+
+  static MutationActivityPhase resolve(
+    Iterable<LocalWorkSubmissionState> submissions,
+    Iterable<LocalWorkResourceState> drafts,
+  ) {
+    final phases = drafts.map((entry) => entry.savePhase).toSet();
+    final saving =
+        submissions.any((entry) => entry.sending) ||
+        phases.contains(EditorSavePhase.saving);
+    final attention =
+        submissions.any(
+          (entry) =>
+              !entry.sending &&
+              entry.result != LocalWorkSubmissionResult.ready &&
+              (entry.result != LocalWorkSubmissionResult.confirmed ||
+                  entry.integrationFailed),
+        ) ||
+        phases.any(
+          {
+            EditorSavePhase.failed,
+            EditorSavePhase.conflict,
+            EditorSavePhase.uncertain,
+            EditorSavePhase.repeatedContention,
+            EditorSavePhase.deletedElsewhere,
+          }.contains,
+        );
+    if (attention) return saving ? savingWithAttention : needsAttention;
+
+    if (saving) return MutationActivityPhase.saving;
+    if (drafts.any((entry) => entry.hasDiagnostics)) {
+      return needsInput;
+    }
+
+    if (drafts.isNotEmpty) return MutationActivityPhase.drafts;
+
+    if (submissions.any(
+      (entry) => entry.result == LocalWorkSubmissionResult.ready,
+    )) {
+      return pending;
+    }
+    return submissions.isEmpty ? idle : saved;
+  }
+}

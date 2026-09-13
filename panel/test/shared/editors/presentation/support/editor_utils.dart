@@ -7,11 +7,12 @@ import "../../../../support/test_utils.dart";
 final class TestEditorSource extends ChangeNotifier implements EditorSource {
   TestEditorSource({
     required this.rootType,
-    required DataValue value,
+    required this._value,
     this.registry,
     this.rootPresentation,
-  }) : _value = value;
+  });
 
+  @override
   final TypeExpression rootType;
 
   final TypeRegistry? registry;
@@ -20,10 +21,9 @@ final class TestEditorSource extends ChangeNotifier implements EditorSource {
   DataValue _value;
   late EditorDocument _document = EditorDocument(
     rootType: rootType,
-    typeCatalog: const TypeCatalog([]),
+    typeCatalog: typeCatalog,
     confirmedValue: _value,
     revision: 0,
-    rootPresentation: rootPresentation,
   );
 
   DataValue get rootValue => _value;
@@ -34,13 +34,39 @@ final class TestEditorSource extends ChangeNotifier implements EditorSource {
   DataPath? lastUpdatedPath;
 
   @override
+  TypeCatalog get typeCatalog => registry?.catalog ?? const TypeCatalog([]);
+
+  @override
+  bool get readOnly => document.readOnly;
+
+  @override
   EditorDocument get document => _document;
+
+  @override
+  EditorCommitPolicy get commitPolicy => EditorCommitPolicy.autosaveChanges;
+
+  @override
+  bool get hasWork => false;
+
+  @override
+  List<TypeDiagnostic> get draftDiagnostics => const [];
+
+  @override
+  void discardDraft() {}
 
   @override
   EditorValue value(DataPath path) => _value.readEditorValue(path);
 
   @override
-  EditorMutationResult update(DataPath path, DataValue value) {
+  EditorMutationResult validate(DataPath path, DataValue value) =>
+      EditorMutationResult.applied(value);
+
+  @override
+  EditorMutationResult update(
+    DataPath path,
+    DataValue value, {
+    EditorStructuralMutation? structuralMutation,
+  }) {
     lastUpdatedPath = path;
     final validation = rootType.validateEditorMutation(
       path,
@@ -53,6 +79,7 @@ final class TestEditorSource extends ChangeNotifier implements EditorSource {
       return EditorMutationResult.invalid(diagnostics);
     }
     _value = replaced.valueOrNull!;
+
     notifyListeners();
     return validation;
   }
@@ -78,22 +105,6 @@ final class TestEditorSource extends ChangeNotifier implements EditorSource {
       TypedMutationResult.success(revision: 0, value: _value);
 
   @override
-  Future<TypedMutationResult> executeAction(
-    EditorAction action,
-    ExpressionContext context,
-    Map<BindingId, BindingReference> aliases,
-  ) async => switch (action) {
-    LocalEditorAction() =>
-      action.canonicalizedWith(aliases).execute(context, registry: registry),
-    RealmEditorAction() => TypedMutationResult.unavailable([
-      const TypeDiagnostic(
-        code: TypeDiagnosticCode.invalidValue,
-        message: "Realm actions are unavailable in tests",
-      ),
-    ]),
-  };
-
-  @override
   void acceptRemote({required int revision, required DataValue value}) {}
 
   @override
@@ -110,17 +121,19 @@ final class _TestInteraction implements EditorInteractionSession {
   _TestInteraction(this.source, this.path, this.origin);
 
   final TestEditorSource source;
+
   @override
   final DataPath path;
   final DataValue? origin;
+
   @override
   bool active = true;
 
   @override
-  Future<TypedMutationResult> commit() async {
+  Future<void> commit() async {
     if (active) source.commitCount++;
     active = false;
-    return source.flush(paths: {path});
+    await source.flush(paths: {path});
   }
 
   @override
@@ -148,20 +161,20 @@ extension TypedEditorTesterExtension on WidgetTester {
       rootPresentation: presentation,
     );
     await pumpTestApp(
-      child: EditorRoot(
-        create: (_) => source,
-        child: Material(
-          child: SizedBox(
-            width: 500,
-            child: TypedEditor(
-              path: path,
-              registry: registry,
-              readOnly: readOnly,
-            ),
+      child: Material(
+        child: SizedBox(
+          width: 500,
+          child: EditorSurface(
+            source: source,
+            presentation: presentation,
+            path: path,
+            registry: registry,
+            readOnly: readOnly,
           ),
         ),
       ),
     );
+    addTearDown(source.dispose);
     return source;
   }
 }

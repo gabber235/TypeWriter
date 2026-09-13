@@ -39,6 +39,7 @@ void main() {
       registry.resolveExact(standardTypeRefs.svgIcon).diagnostics,
       isEmpty,
     );
+
     expect(
       registry.resolveExact(standardTypeRefs.icon).valueOrNull!.kind,
       NominalTypeKind.sealedAbstract,
@@ -68,6 +69,7 @@ void main() {
       registry.definition(standardTypeRefs.iconifyIcon)!.defaultPresentationId,
       standardIconifyPresentationId,
     );
+
     expect(
       registry.definition(standardTypeRefs.svgIcon)!.defaultPresentationId,
       standardSvgIconPresentationId,

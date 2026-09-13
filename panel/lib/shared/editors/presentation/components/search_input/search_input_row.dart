@@ -138,62 +138,73 @@ class _SearchInputSummary extends HookWidget {
   });
 
   final SearchInputElement element;
-  final ResolvedBinding binding;
+  final InspectedBinding binding;
   final PresentationRenderScope scope;
   final InputFieldController inputController;
   final VoidCallback onStartEditing;
 
   @override
   Widget build(BuildContext context) {
+    final current = binding.value.valueOrNull;
     final presentation = element.summary;
-    final summaryScope = scope.withVirtualBinding(
-      VirtualBindingHost(
-        id: element.summaryBindingId,
-        snapshot: BindingSnapshot(
-          type: binding.type,
-          value: binding.value,
-          revision: binding.revision,
-          writable: false,
-        ),
-        onChanged: (_) {},
-      ),
-    );
-    final summary = presentation == null
-        ? Text(binding.value.expressionDisplayText)
-        : PresentationNodeRenderer(node: presentation, scope: summaryScope);
-
-    return InputFieldContainer(
-      controller: inputController,
-      onInputFocus: onStartEditing,
-      child: Focus(
-        focusNode: inputController.inputFocusNode,
-        child: Semantics(
-          button: true,
-          enabled: scope.enabled && !scope.readOnly && binding.writable,
-          label: "Activate search input",
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: inputController.beginInteraction,
-              child: InputDecorator(
-                isEmpty: false,
-                isFocused: inputController.surroundingFocusNode.hasFocus,
-                decoration: const InputDecoration(
-                  isDense: true,
-                  visualDensity: .comfortable,
+    final summary = current == null
+        ? const Text("Multiple values")
+        : presentation == null
+        ? Text(current.expressionDisplayText)
+        : PresentationNodeRenderer(
+            node: presentation,
+            scope: scope.withVirtualBinding(
+              VirtualBindingHost(
+                id: element.summaryBindingId,
+                snapshot: BindingSnapshot(
+                  type: binding.type,
+                  value: current,
+                  revision: binding.revision,
+                  writable: false,
                 ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: context.spacing.space3,
+                onChanged: (_) {},
+              ),
+            ),
+          );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InputFieldContainer(
+          controller: inputController,
+          onInputFocus: onStartEditing,
+          child: Focus(
+            focusNode: inputController.inputFocusNode,
+            child: Semantics(
+              button: true,
+              enabled: scope.enabled && !scope.readOnly && binding.writable,
+              label: "Activate search input",
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: inputController.beginInteraction,
+                  child: InputDecorator(
+                    isEmpty: false,
+                    isFocused: inputController.surroundingFocusNode.hasFocus,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      visualDensity: .comfortable,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: context.spacing.space3,
+                      ),
+                      child: IgnorePointer(child: summary),
+                    ),
                   ),
-                  child: IgnorePointer(child: summary),
                 ),
               ),
             ),
           ),
         ),
-      ),
+        if (current == null) const MixedValueMessage(),
+      ],
     );
   }
 }

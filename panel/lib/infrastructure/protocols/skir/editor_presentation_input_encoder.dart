@@ -16,6 +16,7 @@ extension SkirPresentationInputEncoder on SkirPresentationEncoder {
       ...prefix.diagnostics,
       ...semanticLabel.diagnostics,
     ];
+
     return diagnostics.isEmpty
         ? TypeResult.success(
             wire.BoundControl(
@@ -86,8 +87,12 @@ extension SkirPresentationInputEncoder on SkirPresentationEncoder {
 
   TypeResult<wire.PresentationElement> _select(SelectInputElement value) {
     final control = _bound(value.control);
+    final defaultValue = _optional(value.defaultValue);
     final options = <wire.SelectOption>[];
-    final diagnostics = <TypeDiagnostic>[...control.diagnostics];
+    final diagnostics = <TypeDiagnostic>[
+      ...control.diagnostics,
+      ...defaultValue.diagnostics,
+    ];
     for (final option in value.options) {
       final label = expressions.encode(option.label);
       final item = expressions.encode(option.value);
@@ -112,6 +117,7 @@ extension SkirPresentationInputEncoder on SkirPresentationEncoder {
               control: control.valueOrNull!,
               options: options,
               allowCustomValue: value.allowCustomValue,
+              defaultValue: defaultValue.valueOrNull,
             ),
           )
         : TypeResult.failure(diagnostics);

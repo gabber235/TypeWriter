@@ -176,10 +176,9 @@ class NotificationBubble
 class NotificationBubbleRenderBox extends RenderBox
     with SlottedContainerRenderObjectMixin<NotificationSlot, RenderBox> {
   NotificationBubbleRenderBox({
-    required NotificationBubbleAnchor anchor,
-    required double overlap,
-  }) : _anchor = anchor,
-       _overlap = overlap;
+    required this._anchor,
+    required this._overlap,
+  });
 
   NotificationBubbleAnchor _anchor;
   NotificationBubbleAnchor get anchor => _anchor;

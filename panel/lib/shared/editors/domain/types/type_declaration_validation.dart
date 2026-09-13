@@ -24,11 +24,13 @@ extension TypeDefinitionValidation on TypeDefinition {
     diagnostics
       ..addAll(parameters.validateBoundCycles())
       ..addAll(representation.validateConstraints(allowedParameters));
+
     for (final parent in parents) {
       for (final argument in parent.arguments) {
         diagnostics.addAll(argument.validateConstraints(allowedParameters));
       }
     }
+
     return [
       for (final diagnostic in diagnostics) diagnostic.copyWith(type: id),
     ];
@@ -54,6 +56,7 @@ extension TypeParameterListValidation on List<TypeParameter> {
         if (visit(dependency)) return true;
       }
       active.remove(name);
+
       complete.add(name);
       return false;
     }

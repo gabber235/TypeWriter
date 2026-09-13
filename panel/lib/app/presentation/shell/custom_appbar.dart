@@ -55,8 +55,16 @@ class CustomAppBar extends HookConsumerWidget implements PreferredSizeWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       spacing: context.spacing.space2,
                       children: [
-                        ...leading,
-                        const Spacer(),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: context.spacing.space2,
+                              children: leading,
+                            ),
+                          ),
+                        ),
+                        const MutationActivityButton(),
                         if (showTrailing) trailing!,
                         if (context.isMobile)
                           IconButton(

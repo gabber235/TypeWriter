@@ -267,6 +267,523 @@ final class OrganizationMember_mutable implements OrganizationMember_orMutable {
 }
 
 // -----------------------------------------------------------------------------
+// struct OrganizationMembersSnapshot
+// -----------------------------------------------------------------------------
+
+sealed class OrganizationMembersSnapshot_orMutable {
+  _core.int get sequence;
+  _core.Iterable<OrganizationMember_orMutable> get values;
+
+  OrganizationMembersSnapshot toFrozen();
+}
+
+/// Deeply immutable.
+final class OrganizationMembersSnapshot implements OrganizationMembersSnapshot_orMutable {
+  @_core.override
+  final _core.int sequence;
+  @_core.override
+  final _core.Iterable<OrganizationMember> values;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory OrganizationMembersSnapshot({
+    required _core.int sequence,
+    required _core.Iterable<OrganizationMember_orMutable> values,
+  }) => OrganizationMembersSnapshot._(
+    sequence,
+    _skir.internal__frozenMappedCopy(values, (it) => it.toFrozen()),
+  );
+
+  OrganizationMembersSnapshot._(
+    this.sequence,
+    this.values,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = OrganizationMembersSnapshot._(
+    0,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static OrganizationMembersSnapshot_mutable mutable() => OrganizationMembersSnapshot_mutable._(
+    0,
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  OrganizationMembersSnapshot toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  OrganizationMembersSnapshot_mutable toMutable() => OrganizationMembersSnapshot_mutable._(
+    this.sequence,
+    this.values,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! OrganizationMembersSnapshot) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.sequence,
+    this.values,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `OrganizationMembersSnapshot` instances.
+  static _skir.StructSerializer<OrganizationMembersSnapshot, OrganizationMembersSnapshot_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "sequence",
+        "sequence",
+        0,
+        _skir.Serializers.int64,
+        "",
+        (it) => it.sequence,
+        (it, v) => it.sequence = v,
+      );
+      _serializerBuilder.addField(
+        "values",
+        "values",
+        1,
+        _skir.Serializers.iterable(
+          OrganizationMember.serializer,
+        ),
+        "",
+        (it) => it.values,
+        (it, v) => it.values = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/member.skir:OrganizationMembersSnapshot",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (OrganizationMembersSnapshot_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [OrganizationMembersSnapshot].
+final class OrganizationMembersSnapshot_mutable implements OrganizationMembersSnapshot_orMutable {
+  _core.int sequence;
+  _core.Iterable<OrganizationMember_orMutable> values;
+  _skir.internal__UnrecognizedFields? _u;
+
+  OrganizationMembersSnapshot_mutable._(
+    this.sequence,
+    this.values,
+  );
+
+  /// If the value of [values] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [values] and returns it.
+  _core.List<OrganizationMember_orMutable> get mutableValues {
+    final value = this.values;
+    if (value is _skir.internal__MutableList<OrganizationMember_orMutable>) {
+      return value;
+    } else {
+      return this.values = _skir.internal__MutableList([...value]);
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  OrganizationMembersSnapshot toFrozen() => OrganizationMembersSnapshot(
+    sequence: this.sequence,
+    values: this.values,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// enum OrganizationMembersChange
+// -----------------------------------------------------------------------------
+
+/// To switch on the variants:
+///   ```
+///   switch (e) {
+///     case OrganizationMembersChange_unknown(): { ... }
+///     case OrganizationMembersChange_add(:var value): { ... }
+///     case OrganizationMembersChange_update(:var value): { ... }
+///     case OrganizationMembersChange_remove(:var value): { ... }
+///   }
+///   ```
+///
+/// Deeply immutable.
+sealed class OrganizationMembersChange {
+  /// Constant indicating an unknown `OrganizationMembersChange`.
+  /// Default value for fields of type `OrganizationMembersChange`.
+  static const OrganizationMembersChange unknown = OrganizationMembersChange_unknown._instance;
+
+  /// Create a 'add' variant wrapping around the given value.
+  factory OrganizationMembersChange.wrapAdd(
+    OrganizationMember value
+  ) => OrganizationMembersChange_addWrapper._(value);
+
+  /// Same as `wrapAdd(OrganizationMember(...))`.
+  factory OrganizationMembersChange.createAdd({
+    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
+    required _core.String? name,
+    required _core.String? email,
+    required _core.String? avatarUrl,
+    required _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> roles,
+    required _core.DateTime joinedAt,
+  }) => OrganizationMembersChange.wrapAdd(
+    OrganizationMember(
+      userId: userId,
+      name: name,
+      email: email,
+      avatarUrl: avatarUrl,
+      roles: roles,
+      joinedAt: joinedAt,
+    )
+  );
+
+  /// Create a 'update' variant wrapping around the given value.
+  factory OrganizationMembersChange.wrapUpdate(
+    OrganizationMember value
+  ) => OrganizationMembersChange_updateWrapper._(value);
+
+  /// Same as `wrapUpdate(OrganizationMember(...))`.
+  factory OrganizationMembersChange.createUpdate({
+    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
+    required _core.String? name,
+    required _core.String? email,
+    required _core.String? avatarUrl,
+    required _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> roles,
+    required _core.DateTime joinedAt,
+  }) => OrganizationMembersChange.wrapUpdate(
+    OrganizationMember(
+      userId: userId,
+      name: name,
+      email: email,
+      avatarUrl: avatarUrl,
+      roles: roles,
+      joinedAt: joinedAt,
+    )
+  );
+
+  /// Create a 'remove' variant wrapping around the given value.
+  factory OrganizationMembersChange.wrapRemove(
+    _lib_kernel_v1_record_id.RecordId value
+  ) => OrganizationMembersChange_removeWrapper._(value);
+
+  /// Same as `wrapRemove(_lib_kernel_v1_record_id.RecordId(...))`.
+  factory OrganizationMembersChange.createRemove({
+    required _core.String table,
+    required _lib_kernel_v1_record_id.RecordIdKey key,
+  }) => OrganizationMembersChange.wrapRemove(
+    _lib_kernel_v1_record_id.RecordId(
+      table: table,
+      key: key,
+    )
+  );
+
+  /// Returns the kind of variant held by this OrganizationMembersChange.
+  OrganizationMembersChange_kind get kind;
+
+  /// Serializer for `OrganizationMembersChange` instances.
+  static _skir.EnumSerializer<OrganizationMembersChange> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addWrapperVariant(
+        1,
+        "add",
+        "wrapAdd",
+        OrganizationMember.serializer,
+        "",
+        OrganizationMembersChange_addWrapper._,
+        (it) => it.value,
+        ordinal: OrganizationMembersChange_kind.addWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        2,
+        "update",
+        "wrapUpdate",
+        OrganizationMember.serializer,
+        "",
+        OrganizationMembersChange_updateWrapper._,
+        (it) => it.value,
+        ordinal: OrganizationMembersChange_kind.updateWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        3,
+        "remove",
+        "wrapRemove",
+        _lib_kernel_v1_record_id.RecordId.serializer,
+        "",
+        OrganizationMembersChange_removeWrapper._,
+        (it) => it.value,
+        ordinal: OrganizationMembersChange_kind.removeWrapper._ordinal,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__EnumSerializerBuilder.create(
+    recordId: "organization/v1/member.skir:OrganizationMembersChange",
+    doc: "",
+    unknownInstance: OrganizationMembersChange_unknown._instance,
+    enumInstance: OrganizationMembersChange.unknown,
+    getOrdinal: (it) => it.kind._ordinal,
+    wrapUnrecognized: OrganizationMembersChange_unknown._unrecognized,
+    getUnrecognized: (it) => it._u,
+  );
+}
+
+/// The kind of variant held by a `OrganizationMembersChange`.
+enum OrganizationMembersChange_kind {
+  unknown(0),
+  addWrapper(1),
+  updateWrapper(2),
+  removeWrapper(3);
+
+  final _core.int _ordinal;
+
+  const OrganizationMembersChange_kind(this._ordinal);
+}
+
+final class OrganizationMembersChange_unknown implements OrganizationMembersChange {
+  static const _instance = OrganizationMembersChange_unknown._();
+
+  final _skir.internal__UnrecognizedVariant? _u;
+
+  const OrganizationMembersChange_unknown._() : _u = null;
+  OrganizationMembersChange_unknown._unrecognized(this._u);
+
+  @_core.override
+  OrganizationMembersChange_kind get kind => OrganizationMembersChange_kind.unknown;
+  @_core.override
+  _core.bool operator ==(other) => other is OrganizationMembersChange_unknown;
+  @_core.override
+  _core.int get hashCode => 8118964;
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, OrganizationMembersChange.serializer);
+}
+
+sealed class _OrganizationMembersChange_wrapper implements OrganizationMembersChange {
+  _core.dynamic get value;
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (other is! _OrganizationMembersChange_wrapper) return false;
+    return kind == other.kind && value == other.value;
+  }
+
+  @_core.override
+  _core.int get hashCode => (kind._ordinal * 31) ^ value.hashCode;
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, OrganizationMembersChange.serializer);
+}
+
+final class OrganizationMembersChange_addWrapper extends _OrganizationMembersChange_wrapper {
+  final OrganizationMember value;
+
+  OrganizationMembersChange_addWrapper._(this.value);
+
+  @_core.override
+  OrganizationMembersChange_kind get kind => OrganizationMembersChange_kind.addWrapper;
+}
+
+final class OrganizationMembersChange_updateWrapper extends _OrganizationMembersChange_wrapper {
+  final OrganizationMember value;
+
+  OrganizationMembersChange_updateWrapper._(this.value);
+
+  @_core.override
+  OrganizationMembersChange_kind get kind => OrganizationMembersChange_kind.updateWrapper;
+}
+
+final class OrganizationMembersChange_removeWrapper extends _OrganizationMembersChange_wrapper {
+  final _lib_kernel_v1_record_id.RecordId value;
+
+  OrganizationMembersChange_removeWrapper._(this.value);
+
+  @_core.override
+  OrganizationMembersChange_kind get kind => OrganizationMembersChange_kind.removeWrapper;
+}
+
+// -----------------------------------------------------------------------------
+// struct OrganizationMembersChanged
+// -----------------------------------------------------------------------------
+
+sealed class OrganizationMembersChanged_orMutable {
+  _core.int get sequence;
+  _core.String get operationId;
+  _core.Iterable<OrganizationMembersChange> get changes;
+
+  OrganizationMembersChanged toFrozen();
+}
+
+/// Deeply immutable.
+final class OrganizationMembersChanged implements OrganizationMembersChanged_orMutable {
+  @_core.override
+  final _core.int sequence;
+  @_core.override
+  final _core.String operationId;
+  @_core.override
+  final _core.Iterable<OrganizationMembersChange> changes;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory OrganizationMembersChanged({
+    required _core.int sequence,
+    required _core.String operationId,
+    required _core.Iterable<OrganizationMembersChange> changes,
+  }) => OrganizationMembersChanged._(
+    sequence,
+    operationId,
+    _skir.internal__frozenCopy(changes),
+  );
+
+  OrganizationMembersChanged._(
+    this.sequence,
+    this.operationId,
+    this.changes,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = OrganizationMembersChanged._(
+    0,
+    "",
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static OrganizationMembersChanged_mutable mutable() => OrganizationMembersChanged_mutable._(
+    0,
+    "",
+    _skir.KeyedIterable.empty,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  OrganizationMembersChanged toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  OrganizationMembersChanged_mutable toMutable() => OrganizationMembersChanged_mutable._(
+    this.sequence,
+    this.operationId,
+    this.changes,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! OrganizationMembersChanged) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.sequence,
+    this.operationId,
+    this.changes,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `OrganizationMembersChanged` instances.
+  static _skir.StructSerializer<OrganizationMembersChanged, OrganizationMembersChanged_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "sequence",
+        "sequence",
+        0,
+        _skir.Serializers.int64,
+        "",
+        (it) => it.sequence,
+        (it, v) => it.sequence = v,
+      );
+      _serializerBuilder.addField(
+        "operation_id",
+        "operationId",
+        1,
+        _skir.Serializers.string,
+        "",
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
+      _serializerBuilder.addField(
+        "changes",
+        "changes",
+        2,
+        _skir.Serializers.iterable(
+          OrganizationMembersChange.serializer,
+        ),
+        "",
+        (it) => it.changes,
+        (it, v) => it.changes = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/member.skir:OrganizationMembersChanged",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (OrganizationMembersChanged_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [OrganizationMembersChanged].
+final class OrganizationMembersChanged_mutable implements OrganizationMembersChanged_orMutable {
+  _core.int sequence;
+  _core.String operationId;
+  _core.Iterable<OrganizationMembersChange> changes;
+  _skir.internal__UnrecognizedFields? _u;
+
+  OrganizationMembersChanged_mutable._(
+    this.sequence,
+    this.operationId,
+    this.changes,
+  );
+
+  /// If the value of [changes] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [changes] and returns it.
+  _core.List<OrganizationMembersChange> get mutableChanges {
+    final value = this.changes;
+    if (value is _skir.internal__MutableList<OrganizationMembersChange>) {
+      return value;
+    } else {
+      return this.changes = _skir.internal__MutableList([...value]);
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  OrganizationMembersChanged toFrozen() => OrganizationMembersChanged(
+    sequence: this.sequence,
+    operationId: this.operationId,
+    changes: this.changes,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
 // struct WatchOrganizationMembersRequest
 // -----------------------------------------------------------------------------
 
@@ -351,10 +868,8 @@ final class WatchOrganizationMembersRequest_mutable implements WatchOrganization
 ///   switch (e) {
 ///     case WatchOrganizationMembersResponse_unknown(): { ... }
 ///     case WatchOrganizationMembersResponse_internalError(:var value): { ... }
-///     case WatchOrganizationMembersResponse_list(:var value): { ... }
-///     case WatchOrganizationMembersResponse_add(:var value): { ... }
-///     case WatchOrganizationMembersResponse_update(:var value): { ... }
-///     case WatchOrganizationMembersResponse_remove(:var value): { ... }
+///     case WatchOrganizationMembersResponse_snapshot(:var value): { ... }
+///     case WatchOrganizationMembersResponse_changed(:var value): { ... }
 ///   }
 ///   ```
 ///
@@ -374,72 +889,37 @@ sealed class WatchOrganizationMembersResponse {
     _lib_kernel_v1_errors.InternalError()
   );
 
-  /// Create a 'list' variant wrapping around the given value.
-  factory WatchOrganizationMembersResponse.wrapList(
-    _core.Iterable<OrganizationMember> value
-  ) => WatchOrganizationMembersResponse_listWrapper._(value);
+  /// Create a 'snapshot' variant wrapping around the given value.
+  factory WatchOrganizationMembersResponse.wrapSnapshot(
+    OrganizationMembersSnapshot value
+  ) => WatchOrganizationMembersResponse_snapshotWrapper._(value);
 
-  /// Create a 'add' variant wrapping around the given value.
-  factory WatchOrganizationMembersResponse.wrapAdd(
-    OrganizationMember value
-  ) => WatchOrganizationMembersResponse_addWrapper._(value);
-
-  /// Same as `wrapAdd(OrganizationMember(...))`.
-  factory WatchOrganizationMembersResponse.createAdd({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
-    required _core.String? name,
-    required _core.String? email,
-    required _core.String? avatarUrl,
-    required _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> roles,
-    required _core.DateTime joinedAt,
-  }) => WatchOrganizationMembersResponse.wrapAdd(
-    OrganizationMember(
-      userId: userId,
-      name: name,
-      email: email,
-      avatarUrl: avatarUrl,
-      roles: roles,
-      joinedAt: joinedAt,
+  /// Same as `wrapSnapshot(OrganizationMembersSnapshot(...))`.
+  factory WatchOrganizationMembersResponse.createSnapshot({
+    required _core.int sequence,
+    required _core.Iterable<OrganizationMember_orMutable> values,
+  }) => WatchOrganizationMembersResponse.wrapSnapshot(
+    OrganizationMembersSnapshot(
+      sequence: sequence,
+      values: values,
     )
   );
 
-  /// Create a 'update' variant wrapping around the given value.
-  factory WatchOrganizationMembersResponse.wrapUpdate(
-    OrganizationMember value
-  ) => WatchOrganizationMembersResponse_updateWrapper._(value);
+  /// Create a 'changed' variant wrapping around the given value.
+  factory WatchOrganizationMembersResponse.wrapChanged(
+    OrganizationMembersChanged value
+  ) => WatchOrganizationMembersResponse_changedWrapper._(value);
 
-  /// Same as `wrapUpdate(OrganizationMember(...))`.
-  factory WatchOrganizationMembersResponse.createUpdate({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
-    required _core.String? name,
-    required _core.String? email,
-    required _core.String? avatarUrl,
-    required _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> roles,
-    required _core.DateTime joinedAt,
-  }) => WatchOrganizationMembersResponse.wrapUpdate(
-    OrganizationMember(
-      userId: userId,
-      name: name,
-      email: email,
-      avatarUrl: avatarUrl,
-      roles: roles,
-      joinedAt: joinedAt,
-    )
-  );
-
-  /// Create a 'remove' variant wrapping around the given value.
-  factory WatchOrganizationMembersResponse.wrapRemove(
-    _lib_kernel_v1_record_id.RecordId value
-  ) => WatchOrganizationMembersResponse_removeWrapper._(value);
-
-  /// Same as `wrapRemove(_lib_kernel_v1_record_id.RecordId(...))`.
-  factory WatchOrganizationMembersResponse.createRemove({
-    required _core.String table,
-    required _lib_kernel_v1_record_id.RecordIdKey key,
-  }) => WatchOrganizationMembersResponse.wrapRemove(
-    _lib_kernel_v1_record_id.RecordId(
-      table: table,
-      key: key,
+  /// Same as `wrapChanged(OrganizationMembersChanged(...))`.
+  factory WatchOrganizationMembersResponse.createChanged({
+    required _core.int sequence,
+    required _core.String operationId,
+    required _core.Iterable<OrganizationMembersChange> changes,
+  }) => WatchOrganizationMembersResponse.wrapChanged(
+    OrganizationMembersChanged(
+      sequence: sequence,
+      operationId: operationId,
+      changes: changes,
     )
   );
 
@@ -461,45 +941,23 @@ sealed class WatchOrganizationMembersResponse {
       );
       _serializerBuilder.addWrapperVariant(
         2,
-        "list",
-        "wrapList",
-        _skir.Serializers.iterable(
-          OrganizationMember.serializer,
-        ),
+        "snapshot",
+        "wrapSnapshot",
+        OrganizationMembersSnapshot.serializer,
         "",
-        WatchOrganizationMembersResponse_listWrapper._,
+        WatchOrganizationMembersResponse_snapshotWrapper._,
         (it) => it.value,
-        ordinal: WatchOrganizationMembersResponse_kind.listWrapper._ordinal,
+        ordinal: WatchOrganizationMembersResponse_kind.snapshotWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
         3,
-        "add",
-        "wrapAdd",
-        OrganizationMember.serializer,
+        "changed",
+        "wrapChanged",
+        OrganizationMembersChanged.serializer,
         "",
-        WatchOrganizationMembersResponse_addWrapper._,
+        WatchOrganizationMembersResponse_changedWrapper._,
         (it) => it.value,
-        ordinal: WatchOrganizationMembersResponse_kind.addWrapper._ordinal,
-      );
-      _serializerBuilder.addWrapperVariant(
-        4,
-        "update",
-        "wrapUpdate",
-        OrganizationMember.serializer,
-        "",
-        WatchOrganizationMembersResponse_updateWrapper._,
-        (it) => it.value,
-        ordinal: WatchOrganizationMembersResponse_kind.updateWrapper._ordinal,
-      );
-      _serializerBuilder.addWrapperVariant(
-        5,
-        "remove",
-        "wrapRemove",
-        _lib_kernel_v1_record_id.RecordId.serializer,
-        "",
-        WatchOrganizationMembersResponse_removeWrapper._,
-        (it) => it.value,
-        ordinal: WatchOrganizationMembersResponse_kind.removeWrapper._ordinal,
+        ordinal: WatchOrganizationMembersResponse_kind.changedWrapper._ordinal,
       );
       _serializerBuilder.finalize();
     }
@@ -521,10 +979,8 @@ sealed class WatchOrganizationMembersResponse {
 enum WatchOrganizationMembersResponse_kind {
   unknown(0),
   internalErrorWrapper(1),
-  listWrapper(2),
-  addWrapper(3),
-  updateWrapper(4),
-  removeWrapper(5);
+  snapshotWrapper(2),
+  changedWrapper(3);
 
   final _core.int _ordinal;
 
@@ -574,40 +1030,22 @@ final class WatchOrganizationMembersResponse_internalErrorWrapper extends _Watch
   WatchOrganizationMembersResponse_kind get kind => WatchOrganizationMembersResponse_kind.internalErrorWrapper;
 }
 
-final class WatchOrganizationMembersResponse_listWrapper extends _WatchOrganizationMembersResponse_wrapper {
-  final _core.Iterable<OrganizationMember> value;
+final class WatchOrganizationMembersResponse_snapshotWrapper extends _WatchOrganizationMembersResponse_wrapper {
+  final OrganizationMembersSnapshot value;
 
-  WatchOrganizationMembersResponse_listWrapper._(this.value);
+  WatchOrganizationMembersResponse_snapshotWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationMembersResponse_kind get kind => WatchOrganizationMembersResponse_kind.listWrapper;
+  WatchOrganizationMembersResponse_kind get kind => WatchOrganizationMembersResponse_kind.snapshotWrapper;
 }
 
-final class WatchOrganizationMembersResponse_addWrapper extends _WatchOrganizationMembersResponse_wrapper {
-  final OrganizationMember value;
+final class WatchOrganizationMembersResponse_changedWrapper extends _WatchOrganizationMembersResponse_wrapper {
+  final OrganizationMembersChanged value;
 
-  WatchOrganizationMembersResponse_addWrapper._(this.value);
-
-  @_core.override
-  WatchOrganizationMembersResponse_kind get kind => WatchOrganizationMembersResponse_kind.addWrapper;
-}
-
-final class WatchOrganizationMembersResponse_updateWrapper extends _WatchOrganizationMembersResponse_wrapper {
-  final OrganizationMember value;
-
-  WatchOrganizationMembersResponse_updateWrapper._(this.value);
+  WatchOrganizationMembersResponse_changedWrapper._(this.value);
 
   @_core.override
-  WatchOrganizationMembersResponse_kind get kind => WatchOrganizationMembersResponse_kind.updateWrapper;
-}
-
-final class WatchOrganizationMembersResponse_removeWrapper extends _WatchOrganizationMembersResponse_wrapper {
-  final _lib_kernel_v1_record_id.RecordId value;
-
-  WatchOrganizationMembersResponse_removeWrapper._(this.value);
-
-  @_core.override
-  WatchOrganizationMembersResponse_kind get kind => WatchOrganizationMembersResponse_kind.removeWrapper;
+  WatchOrganizationMembersResponse_kind get kind => WatchOrganizationMembersResponse_kind.changedWrapper;
 }
 
 // -----------------------------------------------------------------------------
@@ -615,7 +1053,8 @@ final class WatchOrganizationMembersResponse_removeWrapper extends _WatchOrganiz
 // -----------------------------------------------------------------------------
 
 sealed class UpdateOrganizationMemberRolesRequest_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable get userId;
+  _core.String get operationId;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get userIds;
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get roleIds;
 
   UpdateOrganizationMemberRolesRequest toFrozen();
@@ -624,34 +1063,41 @@ sealed class UpdateOrganizationMemberRolesRequest_orMutable {
 /// Deeply immutable.
 final class UpdateOrganizationMemberRolesRequest implements UpdateOrganizationMemberRolesRequest_orMutable {
   @_core.override
-  final _lib_kernel_v1_record_id.RecordId userId;
+  final _core.String operationId;
+  @_core.override
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> userIds;
   @_core.override
   final _core.Iterable<_lib_kernel_v1_record_id.RecordId> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
   factory UpdateOrganizationMemberRolesRequest({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
+    required _core.String operationId,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds,
     required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
   }) => UpdateOrganizationMemberRolesRequest._(
-    userId.toFrozen(),
+    operationId,
+    _skir.internal__frozenMappedCopy(userIds, (it) => it.toFrozen()),
     _skir.internal__frozenMappedCopy(roleIds, (it) => it.toFrozen()),
   );
 
   UpdateOrganizationMemberRolesRequest._(
-    this.userId,
+    this.operationId,
+    this.userIds,
     this.roleIds,
   );
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = UpdateOrganizationMemberRolesRequest._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
+    "",
+    _skir.KeyedIterable.empty,
     _skir.KeyedIterable.empty,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static UpdateOrganizationMemberRolesRequest_mutable mutable() => UpdateOrganizationMemberRolesRequest_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
+    "",
+    _skir.KeyedIterable.empty,
     _skir.KeyedIterable.empty,
   );
 
@@ -662,7 +1108,8 @@ final class UpdateOrganizationMemberRolesRequest implements UpdateOrganizationMe
 
   /// Returns a mutable shallow copy of this instance.
   UpdateOrganizationMemberRolesRequest_mutable toMutable() => UpdateOrganizationMemberRolesRequest_mutable._(
-    this.userId,
+    this.operationId,
+    this.userIds,
     this.roleIds,
   );
 
@@ -677,7 +1124,8 @@ final class UpdateOrganizationMemberRolesRequest implements UpdateOrganizationMe
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
   _core.List get _equality_proxy => [
-    this.userId,
+    this.operationId,
+    this.userIds,
     this.roleIds,
   ];
 
@@ -688,18 +1136,29 @@ final class UpdateOrganizationMemberRolesRequest implements UpdateOrganizationMe
   static _skir.StructSerializer<UpdateOrganizationMemberRolesRequest, UpdateOrganizationMemberRolesRequest_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
-        "user_id",
-        "userId",
+        "operation_id",
+        "operationId",
         0,
-        _lib_kernel_v1_record_id.RecordId.serializer,
+        _skir.Serializers.string,
         "",
-        (it) => it.userId,
-        (it, v) => it.userId = v,
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
+      _serializerBuilder.addField(
+        "user_ids",
+        "userIds",
+        1,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
+        "",
+        (it) => it.userIds,
+        (it, v) => it.userIds = v,
       );
       _serializerBuilder.addField(
         "role_ids",
         "roleIds",
-        1,
+        2,
         _skir.Serializers.iterable(
           _lib_kernel_v1_record_id.RecordId.serializer,
         ),
@@ -725,23 +1184,25 @@ final class UpdateOrganizationMemberRolesRequest implements UpdateOrganizationMe
 
 /// Mutable version of [UpdateOrganizationMemberRolesRequest].
 final class UpdateOrganizationMemberRolesRequest_mutable implements UpdateOrganizationMemberRolesRequest_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable userId;
+  _core.String operationId;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds;
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
   UpdateOrganizationMemberRolesRequest_mutable._(
-    this.userId,
+    this.operationId,
+    this.userIds,
     this.roleIds,
   );
 
-  /// If the value of [userId] is already mutable, returns it as-is.
-  /// Otherwise, makes a mutable copy, assigns it back to [userId] and returns it.
-  _lib_kernel_v1_record_id.RecordId_mutable get mutableUserId {
-    final value = this.userId;
-    if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
+  /// If the value of [userIds] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [userIds] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableUserIds {
+    final value = this.userIds;
+    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
       return value;
     } else {
-      return this.userId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.userIds = _skir.internal__MutableList([...value]);
     }
   }
 
@@ -759,8 +1220,163 @@ final class UpdateOrganizationMemberRolesRequest_mutable implements UpdateOrgani
   /// Returns a deeply immutable copy of this instance.
   @_core.override
   UpdateOrganizationMemberRolesRequest toFrozen() => UpdateOrganizationMemberRolesRequest(
-    userId: this.userId,
+    operationId: this.operationId,
+    userIds: this.userIds,
     roleIds: this.roleIds,
+  ).._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct UpdateOrganizationMemberRolesResponse.Success
+// -----------------------------------------------------------------------------
+
+sealed class UpdateOrganizationMemberRolesResponse_Success_orMutable {
+  _core.Iterable<OrganizationMember_orMutable> get members;
+  OrganizationMembersChanged_orMutable get event;
+
+  UpdateOrganizationMemberRolesResponse_Success toFrozen();
+}
+
+/// Deeply immutable.
+final class UpdateOrganizationMemberRolesResponse_Success implements UpdateOrganizationMemberRolesResponse_Success_orMutable {
+  @_core.override
+  final _core.Iterable<OrganizationMember> members;
+  @_core.override
+  final OrganizationMembersChanged event;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory UpdateOrganizationMemberRolesResponse_Success({
+    required _core.Iterable<OrganizationMember_orMutable> members,
+    required OrganizationMembersChanged_orMutable event,
+  }) => UpdateOrganizationMemberRolesResponse_Success._(
+    _skir.internal__frozenMappedCopy(members, (it) => it.toFrozen()),
+    event.toFrozen(),
+  );
+
+  UpdateOrganizationMemberRolesResponse_Success._(
+    this.members,
+    this.event,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = UpdateOrganizationMemberRolesResponse_Success._(
+    _skir.KeyedIterable.empty,
+    OrganizationMembersChanged.defaultInstance,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static UpdateOrganizationMemberRolesResponse_Success_mutable mutable() => UpdateOrganizationMemberRolesResponse_Success_mutable._(
+    _skir.KeyedIterable.empty,
+    OrganizationMembersChanged.defaultInstance,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_Success toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  UpdateOrganizationMemberRolesResponse_Success_mutable toMutable() => UpdateOrganizationMemberRolesResponse_Success_mutable._(
+    this.members,
+    this.event,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! UpdateOrganizationMemberRolesResponse_Success) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.members,
+    this.event,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `UpdateOrganizationMemberRolesResponse_Success` instances.
+  static _skir.StructSerializer<UpdateOrganizationMemberRolesResponse_Success, UpdateOrganizationMemberRolesResponse_Success_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "members",
+        "members",
+        0,
+        _skir.Serializers.iterable(
+          OrganizationMember.serializer,
+        ),
+        "",
+        (it) => it.members,
+        (it, v) => it.members = v,
+      );
+      _serializerBuilder.addField(
+        "event",
+        "event",
+        1,
+        OrganizationMembersChanged.serializer,
+        "",
+        (it) => it.event,
+        (it, v) => it.event = v,
+      );
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/member.skir:UpdateOrganizationMemberRolesResponse.Success",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (UpdateOrganizationMemberRolesResponse_Success_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [UpdateOrganizationMemberRolesResponse_Success].
+final class UpdateOrganizationMemberRolesResponse_Success_mutable implements UpdateOrganizationMemberRolesResponse_Success_orMutable {
+  _core.Iterable<OrganizationMember_orMutable> members;
+  OrganizationMembersChanged_orMutable event;
+  _skir.internal__UnrecognizedFields? _u;
+
+  UpdateOrganizationMemberRolesResponse_Success_mutable._(
+    this.members,
+    this.event,
+  );
+
+  /// If the value of [members] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [members] and returns it.
+  _core.List<OrganizationMember_orMutable> get mutableMembers {
+    final value = this.members;
+    if (value is _skir.internal__MutableList<OrganizationMember_orMutable>) {
+      return value;
+    } else {
+      return this.members = _skir.internal__MutableList([...value]);
+    }
+  }
+
+  /// If the value of [event] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [event] and returns it.
+  OrganizationMembersChanged_mutable get mutableEvent {
+    final value = this.event;
+    if (value is OrganizationMembersChanged_mutable) {
+      return value;
+    } else {
+      return this.event = (value as OrganizationMembersChanged).toMutable();
+    }
+  }
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_Success toFrozen() => UpdateOrganizationMemberRolesResponse_Success(
+    members: this.members,
+    event: this.event,
   ).._u = this._u;
 }
 
@@ -769,7 +1385,7 @@ final class UpdateOrganizationMemberRolesRequest_mutable implements UpdateOrgani
 // -----------------------------------------------------------------------------
 
 sealed class UpdateOrganizationMemberRolesResponse_UserNotFoundError_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable get userId;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get userIds;
 
   UpdateOrganizationMemberRolesResponse_UserNotFoundError toFrozen();
 }
@@ -777,28 +1393,28 @@ sealed class UpdateOrganizationMemberRolesResponse_UserNotFoundError_orMutable {
 /// Deeply immutable.
 final class UpdateOrganizationMemberRolesResponse_UserNotFoundError implements UpdateOrganizationMemberRolesResponse_UserNotFoundError_orMutable {
   @_core.override
-  final _lib_kernel_v1_record_id.RecordId userId;
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> userIds;
   _skir.internal__UnrecognizedFields? _u;
 
   factory UpdateOrganizationMemberRolesResponse_UserNotFoundError({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds,
   }) => UpdateOrganizationMemberRolesResponse_UserNotFoundError._(
-    userId.toFrozen(),
+    _skir.internal__frozenMappedCopy(userIds, (it) => it.toFrozen()),
   );
 
   UpdateOrganizationMemberRolesResponse_UserNotFoundError._(
-    this.userId,
+    this.userIds,
   );
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = UpdateOrganizationMemberRolesResponse_UserNotFoundError._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
+    _skir.KeyedIterable.empty,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static UpdateOrganizationMemberRolesResponse_UserNotFoundError_mutable mutable() => UpdateOrganizationMemberRolesResponse_UserNotFoundError_mutable._(
-    _lib_kernel_v1_record_id.RecordId.defaultInstance,
+    _skir.KeyedIterable.empty,
   );
 
   /// Returns this instance (no-op).
@@ -808,7 +1424,7 @@ final class UpdateOrganizationMemberRolesResponse_UserNotFoundError implements U
 
   /// Returns a mutable shallow copy of this instance.
   UpdateOrganizationMemberRolesResponse_UserNotFoundError_mutable toMutable() => UpdateOrganizationMemberRolesResponse_UserNotFoundError_mutable._(
-    this.userId,
+    this.userIds,
   );
 
   @_core.override
@@ -822,7 +1438,7 @@ final class UpdateOrganizationMemberRolesResponse_UserNotFoundError implements U
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
   _core.List get _equality_proxy => [
-    this.userId,
+    this.userIds,
   ];
 
   @_core.override
@@ -832,13 +1448,15 @@ final class UpdateOrganizationMemberRolesResponse_UserNotFoundError implements U
   static _skir.StructSerializer<UpdateOrganizationMemberRolesResponse_UserNotFoundError, UpdateOrganizationMemberRolesResponse_UserNotFoundError_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
-        "user_id",
-        "userId",
+        "user_ids",
+        "userIds",
         0,
-        _lib_kernel_v1_record_id.RecordId.serializer,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
         "",
-        (it) => it.userId,
-        (it, v) => it.userId = v,
+        (it) => it.userIds,
+        (it, v) => it.userIds = v,
       );
       _serializerBuilder.finalize();
     }
@@ -858,28 +1476,28 @@ final class UpdateOrganizationMemberRolesResponse_UserNotFoundError implements U
 
 /// Mutable version of [UpdateOrganizationMemberRolesResponse_UserNotFoundError].
 final class UpdateOrganizationMemberRolesResponse_UserNotFoundError_mutable implements UpdateOrganizationMemberRolesResponse_UserNotFoundError_orMutable {
-  _lib_kernel_v1_record_id.RecordId_orMutable userId;
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds;
   _skir.internal__UnrecognizedFields? _u;
 
   UpdateOrganizationMemberRolesResponse_UserNotFoundError_mutable._(
-    this.userId,
+    this.userIds,
   );
 
-  /// If the value of [userId] is already mutable, returns it as-is.
-  /// Otherwise, makes a mutable copy, assigns it back to [userId] and returns it.
-  _lib_kernel_v1_record_id.RecordId_mutable get mutableUserId {
-    final value = this.userId;
-    if (value is _lib_kernel_v1_record_id.RecordId_mutable) {
+  /// If the value of [userIds] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [userIds] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableUserIds {
+    final value = this.userIds;
+    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
       return value;
     } else {
-      return this.userId = (value as _lib_kernel_v1_record_id.RecordId).toMutable();
+      return this.userIds = _skir.internal__MutableList([...value]);
     }
   }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
   UpdateOrganizationMemberRolesResponse_UserNotFoundError toFrozen() => UpdateOrganizationMemberRolesResponse_UserNotFoundError(
-    userId: this.userId,
+    userIds: this.userIds,
   ).._u = this._u;
 }
 
@@ -1009,6 +1627,7 @@ final class UpdateOrganizationMemberRolesResponse_RolesNotFoundError_mutable imp
 // -----------------------------------------------------------------------------
 
 sealed class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get userIds;
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get roleIds;
 
   UpdateOrganizationMemberRolesResponse_RolesNotAssignableError toFrozen();
@@ -1017,27 +1636,34 @@ sealed class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_orMut
 /// Deeply immutable.
 final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError implements UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_orMutable {
   @_core.override
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> userIds;
+  @_core.override
   final _core.Iterable<_lib_kernel_v1_record_id.RecordId> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
   factory UpdateOrganizationMemberRolesResponse_RolesNotAssignableError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds,
     required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
   }) => UpdateOrganizationMemberRolesResponse_RolesNotAssignableError._(
+    _skir.internal__frozenMappedCopy(userIds, (it) => it.toFrozen()),
     _skir.internal__frozenMappedCopy(roleIds, (it) => it.toFrozen()),
   );
 
   UpdateOrganizationMemberRolesResponse_RolesNotAssignableError._(
+    this.userIds,
     this.roleIds,
   );
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = UpdateOrganizationMemberRolesResponse_RolesNotAssignableError._(
     _skir.KeyedIterable.empty,
+    _skir.KeyedIterable.empty,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutable mutable() => UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutable._(
+    _skir.KeyedIterable.empty,
     _skir.KeyedIterable.empty,
   );
 
@@ -1048,6 +1674,7 @@ final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError implem
 
   /// Returns a mutable shallow copy of this instance.
   UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutable toMutable() => UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutable._(
+    this.userIds,
     this.roleIds,
   );
 
@@ -1062,6 +1689,7 @@ final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError implem
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
   _core.List get _equality_proxy => [
+    this.userIds,
     this.roleIds,
   ];
 
@@ -1072,9 +1700,20 @@ final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError implem
   static _skir.StructSerializer<UpdateOrganizationMemberRolesResponse_RolesNotAssignableError, UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
+        "user_ids",
+        "userIds",
+        0,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
+        "",
+        (it) => it.userIds,
+        (it, v) => it.userIds = v,
+      );
+      _serializerBuilder.addField(
         "role_ids",
         "roleIds",
-        0,
+        1,
         _skir.Serializers.iterable(
           _lib_kernel_v1_record_id.RecordId.serializer,
         ),
@@ -1100,12 +1739,25 @@ final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError implem
 
 /// Mutable version of [UpdateOrganizationMemberRolesResponse_RolesNotAssignableError].
 final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutable implements UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds;
   _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds;
   _skir.internal__UnrecognizedFields? _u;
 
   UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutable._(
+    this.userIds,
     this.roleIds,
   );
+
+  /// If the value of [userIds] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [userIds] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableUserIds {
+    final value = this.userIds;
+    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
+      return value;
+    } else {
+      return this.userIds = _skir.internal__MutableList([...value]);
+    }
+  }
 
   /// If the value of [roleIds] is already mutable, returns it as-is.
   /// Otherwise, makes a mutable copy, assigns it back to [roleIds] and returns it.
@@ -1121,6 +1773,7 @@ final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutabl
   /// Returns a deeply immutable copy of this instance.
   @_core.override
   UpdateOrganizationMemberRolesResponse_RolesNotAssignableError toFrozen() => UpdateOrganizationMemberRolesResponse_RolesNotAssignableError(
+    userIds: this.userIds,
     roleIds: this.roleIds,
   ).._u = this._u;
 }
@@ -1130,23 +1783,37 @@ final class UpdateOrganizationMemberRolesResponse_RolesNotAssignableError_mutabl
 // -----------------------------------------------------------------------------
 
 sealed class UpdateOrganizationMemberRolesResponse_RolesRequiredError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> get userIds;
+
   UpdateOrganizationMemberRolesResponse_RolesRequiredError toFrozen();
 }
 
 /// Deeply immutable.
 final class UpdateOrganizationMemberRolesResponse_RolesRequiredError implements UpdateOrganizationMemberRolesResponse_RolesRequiredError_orMutable {
+  @_core.override
+  final _core.Iterable<_lib_kernel_v1_record_id.RecordId> userIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  factory UpdateOrganizationMemberRolesResponse_RolesRequiredError() => UpdateOrganizationMemberRolesResponse_RolesRequiredError._();
+  factory UpdateOrganizationMemberRolesResponse_RolesRequiredError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds,
+  }) => UpdateOrganizationMemberRolesResponse_RolesRequiredError._(
+    _skir.internal__frozenMappedCopy(userIds, (it) => it.toFrozen()),
+  );
 
-  UpdateOrganizationMemberRolesResponse_RolesRequiredError._();
+  UpdateOrganizationMemberRolesResponse_RolesRequiredError._(
+    this.userIds,
+  );
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = UpdateOrganizationMemberRolesResponse_RolesRequiredError._();
+  static final defaultInstance = UpdateOrganizationMemberRolesResponse_RolesRequiredError._(
+    _skir.KeyedIterable.empty,
+  );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable mutable() => UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable._();
+  static UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable mutable() => UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable._(
+    _skir.KeyedIterable.empty,
+  );
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
@@ -1154,7 +1821,9 @@ final class UpdateOrganizationMemberRolesResponse_RolesRequiredError implements 
   UpdateOrganizationMemberRolesResponse_RolesRequiredError toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable toMutable() => UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable._();
+  UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable toMutable() => UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable._(
+    this.userIds,
+  );
 
   @_core.override
   _core.bool operator ==(other) {
@@ -1166,7 +1835,9 @@ final class UpdateOrganizationMemberRolesResponse_RolesRequiredError implements 
   @_core.override
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
-  _core.List get _equality_proxy => [];
+  _core.List get _equality_proxy => [
+    this.userIds,
+  ];
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
@@ -1174,6 +1845,17 @@ final class UpdateOrganizationMemberRolesResponse_RolesRequiredError implements 
   /// Serializer for `UpdateOrganizationMemberRolesResponse_RolesRequiredError` instances.
   static _skir.StructSerializer<UpdateOrganizationMemberRolesResponse_RolesRequiredError, UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "user_ids",
+        "userIds",
+        0,
+        _skir.Serializers.iterable(
+          _lib_kernel_v1_record_id.RecordId.serializer,
+        ),
+        "",
+        (it) => it.userIds,
+        (it, v) => it.userIds = v,
+      );
       _serializerBuilder.finalize();
     }
     return _serializerBuilder.serializer;
@@ -1192,13 +1874,29 @@ final class UpdateOrganizationMemberRolesResponse_RolesRequiredError implements 
 
 /// Mutable version of [UpdateOrganizationMemberRolesResponse_RolesRequiredError].
 final class UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable implements UpdateOrganizationMemberRolesResponse_RolesRequiredError_orMutable {
+  _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds;
   _skir.internal__UnrecognizedFields? _u;
 
-  UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable._();
+  UpdateOrganizationMemberRolesResponse_RolesRequiredError_mutable._(
+    this.userIds,
+  );
+
+  /// If the value of [userIds] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [userIds] and returns it.
+  _core.List<_lib_kernel_v1_record_id.RecordId_orMutable> get mutableUserIds {
+    final value = this.userIds;
+    if (value is _skir.internal__MutableList<_lib_kernel_v1_record_id.RecordId_orMutable>) {
+      return value;
+    } else {
+      return this.userIds = _skir.internal__MutableList([...value]);
+    }
+  }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  UpdateOrganizationMemberRolesResponse_RolesRequiredError toFrozen() => UpdateOrganizationMemberRolesResponse_RolesRequiredError().._u = this._u;
+  UpdateOrganizationMemberRolesResponse_RolesRequiredError toFrozen() => UpdateOrganizationMemberRolesResponse_RolesRequiredError(
+    userIds: this.userIds,
+  ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
@@ -1278,6 +1976,158 @@ final class UpdateOrganizationMemberRolesResponse_FounderRoleRequiredError_mutab
 }
 
 // -----------------------------------------------------------------------------
+// struct UpdateOrganizationMemberRolesResponse.OperationIdentityReusedError
+// -----------------------------------------------------------------------------
+
+sealed class UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_orMutable {
+  UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError toFrozen();
+}
+
+/// Deeply immutable.
+final class UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError implements UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError() => UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError._();
+
+  UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable mutable() => UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable toMutable() => UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError` instances.
+  static _skir.StructSerializer<UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError, UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/member.skir:UpdateOrganizationMemberRolesResponse.OperationIdentityReusedError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError].
+final class UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable implements UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError toFrozen() => UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct UpdateOrganizationMemberRolesResponse.InvalidSelectionError
+// -----------------------------------------------------------------------------
+
+sealed class UpdateOrganizationMemberRolesResponse_InvalidSelectionError_orMutable {
+  UpdateOrganizationMemberRolesResponse_InvalidSelectionError toFrozen();
+}
+
+/// Deeply immutable.
+final class UpdateOrganizationMemberRolesResponse_InvalidSelectionError implements UpdateOrganizationMemberRolesResponse_InvalidSelectionError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory UpdateOrganizationMemberRolesResponse_InvalidSelectionError() => UpdateOrganizationMemberRolesResponse_InvalidSelectionError._();
+
+  UpdateOrganizationMemberRolesResponse_InvalidSelectionError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = UpdateOrganizationMemberRolesResponse_InvalidSelectionError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable mutable() => UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_InvalidSelectionError toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable toMutable() => UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! UpdateOrganizationMemberRolesResponse_InvalidSelectionError) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `UpdateOrganizationMemberRolesResponse_InvalidSelectionError` instances.
+  static _skir.StructSerializer<UpdateOrganizationMemberRolesResponse_InvalidSelectionError, UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/member.skir:UpdateOrganizationMemberRolesResponse.InvalidSelectionError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [UpdateOrganizationMemberRolesResponse_InvalidSelectionError].
+final class UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable implements UpdateOrganizationMemberRolesResponse_InvalidSelectionError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  UpdateOrganizationMemberRolesResponse_InvalidSelectionError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_InvalidSelectionError toFrozen() => UpdateOrganizationMemberRolesResponse_InvalidSelectionError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
 // enum UpdateOrganizationMemberRolesResponse
 // -----------------------------------------------------------------------------
 
@@ -1292,6 +2142,8 @@ final class UpdateOrganizationMemberRolesResponse_FounderRoleRequiredError_mutab
 ///     case UpdateOrganizationMemberRolesResponse_rolesNotAssignableError(:var value): { ... }
 ///     case UpdateOrganizationMemberRolesResponse_rolesRequiredError(:var value): { ... }
 ///     case UpdateOrganizationMemberRolesResponse_founderRoleRequiredError(:var value): { ... }
+///     case UpdateOrganizationMemberRolesResponse_operationIdentityReusedError(:var value): { ... }
+///     case UpdateOrganizationMemberRolesResponse_invalidSelectionError(:var value): { ... }
 ///     case UpdateOrganizationMemberRolesResponse_invalidRecordIdError(:var value): { ... }
 ///   }
 ///   ```
@@ -1314,25 +2166,17 @@ sealed class UpdateOrganizationMemberRolesResponse {
 
   /// Create a 'success' variant wrapping around the given value.
   factory UpdateOrganizationMemberRolesResponse.wrapSuccess(
-    OrganizationMember value
+    UpdateOrganizationMemberRolesResponse_Success value
   ) => UpdateOrganizationMemberRolesResponse_successWrapper._(value);
 
-  /// Same as `wrapSuccess(OrganizationMember(...))`.
+  /// Same as `wrapSuccess(UpdateOrganizationMemberRolesResponse_Success(...))`.
   factory UpdateOrganizationMemberRolesResponse.createSuccess({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
-    required _core.String? name,
-    required _core.String? email,
-    required _core.String? avatarUrl,
-    required _core.Iterable<_lib_organization_v1_role.OrganizationRole_orMutable> roles,
-    required _core.DateTime joinedAt,
+    required _core.Iterable<OrganizationMember_orMutable> members,
+    required OrganizationMembersChanged_orMutable event,
   }) => UpdateOrganizationMemberRolesResponse.wrapSuccess(
-    OrganizationMember(
-      userId: userId,
-      name: name,
-      email: email,
-      avatarUrl: avatarUrl,
-      roles: roles,
-      joinedAt: joinedAt,
+    UpdateOrganizationMemberRolesResponse_Success(
+      members: members,
+      event: event,
     )
   );
 
@@ -1343,10 +2187,10 @@ sealed class UpdateOrganizationMemberRolesResponse {
 
   /// Same as `wrapUserNotFoundError(UpdateOrganizationMemberRolesResponse_UserNotFoundError(...))`.
   factory UpdateOrganizationMemberRolesResponse.createUserNotFoundError({
-    required _lib_kernel_v1_record_id.RecordId_orMutable userId,
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds,
   }) => UpdateOrganizationMemberRolesResponse.wrapUserNotFoundError(
     UpdateOrganizationMemberRolesResponse_UserNotFoundError(
-      userId: userId,
+      userIds: userIds,
     )
   );
 
@@ -1371,9 +2215,11 @@ sealed class UpdateOrganizationMemberRolesResponse {
 
   /// Same as `wrapRolesNotAssignableError(UpdateOrganizationMemberRolesResponse_RolesNotAssignableError(...))`.
   factory UpdateOrganizationMemberRolesResponse.createRolesNotAssignableError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds,
     required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> roleIds,
   }) => UpdateOrganizationMemberRolesResponse.wrapRolesNotAssignableError(
     UpdateOrganizationMemberRolesResponse_RolesNotAssignableError(
+      userIds: userIds,
       roleIds: roleIds,
     )
   );
@@ -1384,8 +2230,12 @@ sealed class UpdateOrganizationMemberRolesResponse {
   ) => UpdateOrganizationMemberRolesResponse_rolesRequiredErrorWrapper._(value);
 
   /// Same as `wrapRolesRequiredError(UpdateOrganizationMemberRolesResponse_RolesRequiredError(...))`.
-  factory UpdateOrganizationMemberRolesResponse.createRolesRequiredError() => UpdateOrganizationMemberRolesResponse.wrapRolesRequiredError(
-    UpdateOrganizationMemberRolesResponse_RolesRequiredError()
+  factory UpdateOrganizationMemberRolesResponse.createRolesRequiredError({
+    required _core.Iterable<_lib_kernel_v1_record_id.RecordId_orMutable> userIds,
+  }) => UpdateOrganizationMemberRolesResponse.wrapRolesRequiredError(
+    UpdateOrganizationMemberRolesResponse_RolesRequiredError(
+      userIds: userIds,
+    )
   );
 
   /// Create a 'founder_role_required_error' variant wrapping around the given value.
@@ -1396,6 +2246,26 @@ sealed class UpdateOrganizationMemberRolesResponse {
   /// Same as `wrapFounderRoleRequiredError(UpdateOrganizationMemberRolesResponse_FounderRoleRequiredError(...))`.
   factory UpdateOrganizationMemberRolesResponse.createFounderRoleRequiredError() => UpdateOrganizationMemberRolesResponse.wrapFounderRoleRequiredError(
     UpdateOrganizationMemberRolesResponse_FounderRoleRequiredError()
+  );
+
+  /// Create a 'operation_identity_reused_error' variant wrapping around the given value.
+  factory UpdateOrganizationMemberRolesResponse.wrapOperationIdentityReusedError(
+    UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError value
+  ) => UpdateOrganizationMemberRolesResponse_operationIdentityReusedErrorWrapper._(value);
+
+  /// Same as `wrapOperationIdentityReusedError(UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError(...))`.
+  factory UpdateOrganizationMemberRolesResponse.createOperationIdentityReusedError() => UpdateOrganizationMemberRolesResponse.wrapOperationIdentityReusedError(
+    UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError()
+  );
+
+  /// Create a 'invalid_selection_error' variant wrapping around the given value.
+  factory UpdateOrganizationMemberRolesResponse.wrapInvalidSelectionError(
+    UpdateOrganizationMemberRolesResponse_InvalidSelectionError value
+  ) => UpdateOrganizationMemberRolesResponse_invalidSelectionErrorWrapper._(value);
+
+  /// Same as `wrapInvalidSelectionError(UpdateOrganizationMemberRolesResponse_InvalidSelectionError(...))`.
+  factory UpdateOrganizationMemberRolesResponse.createInvalidSelectionError() => UpdateOrganizationMemberRolesResponse.wrapInvalidSelectionError(
+    UpdateOrganizationMemberRolesResponse_InvalidSelectionError()
   );
 
   /// Create a 'invalid_record_id_error' variant wrapping around the given value.
@@ -1434,7 +2304,7 @@ sealed class UpdateOrganizationMemberRolesResponse {
         2,
         "success",
         "wrapSuccess",
-        OrganizationMember.serializer,
+        UpdateOrganizationMemberRolesResponse_Success.serializer,
         "",
         UpdateOrganizationMemberRolesResponse_successWrapper._,
         (it) => it.value,
@@ -1492,6 +2362,26 @@ sealed class UpdateOrganizationMemberRolesResponse {
       );
       _serializerBuilder.addWrapperVariant(
         8,
+        "operation_identity_reused_error",
+        "wrapOperationIdentityReusedError",
+        UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError.serializer,
+        "",
+        UpdateOrganizationMemberRolesResponse_operationIdentityReusedErrorWrapper._,
+        (it) => it.value,
+        ordinal: UpdateOrganizationMemberRolesResponse_kind.operationIdentityReusedErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        9,
+        "invalid_selection_error",
+        "wrapInvalidSelectionError",
+        UpdateOrganizationMemberRolesResponse_InvalidSelectionError.serializer,
+        "",
+        UpdateOrganizationMemberRolesResponse_invalidSelectionErrorWrapper._,
+        (it) => it.value,
+        ordinal: UpdateOrganizationMemberRolesResponse_kind.invalidSelectionErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        10,
         "invalid_record_id_error",
         "wrapInvalidRecordIdError",
         _lib_kernel_v1_errors.InvalidRecordIdError.serializer,
@@ -1526,7 +2416,9 @@ enum UpdateOrganizationMemberRolesResponse_kind {
   rolesNotAssignableErrorWrapper(5),
   rolesRequiredErrorWrapper(6),
   founderRoleRequiredErrorWrapper(7),
-  invalidRecordIdErrorWrapper(8);
+  operationIdentityReusedErrorWrapper(8),
+  invalidSelectionErrorWrapper(9),
+  invalidRecordIdErrorWrapper(10);
 
   final _core.int _ordinal;
 
@@ -1577,7 +2469,7 @@ final class UpdateOrganizationMemberRolesResponse_internalErrorWrapper extends _
 }
 
 final class UpdateOrganizationMemberRolesResponse_successWrapper extends _UpdateOrganizationMemberRolesResponse_wrapper {
-  final OrganizationMember value;
+  final UpdateOrganizationMemberRolesResponse_Success value;
 
   UpdateOrganizationMemberRolesResponse_successWrapper._(this.value);
 
@@ -1630,6 +2522,24 @@ final class UpdateOrganizationMemberRolesResponse_founderRoleRequiredErrorWrappe
   UpdateOrganizationMemberRolesResponse_kind get kind => UpdateOrganizationMemberRolesResponse_kind.founderRoleRequiredErrorWrapper;
 }
 
+final class UpdateOrganizationMemberRolesResponse_operationIdentityReusedErrorWrapper extends _UpdateOrganizationMemberRolesResponse_wrapper {
+  final UpdateOrganizationMemberRolesResponse_OperationIdentityReusedError value;
+
+  UpdateOrganizationMemberRolesResponse_operationIdentityReusedErrorWrapper._(this.value);
+
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_kind get kind => UpdateOrganizationMemberRolesResponse_kind.operationIdentityReusedErrorWrapper;
+}
+
+final class UpdateOrganizationMemberRolesResponse_invalidSelectionErrorWrapper extends _UpdateOrganizationMemberRolesResponse_wrapper {
+  final UpdateOrganizationMemberRolesResponse_InvalidSelectionError value;
+
+  UpdateOrganizationMemberRolesResponse_invalidSelectionErrorWrapper._(this.value);
+
+  @_core.override
+  UpdateOrganizationMemberRolesResponse_kind get kind => UpdateOrganizationMemberRolesResponse_kind.invalidSelectionErrorWrapper;
+}
+
 final class UpdateOrganizationMemberRolesResponse_invalidRecordIdErrorWrapper extends _UpdateOrganizationMemberRolesResponse_wrapper {
   final _lib_kernel_v1_errors.InvalidRecordIdError value;
 
@@ -1644,6 +2554,7 @@ final class UpdateOrganizationMemberRolesResponse_invalidRecordIdErrorWrapper ex
 // -----------------------------------------------------------------------------
 
 sealed class RemoveOrganizationMemberRequest_orMutable {
+  _core.String get operationId;
   _lib_kernel_v1_record_id.RecordId_orMutable get userId;
 
   RemoveOrganizationMemberRequest toFrozen();
@@ -1652,27 +2563,34 @@ sealed class RemoveOrganizationMemberRequest_orMutable {
 /// Deeply immutable.
 final class RemoveOrganizationMemberRequest implements RemoveOrganizationMemberRequest_orMutable {
   @_core.override
+  final _core.String operationId;
+  @_core.override
   final _lib_kernel_v1_record_id.RecordId userId;
   _skir.internal__UnrecognizedFields? _u;
 
   factory RemoveOrganizationMemberRequest({
+    required _core.String operationId,
     required _lib_kernel_v1_record_id.RecordId_orMutable userId,
   }) => RemoveOrganizationMemberRequest._(
+    operationId,
     userId.toFrozen(),
   );
 
   RemoveOrganizationMemberRequest._(
+    this.operationId,
     this.userId,
   );
 
   /// Default instance with all fields set to their default values.
   static final defaultInstance = RemoveOrganizationMemberRequest._(
+    "",
     _lib_kernel_v1_record_id.RecordId.defaultInstance,
   );
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
   static RemoveOrganizationMemberRequest_mutable mutable() => RemoveOrganizationMemberRequest_mutable._(
+    "",
     _lib_kernel_v1_record_id.RecordId.defaultInstance,
   );
 
@@ -1683,6 +2601,7 @@ final class RemoveOrganizationMemberRequest implements RemoveOrganizationMemberR
 
   /// Returns a mutable shallow copy of this instance.
   RemoveOrganizationMemberRequest_mutable toMutable() => RemoveOrganizationMemberRequest_mutable._(
+    this.operationId,
     this.userId,
   );
 
@@ -1697,6 +2616,7 @@ final class RemoveOrganizationMemberRequest implements RemoveOrganizationMemberR
   _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
 
   _core.List get _equality_proxy => [
+    this.operationId,
     this.userId,
   ];
 
@@ -1707,9 +2627,18 @@ final class RemoveOrganizationMemberRequest implements RemoveOrganizationMemberR
   static _skir.StructSerializer<RemoveOrganizationMemberRequest, RemoveOrganizationMemberRequest_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addField(
+        "operation_id",
+        "operationId",
+        0,
+        _skir.Serializers.string,
+        "",
+        (it) => it.operationId,
+        (it, v) => it.operationId = v,
+      );
+      _serializerBuilder.addField(
         "user_id",
         "userId",
-        0,
+        1,
         _lib_kernel_v1_record_id.RecordId.serializer,
         "",
         (it) => it.userId,
@@ -1733,10 +2662,12 @@ final class RemoveOrganizationMemberRequest implements RemoveOrganizationMemberR
 
 /// Mutable version of [RemoveOrganizationMemberRequest].
 final class RemoveOrganizationMemberRequest_mutable implements RemoveOrganizationMemberRequest_orMutable {
+  _core.String operationId;
   _lib_kernel_v1_record_id.RecordId_orMutable userId;
   _skir.internal__UnrecognizedFields? _u;
 
   RemoveOrganizationMemberRequest_mutable._(
+    this.operationId,
     this.userId,
   );
 
@@ -1754,45 +2685,46 @@ final class RemoveOrganizationMemberRequest_mutable implements RemoveOrganizatio
   /// Returns a deeply immutable copy of this instance.
   @_core.override
   RemoveOrganizationMemberRequest toFrozen() => RemoveOrganizationMemberRequest(
+    operationId: this.operationId,
     userId: this.userId,
   ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
-// struct RemoveOrganizationMemberResponse.Success
+// struct RemoveOrganizationMemberResponse.InvalidOperationIdError
 // -----------------------------------------------------------------------------
 
-sealed class RemoveOrganizationMemberResponse_Success_orMutable {
-  RemoveOrganizationMemberResponse_Success toFrozen();
+sealed class RemoveOrganizationMemberResponse_InvalidOperationIdError_orMutable {
+  RemoveOrganizationMemberResponse_InvalidOperationIdError toFrozen();
 }
 
 /// Deeply immutable.
-final class RemoveOrganizationMemberResponse_Success implements RemoveOrganizationMemberResponse_Success_orMutable {
+final class RemoveOrganizationMemberResponse_InvalidOperationIdError implements RemoveOrganizationMemberResponse_InvalidOperationIdError_orMutable {
   _skir.internal__UnrecognizedFields? _u;
 
-  factory RemoveOrganizationMemberResponse_Success() => RemoveOrganizationMemberResponse_Success._();
+  factory RemoveOrganizationMemberResponse_InvalidOperationIdError() => RemoveOrganizationMemberResponse_InvalidOperationIdError._();
 
-  RemoveOrganizationMemberResponse_Success._();
+  RemoveOrganizationMemberResponse_InvalidOperationIdError._();
 
   /// Default instance with all fields set to their default values.
-  static final defaultInstance = RemoveOrganizationMemberResponse_Success._();
+  static final defaultInstance = RemoveOrganizationMemberResponse_InvalidOperationIdError._();
 
   /// Returns a new mutable instance.
   /// Fields are initialized to their default values.
-  static RemoveOrganizationMemberResponse_Success_mutable mutable() => RemoveOrganizationMemberResponse_Success_mutable._();
+  static RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable mutable() => RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable._();
 
   /// Returns this instance (no-op).
   @_core.Deprecated("This instance is already frozen.")
   @_core.override
-  RemoveOrganizationMemberResponse_Success toFrozen() => this;
+  RemoveOrganizationMemberResponse_InvalidOperationIdError toFrozen() => this;
 
   /// Returns a mutable shallow copy of this instance.
-  RemoveOrganizationMemberResponse_Success_mutable toMutable() => RemoveOrganizationMemberResponse_Success_mutable._();
+  RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable toMutable() => RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable._();
 
   @_core.override
   _core.bool operator ==(other) {
     if (_core.identical(this, other)) return true;
-    if (other is! RemoveOrganizationMemberResponse_Success) return false;
+    if (other is! RemoveOrganizationMemberResponse_InvalidOperationIdError) return false;
     return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
   }
 
@@ -1804,9 +2736,188 @@ final class RemoveOrganizationMemberResponse_Success implements RemoveOrganizati
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, serializer);
 
+  /// Serializer for `RemoveOrganizationMemberResponse_InvalidOperationIdError` instances.
+  static _skir.StructSerializer<RemoveOrganizationMemberResponse_InvalidOperationIdError, RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/member.skir:RemoveOrganizationMemberResponse.InvalidOperationIdError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [RemoveOrganizationMemberResponse_InvalidOperationIdError].
+final class RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable implements RemoveOrganizationMemberResponse_InvalidOperationIdError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  RemoveOrganizationMemberResponse_InvalidOperationIdError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  RemoveOrganizationMemberResponse_InvalidOperationIdError toFrozen() => RemoveOrganizationMemberResponse_InvalidOperationIdError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct RemoveOrganizationMemberResponse.OperationIdentityReusedError
+// -----------------------------------------------------------------------------
+
+sealed class RemoveOrganizationMemberResponse_OperationIdentityReusedError_orMutable {
+  RemoveOrganizationMemberResponse_OperationIdentityReusedError toFrozen();
+}
+
+/// Deeply immutable.
+final class RemoveOrganizationMemberResponse_OperationIdentityReusedError implements RemoveOrganizationMemberResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory RemoveOrganizationMemberResponse_OperationIdentityReusedError() => RemoveOrganizationMemberResponse_OperationIdentityReusedError._();
+
+  RemoveOrganizationMemberResponse_OperationIdentityReusedError._();
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = RemoveOrganizationMemberResponse_OperationIdentityReusedError._();
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable mutable() => RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  RemoveOrganizationMemberResponse_OperationIdentityReusedError toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable toMutable() => RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable._();
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! RemoveOrganizationMemberResponse_OperationIdentityReusedError) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
+  /// Serializer for `RemoveOrganizationMemberResponse_OperationIdentityReusedError` instances.
+  static _skir.StructSerializer<RemoveOrganizationMemberResponse_OperationIdentityReusedError, RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable> get serializer {
+    if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.finalize();
+    }
+    return _serializerBuilder.serializer;
+  }
+
+  static final _serializerBuilder = _skir.internal__StructSerializerBuilder(
+    recordId: "organization/v1/member.skir:RemoveOrganizationMemberResponse.OperationIdentityReusedError",
+    doc: "",
+    defaultInstance: defaultInstance,
+    newMutable: (it) => (it != null) ? it.toMutable() : mutable(),
+    toFrozen: (RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable it) => it.toFrozen(),
+    getUnrecognizedFields: (it) => it._u,
+    setUnrecognizedFields: (it, u) => it._u = u,
+  );
+}
+
+/// Mutable version of [RemoveOrganizationMemberResponse_OperationIdentityReusedError].
+final class RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable implements RemoveOrganizationMemberResponse_OperationIdentityReusedError_orMutable {
+  _skir.internal__UnrecognizedFields? _u;
+
+  RemoveOrganizationMemberResponse_OperationIdentityReusedError_mutable._();
+
+  /// Returns a deeply immutable copy of this instance.
+  @_core.override
+  RemoveOrganizationMemberResponse_OperationIdentityReusedError toFrozen() => RemoveOrganizationMemberResponse_OperationIdentityReusedError().._u = this._u;
+}
+
+// -----------------------------------------------------------------------------
+// struct RemoveOrganizationMemberResponse.Success
+// -----------------------------------------------------------------------------
+
+sealed class RemoveOrganizationMemberResponse_Success_orMutable {
+  OrganizationMembersChanged_orMutable get event;
+
+  RemoveOrganizationMemberResponse_Success toFrozen();
+}
+
+/// Deeply immutable.
+final class RemoveOrganizationMemberResponse_Success implements RemoveOrganizationMemberResponse_Success_orMutable {
+  @_core.override
+  final OrganizationMembersChanged event;
+  _skir.internal__UnrecognizedFields? _u;
+
+  factory RemoveOrganizationMemberResponse_Success({
+    required OrganizationMembersChanged_orMutable event,
+  }) => RemoveOrganizationMemberResponse_Success._(
+    event.toFrozen(),
+  );
+
+  RemoveOrganizationMemberResponse_Success._(
+    this.event,
+  );
+
+  /// Default instance with all fields set to their default values.
+  static final defaultInstance = RemoveOrganizationMemberResponse_Success._(
+    OrganizationMembersChanged.defaultInstance,
+  );
+
+  /// Returns a new mutable instance.
+  /// Fields are initialized to their default values.
+  static RemoveOrganizationMemberResponse_Success_mutable mutable() => RemoveOrganizationMemberResponse_Success_mutable._(
+    OrganizationMembersChanged.defaultInstance,
+  );
+
+  /// Returns this instance (no-op).
+  @_core.Deprecated("This instance is already frozen.")
+  @_core.override
+  RemoveOrganizationMemberResponse_Success toFrozen() => this;
+
+  /// Returns a mutable shallow copy of this instance.
+  RemoveOrganizationMemberResponse_Success_mutable toMutable() => RemoveOrganizationMemberResponse_Success_mutable._(
+    this.event,
+  );
+
+  @_core.override
+  _core.bool operator ==(other) {
+    if (_core.identical(this, other)) return true;
+    if (other is! RemoveOrganizationMemberResponse_Success) return false;
+    return _skir.internal__listEquality.equals(_equality_proxy, other._equality_proxy);
+  }
+
+  @_core.override
+  _core.int get hashCode => _skir.internal__listEquality.hash(_equality_proxy);
+
+  _core.List get _equality_proxy => [
+    this.event,
+  ];
+
+  @_core.override
+  _core.String toString() => _skir.internal__stringify(this, serializer);
+
   /// Serializer for `RemoveOrganizationMemberResponse_Success` instances.
   static _skir.StructSerializer<RemoveOrganizationMemberResponse_Success, RemoveOrganizationMemberResponse_Success_mutable> get serializer {
     if (_serializerBuilder.mustInitialize()) {
+      _serializerBuilder.addField(
+        "event",
+        "event",
+        0,
+        OrganizationMembersChanged.serializer,
+        "",
+        (it) => it.event,
+        (it, v) => it.event = v,
+      );
       _serializerBuilder.finalize();
     }
     return _serializerBuilder.serializer;
@@ -1825,13 +2936,29 @@ final class RemoveOrganizationMemberResponse_Success implements RemoveOrganizati
 
 /// Mutable version of [RemoveOrganizationMemberResponse_Success].
 final class RemoveOrganizationMemberResponse_Success_mutable implements RemoveOrganizationMemberResponse_Success_orMutable {
+  OrganizationMembersChanged_orMutable event;
   _skir.internal__UnrecognizedFields? _u;
 
-  RemoveOrganizationMemberResponse_Success_mutable._();
+  RemoveOrganizationMemberResponse_Success_mutable._(
+    this.event,
+  );
+
+  /// If the value of [event] is already mutable, returns it as-is.
+  /// Otherwise, makes a mutable copy, assigns it back to [event] and returns it.
+  OrganizationMembersChanged_mutable get mutableEvent {
+    final value = this.event;
+    if (value is OrganizationMembersChanged_mutable) {
+      return value;
+    } else {
+      return this.event = (value as OrganizationMembersChanged).toMutable();
+    }
+  }
 
   /// Returns a deeply immutable copy of this instance.
   @_core.override
-  RemoveOrganizationMemberResponse_Success toFrozen() => RemoveOrganizationMemberResponse_Success().._u = this._u;
+  RemoveOrganizationMemberResponse_Success toFrozen() => RemoveOrganizationMemberResponse_Success(
+    event: this.event,
+  ).._u = this._u;
 }
 
 // -----------------------------------------------------------------------------
@@ -2080,6 +3207,8 @@ final class RemoveOrganizationMemberResponse_FounderCannotBeRemovedError_mutable
 ///   ```
 ///   switch (e) {
 ///     case RemoveOrganizationMemberResponse_unknown(): { ... }
+///     case RemoveOrganizationMemberResponse_invalidOperationIdError(:var value): { ... }
+///     case RemoveOrganizationMemberResponse_operationIdentityReusedError(:var value): { ... }
 ///     case RemoveOrganizationMemberResponse_internalError(:var value): { ... }
 ///     case RemoveOrganizationMemberResponse_success(:var value): { ... }
 ///     case RemoveOrganizationMemberResponse_userNotMemberError(:var value): { ... }
@@ -2093,6 +3222,26 @@ sealed class RemoveOrganizationMemberResponse {
   /// Constant indicating an unknown `RemoveOrganizationMemberResponse`.
   /// Default value for fields of type `RemoveOrganizationMemberResponse`.
   static const RemoveOrganizationMemberResponse unknown = RemoveOrganizationMemberResponse_unknown._instance;
+
+  /// Create a 'invalid_operation_id_error' variant wrapping around the given value.
+  factory RemoveOrganizationMemberResponse.wrapInvalidOperationIdError(
+    RemoveOrganizationMemberResponse_InvalidOperationIdError value
+  ) => RemoveOrganizationMemberResponse_invalidOperationIdErrorWrapper._(value);
+
+  /// Same as `wrapInvalidOperationIdError(RemoveOrganizationMemberResponse_InvalidOperationIdError(...))`.
+  factory RemoveOrganizationMemberResponse.createInvalidOperationIdError() => RemoveOrganizationMemberResponse.wrapInvalidOperationIdError(
+    RemoveOrganizationMemberResponse_InvalidOperationIdError()
+  );
+
+  /// Create a 'operation_identity_reused_error' variant wrapping around the given value.
+  factory RemoveOrganizationMemberResponse.wrapOperationIdentityReusedError(
+    RemoveOrganizationMemberResponse_OperationIdentityReusedError value
+  ) => RemoveOrganizationMemberResponse_operationIdentityReusedErrorWrapper._(value);
+
+  /// Same as `wrapOperationIdentityReusedError(RemoveOrganizationMemberResponse_OperationIdentityReusedError(...))`.
+  factory RemoveOrganizationMemberResponse.createOperationIdentityReusedError() => RemoveOrganizationMemberResponse.wrapOperationIdentityReusedError(
+    RemoveOrganizationMemberResponse_OperationIdentityReusedError()
+  );
 
   /// Create a 'internal_error' variant wrapping around the given value.
   factory RemoveOrganizationMemberResponse.wrapInternalError(
@@ -2110,8 +3259,12 @@ sealed class RemoveOrganizationMemberResponse {
   ) => RemoveOrganizationMemberResponse_successWrapper._(value);
 
   /// Same as `wrapSuccess(RemoveOrganizationMemberResponse_Success(...))`.
-  factory RemoveOrganizationMemberResponse.createSuccess() => RemoveOrganizationMemberResponse.wrapSuccess(
-    RemoveOrganizationMemberResponse_Success()
+  factory RemoveOrganizationMemberResponse.createSuccess({
+    required OrganizationMembersChanged_orMutable event,
+  }) => RemoveOrganizationMemberResponse.wrapSuccess(
+    RemoveOrganizationMemberResponse_Success(
+      event: event,
+    )
   );
 
   /// Create a 'user_not_member_error' variant wrapping around the given value.
@@ -2166,6 +3319,26 @@ sealed class RemoveOrganizationMemberResponse {
     if (_serializerBuilder.mustInitialize()) {
       _serializerBuilder.addWrapperVariant(
         1,
+        "invalid_operation_id_error",
+        "wrapInvalidOperationIdError",
+        RemoveOrganizationMemberResponse_InvalidOperationIdError.serializer,
+        "",
+        RemoveOrganizationMemberResponse_invalidOperationIdErrorWrapper._,
+        (it) => it.value,
+        ordinal: RemoveOrganizationMemberResponse_kind.invalidOperationIdErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        2,
+        "operation_identity_reused_error",
+        "wrapOperationIdentityReusedError",
+        RemoveOrganizationMemberResponse_OperationIdentityReusedError.serializer,
+        "",
+        RemoveOrganizationMemberResponse_operationIdentityReusedErrorWrapper._,
+        (it) => it.value,
+        ordinal: RemoveOrganizationMemberResponse_kind.operationIdentityReusedErrorWrapper._ordinal,
+      );
+      _serializerBuilder.addWrapperVariant(
+        3,
         "internal_error",
         "wrapInternalError",
         _lib_kernel_v1_errors.InternalError.serializer,
@@ -2175,7 +3348,7 @@ sealed class RemoveOrganizationMemberResponse {
         ordinal: RemoveOrganizationMemberResponse_kind.internalErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        2,
+        4,
         "success",
         "wrapSuccess",
         RemoveOrganizationMemberResponse_Success.serializer,
@@ -2185,7 +3358,7 @@ sealed class RemoveOrganizationMemberResponse {
         ordinal: RemoveOrganizationMemberResponse_kind.successWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        3,
+        5,
         "user_not_member_error",
         "wrapUserNotMemberError",
         RemoveOrganizationMemberResponse_UserNotMemberError.serializer,
@@ -2195,7 +3368,7 @@ sealed class RemoveOrganizationMemberResponse {
         ordinal: RemoveOrganizationMemberResponse_kind.userNotMemberErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        4,
+        6,
         "founder_cannot_be_removed_error",
         "wrapFounderCannotBeRemovedError",
         RemoveOrganizationMemberResponse_FounderCannotBeRemovedError.serializer,
@@ -2205,7 +3378,7 @@ sealed class RemoveOrganizationMemberResponse {
         ordinal: RemoveOrganizationMemberResponse_kind.founderCannotBeRemovedErrorWrapper._ordinal,
       );
       _serializerBuilder.addWrapperVariant(
-        5,
+        7,
         "invalid_record_id_error",
         "wrapInvalidRecordIdError",
         _lib_kernel_v1_errors.InvalidRecordIdError.serializer,
@@ -2233,11 +3406,13 @@ sealed class RemoveOrganizationMemberResponse {
 /// The kind of variant held by a `RemoveOrganizationMemberResponse`.
 enum RemoveOrganizationMemberResponse_kind {
   unknown(0),
-  internalErrorWrapper(1),
-  successWrapper(2),
-  userNotMemberErrorWrapper(3),
-  founderCannotBeRemovedErrorWrapper(4),
-  invalidRecordIdErrorWrapper(5);
+  invalidOperationIdErrorWrapper(1),
+  operationIdentityReusedErrorWrapper(2),
+  internalErrorWrapper(3),
+  successWrapper(4),
+  userNotMemberErrorWrapper(5),
+  founderCannotBeRemovedErrorWrapper(6),
+  invalidRecordIdErrorWrapper(7);
 
   final _core.int _ordinal;
 
@@ -2276,6 +3451,24 @@ sealed class _RemoveOrganizationMemberResponse_wrapper implements RemoveOrganiza
 
   @_core.override
   _core.String toString() => _skir.internal__stringify(this, RemoveOrganizationMemberResponse.serializer);
+}
+
+final class RemoveOrganizationMemberResponse_invalidOperationIdErrorWrapper extends _RemoveOrganizationMemberResponse_wrapper {
+  final RemoveOrganizationMemberResponse_InvalidOperationIdError value;
+
+  RemoveOrganizationMemberResponse_invalidOperationIdErrorWrapper._(this.value);
+
+  @_core.override
+  RemoveOrganizationMemberResponse_kind get kind => RemoveOrganizationMemberResponse_kind.invalidOperationIdErrorWrapper;
+}
+
+final class RemoveOrganizationMemberResponse_operationIdentityReusedErrorWrapper extends _RemoveOrganizationMemberResponse_wrapper {
+  final RemoveOrganizationMemberResponse_OperationIdentityReusedError value;
+
+  RemoveOrganizationMemberResponse_operationIdentityReusedErrorWrapper._(this.value);
+
+  @_core.override
+  RemoveOrganizationMemberResponse_kind get kind => RemoveOrganizationMemberResponse_kind.operationIdentityReusedErrorWrapper;
 }
 
 final class RemoveOrganizationMemberResponse_internalErrorWrapper extends _RemoveOrganizationMemberResponse_wrapper {

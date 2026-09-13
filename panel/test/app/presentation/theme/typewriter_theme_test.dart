@@ -32,6 +32,7 @@ void main() {
     expect(light.info, Colors.blue);
     expect(light.success, Colors.green);
     expect(light.warning, Colors.orange);
+
     expect(light.danger, Colors.redAccent);
     expect(light.brandContainer, isNot(dark.brandContainer));
   });
@@ -113,6 +114,7 @@ void main() {
           greaterThan(colors.canvas.computeLuminance()),
           reason: "Sections should be lighter than their surroundings",
         );
+
         if (brightness == Brightness.dark) {
           expect(colors.panel, colors.canvas);
         }
@@ -213,6 +215,7 @@ void main() {
         expect(theme.shapes.copyWith(small: 5).small, 5);
         expect(theme.states.copyWith(hoverOpacity: 0.2).hoverOpacity, 0.2);
         expect(theme.colors.lerp(other.colors, 0.5), isA<TypewriterColors>());
+
         expect(
           theme.spacing.lerp(other.spacing, 0.5),
           isA<TypewriterSpacing>(),
@@ -231,6 +234,7 @@ void main() {
         expect(button.shape!.resolve(enabled), theme.shapes.mediumShape);
         expect(button.foregroundColor!.resolve(enabled), isNotNull);
         expect(button.foregroundColor!.resolve(disabled), isNotNull);
+
         expect(button.backgroundColor!.resolve(disabled), isNotNull);
         final outlined = theme.outlinedButtonTheme.style!;
         expect(outlined.side!.resolve(enabled)?.color, theme.colors.brand);
@@ -247,6 +251,7 @@ void main() {
               ? theme.colors.contentPrimary.withValues(alpha: 0.05)
               : theme.colors.shadow.withValues(alpha: 0.2),
         );
+
         expect(
           theme.inputDecorationTheme.hoverColor,
           theme.colors.shadow.withValues(alpha: 0.1),

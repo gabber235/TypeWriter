@@ -30,14 +30,24 @@ class AuthRoute extends PageRouteInfo<void> {
 /// [BookPage]
 class BookRoute extends PageRouteInfo<BookRouteArgs> {
   BookRoute({
+    required String organizationId,
     required String realmId,
     required String bookId,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          BookRoute.name,
-         args: BookRouteArgs(realmId: realmId, bookId: bookId, key: key),
-         rawPathParams: {'realmId': realmId, 'bookId': bookId},
+         args: BookRouteArgs(
+           organizationId: organizationId,
+           realmId: realmId,
+           bookId: bookId,
+           key: key,
+         ),
+         rawPathParams: {
+           'organizationId': organizationId,
+           'realmId': realmId,
+           'bookId': bookId,
+         },
          initialChildren: children,
        );
 
@@ -49,11 +59,13 @@ class BookRoute extends PageRouteInfo<BookRouteArgs> {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<BookRouteArgs>(
         orElse: () => BookRouteArgs(
+          organizationId: pathParams.getString('organizationId'),
           realmId: pathParams.getString('realmId'),
           bookId: pathParams.getString('bookId'),
         ),
       );
       return BookPage(
+        organizationId: args.organizationId,
         realmId: args.realmId,
         bookId: args.bookId,
         key: args.key,
@@ -63,7 +75,14 @@ class BookRoute extends PageRouteInfo<BookRouteArgs> {
 }
 
 class BookRouteArgs {
-  const BookRouteArgs({required this.realmId, required this.bookId, this.key});
+  const BookRouteArgs({
+    required this.organizationId,
+    required this.realmId,
+    required this.bookId,
+    this.key,
+  });
+
+  final String organizationId;
 
   final String realmId;
 
@@ -73,20 +92,25 @@ class BookRouteArgs {
 
   @override
   String toString() {
-    return 'BookRouteArgs{realmId: $realmId, bookId: $bookId, key: $key}';
+    return 'BookRouteArgs{organizationId: $organizationId, realmId: $realmId, bookId: $bookId, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! BookRouteArgs) return false;
-    return realmId == other.realmId &&
+    return organizationId == other.organizationId &&
+        realmId == other.realmId &&
         bookId == other.bookId &&
         key == other.key;
   }
 
   @override
-  int get hashCode => realmId.hashCode ^ bookId.hashCode ^ key.hashCode;
+  int get hashCode =>
+      organizationId.hashCode ^
+      realmId.hashCode ^
+      bookId.hashCode ^
+      key.hashCode;
 }
 
 /// generated route for

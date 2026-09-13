@@ -81,10 +81,15 @@ _QueryBarController _useQueryBarController(QueryBar bar) {
     () => suggestionEngine.suggest(parseResult, maxItems: 100),
     [suggestionEngine, parseResult],
   );
+
   final activeSuggestionIndex = useState<int?>(null);
+
   final dismissedSignature = useState<String?>(null);
+
   final currentSignature = "${textController.text}|$cursorOffset";
+
   final helperVisible = _shouldShowHelperRow(suggestions);
+
   final helperBadges = _helperBadgeData(suggestions, maxItems: 20);
   final popupSuggestionsVisible =
       suggestions.isNotEmpty &&
@@ -121,6 +126,7 @@ _QueryBarController _useQueryBarController(QueryBar bar) {
       text: nextText,
       selection: TextSelection.collapsed(offset: caretOffset),
     );
+
     dismissedSignature.value = null;
     bar.onQueryChanged(nextText);
   }

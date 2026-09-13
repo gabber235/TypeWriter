@@ -1,10 +1,12 @@
 part of "selection_editor_source_test.dart";
 
-final _sourceProvider = Provider<SelectionEditorSource>((ref) {
-  final source = SelectionEditorSource(ref);
-  ref.onDispose(source.dispose);
-  return source;
-});
+final _sourceProvider = inspectionSessionProvider;
+
+EditOwner _owner(InspectionSession session) =>
+    (session.model!.inputs.values.single as PresentationEditInput).owner;
+
+EditorSource _resource(InspectionSession session) =>
+    _owner(session) as EditorSource;
 
 class _Identifier extends SelectableIdentifier {
   _Identifier({
@@ -20,7 +22,8 @@ class _Identifier extends SelectableIdentifier {
   final TypeExpression representation;
   DataValue current;
   final EditorMutationResult mutation;
-  final bool loading;
+  bool loading;
+  Object? failure;
   int revision = 1;
   bool readOnly = false;
   bool deleted = false;
@@ -39,15 +42,15 @@ class _Identifier extends SelectableIdentifier {
 
   @override
   AsyncValue<Selectable<_Identifier>> create(Ref ref) {
-    if (deleted) {
-      return AsyncValue.error(
-        SelectableNotFoundException(this),
-        StackTrace.current,
-      );
+    if (failure case final error?) {
+      return AsyncError(error, StackTrace.current);
     }
-    if (loading) return const AsyncValue.loading();
+    if (deleted) {
+      return AsyncError(SelectableNotFoundException(this), StackTrace.current);
+    }
+    if (loading) return const AsyncLoading();
     latest = _Inspectable(this);
-    return AsyncValue.data(latest!);
+    return AsyncData(latest!);
   }
 
   @override
@@ -57,7 +60,7 @@ class _Identifier extends SelectableIdentifier {
   int get hashCode => id.hashCode;
 }
 
-class _Inspectable extends InspectableSelectable<_Identifier> {
+class _Inspectable extends EditableSelectable<_Identifier> {
   _Inspectable(this.id);
 
   @override
@@ -82,7 +85,7 @@ class _Inspectable extends InspectableSelectable<_Identifier> {
   );
 
   @override
-  Widget? buildInspectorHeader() => null;
+  Widget? buildInspectorHeader(EditOwner owner) => null;
 
   @override
   EditorMutationResult validate(DataPath path, DataValue value) {
@@ -92,6 +95,20 @@ class _Inspectable extends InspectableSelectable<_Identifier> {
   }
 
   @override
+  EditorSnapshot get snapshot =>
+      FakeEditorSnapshot(document, validation: validate);
+
+  @override
+  late final EditableResource resource = FakeEditableResource(
+    key: EditorResourceKey(scope: null, identity: id.resourceId),
+    current: snapshot,
+    commit: commit,
+    load: () async {
+      if (id.loading || id.failure != null) throw StateError("Unavailable");
+      return id.deleted ? null : snapshot;
+    },
+  );
+
   Future<TypedMutationResult> commit(EditorCommit commit) async {
     latestCommit = commit;
     return TypedMutationResult.success(

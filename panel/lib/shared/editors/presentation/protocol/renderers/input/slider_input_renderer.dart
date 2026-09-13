@@ -6,7 +6,7 @@ extension SliderInputElementRendering on SliderInputElement {
       control: control,
       scope: scope,
       builder: (context, field) {
-        final resolvedValue = field.binding.value._sliderNumber;
+        final resolvedValue = field.value._sliderNumber;
         final resolvedMinimum = scope
             .evaluate(minimum)
             .valueOrNull
@@ -16,14 +16,34 @@ extension SliderInputElementRendering on SliderInputElement {
             .valueOrNull
             ._sliderNumber;
         final resolvedDivisions = divisions._sliderDivisions(scope);
-        if (resolvedValue == null ||
-            resolvedMinimum == null ||
+        if (resolvedMinimum == null ||
             resolvedMaximum == null ||
             resolvedMinimum >= resolvedMaximum) {
           return presentationDiagnostic(context, [
             const TypeDiagnostic(
               code: TypeDiagnosticCode.invalidValue,
               message: "Slider values are invalid",
+            ),
+          ]);
+        }
+        if (resolvedValue == null && field.mixed) {
+          return MixedSlider(
+            minimum: resolvedMinimum,
+            maximum: resolvedMaximum,
+            divisions: resolvedDivisions,
+            onChanged: !field.editable
+                ? null
+                : (next) {
+                    final typed = field.binding.type.sliderValue(next);
+                    if (typed != null) field.update(typed);
+                  },
+          );
+        }
+        if (resolvedValue == null) {
+          return presentationDiagnostic(context, [
+            const TypeDiagnostic(
+              code: TypeDiagnosticCode.invalidValue,
+              message: "Slider value is invalid",
             ),
           ]);
         }
@@ -35,12 +55,7 @@ extension SliderInputElementRendering on SliderInputElement {
           onChanged: !field.editable
               ? null
               : (next) {
-                  final typed = switch (field.binding.type) {
-                    IntegerType() => IntegerValue(BigInt.from(next.round())),
-                    FloatType() => FloatValue(next),
-                    DecimalType() => DecimalValue(next.toString()),
-                    _ => null,
-                  };
+                  final typed = field.binding.type.sliderValue(next);
                   if (typed != null) field.update(typed);
                 },
         );
@@ -66,6 +81,15 @@ extension on DataValue? {
     IntegerValue(:final value) => value.toDouble(),
     FloatValue(:final value) => value,
     DecimalValue(:final value) => double.tryParse(value),
+    _ => null,
+  };
+}
+
+extension on TypeExpression {
+  DataValue? sliderValue(double value) => switch (this) {
+    IntegerType() => IntegerValue(BigInt.from(value.round())),
+    FloatType() => FloatValue(value),
+    DecimalType() => DecimalValue(value.toString()),
     _ => null,
   };
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'conversion_result.dart';
@@ -9,6 +9,7 @@ part of 'conversion_result.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$ConversionResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionResult);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionResult);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConversionResult()';
+    return 'ConversionResult()';
 }
 
 
@@ -182,7 +183,7 @@ return unavailable(_that.diagnostics);case _:
 
 class ConversionSuccess implements ConversionResult {
   const ConversionSuccess(this.value);
-  
+
 
  final  DataValue value;
 
@@ -196,16 +197,18 @@ $ConversionSuccessCopyWith<ConversionSuccess> get copyWith => _$ConversionSucces
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionSuccess&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionSuccess&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+    return Object.hash(runtimeType,value);
+}
 
 @override
 String toString() {
-  return 'ConversionResult.success(value: $value)';
+    return 'ConversionResult.success(value: $value)';
 }
 
 
@@ -245,7 +248,7 @@ as DataValue,
 @override
 @pragma('vm:prefer-inline')
 $DataValueCopyWith<$Res> get value {
-  
+
   return $DataValueCopyWith<$Res>(_self.value, (value) {
     return _then(_self.copyWith(value: value));
   });
@@ -256,8 +259,8 @@ $DataValueCopyWith<$Res> get value {
 
 
 class ConversionFailure implements ConversionResult {
-   ConversionFailure(final  List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
-  
+   ConversionFailure( List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -277,16 +280,18 @@ $ConversionFailureCopyWith<ConversionFailure> get copyWith => _$ConversionFailur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionFailure&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionFailure&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'ConversionResult.failure(diagnostics: $diagnostics)';
+    return 'ConversionResult.failure(diagnostics: $diagnostics)';
 }
 
 
@@ -328,8 +333,8 @@ as List<TypeDiagnostic>,
 
 
 class ConversionUnavailable implements ConversionResult {
-   ConversionUnavailable(final  List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
-  
+   ConversionUnavailable( List<TypeDiagnostic> diagnostics): assert(diagnostics.isNotEmpty, 'Diagnostics must not be empty.'),_diagnostics = diagnostics;
+
 
  final  List<TypeDiagnostic> _diagnostics;
  List<TypeDiagnostic> get diagnostics {
@@ -349,16 +354,18 @@ $ConversionUnavailableCopyWith<ConversionUnavailable> get copyWith => _$Conversi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionUnavailable&&const DeepCollectionEquality().equals(other._diagnostics, _diagnostics));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConversionUnavailable&&const DeepCollectionEquality().equals(other.diagnostics, _diagnostics));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_diagnostics));
+}
 
 @override
 String toString() {
-  return 'ConversionResult.unavailable(diagnostics: $diagnostics)';
+    return 'ConversionResult.unavailable(diagnostics: $diagnostics)';
 }
 
 

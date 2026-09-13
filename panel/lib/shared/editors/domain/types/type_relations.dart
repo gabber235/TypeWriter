@@ -64,6 +64,7 @@ extension TypeExpressionAssignability on TypeExpression {
         target.maximum,
       );
     }
+
     if (source is DurationType && target is DurationType) {
       return _comparableRangeContained(
         source.minimum,
@@ -72,6 +73,7 @@ extension TypeExpressionAssignability on TypeExpression {
         target.maximum,
       );
     }
+
     if (source is EnumType && target is EnumType) {
       return source.valueType.isStructurallyAssignableTo(
             target.valueType,
@@ -79,6 +81,7 @@ extension TypeExpressionAssignability on TypeExpression {
           ) &&
           source.values.every(target.values.contains);
     }
+
     if (source is ListType && target is ListType) {
       return typeExpressionsEqual(source.element, target.element) &&
           _rangeContained(
@@ -89,6 +92,7 @@ extension TypeExpressionAssignability on TypeExpression {
           ) &&
           (!target.unique || source.unique);
     }
+
     if (source is MapType && target is MapType) {
       return typeExpressionsEqual(source.key, target.key) &&
           typeExpressionsEqual(source.value, target.value) &&
@@ -99,9 +103,11 @@ extension TypeExpressionAssignability on TypeExpression {
             target.maximumLength,
           );
     }
+
     if (source is RecordType && target is RecordType) {
       return source._isRecordAssignableTo(target, registry);
     }
+
     return false;
   }
 }
@@ -116,12 +122,15 @@ extension on NamedType {
     if (!sameDeclaration && !sourceType.ancestors.contains(target.reference)) {
       return false;
     }
+
     if (!sameDeclaration) return true;
+
     final definition = registry.definition(reference);
     if (definition == null ||
         reference.arguments.length != target.reference.arguments.length) {
       return false;
     }
+
     for (final entry in definition.parameters.indexed) {
       final sourceArgument = reference.arguments[entry.$1];
       final targetArgument = target.reference.arguments[entry.$1];

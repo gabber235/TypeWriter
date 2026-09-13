@@ -22,7 +22,7 @@ class _PresentationSearchInputBody extends HookConsumerWidget {
   });
 
   final SearchInputElement element;
-  final ResolvedBinding binding;
+  final InspectedBinding binding;
   final PresentationRenderScope scope;
   final double maximumExtent;
   final bool editing;
@@ -154,9 +154,12 @@ class _PresentationSearchInputBody extends HookConsumerWidget {
   }
 }
 
-bool _isSelected(DataValue value, SearchResult result) {
+bool _isSelected(EditorValue value, SearchResult result) {
   final payload = result.payload;
   if (payload is! PresentationSearchResultPayload) return false;
-  if (value is ListValue) return value.values.contains(payload.selectedValue);
-  return value == payload.selectedValue;
+  final current = value.valueOrNull;
+  if (current is ListValue) {
+    return current.values.contains(payload.selectedValue);
+  }
+  return current == payload.selectedValue;
 }

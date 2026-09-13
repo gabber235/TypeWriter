@@ -18,6 +18,7 @@ class _JoinOrganization extends HookConsumerWidget {
     }).toList();
     final hasActiveRequests = activeRequests.isNotEmpty;
     final hasReachedLimit = activeRequests.length >= _maxPendingRequests;
+
     final animation = useSliverAnimatedList(
       items: activeRequests,
       identity: (item) => item.requestId,

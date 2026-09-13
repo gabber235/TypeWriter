@@ -33,6 +33,7 @@ void main() {
           () => controller.collapsedSectionIds.add("other"),
           throwsUnsupportedError,
         );
+
         expect(notifications.count, 2);
       },
     );
@@ -168,6 +169,7 @@ void main() {
           onCloseRequested: () => closeCount++,
         );
         addTearDown(controller.dispose);
+
         source.emitSnapshot(
           readySnapshot(
             nodes: [

@@ -48,7 +48,7 @@ abstract class _$ActionShortcuts
   Map<String, ActionShortcut> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<Map<String, ActionShortcut>, Map<String, ActionShortcut>>;
@@ -63,6 +63,6 @@ abstract class _$ActionShortcuts
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

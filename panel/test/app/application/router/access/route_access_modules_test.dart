@@ -18,6 +18,7 @@ void main() {
       ..setDecision(const RouteAuthenticationDecision.authenticated());
     expect(notifications, 0);
     access.setDecision(const RouteAuthenticationDecision.unauthenticated());
+
     expect(notifications, 1);
     access.setDecision(const RouteAuthenticationDecision.unavailable());
     expect(notifications, 2);

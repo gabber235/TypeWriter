@@ -6,7 +6,7 @@ const builtinStringSingleLinePresentationId = PresentationId(
 );
 
 List<PresentationDefinition> builtinPresentationDefinitions() => [
-  PresentationDefinition(
+  PresentationDefinition.single(
     id: builtinStringSingleLinePresentationId,
     target: const StringType(),
     root: const PresentationNode(
@@ -19,7 +19,7 @@ List<PresentationDefinition> builtinPresentationDefinitions() => [
       ),
     ),
   ),
-  PresentationDefinition(
+  PresentationDefinition.single(
     id: standardColorPresentationId,
     target: NamedType(standardTypeRefs.color),
     root: const PresentationNode(
@@ -31,7 +31,7 @@ List<PresentationDefinition> builtinPresentationDefinitions() => [
       ),
     ),
   ),
-  PresentationDefinition(
+  PresentationDefinition.single(
     id: standardColorAlphaPresentationId,
     target: NamedType(standardTypeRefs.color),
     root: const PresentationNode(
@@ -44,12 +44,12 @@ List<PresentationDefinition> builtinPresentationDefinitions() => [
       ),
     ),
   ),
-  PresentationDefinition(
+  PresentationDefinition.single(
     id: standardIconifyPresentationId,
     target: NamedType(standardTypeRefs.iconifyIcon),
     root: iconifySearchPresentation(),
   ),
-  PresentationDefinition(
+  PresentationDefinition.single(
     id: standardSvgIconPresentationId,
     target: NamedType(standardTypeRefs.svgIcon),
     root: const PresentationNode(

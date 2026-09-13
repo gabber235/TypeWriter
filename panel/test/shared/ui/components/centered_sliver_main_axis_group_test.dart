@@ -166,6 +166,7 @@ void main() {
     expect(tester.getTopLeft(find.byKey(const Key("content"))).dy, 0);
     height.value = 200;
     await tester.pump();
+
     expect(tester.getTopLeft(find.byKey(const Key("content"))).dy, 200);
   });
 

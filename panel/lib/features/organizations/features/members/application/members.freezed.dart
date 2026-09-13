@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'members.dart';
@@ -9,6 +9,7 @@ part of 'members.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OrganizationMemberCopyWith<OrganizationMember> get copyWith => _$OrganizationMe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationMember&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other.roles, roles)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+  final _this = this as OrganizationMember;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OrganizationMember&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&const DeepCollectionEquality().equals(other.roles, _this.roles)&&(identical(other.joinedAt, _this.joinedAt) || other.joinedAt == _this.joinedAt)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,const DeepCollectionEquality().hash(roles),joinedAt,name,email,avatarUrl);
+int get hashCode {
+  final _this = this as OrganizationMember;
+  return Object.hash(runtimeType,_this.userId,const DeepCollectionEquality().hash(_this.roles),_this.joinedAt,_this.name,_this.email,_this.avatarUrl);
+}
 
 @override
 String toString() {
-  return 'OrganizationMember(userId: $userId, roles: $roles, joinedAt: $joinedAt, name: $name, email: $email, avatarUrl: $avatarUrl)';
+  final _this = this as OrganizationMember;
+  return 'OrganizationMember(userId: ${_this.userId}, roles: ${_this.roles}, joinedAt: ${_this.joinedAt}, name: ${_this.name}, email: ${_this.email}, avatarUrl: ${_this.avatarUrl})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OrganizationMemberCopyWithImpl<$Res>
 /// Create a copy of OrganizationMember
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? roles = null,Object? joinedAt = null,Object? name = freezed,Object? email = freezed,Object? avatarUrl = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(OrganizationMember(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as skir.RecordId,roles: null == roles ? _self.roles : roles // ignore: cast_nullable_to_non_nullable
 as List<OrganizationRole>,joinedAt: null == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
@@ -211,8 +217,8 @@ return $default(_that.userId,_that.roles,_that.joinedAt,_that.name,_that.email,_
 
 
 class _OrganizationMember extends OrganizationMember {
-  const _OrganizationMember({required this.userId, required final  List<OrganizationRole> roles, required this.joinedAt, this.name, this.email, this.avatarUrl}): _roles = roles,super._();
-  
+  const _OrganizationMember({required this.userId, required  List<OrganizationRole> roles, required this.joinedAt, this.name, this.email, this.avatarUrl}): _roles = roles,super._();
+
 
 @override final  skir.RecordId userId;
  final  List<OrganizationRole> _roles;
@@ -237,16 +243,18 @@ _$OrganizationMemberCopyWith<_OrganizationMember> get copyWith => __$Organizatio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationMember&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other._roles, _roles)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OrganizationMember&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other.roles, _roles)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,const DeepCollectionEquality().hash(_roles),joinedAt,name,email,avatarUrl);
+int get hashCode {
+    return Object.hash(runtimeType,userId,const DeepCollectionEquality().hash(_roles),joinedAt,name,email,avatarUrl);
+}
 
 @override
 String toString() {
-  return 'OrganizationMember(userId: $userId, roles: $roles, joinedAt: $joinedAt, name: $name, email: $email, avatarUrl: $avatarUrl)';
+    return 'OrganizationMember(userId: $userId, roles: $roles, joinedAt: $joinedAt, name: $name, email: $email, avatarUrl: $avatarUrl)';
 }
 
 

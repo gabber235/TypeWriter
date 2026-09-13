@@ -10,9 +10,9 @@ import "support/members_test_support.dart";
 
 void main() {
   group("Organization command errors", () {
-    late MockNatsClient mockNats;
+    late FakeNatsClient mockNats;
 
-    setUp(() => mockNats = MockNatsClient());
+    setUp(() => mockNats = FakeNatsClient());
     tearDown(() => mockNats.dispose());
 
     Matcher apiException(int code, String message) => isA<ApiException>()
@@ -61,6 +61,7 @@ void main() {
             data,
           ) => skir.UpdateOrganizationMemberRolesResponse.serializer.toBytes(
             skir.UpdateOrganizationMemberRolesResponse.createRolesNotAssignableError(
+              userIds: [testMemberId],
               roleIds: [newRole.roleId],
             ),
           ),
@@ -69,7 +70,7 @@ void main() {
         await expectLater(
           container
               .read(organizationMembersProvider.notifier)
-              .updateMemberRoles(recordId("user:m1"), [newRole]),
+              .updateMemberRoles([recordId("user:m1")], [newRole]),
           throwsA(apiException(400, "One or more roles cannot be assigned")),
         );
         expect(
@@ -112,10 +113,9 @@ void main() {
       );
 
       await expectLater(
-        container.read(organizationMembersProvider.notifier).updateMemberRoles(
-          recordId("user:m1"),
-          [role],
-        ),
+        container
+            .read(organizationMembersProvider.notifier)
+            .updateMemberRoles([recordId("user:m1")], [role]),
         throwsA(
           apiException(409, "Organization must retain at least one founder"),
         ),

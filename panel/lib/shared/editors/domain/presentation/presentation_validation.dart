@@ -75,6 +75,29 @@ extension on PresentationElement {
             .evaluate(context, registry: registry, budget: budget)
             .diagnostics,
     ];
+
+    if (element case CommitControlsElement(:final binding)) {
+      diagnostics.addAll(
+        context.bindings.inspect(binding, registry: registry).diagnostics,
+      );
+    }
+    if (element case SelectInputElement(
+      :final control,
+      defaultValue: final expression?,
+    )) {
+      final binding = context.bindings
+          .inspect(control.binding, registry: registry)
+          .valueOrNull;
+      final value = expression
+          .evaluate(context, registry: registry, budget: budget)
+          .valueOrNull;
+      if (binding != null && value != null) {
+        diagnostics.addAll(
+          value.validateAgainst(binding.type, registry: registry),
+        );
+      }
+    }
+
     if (element case DateTimeInputElement(
       includeDate: false,
       includeTime: false,
@@ -83,6 +106,7 @@ extension on PresentationElement {
         _invalid("Date and time control must enable at least one part"),
       );
     }
+
     if (element case TextInputElement(:final inputFormatters)) {
       for (final formatter in inputFormatters) {
         if (formatter.pattern case final pattern?) {
@@ -96,6 +120,7 @@ extension on PresentationElement {
         }
       }
     }
+
     if (element case ChipElement(:final label, :final color)) {
       if (label.resultType is! StringType) {
         diagnostics.add(_invalid("Chip label must declare a string result"));
@@ -108,11 +133,58 @@ extension on PresentationElement {
         diagnostics.add(_invalid("Chip color must declare the Color type"));
       }
     }
+
+    if (element case StatusElement(
+      :final value,
+      :final cases,
+      :final fallback,
+    )) {
+      final matches = <DataValue>{};
+      for (final item in cases) {
+        diagnostics.addAll(
+          item.match.validateAgainst(value.resultType, registry: registry),
+        );
+        if (!matches.add(item.match)) {
+          diagnostics.add(_invalid("Status cases must have unique values"));
+        }
+        diagnostics.addAll(item.appearance._validateLabel());
+      }
+      diagnostics.addAll(fallback?._validateLabel() ?? const []);
+    }
+
+    if (element case DateTimeElement(:final value, :final format)) {
+      if (value.resultType is! TimestampType) {
+        diagnostics.add(
+          _invalid("Date time value must declare a timestamp result"),
+        );
+      }
+      if (format.resultType is! StringType) {
+        diagnostics.add(
+          _invalid("Date time format must declare a string result"),
+        );
+      } else if (format
+              .evaluate(context, registry: registry, budget: budget)
+              .valueOrNull
+          case StringValue(:final value)) {
+        if (dateTimePatternError(value) != null) {
+          diagnostics.add(_invalid("Date time format is malformed"));
+        }
+      }
+    }
+
+    if (element case RelativeTimeElement(:final value)
+        when value.resultType is! TimestampType) {
+      diagnostics.add(
+        _invalid("Relative time value must declare a timestamp result"),
+      );
+    }
+
     final border = switch (element) {
       SectionElement(:final border) ||
       ContainerElement(:final border) => border,
       _ => null,
     };
+
     if (border != null) {
       if (border.sides.isEmpty) {
         diagnostics.add(_invalid("Presentation border must contain a side"));
@@ -150,9 +222,8 @@ extension on PresentationElement {
         diagnostics.add(_invalid("Padding must be finite and nonnegative"));
       }
     }
-    if (element case PresentationSlotElement(
-      :final slotId,
-    ) when slotId.isEmpty) {
+    if (element case PresentationSlotElement(:final slotId)
+        when slotId.isEmpty) {
       diagnostics.add(_invalid("Presentation slot ID must not be empty"));
     }
     if (element case CollectionGraphElement(
@@ -206,6 +277,7 @@ extension on PresentationElement {
         }
       }
     }
+
     final sequences = switch (element) {
       RepeatedElement(:final presentation) => [presentation],
       CollectionGraphElement(:final rootSequence, :final children) => [
@@ -214,6 +286,7 @@ extension on PresentationElement {
       ],
       _ => const <SequencePresentation>[],
     };
+
     for (final sequence in sequences) {
       final standardLayout = switch (sequence.layout) {
         PresentationStandardSequenceLayout(:final layout) => layout,
@@ -232,19 +305,33 @@ extension on PresentationElement {
         );
       }
     }
+
     if (element case TypedFieldElement(:final binding, :final expectedType)) {
-      final resolved = context.bindings.resolve(binding);
+      final resolved = context.bindings.inspect(binding, registry: registry);
       diagnostics.addAll(resolved.diagnostics);
       final actual = resolved.valueOrNull?.type;
-      if (actual != null && !typeExpressionsEqual(actual, expectedType)) {
+      if (actual != null &&
+          !typeExpressionsEqual(actual, expectedType) &&
+          !typeExpressionsEqual(
+            actual.bindingRepresentation(registry),
+            expectedType.bindingRepresentation(registry),
+          )) {
         diagnostics.add(_invalid("Typed field does not match its binding"));
       }
     }
+
     if (control == null) return diagnostics;
-    final binding = context.bindings.resolve(control.binding);
+    final binding = context.bindings.inspect(
+      control.binding,
+      registry: registry,
+    );
+
     diagnostics.addAll(binding.diagnostics);
+
     final type = binding.valueOrNull?.type;
-    if (type != null && !element._acceptsControl(type)) {
+    if (type != null &&
+        !element._acceptsControl(type) &&
+        !element._acceptsControl(type.bindingRepresentation(registry))) {
       diagnostics.add(_invalid("Control does not accept its binding type"));
     }
     return diagnostics;
@@ -365,6 +452,13 @@ extension on PresentationElement {
         maximum,
         ?label,
       ],
+      StatusElement(:final value, :final cases, :final fallback) => [
+        value,
+        for (final item in cases) ?item.appearance.label,
+        ?fallback?.label,
+      ],
+      DateTimeElement(:final value, :final format) => [value, format],
+      RelativeTimeElement(:final value) => [value],
       SectionElement(:final border?) => border.colors,
       ContainerElement(:final border, :final backgroundColor, :final radius) =>
         [...?border?.colors, ?backgroundColor, ...radius.expressions],
@@ -380,7 +474,8 @@ extension on PresentationElement {
       TabsElement(:final tabs) => [for (final tab in tabs) tab.label],
       ConditionalElement(:final condition) => [condition],
       RepeatedElement(:final source) => [source],
-      SelectInputElement(:final options) => [
+      SelectInputElement(:final options, :final defaultValue) => [
+        ?defaultValue,
         for (final option in options) ...[option.label, option.value],
       ],
       SliderInputElement(:final minimum, :final maximum, :final divisions) => [
@@ -439,6 +534,13 @@ extension on PresentationElement {
     SelectInputElement() => true,
     _ => true,
   };
+}
+
+extension on StatusAppearance {
+  List<TypeDiagnostic> _validateLabel() =>
+      label != null && label!.resultType is! StringType
+      ? [_invalid("Status label must declare a string result")]
+      : const [];
 }
 
 extension on TextInputFormat {

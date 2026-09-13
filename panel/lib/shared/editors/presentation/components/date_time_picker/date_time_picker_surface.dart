@@ -8,6 +8,7 @@ class DateTimePickerSurface extends StatelessWidget {
     required this.includeTime,
     required this.enabled,
     required this.onChanged,
+    this.replacing = false,
     super.key,
   });
 
@@ -16,6 +17,7 @@ class DateTimePickerSurface extends StatelessWidget {
   final bool includeTime;
   final bool enabled;
   final ValueChanged<DateTime> onChanged;
+  final bool replacing;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,11 @@ class DateTimePickerSurface extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (replacing)
+                Padding(
+                  padding: EdgeInsets.all(context.spacing.space2),
+                  child: const Text("Choose one replacement value."),
+                ),
               if (includeDate)
                 DateTimeCalendar(
                   value: value,

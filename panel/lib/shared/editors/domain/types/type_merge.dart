@@ -26,9 +26,11 @@ TypeResult<TypeExpression> intersectTypes(
   if (left is TimestampType && right is TimestampType) {
     return intersectTimestamps(left, right);
   }
+
   if (left is DurationType && right is DurationType) {
     return intersectDurations(left, right);
   }
+
   if (left is EnumType && right is EnumType) {
     final valueType = intersectTypes(left.valueType, right.valueType);
     if (valueType case TypeFailure(:final diagnostics)) {
@@ -41,15 +43,19 @@ TypeResult<TypeExpression> intersectTypes(
             EnumType(valueType: valueType.valueOrNull!, values: values),
           );
   }
+
   if (left is ListType && right is ListType) {
     return _intersectLists(left, right);
   }
+
   if (left is MapType && right is MapType) {
     return _intersectMaps(left, right);
   }
+
   if (left is RecordType && right is RecordType) {
     return _intersectRecords(left, right);
   }
+
   return _conflict(left, right);
 }
 
@@ -126,6 +132,7 @@ TypeResult<TypeExpression> _intersectLists(ListType left, ListType right) {
   if (element case TypeFailure(:final diagnostics)) {
     return TypeResult.failure(diagnostics);
   }
+
   final minimum = maximumNullableComparable(
     left.minimumLength,
     right.minimumLength,
@@ -152,6 +159,7 @@ TypeResult<TypeExpression> _intersectMaps(MapType left, MapType right) {
   final value = intersectTypes(left.value, right.value);
   final diagnostics = [...key.diagnostics, ...value.diagnostics];
   if (diagnostics.isNotEmpty) return TypeResult.failure(diagnostics);
+
   final minimum = maximumNullableComparable(
     left.minimumLength,
     right.minimumLength,
