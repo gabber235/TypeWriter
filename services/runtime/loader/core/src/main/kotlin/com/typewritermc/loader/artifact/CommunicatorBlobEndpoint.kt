@@ -1,7 +1,14 @@
 package com.typewritermc.loader.artifact
 
 import com.typewritermc.loader.api.RealmServiceAddress
+import com.typewritermc.loader.api.artifact.ArtifactDigest
+import com.typewritermc.loader.api.artifact.BlobChunk
+import com.typewritermc.loader.api.artifact.BlobEndpoint
+import com.typewritermc.loader.api.artifact.BlobMetadata
 import com.typewritermc.loader.api.artifact.BlobResult
+import com.typewritermc.loader.api.artifact.BlobWriteSession
+import com.typewritermc.loader.api.artifact.DigestAlgorithm
+import com.typewritermc.loader.api.artifact.TransferId
 import com.typewritermc.loader.api.realmRequestAddress
 import com.typewritermc.services.libs.communicator.address.AddressTemplate
 import com.typewritermc.services.libs.communicator.address.addressTemplate

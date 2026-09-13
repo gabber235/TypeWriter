@@ -2,13 +2,13 @@ package com.typewritermc.loader.shared
 
 import com.typewritermc.loader.api.artifact.ArtifactDigest
 import com.typewritermc.loader.api.artifact.BlobChunk
+import com.typewritermc.loader.api.artifact.BlobEndpoint
 import com.typewritermc.loader.api.artifact.BlobMetadata
 import com.typewritermc.loader.api.artifact.BlobResult
 import com.typewritermc.loader.api.artifact.BlobWriteSession
 import com.typewritermc.loader.api.artifact.PublishResult
 import com.typewritermc.loader.api.artifact.SharedArtifactAccess
 import com.typewritermc.loader.api.artifact.TransferId
-import com.typewritermc.loader.artifact.BlobEndpoint
 import com.typewritermc.loader.artifactSpan
 import com.typewritermc.services.libs.telemetry.ServiceTelemetry
 
